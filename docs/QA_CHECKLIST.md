@@ -47,3 +47,16 @@ Track manual and automated verification across devices and browsers per `MASTER_
 5. **Palettes & Contrast:** Ensure contrast passes across dark/light and custom hex inputs.
 6. **Persistence & Migration:** Reload page; verify settings and slides are preserved.
 7. **Export formats:** Verify PNG, ZIP, PDF generation.
+
+## Manipulation real-device check — needs manual check by owner (D-09)
+
+Playwright mobile emulation is only a proxy; verify touch and frame pacing on a physical mid-range Android phone and an iPhone before release:
+
+1. Open the editor on a project with text, an image, and a sticker/extra. Record device model, OS version, and browser version.
+2. In LTR and Arabic/RTL, select an element and drag it near a slide edge, center line, and another element. Check that snapping feels responsive and the physical left/right movement is consistent in both directions.
+3. Resize with each handle, rotate an extra, and use two fingers to scale and rotate. Check for accidental page scrolling, stuck pointers, and touch targets that are hard to hit.
+4. Repeat a continuous drag for at least five seconds on the mid-range Android phone. Use the browser's available performance/FPS tooling where possible and record whether animation stays near 60 fps or visibly stutters; note the device and result.
+5. Export the slide to PNG. Confirm the element's final position/size/rotation appears and that selection handles, guides, and editor chrome do not.
+6. Repeat the core drag, resize, pinch, and export steps on iPhone Safari. WebKit automation does not prove iOS Safari behavior.
+
+Track completion in D-09 in `docs/TASKS.md`.
