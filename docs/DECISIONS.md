@@ -37,6 +37,11 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
 - **Libraries:** Added `jspdf` for raster PDF assembly and `jszip` for multi-PNG packaging.
 - **PDF Page Sizing:** Configured `unit: 'px'` with `hotfixes: ['px_scaling']` to ensure PDF dimensions match the slide pixel dimensions 1:1.
 - **ZIP Naming:** Enforces `{project-title-slug}-{nn}.png` naming convention per Spec §9.2.
+
+## 2026-11-22 — Schema definition & migration engine (P1-1)
+- **Validation Engine:** Added `zod` for runtime schema validation on import and persistence.
+- **Data Model:** Defined all Spec §3 domain models (`Project`, `Slide`, `MediaRef`, `BrandSettings`, `FormatDef`) in `src/core/schema.ts` with `CURRENT_SCHEMA_VERSION = 1`.
+- **Migration:** Implemented `migrate(data)` in `src/core/migrate.ts`. Handles v0 legacy formats with safe defaults, preserves valid v1 projects, and explicitly throws on unsupported future versions or malformed payloads.
 - **CSP Policy:** Restricts scripts and connections to self and Vercel Analytics (`va.vercel-scripts.com`, `vitals.vercel-insights.com`). Allows `data:` and `blob:` for images and client-side canvas/download generation.
 - **Security Headers:** Added `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`.
 - **SPA Rewrites:** Added rewrite for client-side routing on Vercel.
