@@ -552,6 +552,14 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P4-5 (Export fidelity tests: Playwright exports project, golden compare, PDF & ZIP assertions).
 - Needs from the owner: None.
 
+### P4-5 — done — 2026-11-22 22:35 — Antigravity
+- Branch / commit: feature/p4-5 / eef9110
+- What changed (files): `tests/e2e/exportFidelity.spec.ts`, `src/ui/editor/ExportDialog.tsx`, `tests/unit/projectIO.test.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented comprehensive export fidelity Playwright E2E suite (`tests/e2e/exportFidelity.spec.ts`); tuned offscreen staging container in `ExportDialog` to reside within active browser surface (`opacity: 0.001`, `position: fixed`, `top: 0`, `left: 0`) avoiding headless Chromium layout throttling on far negative offsets; verified single PNG export with non-empty buffer, multi-slide sequential ZIP archive unpacking and validation with JSZip, and multi-page raster PDF header verification (`%PDF-`); confirmed zero console errors during export.
+- Tests run and result: Playwright 12 passed (including 3 new export fidelity tests in 12.3s), Vitest 326 passed (39 files), ESLint 0 errors 0 warnings, typecheck clean, production build clean.
+- Remaining / next step: Merge to main, proceed to P4-6 (Performance pass: memoization, code-splitting, typing latency check, bundle size check).
+- Needs from the owner: None.
+
 
 
 
