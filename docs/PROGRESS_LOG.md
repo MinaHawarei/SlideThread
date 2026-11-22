@@ -156,3 +156,19 @@ Agent name: Antigravity
 - Tests run and result: lint clean, typecheck clean, vitest 15 passed, build clean, test:e2e 5 passed.
 - Remaining / next step: Merge to main, proceed to Phase 1 (P1-1).
 - Needs from the owner: Connect Vercel and verify preview URL (D-01).
+
+### P1-1 — started — 2026-11-22 19:28 — Antigravity
+- Branch / commit: feature/p1-1
+- What changed (files): Claimed P1-1 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Install zod, define domain schema types per Spec §3, implement migrate() and runtime validation, and add comprehensive unit tests.
+- Needs from the owner: None.
+
+### P1-1 — done — 2026-11-22 19:32 — Antigravity
+- Branch / commit: feature/p1-1 / ceb308f
+- What changed (files): package.json, src/core/schema.ts, src/core/migrate.ts, tests/unit/schema.test.ts, tests/unit/migrate.test.ts, docs/TASKS.md, docs/PROGRESS_LOG.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: Vitest 24 passed (9 files), typecheck clean, lint clean.
+- Remaining / next step: Merge to main, proceed to P1-2 (Format & platform registries).
+- Needs from the owner: None.
