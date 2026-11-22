@@ -81,7 +81,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ## Phase P5 — Beta release
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| P5-1 | README: overview, screenshots, features, quick start, scripts, architecture, contributing | G4 | [ ] | |
+| P5-1 | README: overview, screenshots, features, quick start, scripts, architecture, contributing | G4 | [x] | Antigravity 2026-11-22 · feature/p5-1 · f412a88 |
 | P5-2 | Repo hygiene: LICENSE (MIT), NOTICE, issue templates, CONTRIBUTING.md, GitHub Actions CI | P5-1 | [ ] | |
 | P5-3 | QA pass: execute docs/QA_CHECKLIST.md on matrix, fix blockers, list known issues | P5-2 | [ ] | |
 | P5-4 | Lighthouse + accessibility: mobile Accessibility ≥ 90, fix findings | P5-3 | [ ] | |
