@@ -64,9 +64,9 @@ Commands the repo must provide (document in README): `dev`, `build`, `preview`, 
 - **P1-9 Story safe zones** and overlay.
 
 ### Gate G1
-- [ ] `/gallery` shows all 9 slide types in all 4 aspect classes, dark/light, LTR/RTL, with no overflow or clipped content (check visually; Playwright screenshot snapshots committed).
-- [ ] All unit tests green; typecheck and lint clean.
-- [ ] Network background is identical across re-renders and continuous across adjacent slides.
+- [x] `/gallery` shows all 9 slide types in all 4 aspect classes, dark/light, LTR/RTL, with no overflow or clipped content (check visually; Playwright screenshot snapshots committed).
+- [x] All unit tests green; typecheck and lint clean.
+- [x] Network background is identical across re-renders and continuous across adjacent slides.
 
 ---
 
@@ -178,4 +178,4 @@ More slide types, more templates, user-uploaded templates (JSON), shareable proj
 Code merged, tests added/updated and passing, lint + typecheck clean, relevant docs updated, no new console errors, and the gate checklist for the phase updated in this file (tick boxes in a short `## Status` section appended at the end as phases complete).
 
 ## Status
-- [x] G0 (owner-verify pending: D-01)  - [ ] G1  - [ ] G2  - [ ] G3  - [ ] G4  - [ ] G5
+- [x] G0 (owner-verify pending: D-01)  - [x] G1  - [ ] G2  - [ ] G3  - [ ] G4  - [ ] G5

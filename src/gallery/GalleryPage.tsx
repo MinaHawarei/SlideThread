@@ -195,27 +195,6 @@ export const GalleryPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Safe Zones Toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button
-              type="button"
-              onClick={() => setShowSafeZones(!showSafeZones)}
-              style={{
-                background: showSafeZones ? '#dc2626' : '#1e293b',
-                color: showSafeZones ? '#ffffff' : '#f87171',
-                border: '1px solid #ef4444',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-              data-testid="toggle-safe-zones"
-            >
-              {showSafeZones ? '🛡️ Safe Zones: ON' : '🛡️ Safe Zones: OFF'}
-            </button>
-          </div>
-
           {/* Scale Slider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
             <label style={{ fontSize: '13px', color: '#94a3b8' }}>Zoom: {Math.round(previewScale * 100)}%</label>

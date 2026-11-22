@@ -40,6 +40,17 @@ test.describe('Component Gallery Route (/gallery)', () => {
     await expect(page.getByRole('heading', { name: 'quote Slide' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'explain Slide' })).not.toBeVisible();
 
+    // Reset filter to all
+    await typeSelect.selectOption('all');
+
+    // Toggle safe zones on
+    const safeZoneBtn = page.getByTestId('toggle-safe-zones');
+    await safeZoneBtn.click();
+    await expect(page.getByTestId('story-safe-zone-overlay').first()).toBeVisible();
+
+    // Capture visual snapshot for Gate G1
+    await page.screenshot({ path: 'tests/e2e/snapshots/gallery-g1.png', fullPage: true });
+
     expect(consoleErrors).toEqual([]);
   });
 });
