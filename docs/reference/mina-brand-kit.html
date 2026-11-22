@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mina Brand Kit — Pro Carousel Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root {
+  --s: .4;
+  --h: 1350px;
+  --bg: #08101C;
+  --bg2: #102036;
+  --surface: rgba(13, 24, 40, 0.78);
+  --ink: #F0F6FC;
+  --mute: #8DA2BD;
+  --acc: #35D0E6;
+  --acc2: #8B7CF6;
+  --line: rgba(53, 208, 230, 0.22);
+  --code: rgba(5, 10, 18, 0.85);
+  --ok: #3EE09A;
+  --bad: #FF6B81;
+}
+
+[data-theme=light] {
+  --bg: #F4F7FB;
+  --bg2: #E2ECF7;
+  --surface: rgba(255, 255, 255, 0.88);
+  --ink: #0B1523;
+  --mute: #526680;
+  --acc: #087EA4;
+  --acc2: #5E4AE3;
+  --line: rgba(8, 126, 164, 0.22);
+  --code: rgba(255, 255, 255, 0.94);
+  --ok: #0F8A56;
+  --bad: #D1344B;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  background: #060A10;
+  color: #DBE6F3;
+  font: 15px/1.5 "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+
+/* شريط الأدوات العلوي */
+.top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 24px;
+  border-bottom: 1px solid #1A2636;
+  position: sticky;
+  top: 0;
+  background: rgba(6, 10, 16, 0.92);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+
+.top h1 {
+  font-size: 18px;
+  margin: 0 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
+}
+
+.top h1 span {
+  font-size: 11px;
+  background: rgba(53, 208, 230, 0.15);
+  color: #35D0E6;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+button, select, input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button, select {
+  background: #121D2B;
+  border: 1px solid #26364B;
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover, select:hover {
+  border-color: #35D0E6;
+  background: #172536;
+}
+
+button.pr {
+  background: linear-gradient(135deg, #35D0E6, #28B4C8);
+  color: #051019;
+  border-color: transparent;
+  font-weight: 700;
+}
+
+button.pr:hover {
+  filter: brightness(1.08);
+}
+
+button.danger:hover {
+  border-color: #FF6B81;
+  color: #FF6B81;
+}
+
+/* تخطيط مساحة العمل */
+.wrap {
+  display: grid;
+  grid-template-columns: 1fr 370px;
+  gap: 24px;
+  padding: 24px;
+}
+
+#strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  align-content: flex-start;
+  justify-content: center;
+}
+
+.frame {
+  width: calc(1080px * var(--s));
+  height: calc(var(--h) * var(--s));
+  cursor: pointer;
+  border-radius: 10px;
+  outline: 3px solid transparent;
+  outline-offset: 5px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  transition: outline-color 0.2s, transform 0.2s;
+}
+
+.frame:hover {
+  transform: translateY(-2px);
+}
+
+.frame.sel {
+  outline-color: #35D0E6;
+}
+
+/* لوحة التحكم الجانبية */
+.ui {
+  position: sticky;
+  top: 72px;
+  align-self: start;
+  background: #0C131E;
+  border: 1px solid #1A2636;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: calc(100vh - 94px);
+  overflow: auto;
+}
+
+.ui label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  color: #8DA2BD;
+}
+
+.ui input[type=text], .ui textarea, .ui select {
+  background: #070C14;
+  border: 1px solid #243347;
+  border-radius: 9px;
+  padding: 9px 12px;
+  color: #EAF2FB;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.ui input[type=text]:focus, .ui textarea:focus, .ui select:focus {
+  outline: none;
+  border-color: #35D0E6;
+}
+
+.ui textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.ui h3 {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #35D0E6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hint {
+  font-size: 11px;
+  color: #6B809B;
+  margin-top: -4px;
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.row > * {
+  flex: 1;
+}
+
+/* تصميم السلايد الأساسي (1080px) */
+.slide {
+  width: 1080px;
+  position: relative;
+  overflow: hidden;
+  transform: scale(var(--s));
+  transform-origin: top left;
+  background: radial-gradient(circle at 85% 15%, var(--bg2) 0%, var(--bg) 65%);
+  color: var(--ink);
+  direction: rtl;
+  text-align: right;
+  font-family: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+
+/* إضاءات خلفية جمالية */
+.glow-1 {
+  position: absolute;
+  top: -180px;
+  left: -180px;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: var(--acc);
+  opacity: 0.08;
+  filter: blur(110px);
+  pointer-events: none;
+}
+
+.glow-2 {
+  position: absolute;
+  bottom: -200px;
+  right: -150px;
+  width: 580px;
+  height: 580px;
+  border-radius: 50%;
+  background: var(--acc2);
+  opacity: 0.09;
+  filter: blur(110px);
+  pointer-events: none;
+}
+
+.net {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.75;
+}
+
+/* الهيدر العلوي المدمج (الصورة + الاسم + ترقيم الصفحات) */
+.hdr {
+  position: absolute;
+  top: 56px;
+  right: 84px;
+  left: 84px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--line);
+  z-index: 2;
+}
+
+.av {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--acc), var(--acc2)) center/cover;
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--acc);
+  display: grid;
+  place-items: center;
+  font: 700 30px "JetBrains Mono", monospace;
+  color: var(--bg);
+}
+
+.av.big {
+  width: 190px;
+  height: 190px;
+  font-size: 84px;
+  align-self: center;
+  box-shadow: 0 0 0 6px var(--bg), 0 0 0 11px var(--acc), 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.nm {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.nm b {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.nm i {
+  font: 500 23px "JetBrains Mono", monospace;
+  color: var(--acc);
+  font-style: normal;
+  direction: ltr;
+  text-align: right;
+}
+
+/* شارة ترقيم الصفحات 1/6 */
+.pg-badge {
+  margin-right: auto;
+  font: 700 26px "JetBrains Mono", monospace;
+  color: var(--acc);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  padding: 8px 22px;
+  border-radius: 99px;
+  direction: ltr;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* محتوى السلايد */
+.bd {
+  position: absolute;
+  inset: 195px 84px 115px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 36px;
+  z-index: 2;
+}
+
+.slide h1 {
+  font-size: 102px;
+  line-height: 1.28;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.slide h2 {
+  font-size: 72px;
+  line-height: 1.32;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.slide p {
+  font-size: 42px;
+  line-height: 1.72;
+  margin: 0;
+}
+
+.hl {
+  color: var(--acc);
+  font-weight: 700;
+}
+
+.sub {
+  color: var(--mute);
+  font-size: 44px;
+}
+
+.tag {
+  align-self: flex-start;
+  font-size: 30px;
+  padding: 8px 26px;
+  border-radius: 99px;
+  background: rgba(53, 208, 230, 0.1);
+  border: 2px solid var(--acc);
+  color: var(--acc);
+  font-weight: 600;
+}
+
+code, pre {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  direction: ltr;
+  text-align: left;
+}
+
+.rule {
+  align-self: flex-start;
+  font-size: 34px;
+  color: var(--acc);
+  background: var(--code);
+  padding: 20px 32px;
+  border-radius: 20px;
+  border: 2px solid var(--line);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* القوائم النقطية */
+.slide ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slide li {
+  position: relative;
+  font-size: 42px;
+  line-height: 1.6;
+  padding: 0 62px 34px 0;
+}
+
+.slide li::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--acc);
+  box-shadow: 0 0 0 8px var(--line);
+}
+
+.slide li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 46px;
+  bottom: -6px;
+  width: 3px;
+  background: var(--line);
+}
+
+/* بطاقات الشرط والمقارنة */
+.rc {
+  position: relative;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 28px;
+  padding: 36px 42px;
+  font-size: 40px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+}
+
+.ch {
+  font: 700 28px "JetBrains Mono", monospace;
+  background: var(--acc);
+  color: var(--bg);
+  padding: 4px 22px;
+  border-radius: 99px;
+  direction: ltr;
+}
+
+.r2 .ch {
+  background: var(--acc2);
+}
+
+.r2 {
+  border-color: rgba(139, 124, 246, 0.45);
+}
+
+.rc.bad {
+  border-color: rgba(255, 107, 129, 0.45);
+}
+
+.bad .ch {
+  background: var(--bad);
+}
+
+.rc.ok {
+  border-color: rgba(62, 224, 154, 0.45);
+}
+
+.ok .ch {
+  background: var(--ok);
+}
+
+.cn {
+  display: block;
+  width: 4px;
+  height: 64px;
+  margin: -14px 64px;
+  background: linear-gradient(var(--acc), var(--acc2));
+  position: relative;
+}
+
+.cn::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  right: -9px;
+  border: 11px solid transparent;
+  border-top: 16px solid var(--acc2);
+  border-bottom: 0;
+}
+
+.nt {
+  color: var(--mute);
+  font-size: 36px;
+}
+
+/* صندوق الكود */
+.cd-wrap {
+  background: var(--code);
+  border: 2px solid var(--line);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.cd-bar {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--line);
+  direction: ltr;
+}
+
+.cd-bar span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--mute);
+  opacity: 0.45;
+}
+
+.cd-bar span:nth-child(1) { background: #FF5F56; opacity: 0.85; }
+.cd-bar span:nth-child(2) { background: #FFBD2E; opacity: 0.85; }
+.cd-bar span:nth-child(3) { background: #27C93F; opacity: 0.85; }
+
+.cd {
+  padding: 34px 40px;
+  font-size: 33px;
+  line-height: 1.7;
+  margin: 0;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+
+/* شريط التقدم السفلي وتلميح السحب */
+.ftr {
+  position: absolute;
+  bottom: 42px;
+  right: 84px;
+  left: 84px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  z-index: 2;
+}
+
+.prog-track {
+  flex: 1;
+  height: 8px;
+  background: var(--line);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--acc2), var(--acc));
+  border-radius: 99px;
+}
+
+.swipe-hint {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--acc);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* سلايد الختام CTA */
+.cta .bd {
+  inset: 160px 84px 115px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.ac {
+  color: var(--bg);
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  padding: 18px 48px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 38px;
+  margin-top: 10px;
+  box-shadow: 0 12px 30px rgba(53, 208, 230, 0.25);
+}
+
+@media(max-width: 960px) {
+  .wrap { grid-template-columns: 1fr; }
+  .ui { position: static; max-height: none; }
+}
+
+@media print {
+  .top, .ui { display: none !important; }
+  :root { --s: 1 !important; }
+  body { background: none; }
+  .wrap { display: block; padding: 0; }
+  #strip { display: block; }
+  .frame {
+    break-after: page;
+    outline: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden;
+  }
+}
+</style>
+<style id="pg"></style>
+</head>
+<body>
+<div class="top">
+  <h1>Mina Brand Kit <span>PRO</span></h1>
+  <button id="th">☀︎ / ☾ الثيم</button>
+  <select id="sz">
+    <option value="1350">Instagram / LinkedIn 4:5</option>
+    <option value="1080">مربع 1:1</option>
+  </select>
+  <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#8DA2BD">
+    تكبير <input type="range" id="zm" min="25" max="60" value="40">
+  </label>
+  <button id="rst" class="danger" title="إعادة البيانات الافتراضية">إعادة ضبط</button>
+  <button id="pdf">PDF لـ LinkedIn</button>
+  <button id="png" class="pr">PNG لـ Instagram</button>
+</div>
+
+<div class="wrap">
+  <div id="strip"></div>
+  <aside class="ui">
+    <h3>هويتك الشخصية</h3>
+    <div class="row">
+      <label>الاسم<input type="text" id="nm"></label>
+      <label>الـ Handle<input type="text" id="hd"></label>
+    </div>
+    <label>صورتك الشخصية (تُحفظ تلقائياً)
+      <input type="file" id="ph" accept="image/*">
+    </label>
+
+    <hr style="border:0;border-top:1px solid #1A2636;margin:4px 0">
+
+    <h3>تعديل السلايد <span id="sel-num" style="font-family:'JetBrains Mono',monospace;font-size:12px">1/6</span></h3>
+    <select id="ty"></select>
+    <span class="hint">تلميح: ضع أي كلمة بين نجمتين *هكذا* لتمييزها بلون الهوية.</span>
+    <div id="fm" class="ui-f" style="display:flex;flex-direction:column;gap:10px"></div>
+
+    <div class="row" style="margin-top:6px">
+      <button id="add" class="pr">+ سلايد</button>
+      <button id="dup">نسخ</button>
+      <button id="up" title="تحريك لأعلى">↑</button>
+      <button id="dn" title="تحريك لأسفل">↓</button>
+      <button id="del" class="danger">حذف</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// تحويل النصوص مع دعم تمييز الكلمات بين * * وتسطير الأسطر
+const fmt = t => esc(t).replace(/\*([^*]+)\*/g, '<span class="hl">$1</span>').replace(/\n/g, '<br>');
+const pad = n => String(n).padStart(2, '0');
+
+const T = {
+  cover: {
+    n: 'غلاف (Cover)',
+    f: [
+      ['tag', 'التصنيف', 1],
+      ['title', 'العنوان الرئيسي', 3],
+      ['sub', 'سطر توضيحي', 2],
+      ['rule', 'سطر كود (اختياري)', 1]
+    ]
+  },
+  explain: {
+    n: 'شرح / نقاط',
+    f: [
+      ['title', 'العنوان', 2],
+      ['body', 'النص (سطر = فقرة، "- " أول السطر = نقطة)', 7]
+    ]
+  },
+  rule: {
+    n: 'قاعدة IF / THEN',
+    f: [
+      ['title', 'العنوان', 2],
+      ['cond', 'الشرط (if)', 3],
+      ['res', 'النتيجة (then)', 3],
+      ['note', 'ملاحظة (اختياري)', 2]
+    ]
+  },
+  code: {
+    n: 'كود برمجي',
+    f: [
+      ['title', 'العنوان', 2],
+      ['code', 'الكود', 8],
+      ['note', 'ملاحظة (اختياري)', 2]
+    ]
+  },
+  compare: {
+    n: 'مقارنة (قبل / بعد)',
+    f: [
+      ['title', 'العنوان', 2],
+      ['l1', 'عنوان الأول', 1],
+      ['t1', 'نص الأول', 3],
+      ['l2', 'عنوان التاني', 1],
+      ['t2', 'نص التاني', 3]
+    ]
+  },
+  cta: {
+    n: 'ختام + CTA',
+    f: [
+      ['title', 'العنوان', 2],
+      ['body', 'النص', 2],
+      ['act', 'الدعوة للتصرف (زر)', 1]
+    ]
+  }
+};
+
+const DEFAULT_STATE = {
+  name: 'Mina Hawarei',
+  handle: '@minahawarei',
+  theme: 'dark',
+  size: 1350,
+  sel: 0,
+  av: '',
+  slides: [
+    {
+      type: 'cover',
+      tag: 'تجربة من الشغل',
+      title: 'ليه *Rule Engine* أحسن من ألف IF؟',
+      sub: 'اللي اتعلمته وأنا ببني نظام لشبكات الألياف لوحدي',
+      rule: 'if (rules.grow) → engine.wins'
+    },
+    {
+      type: 'explain',
+      title: 'المشكلة',
+      body: 'أي نظام بيكبر بتزيد فيه الشروط.\n- شرط هنا وشرط هناك\n- كل تعديل بيكسر حاجة\n- محدش فاكر ليه الشرط ده موجود'
+    },
+    {
+      type: 'rule',
+      title: 'الفكرة ببساطة',
+      cond: 'التذكرة فاتح لها أكتر من *48 ساعة*',
+      res: 'تتصعّد تلقائي للمستوى التاني',
+      note: 'القاعدة بتتكتب مرة وتتعدل من مكان واحد.'
+    },
+    {
+      type: 'code',
+      title: 'القاعدة في صورة كود',
+      code: 'rule("escalate-old-tickets") {\n  when: ticket.age > 48h\n  then: escalate("L2")\n}',
+      note: 'مقروءة حتى لغير المبرمج.'
+    },
+    {
+      type: 'compare',
+      title: 'قبل وبعد',
+      l1: 'قبل',
+      t1: 'شروط مبعثرة في الكود وصعبة الصيانة',
+      l2: 'بعد',
+      t2: 'قواعد واضحة ومستقلة في مكان واحد'
+    },
+    {
+      type: 'cta',
+      title: 'عجبك الشرح؟',
+      body: 'احفظ البوست علشان ترجعله وقت الحاجة.',
+      act: 'اعمل Follow للمزيد'
+    }
+  ]
+};
+
+// تحميل الحالة المحفوظة أو استخدام الافتراضية
+let S;
+try {
+  const saved = localStorage.getItem('mina_brand_kit_v2');
+  S = saved ? { ...DEFAULT_STATE, ...JSON.parse(saved) } : JSON.parse(JSON.stringify(DEFAULT_STATE));
+} catch (e) {
+  S = JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('mina_brand_kit_v2', JSON.stringify(S));
+  } catch (e) {
+    // في حال تجاوز حجم الصورة مساحة التخزين
+  }
+}
+
+function mul(a) {
+  return () => {
+    a |= 0;
+    a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function graph(N, H) {
+  const R = mul(7), W = N * 1080, P = [], E = [], seen = {};
+  for (let k = 0; k < N * 8; k++) P.push([R() * W, R() * H]);
+  P.forEach((p, i) => {
+    P.map((q, j) => [j, Math.hypot(p[0] - q[0], p[1] - q[1])])
+      .filter(d => d[0] != i && d[1] < 560)
+      .sort((a, b) => a[1] - b[1])
+      .slice(0, 2)
+      .forEach(d => {
+        const key = [i, d[0]].sort().join('-');
+        if (!seen[key]) {
+          seen[key] = 1;
+          E.push([p, P[d[0]]]);
+        }
+      });
+  });
+  return { P, E };
+}
+
+function net(g, i, H) {
+  const a = i * 1080 - 40, b = i * 1080 + 1120, inn = p => p[0] > a && p[0] < b;
+  let s = `<svg class="net" viewBox="${i * 1080} 0 1080 ${H}">`;
+  g.E.forEach(e => {
+    if (inn(e[0]) || inn(e[1])) {
+      s += `<line x1="${e[0][0] | 0}" y1="${e[0][1] | 0}" x2="${e[1][0] | 0}" y2="${e[1][1] | 0}" stroke="var(--line)" stroke-width="2.5"/>`;
+    }
+  });
+  g.P.forEach((p, k) => {
+    if (inn(p)) {
+      s += k % 5
+        ? `<circle cx="${p[0] | 0}" cy="${p[1] | 0}" r="6" fill="var(--acc)" opacity=".45"/>`
+        : `<circle cx="${p[0] | 0}" cy="${p[1] | 0}" r="16" fill="none" stroke="var(--acc2)" stroke-width="3" opacity=".65"/><circle cx="${p[0] | 0}" cy="${p[1] | 0}" r="7" fill="var(--acc2)"/>`;
+    }
+  });
+  return s + '</svg>';
+}
+
+function lines(t) {
+  let o = '', ul = '';
+  String(t || '').split('\n').forEach(l => {
+    if (/^- /.test(l)) {
+      ul += `<li>${fmt(l.slice(2))}</li>`;
+    } else {
+      if (ul) {
+        o += `<ul>${ul}</ul>`;
+        ul = '';
+      }
+      if (l.trim()) o += `<p>${fmt(l)}</p>`;
+    }
+  });
+  return o + (ul ? `<ul>${ul}</ul>` : '');
+}
+
+function body(s) {
+  const note = s.note ? `<p class="nt">${fmt(s.note)}</p>` : '';
+  const initial = esc((S.name || 'M').trim().charAt(0).toUpperCase());
+  switch (s.type) {
+    case 'cover':
+      return `${s.tag ? `<div class="tag">${fmt(s.tag)}</div>` : ''}<h1>${fmt(s.title)}</h1><p class="sub">${fmt(s.sub)}</p>${s.rule ? `<code class="rule">${esc(s.rule)}</code>` : ''}`;
+    case 'explain':
+      return `<h2>${fmt(s.title)}</h2>${lines(s.body)}`;
+    case 'rule':
+      return `<h2>${fmt(s.title)}</h2><div><div class="rc"><b class="ch">if</b>${fmt(s.cond)}</div><i class="cn"></i><div class="rc r2"><b class="ch">then</b>${fmt(s.res)}</div></div>${note}`;
+    case 'code':
+      return `<h2>${fmt(s.title)}</h2><div class="cd-wrap"><div class="cd-bar"><span></span><span></span><span></span></div><pre class="cd" dir="ltr">${esc(s.code)}</pre></div>${note}`;
+    case 'compare':
+      return `<h2>${fmt(s.title)}</h2><div class="rc bad"><b class="ch">${esc(s.l1)}</b>${fmt(s.t1)}</div><div class="rc ok"><b class="ch">${esc(s.l2)}</b>${fmt(s.t2)}</div>`;
+    case 'cta':
+      return `<span class="av big">${initial}</span><h2>${fmt(s.title)}</h2><p class="sub">${fmt(s.body)}</p><div class="ac">${fmt(s.act)}</div><div class="nm" style="align-items:center;margin-top:8px"><b>${esc(S.name)}</b><i>${esc(S.handle)}</i></div>`;
+  }
+  return '';
+}
+
+function render() {
+  const N = S.slides.length, H = S.size, g = graph(N, H), r = document.documentElement;
+  const initial = esc((S.name || 'M').trim().charAt(0).toUpperCase());
+  r.dataset.theme = S.theme;
+  r.style.setProperty('--h', H + 'px');
+  $('#pg').textContent = `@page{size:1080px ${H}px;margin:0}.slide{height:${H}px}`;
+  $('#sel-num').textContent = `${S.sel + 1}/${N}`;
+
+  $('#strip').innerHTML = S.slides.map((s, i) => {
+    const progress = Math.round(((i + 1) / N) * 100);
+    // الهيدر العلوي المدمج مع ترقيم الصفحات 1/6
+    const headerHtml = `
+      <div class="hdr">
+        ${s.type === 'cta' ? '' : `<span class="av">${initial}</span><div class="nm"><b>${esc(S.name)}</b><i>${esc(S.handle)}</i></div>`}
+        <span class="pg-badge">${i + 1}/${N}</span>
+      </div>`;
+
+    // شريط التقدم السفلي + تلميح السحب في أول سلايد
+    const footerHtml = `
+      <div class="ftr">
+        <div class="prog-track"><div class="prog-fill" style="width:${progress}%"></div></div>
+        ${i === 0 && N > 1 ? `<span class="swipe-hint">اسحب للمزيد ←</span>` : ''}
+      </div>`;
+
+    return `
+      <div class="frame${i == S.sel ? ' sel' : ''}" data-i="${i}">
+        <div class="slide ${s.type}">
+          <div class="glow-1"></div>
+          <div class="glow-2"></div>
+          ${net(g, i, H)}
+          ${headerHtml}
+          <div class="bd">${body(s)}</div>
+          ${footerHtml}
+        </div>
+      </div>`;
+  }).join('');
+
+  document.querySelectorAll('.av').forEach(a => {
+    if (S.av) {
+      a.style.backgroundImage = `url("${S.av}")`;
+      a.textContent = '';
+    }
+  });
+
+  saveState();
+}
+
+function form() {
+  const s = S.slides[S.sel];
+  $('#ty').innerHTML = Object.keys(T).map(k => `<option value="${k}"${k == s.type ? ' selected' : ''}>${T[k].n}</option>`).join('');
+  $('#fm').innerHTML = T[s.type].f.map(([k, l, r]) => `<label>${l}<textarea data-k="${k}" rows="${r}">${esc(s[k])}</textarea></label>`).join('');
+}
+
+function all() {
+  render();
+  form();
+}
+
+$('#fm').addEventListener('input', e => {
+  const k = e.target.dataset.k;
+  if (k) {
+    S.slides[S.sel][k] = e.target.value;
+    render();
+  }
+});
+
+$('#ty').onchange = e => {
+  S.slides[S.sel].type = e.target.value;
+  all();
+};
+
+$('#strip').onclick = e => {
+  const f = e.target.closest('.frame');
+  if (f) {
+    S.sel = +f.dataset.i;
+    all();
+  }
+};
+
+$('#nm').oninput = e => { S.name = e.target.value; render(); };
+$('#hd').oninput = e => { S.handle = e.target.value; render(); };
+
+$('#ph').onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    S.av = r.result;
+    render();
+  };
+  r.readAsDataURL(f);
+};
+
+$('#th').onclick = () => { S.theme = S.theme == 'dark' ? 'light' : 'dark'; render(); };
+$('#sz').onchange = e => { S.size = +e.target.value; render(); };
+$('#zm').oninput = e => { document.documentElement.style.setProperty('--s', e.target.value / 100); };
+
+$('#rst').onclick = () => {
+  if (confirm('هل تريد استعادة النصوص والإعدادات الافتراضية؟')) {
+    localStorage.removeItem('mina_brand_kit_v2');
+    S = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    $('#nm').value = S.name;
+    $('#hd').value = S.handle;
+    $('#sz').value = S.size;
+    all();
+  }
+};
+
+$('#add').onclick = () => {
+  S.slides.splice(S.sel + 1, 0, { type: 'explain', title: 'عنوان جديد', body: '- نقطة أولى\n- نقطة تانية' });
+  S.sel++;
+  all();
+};
+
+$('#dup').onclick = () => {
+  S.slides.splice(S.sel + 1, 0, { ...S.slides[S.sel] });
+  S.sel++;
+  all();
+};
+
+$('#del').onclick = () => {
+  if (S.slides.length > 1) {
+    S.slides.splice(S.sel, 1);
+    S.sel = Math.max(0, S.sel - 1);
+    all();
+  }
+};
+
+const mv = d => {
+  const j = S.sel + d;
+  if (j < 0 || j >= S.slides.length) return;
+  [S.slides[S.sel], S.slides[j]] = [S.slides[j], S.slides[S.sel]];
+  S.sel = j;
+  all();
+};
+
+$('#up').onclick = () => mv(-1);
+$('#dn').onclick = () => mv(1);
+$('#pdf').onclick = () => window.print();
+
+$('#png').onclick = async () => {
+  const b = $('#png');
+  b.disabled = true;
+  const els = [...document.querySelectorAll('.slide')];
+  for (let i = 0; i < els.length; i++) {
+    b.textContent = `جاري التصدير ${i + 1}/${els.length}`;
+    const c = els[i].cloneNode(true);
+    c.style.cssText = 'transform:none;position:fixed;left:-9999px;top:0;width:1080px';
+    document.body.appendChild(c);
+    try {
+      const cv = await html2canvas(c, { scale: 1.5, width: 1080, height: S.size, backgroundColor: null });
+      const a = document.createElement('a');
+      a.download = `slide-${pad(i + 1)}-of-${pad(els.length)}.png`;
+      a.href = cv.toDataURL('image/png');
+      a.click();
+    } catch (err) {
+      alert('تعذر التصدير: ' + err.message);
+    }
+    c.remove();
+    await new Promise(r => setTimeout(r, 350));
+  }
+  b.textContent = 'PNG لـ Instagram';
+  b.disabled = false;
+};
+
+$('#nm').value = S.name;
+$('#hd').value = S.handle;
+$('#sz').value = S.size;
+all();
+</script>
+</body>
+</html>
