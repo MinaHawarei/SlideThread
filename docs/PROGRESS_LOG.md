@@ -536,6 +536,14 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P4-3 (Paste-to-slides: parser per Spec §8.3, dialog with preview list, append/replace).
 - Needs from the owner: None.
 
+### P4-3 — done — 2026-11-22 22:25 — Antigravity
+- Branch / commit: feature/p4-3 / d84a54b
+- What changed (files): `src/core/paste.ts`, `src/ui/editor/PasteSlidesDialog.tsx`, `src/ui/editor/SlideRail.tsx`, `src/ui/editor/MobileThumbnailStrip.tsx`, `src/ui/editor/index.ts`, `src/store/projectStore.ts`, `tests/unit/paste.test.ts`, `tests/unit/pasteDialog.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented pure client-side heuristic parser (`parsePastedText`) splitting on explicit `---` or double blank lines per Spec §8.3; accurately detects code snippets (with fences and lang), quotes (with `>` and attribution), statistics (numeric metric + label + note), comparisons (Bad vs OK / Don't vs Do), rules (IF / THEN), closing CTAs, cover slides, and explain bullets; built accessible `PasteSlidesDialog` modal with live reactive candidate preview, individual slide type override dropdowns, mode selection ("Append to Existing Slides" vs "Replace All Slides"), and integrated dialog trigger buttons in both desktop `SlideRail` and mobile `MobileThumbnailStrip`; added `appendSlides` and `replaceSlides` actions to `useProjectStore`.
+- Tests run and result: Vitest 316 passed across 37 test files (including 11 parser unit tests and 7 dialog UI tests), Playwright 9 passed (28.2s), ESLint 0 errors 0 warnings, typecheck clean, production build clean.
+- Remaining / next step: Merge to main, proceed to P4-4 (Export dialog and pipeline: candidate library, PNG, ZIP, PDF, Web Share API).
+- Needs from the owner: None.
+
 
 
 
