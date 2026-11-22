@@ -9,15 +9,16 @@ export const boldTemplate: TemplateDef = {
     mono: 'JetBrains Mono, monospace',
   },
   typeScale: {
-    h1: 128,
-    h2: 84,
-    body: 48,
-    small: 32,
-    mono: 36,
+    h1: 124,
+    h2: 80,
+    body: 44,
+    small: 30,
+    mono: 34,
   },
   radius: {
     card: 0,
-    chip: 4,
+    chip: 0,
   },
   Background: () => null,
 };
+

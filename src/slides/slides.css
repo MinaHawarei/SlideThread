@@ -897,3 +897,268 @@
   border: 1px solid rgba(128, 128, 128, 0.14);
 }
 
+/* ==========================================================================
+   Bold Template (Spec §7.1): Large type, color blocks, thick borders, high contrast
+   ========================================================================== */
+
+.template-bold.slide-canvas {
+  background: var(--bg);
+}
+
+.template-bold .slide-content-area {
+  padding-inline: 72px;
+  padding-block: 72px 24px;
+}
+
+.template-bold.aspect-landscape .slide-content-area {
+  padding-inline: 80px;
+  padding-block: 54px 16px;
+}
+
+.template-bold.aspect-tall .slide-content-area {
+  padding-inline: 64px;
+  padding-block: 268px 32px;
+}
+
+/* Large, high-impact typography */
+.template-bold .slide-title-h1 {
+  font-size: 104px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.template-bold.aspect-landscape .slide-title-h1 {
+  font-size: 88px;
+}
+
+.template-bold.aspect-tall .slide-title-h1 {
+  font-size: 92px;
+}
+
+.template-bold .slide-title-h2 {
+  font-size: 68px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.template-bold .slide-sub {
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+/* Thick Borders & Neo-Brutalist Sharp Geometry */
+.template-bold .slide-card,
+.template-bold .rule-card {
+  border: 3.5px solid var(--ink);
+  border-radius: var(--card-radius, 0px);
+  background: var(--card);
+  box-shadow: 6px 6px 0px var(--acc);
+}
+
+/* Color Blocks & Badges */
+.template-bold .slide-tag {
+  background: var(--acc);
+  color: var(--on-acc);
+  border: 3px solid var(--ink);
+  border-radius: var(--chip-radius, 0px);
+  font-weight: 800;
+  font-size: 26px;
+  text-transform: uppercase;
+  padding-inline: 18px;
+  padding-block: 6px;
+  box-shadow: 4px 4px 0px var(--ink);
+}
+
+.template-bold .rule-badge {
+  background: var(--acc);
+  color: var(--on-acc);
+  border: 2px solid var(--ink);
+  border-radius: var(--chip-radius, 0px);
+  font-weight: 800;
+  padding-inline: 14px;
+  padding-block: 4px;
+}
+
+.template-bold .slide-mono-line {
+  background: var(--bg2);
+  color: var(--ink);
+  border: 3px solid var(--acc);
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--acc);
+  font-weight: 600;
+}
+
+/* Explain Slide */
+.template-bold .explain-bullet-node {
+  width: 18px;
+  height: 18px;
+  border-radius: 0;
+  background: var(--acc);
+  border: 2.5px solid var(--ink);
+  box-shadow: 2px 2px 0px var(--ink);
+  margin-block-start: 16px;
+}
+
+.template-bold .explain-number-node {
+  border-radius: 0;
+  background: var(--acc);
+  color: var(--on-acc);
+  border: 2.5px solid var(--ink);
+  box-shadow: 3px 3px 0px var(--ink);
+  font-weight: 800;
+  font-size: 26px;
+}
+
+.template-bold .explain-paragraph {
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+/* Rule Slide */
+.template-bold .rule-card-text {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.template-bold .rule-connector-h,
+.template-bold .rule-connector-v {
+  font-size: 52px;
+  font-weight: 900;
+  color: var(--acc);
+}
+
+/* Compare Slide */
+.template-bold .compare-card-bad {
+  border: 3.5px solid var(--bad);
+  border-radius: 0;
+  background: var(--card);
+  box-shadow: 6px 6px 0px var(--bad);
+}
+
+.template-bold .compare-card-ok {
+  border: 3.5px solid var(--ok);
+  border-radius: 0;
+  background: var(--card);
+  box-shadow: 6px 6px 0px var(--ok);
+}
+
+.template-bold .compare-badge-bad,
+.template-bold .compare-badge-ok {
+  font-size: 30px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.template-bold .compare-text {
+  font-size: 36px;
+  font-weight: 600;
+}
+
+/* Code Slide */
+.template-bold .code-container {
+  border: 3.5px solid var(--acc);
+  border-radius: 0;
+  background: #000000;
+  box-shadow: 6px 6px 0px var(--acc);
+  font-weight: 500;
+}
+
+/* Stat Slide */
+.template-bold .stat-big-value {
+  font-size: 160px;
+  font-weight: 900;
+  line-height: 0.95;
+  color: var(--acc);
+  text-shadow: 4px 4px 0px var(--ink);
+}
+
+.template-bold .stat-label {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* Quote Slide */
+.template-bold .quote-mark {
+  font-size: 110px;
+  font-weight: 900;
+  color: var(--acc);
+  line-height: 0.8;
+  opacity: 1;
+}
+
+.template-bold .quote-text {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.35;
+  font-style: normal;
+}
+
+.template-bold .quote-author {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--acc);
+  text-transform: uppercase;
+}
+
+/* CTA Slide */
+.template-bold .cta-avatar-ring {
+  border-radius: 0;
+  border: 4px solid var(--ink);
+  box-shadow: 4px 4px 0px var(--acc);
+}
+
+.template-bold .cta-avatar-placeholder {
+  border-radius: 0;
+  background: var(--acc);
+  color: var(--on-acc);
+  font-weight: 800;
+}
+
+.template-bold .cta-action-button {
+  border-radius: 0;
+  border: 3.5px solid var(--ink);
+  background: var(--acc);
+  color: var(--on-acc);
+  font-weight: 800;
+  box-shadow: 6px 6px 0px var(--ink);
+  text-transform: uppercase;
+}
+
+/* Signature Bar */
+.template-bold .sig-avatar-ring {
+  border-radius: 0;
+  border: 3px solid var(--ink);
+  box-shadow: 2px 2px 0px var(--acc);
+}
+
+.template-bold .sig-avatar-placeholder {
+  border-radius: 0;
+  background: var(--acc);
+  color: var(--on-acc);
+  font-weight: 800;
+}
+
+.template-bold .sig-display-name {
+  font-weight: 800;
+}
+
+.template-bold .sig-counter-badge {
+  border-radius: 0;
+  border: 2.5px solid var(--ink);
+  background: var(--acc);
+  color: var(--on-acc);
+  font-weight: 800;
+  box-shadow: 3px 3px 0px var(--ink);
+}
+
+.template-bold .sig-social-more {
+  border-radius: 0;
+  border: 2px solid var(--ink);
+  font-weight: 800;
+}
+
+
