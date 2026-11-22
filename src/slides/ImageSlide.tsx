@@ -1,18 +1,19 @@
 import React from 'react';
 import type { SlideProps } from './types';
+import { MediaRenderer } from './MediaRenderer';
 
 export const ImageSlide: React.FC<SlideProps> = ({ slide, textDir }) => {
   const { caption, imageUrl } = slide.fields;
+  const { media } = slide;
   const effectiveDir = textDir && textDir !== 'auto' ? textDir : 'auto';
 
-  // Use either imageUrl in fields or fallback SVG gradient pattern
-  const hasImage = Boolean(imageUrl);
+  const hasImage = Boolean(media?.assetId || imageUrl);
 
   return (
     <div className="slide-content-area" style={{ padding: 0 }}>
       <div className="image-fullbleed-wrapper">
         {hasImage ? (
-          <img src={imageUrl} alt={caption || 'Slide image'} className="image-fullbleed-img" />
+          <MediaRenderer media={media} imageUrl={imageUrl} className="image-fullbleed-img" />
         ) : (
           <div
             style={{

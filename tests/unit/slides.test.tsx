@@ -162,4 +162,52 @@ describe('Slide Components (Spec §5.2, §6)', () => {
       expect(screen.getByText('Launch SlideThread →')).toBeTruthy();
     });
   });
+
+  describe('Media Placements (Spec §6.1)', () => {
+    it('renders background placement overlay behind content', () => {
+      const slideWithBg = {
+        ...SAMPLE_SLIDES.cover_en!,
+        media: {
+          assetId: 'ast_test_bg',
+          fit: 'cover' as const,
+          placement: 'background' as const,
+          focal: { x: 0.3, y: 0.7 },
+        },
+      };
+
+      const { container } = render(
+        <SlideRenderer
+          slide={slideWithBg}
+          palette={NETWORK_DARK_PALETTE}
+          aspectClass="portrait"
+        />
+      );
+
+      const bgMedia = container.querySelector('.slide-bg-media');
+      expect(bgMedia).toBeTruthy();
+    });
+
+    it('renders replace-text placement in explain slide', () => {
+      const slideWithReplace = {
+        ...SAMPLE_SLIDES.explain_en!,
+        media: {
+          assetId: 'ast_test_replace',
+          fit: 'contain' as const,
+          placement: 'replace-text' as const,
+        },
+      };
+
+      const { container } = render(
+        <SlideRenderer
+          slide={slideWithReplace}
+          palette={NETWORK_DARK_PALETTE}
+          aspectClass="square"
+        />
+      );
+
+      expect(screen.getByText('Three Pillars of Modern Frontend Architecture')).toBeTruthy();
+      // Body list should be replaced
+      expect(container.querySelector('.explain-bullet-item')).toBeFalsy();
+    });
+  });
 });

@@ -9,6 +9,7 @@ import { StatSlide } from './StatSlide';
 import { QuoteSlide } from './QuoteSlide';
 import { ImageSlide } from './ImageSlide';
 import { CtaSlide } from './CtaSlide';
+import { MediaRenderer } from './MediaRenderer';
 import './slides.css';
 
 export interface SlideRendererProps extends SlideProps {
@@ -71,6 +72,23 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
       data-slide-type={slide.type}
       data-aspect-class={aspectClass}
     >
+      {slide.media?.placement === 'background' && (
+        <div
+          className="slide-bg-media"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1,
+            opacity: 0.22,
+            overflow: 'hidden',
+            pointerEvents: 'none',
+          }}
+        >
+          <MediaRenderer media={slide.media} imageUrl={slide.fields.imageUrl} />
+        </div>
+      )}
       {renderComponent()}
     </div>
   );
