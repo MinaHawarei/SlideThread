@@ -301,3 +301,19 @@ Agent name: Antigravity
 - Tests run and result: Vitest 122 passed (19 files), Playwright 6 passed, typecheck clean, lint clean, build clean.
 - Remaining / next step: Merge to main, proceed to Gate G1 verification.
 - Needs from the owner: None.
+
+### G1 — started — 2026-11-22 20:19 — Antigravity
+- Branch / commit: feature/g1
+- What changed (files): Claimed G1 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Verify all Gate G1 checklist items (/gallery 9 slide types x 4 aspect classes dark/light LTR/RTL, Playwright snapshot committed, all unit tests green, typecheck and lint clean, Network background identical across re-renders and continuous across adjacent slides).
+- Needs from the owner: None.
+
+### G1 — done — 2026-11-22 20:21 — Antigravity
+- Branch / commit: feature/g1 / 9c156c5
+- What changed (files): `src/gallery/GalleryPage.tsx`, `tests/e2e/gallery.spec.ts`, `tests/e2e/snapshots/gallery-g1.png`, `docs/IMPLEMENTATION_PLAN.md`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: None. Verified all Gate G1 checklist items: `/gallery` shows all 9 slide types in all 4 aspect classes, dark/light themes, bilingual LTR/RTL, and story safe zones without overflow or clipped content; full-page Playwright snapshot committed to `tests/e2e/snapshots/gallery-g1.png`; all 122 unit tests green (19 files); typecheck clean; lint clean (0 errors, 0 warnings); build clean; network background determinism and cross-slide boundary continuity proved by automated unit tests. Phase 1 is fully complete.
+- Tests run and result: Vitest 122 passed (19 files), Playwright 6 passed (all E2E), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to Phase 2 (P2-1 Clean template).
+- Needs from the owner: None.
