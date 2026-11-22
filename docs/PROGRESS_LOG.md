@@ -180,3 +180,11 @@ Agent name: Antigravity
 - Tests run and result: N/A.
 - Remaining / next step: Implement format registry (src/core/formats.ts), platform registry and helpers (src/core/platforms.ts), aspectClass calculation, export recommendations, slide limit warnings, verify against official docs, and write comprehensive unit tests.
 - Needs from the owner: None.
+
+### P1-2 — done — 2026-11-22 19:35 — Antigravity
+- Branch / commit: feature/p1-2 / 81a31e1
+- What changed (files): `src/core/schema.ts`, `src/core/formats.ts`, `src/core/platforms.ts`, `tests/unit/formats.test.ts`, `docs/DECISIONS.md`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Re-verified platform dimensions, orientability, and carousel limits against current official docs (Instagram 20-slide limit, LinkedIn PDF carousel, FB multi-image) in DECISIONS.md.
+- Tests run and result: Vitest 39 passed (10 files), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P1-3 (Palette generation with culori).
+- Needs from the owner: None.
