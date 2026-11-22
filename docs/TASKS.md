@@ -55,7 +55,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ## Phase P3 — App shell, wizard, and editor
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| P3-1 | i18n: typed dictionaries en.ts/ar.ts, useT(), language switch, app-level RTL flip | G2 | [ ] | |
+| P3-1 | i18n: typed dictionaries en.ts/ar.ts, useT(), language switch, app-level RTL flip | G2 | [x] | Antigravity 2026-11-22 · feature/p3-1 · 6761c77 |
 | P3-2 | State: Zustand stores for settings, current project, recent projects list | P3-1 | [ ] | |
 | P3-3 | Start screen: guided path, direct-size path, recent projects, import project, demo projects | P3-2 | [ ] | |
 | P3-4 | Wizard: platform → content type → format (+ orientation) → template | P3-3 | [ ] | |

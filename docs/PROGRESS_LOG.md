@@ -398,6 +398,24 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to Phase 3 (P3-1 i18n).
 - Needs from the owner: None.
 
+### P3-1 — started — 2026-11-22 20:40 — Antigravity
+- Branch / commit: feature/p3-1
+- What changed (files): Claimed P3-1 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement i18n engine with typed translation keys in `src/i18n/en.ts` and `src/i18n/ar.ts`, `useT()` hook, language switcher component with app-level `dir="rtl"` / `dir="ltr"` flip and font switching, and automated test ensuring identical key sets across both dictionaries.
+- Needs from the owner: None.
+
+### P3-1 — done — 2026-11-22 20:44 — Antigravity
+- Branch / commit: feature/p3-1 / 6761c77
+- What changed (files): `src/i18n/types.ts`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `src/i18n/index.ts`, `src/ui/common/LanguageSwitcher.tsx`, `tests/unit/i18n.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented typed bilingual dictionaries (`en.ts` and `ar.ts`) with 100% identical key sets covering all app chrome, wizard steps, slide types, fields, brand controls, export dialog, and paste modal. Implemented `useT()` hook with parameter interpolation, Zustand persistence store (`slidethread:locale`), document-level `dir="rtl"` / `dir="ltr"` flip and font adaptation. Created accessible `LanguageSwitcher` component. Verified with automated test ensuring identical key sets and non-empty translations across both languages.
+- Tests run and result: Vitest 172 passed (24 files), Playwright 7 passed (all E2E), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P3-2 (State: Zustand stores for settings, current project, recent projects list).
+- Needs from the owner: None.
+
+
+
 
 
 
