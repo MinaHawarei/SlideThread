@@ -544,6 +544,14 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P4-4 (Export dialog and pipeline: candidate library, PNG, ZIP, PDF, Web Share API).
 - Needs from the owner: None.
 
+### P4-4 — done — 2026-11-22 22:30 — Antigravity
+- Branch / commit: feature/p4-4 / c53ccf7
+- What changed (files): `src/export/pipeline.ts`, `src/ui/editor/ExportDialog.tsx`, `src/ui/editor/Editor.tsx`, `src/ui/editor/index.ts`, `tests/unit/exportPipeline.test.ts`, `tests/unit/exportDialog.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented unified client-side export pipeline (`src/export/pipeline.ts`) supporting single PNG, sequential ZIP archive via JSZip (`${slug}-${nn}.png`), multi-page raster PDF via jsPDF with page size matched to slide dimensions, and Web Share API fallback; created accessible modal `ExportDialog` with full-resolution offscreen staging container (rendering each slide in sequence at 1.0 scale without altering on-screen zoom or canvas state), dynamic format switcher, range selector (all slides vs current slide), real-time progress bar with accessible ARIA attributes, and error handling; integrated dialog into `Editor` shared between Desktop and Mobile.
+- Tests run and result: Vitest 326 passed across 39 test files (including 6 pipeline unit tests and 4 dialog UI tests), Playwright 9 passed (27.5s), ESLint 0 errors 0 warnings, typecheck clean, production build clean.
+- Remaining / next step: Merge to main, proceed to P4-5 (Export fidelity tests: Playwright exports project, golden compare, PDF & ZIP assertions).
+- Needs from the owner: None.
+
 
 
 
