@@ -27,7 +27,7 @@ export interface SlideRendererProps extends SlideProps {
   style?: React.CSSProperties;
 }
 
-export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
+export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) => {
   const {
     slide,
     palette,
@@ -167,4 +167,6 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
       )}
     </div>
   );
-};
+});
+
+SlideRenderer.displayName = 'SlideRenderer';
