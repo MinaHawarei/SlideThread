@@ -60,3 +60,16 @@ Playwright mobile emulation is only a proxy; verify touch and frame pacing on a 
 6. Repeat the core drag, resize, pinch, and export steps on iPhone Safari. WebKit automation does not prove iOS Safari behavior.
 
 Track completion in D-09 in `docs/TASKS.md`.
+
+## Arabic rich-text IME and bidi check — needs manual check by owner (D-09)
+
+Run on a physical iPhone in Safari with the Arabic keyboard and a physical mid-range Android phone in Chrome with the Arabic keyboard. Use the rich-text editor in the revision build when available; until then, this item remains pending and must not be inferred from desktop automation.
+
+1. Record device model, OS version, browser version, and keyboard/input method. Start with an empty text field and type `مرحبا بالعالم` using the Arabic keyboard. Type a word at a time, accept any keyboard composition/suggestion, and confirm the text appears once with no missing or duplicated characters after each composition ends.
+2. Type a mixed-direction line: `مرحبا Slide 2 رقم 42`. Move the caret between Arabic words, the English word, and the number using taps and the arrow keys where available. Insert and delete characters at each boundary; confirm the caret remains at the intended visual position and the text order is correct.
+3. Select an Arabic word, then a selection spanning Arabic and English. Apply bold, underline, size, and color; confirm only the selected text changes and the selection does not jump to another bidi run.
+4. Copy formatted mixed Arabic/English text from another app and paste it into the editor. Confirm only plain text is inserted and that no source formatting or unsafe markup is applied. Also type Arabic directly after a formatted run and confirm the new characters render correctly.
+5. Undo and redo the typing and formatting. Confirm completed Arabic words remain intact and the editor does not commit intermediate composition text as duplicated characters.
+6. Repeat the checks after switching the project between LTR and RTL, then reload and confirm the saved rich text still renders in the correct order.
+
+Attach notes with the device/browser/keyboard and pass/fail result to the D-09 owner verification record. Do not treat Chromium desktop or WebKit automation as proof of native Arabic IME behavior.
