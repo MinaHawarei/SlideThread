@@ -334,3 +334,21 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P2-2 (Bold template).
 - Needs from the owner: None.
 
+### P2-2 — started — 2026-11-22 20:29 — Antigravity
+- Branch / commit: feature/p2-2
+- What changed (files): Claimed P2-2 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement Bold template (large punchy type scale h1: 128 / h2: 84, strong high-contrast color blocks, thick 3-4px borders, sharp geometry card radius 0 / chip radius 2, neo-brutalist / architectural presence via .template-bold), wire into SlideRenderer and slides.css, and write comprehensive unit tests.
+- Needs from the owner: None.
+
+### P2-2 — done — 2026-11-22 20:31 — Antigravity
+- Branch / commit: feature/p2-2 / f310b4e
+- What changed (files): `src/templates/bold.ts`, `src/slides/slides.css`, `tests/unit/boldTemplate.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented Bold template per Spec §7.1 (large punchy type, strong color blocks, thick borders, high contrast). Configured `typeScale` (h1: 124, h2: 80, body: 44, small: 30, mono: 34) and geometry (card: 0, chip: 0). Styled `.template-bold` in `slides.css` with 3.5px solid borders, sharp corners, neo-brutalist solid offset shadows (`box-shadow: 6px 6px 0px var(--acc)`), high-contrast uppercase color-block tags and badges, square avatar blocks, solid button with ink border, and giant stat values with ink text shadows.
+- Tests run and result: Vitest 130 passed (21 files), Playwright 6 passed (all E2E), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P2-3 (Template QA: gallery snapshots for all templates × formats × themes × RTL/LTR).
+- Needs from the owner: None.
+
+
+
