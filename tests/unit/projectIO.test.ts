@@ -14,12 +14,12 @@ import type { Project } from '../../src/core/schema';
 
 describe('Project JSON I/O (Spec §8.2 & Plan §4)', () => {
   beforeAll(() => {
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => { });
     if (typeof URL.createObjectURL !== 'function') {
       URL.createObjectURL = (blob: Blob) => `blob:mock-${blob.size}`;
     }
     if (typeof URL.revokeObjectURL !== 'function') {
-      URL.revokeObjectURL = () => {};
+      URL.revokeObjectURL = () => { };
     }
   });
 

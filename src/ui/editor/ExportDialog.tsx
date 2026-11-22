@@ -119,7 +119,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
           throw new Error('Export staging container is not available');
         }
 
-        const dataUrl = await captureSlideElement(stageEl, dims, i === 0);
+        const dataUrl = await captureSlideElement(stageEl, dims, false);
         capturedPngs.push({
           dataUrl,
           width: dims.width,
@@ -418,12 +418,13 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
         aria-hidden="true"
         style={{
           position: 'fixed',
-          left: '-99999px',
-          top: '-99999px',
+          top: 0,
+          left: 0,
           width: `${dims.width}px`,
           height: `${dims.height}px`,
           overflow: 'hidden',
           pointerEvents: 'none',
+          opacity: 0.001,
           zIndex: -9999,
         }}
       >
