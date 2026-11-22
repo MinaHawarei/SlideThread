@@ -124,3 +124,19 @@ Agent name: Antigravity
 - Tests run and result: lint clean, typecheck clean, vitest 14 passed, build clean, test:e2e 5 passed.
 - Remaining / next step: Merge to main, proceed to P0-8 (Write docs/EXPORT_SPIKE.md).
 - Needs from the owner: None.
+
+### P0-8 — started — 2026-11-22 19:21 — Antigravity
+- Branch / commit: feature/p0-8
+- What changed (files): Claimed P0-8 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Write docs/EXPORT_SPIKE.md detailing results matrix, library choice (html-to-image), workarounds, limitations, and fallback plans.
+- Needs from the owner: None.
+
+### P0-8 — done — 2026-11-22 19:23 — Antigravity
+- Branch / commit: feature/p0-8 / 90c66ed
+- What changed (files): docs/EXPORT_SPIKE.md, tests/unit/spikeDoc.test.ts
+- Decisions / deviations from the plan: Formally documented Phase 0 spike results selecting html-to-image as primary and modern-screenshot as secondary/fallback, detail workarounds (warm-up pass, font/image decode waits, sequential mobile export), and verify PDF/ZIP outputs.
+- Tests run and result: lint clean, typecheck clean, vitest 15 passed, build clean.
+- Remaining / next step: Merge to main, proceed to Gate G0 verification.
+- Needs from the owner: None.

@@ -26,7 +26,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P0-5 | Candidate libraries: capture(node, size) with html-to-image and modern-screenshot | P0-4 | [x] | Antigravity 2026-11-22 · feature/p0-5 · 4a16978 |
 | P0-6 | Evaluate on matrix: Chrome, Firefox, Safari macOS, iOS Safari, Android Chrome | P0-5 | [x] | Antigravity 2026-11-22 · feature/p0-6 · 331ad36 |
 | P0-7 | Build PDF and ZIP from captured PNGs (jsPDF, JSZip) in the spike | P0-6 | [x] | Antigravity 2026-11-22 · feature/p0-7 · 2faecda |
-| P0-8 | Write docs/EXPORT_SPIKE.md | P0-7 | [ ] | |
+| P0-8 | Write docs/EXPORT_SPIKE.md | P0-7 | [x] | Antigravity 2026-11-22 · feature/p0-8 · 90c66ed |
 | G0 | Gate G0 verification | P0-1…P0-8 | [ ] | |
 
 ## Phase P1 — Core domain and engine (no UI polish)
