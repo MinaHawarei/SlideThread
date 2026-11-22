@@ -48,7 +48,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 |---|---|---|---|---|
 | P2-1 | Clean template: minimal, whitespace-led, flat cards, single accent | G1 | [x] | Antigravity 2026-11-22 · feature/p2-1 · dc958db |
 | P2-2 | Bold template: large type, color blocks, thick borders, high contrast | G1 | [x] | Antigravity 2026-11-22 · feature/p2-2 · f310b4e |
-| P2-3 | Template QA: gallery snapshots for all templates × formats × themes × RTL/LTR | P2-1, P2-2 | [ ] | |
+| P2-3 | Template QA: gallery snapshots for all templates × formats × themes × RTL/LTR | P2-1, P2-2 | [x] | Antigravity 2026-11-22 · feature/p2-3 · 932213f |
 | P2-4 | Design review pass: compare against Spec §7.1 intent | P2-3 | [ ] | |
 | G2 | Gate G2 verification | P2-1…P2-4 | [ ] | |
 

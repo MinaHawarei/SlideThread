@@ -350,5 +350,23 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P2-3 (Template QA: gallery snapshots for all templates × formats × themes × RTL/LTR).
 - Needs from the owner: None.
 
+### P2-3 — started — 2026-11-22 20:31 — Antigravity
+- Branch / commit: feature/p2-3
+- What changed (files): Claimed P2-3 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Add template QA tests in Playwright verifying all 3 templates (network, clean, bold) x 4 aspect classes x dark/light themes x English/Arabic RTL/LTR, capture visual snapshots in tests/e2e/snapshots/, inspect and verify contrast and overflow across combinations, and resolve any issues found.
+- Needs from the owner: None.
+
+### P2-3 — done — 2026-11-22 20:34 — Antigravity
+- Branch / commit: feature/p2-3 / 932213f
+- What changed (files): `src/gallery/GalleryPage.tsx`, `tests/e2e/gallery.spec.ts`, `tests/unit/templateQA.test.tsx`, `tests/e2e/snapshots/*`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented template matrix QA in unit tests (`tests/unit/templateQA.test.tsx`, 30 tests) and Playwright E2E (`tests/e2e/gallery.spec.ts`). Validated all 3 templates (Network, Clean, Bold) across 4 aspect classes (landscape 16:9, square 1:1, portrait 4:5, tall 9:16), dark/light themes, and bilingual English LTR / Arabic RTL without text overflow or clipping. Captured visual snapshots: `gallery-tmpl-network.png`, `gallery-tmpl-clean.png`, `gallery-tmpl-bold.png`, `gallery-light-theme.png`, `gallery-arabic-rtl.png`.
+- Tests run and result: Vitest 160 passed (22 files), Playwright 7 passed (all E2E), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P2-4 (Design review pass).
+- Needs from the owner: None.
+
+
+
 
 
