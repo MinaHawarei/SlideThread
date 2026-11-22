@@ -1,15 +1,62 @@
 import React, { useState } from 'react';
 import { TestSlide } from './TestSlide';
 import { SPIKE_FORMATS } from './types';
+import { capture, CaptureLibrary } from '../export/capture';
+
+interface CaptureResult {
+  library: CaptureLibrary;
+  formatId: string;
+  durationMs: number;
+  dataUrl: string;
+}
 
 export const SpikePage: React.FC = () => {
   const [selectedFormat, setSelectedFormat] = useState<string>('all');
   const [scale, setScale] = useState<number>(0.35);
+  const [isCapturing, setIsCapturing] = useState<boolean>(false);
+  const [lastResult, setLastResult] = useState<CaptureResult | null>(null);
+  const [captureLog, setCaptureLog] = useState<string[]>([]);
 
   const displayedFormats =
     selectedFormat === 'all'
       ? SPIKE_FORMATS
       : SPIKE_FORMATS.filter((f) => f.id === selectedFormat);
+
+  const handleCapture = async (library: CaptureLibrary) => {
+    setIsCapturing(true);
+    const targetFormat = displayedFormats[0] || SPIKE_FORMATS[0]!;
+    const elementId = `stage-slide-${targetFormat.width}x${targetFormat.height}`;
+    const element = document.getElementById(elementId);
+
+    if (!element) {
+      setCaptureLog((prev) => [...prev, `[Error] Element #${elementId} not found`]);
+      setIsCapturing(false);
+      return;
+    }
+
+    try {
+      const startTime = performance.now();
+      const dataUrl = await capture(element, {
+        library,
+        dimensions: { width: targetFormat.width, height: targetFormat.height },
+        warmUp: true,
+      });
+      const durationMs = Math.round(performance.now() - startTime);
+
+      setLastResult({ library, formatId: targetFormat.id, durationMs, dataUrl });
+      setCaptureLog((prev) => [
+        ...prev,
+        `[${library}] Captured ${targetFormat.name} (${targetFormat.width}×${targetFormat.height}) in ${durationMs}ms`,
+      ]);
+    } catch (err) {
+      setCaptureLog((prev) => [
+        ...prev,
+        `[${library}] Error capturing: ${err instanceof Error ? err.message : String(err)}`,
+      ]);
+    } finally {
+      setIsCapturing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 p-6 flex flex-col gap-6">
@@ -21,7 +68,27 @@ export const SpikePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            data-testid="btn-capture-html-to-image"
+            disabled={isCapturing}
+            onClick={() => handleCapture('html-to-image')}
+            className="bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded text-sm transition"
+          >
+            {isCapturing ? 'Capturing...' : 'Capture (html-to-image)'}
+          </button>
+
+          <button
+            data-testid="btn-capture-modern-screenshot"
+            disabled={isCapturing}
+            onClick={() => handleCapture('modern-screenshot')}
+            className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded text-sm transition"
+          >
+            {isCapturing ? 'Capturing...' : 'Capture (modern-screenshot)'}
+          </button>
+
+          <div className="h-6 w-px bg-slate-700 mx-1" />
+
           <label className="text-sm font-medium">Format:</label>
           <select
             value={selectedFormat}
@@ -49,6 +116,38 @@ export const SpikePage: React.FC = () => {
           <span className="text-xs text-slate-400 w-10">{Math.round(scale * 100)}%</span>
         </div>
       </header>
+
+      {/* Capture status and log bar */}
+      {captureLog.length > 0 && (
+        <section className="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Capture Diagnostics &amp; Log
+            </span>
+            {lastResult && (
+              <span data-testid="capture-status" className="text-xs text-emerald-400 font-mono">
+                Last: {lastResult.library} in {lastResult.durationMs}ms
+              </span>
+            )}
+          </div>
+          <div className="font-mono text-xs text-slate-300 max-h-24 overflow-y-auto space-y-1">
+            {captureLog.slice(-4).map((log, i) => (
+              <div key={i}>{log}</div>
+            ))}
+          </div>
+          {lastResult && (
+            <div className="mt-2 pt-2 border-t border-slate-800 flex items-center gap-4">
+              <span className="text-xs text-slate-400">Captured Output:</span>
+              <img
+                data-testid="captured-image-preview"
+                src={lastResult.dataUrl}
+                alt="Captured Output"
+                className="h-16 w-auto border border-slate-700 rounded shadow"
+              />
+            </div>
+          )}
+        </section>
+      )}
 
       <main className="flex-1 flex flex-wrap gap-8 justify-center items-start overflow-auto py-4">
         {displayedFormats.map((format) => (
@@ -78,7 +177,6 @@ export const SpikePage: React.FC = () => {
           left: '-9999px',
           top: 0,
           pointerEvents: 'none',
-          visibility: 'hidden',
         }}
       >
         {SPIKE_FORMATS.map((f) => (
