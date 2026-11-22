@@ -462,6 +462,15 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P3-5 (Editor desktop).
 - Needs from the owner: None.
 
+### P3-5 — done — 2026-11-22 21:13 — Antigravity
+- Branch / commit: feature/p3-5 / f761302
+- What changed (files): `src/ui/editor/SlideRail.tsx`, `src/ui/editor/MainCanvas.tsx`, `src/ui/editor/SlideInspector.tsx`, `src/ui/editor/DesignInspector.tsx`, `src/ui/editor/BrandInspector.tsx`, `src/ui/editor/Inspector.tsx`, `src/ui/editor/EditorDesktop.tsx`, `src/ui/editor/index.ts`, `src/App.tsx`, `tests/unit/editorDesktop.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented full desktop editor layout per Spec §10.2: left rail with live slide thumbnails, selection, drag-and-drop reordering, accessible keyboard reorder buttons, add slide, duplicate slide, delete slide (disabled for single slide, add/duplicate hidden for post content type per §4.4); center main canvas with auto-scaled preview, story safe zones toggle, zoom controls, and previous/next navigation buttons; right inspector with 3 tabs (Slide, Design, Brand) supporting all 9 slide types, field preservation on type switch, overflow warning with "Split into two slides" action for explain slides, design palette and theme selectors, and brand details with photo upload.
+- Tests run and result: Vitest 226 passed (28 files), Playwright 7 passed (all E2E), ESLint 0 errors 0 warnings, typecheck clean, build clean.
+- Remaining / next step: Merge to main, proceed to P3-6 (Editor mobile).
+- Needs from the owner: None.
+
+
 
 
 
