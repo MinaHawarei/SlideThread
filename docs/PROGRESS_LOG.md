@@ -28,3 +28,19 @@ Agent name: Antigravity
 - Tests run and result: npm run lint (clean), npm run typecheck (clean), npm test (1 passed), npm run build (clean), npm run test:e2e (1 passed).
 - Remaining / next step: Merge to main, then proceed to P0-2.
 - Needs from the owner: None.
+
+### P0-2 — started — 2026-11-22 18:08 — Antigravity
+- Branch / commit: feature/p0-2
+- What changed (files): Claimed P0-2 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Create vercel.json with CSP and security headers, SPA rewrites, and prepare deployment notes.
+- Needs from the owner: Vercel preview verification (tracked in D-01).
+
+### P0-2 — done — 2026-11-22 18:09 — Antigravity
+- Branch / commit: feature/p0-2 / 9e0f497
+- What changed (files): vercel.json, docs/DECISIONS.md, tests/unit/vercel.test.ts
+- Decisions / deviations from the plan: Added CSP permitting self, Vercel Analytics, data: and blob: for image exports; added security headers; created docs/DECISIONS.md. Vercel connection is tracked in owner action D-01 for G0.
+- Tests run and result: lint clean, typecheck clean, vitest 2 passed, build clean.
+- Remaining / next step: Merge to main, proceed to P0-3 (Fonts).
+- Needs from the owner: Deploy to Vercel when ready (tracked in D-01).
