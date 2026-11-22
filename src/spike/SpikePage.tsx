@@ -129,7 +129,15 @@ export const SpikePage: React.FC = () => {
     <div className="min-h-screen bg-slate-900 text-slate-100 p-6 flex flex-col gap-6">
       <header className="border-b border-slate-700 pb-4 flex flex-wrap justify-between items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">SlideThread — Phase 0 Export Spike</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold tracking-tight">SlideThread — Phase 0 Export Spike</h1>
+            <a
+              href="/gallery"
+              className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-2.5 py-1 rounded inline-block"
+            >
+              Component Gallery (/gallery) →
+            </a>
+          </div>
           <p className="text-sm text-slate-400">
             Fidelity verification matrix: Arabic ligatures &amp; diacritics, SVG network, code blocks, gradients &amp; shadows.
           </p>
