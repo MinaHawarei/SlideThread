@@ -446,6 +446,22 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P3-4 (Wizard).
 - Needs from the owner: None.
 
+### P3-4 — started — 2026-11-22 20:58 — Antigravity
+- Branch / commit: feature/p3-4
+- What changed (files): Claimed P3-4 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement 4-step wizard: platform -> content type -> format (+ orientation if orientable) -> template, enforcing the matrix from Spec §4.2; live mini-previews of slides/templates; single slide for post type, initial cover + explain slides for carousel; write unit tests and integrate with App.tsx.
+- Needs from the owner: None.
+
+### P3-4 — done — 2026-11-22 21:04 — Antigravity
+- Branch / commit: feature/p3-4 / 47471f7
+- What changed (files): `src/ui/wizard/Wizard.tsx`, `src/App.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/wizard.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented 4-step wizard (Platform -> Content Type -> Format & Orientation -> Template) per Spec §4.2, §4.3, §4.4, §10.2. Enforced platform-format matrix (e.g. LinkedIn excludes stories; Instagram carousel limits to 4:5 and 1:1; 16:9 includes landscape/portrait orientation toggle; automatic matrix reconciliation on platform/type switch). Integrated live mini-preview panel using SlideRenderer with scaled viewport and story safe-zone overlay. Configured single slide creation for post type (Spec §4.4) and initial Cover + Explain slides for carousels. Wired Wizard into App.tsx.
+- Tests run and result: Vitest 212 passed (27 files), Playwright 7 passed (all E2E), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P3-5 (Editor desktop).
+- Needs from the owner: None.
+
 
 
 
