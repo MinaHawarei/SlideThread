@@ -528,6 +528,14 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P4-2 (Project JSON export/import).
 - Needs from the owner: None.
 
+### P4-2 — done — 2026-11-22 22:18 — Antigravity
+- Branch / commit: feature/p4-2 / b775e45
+- What changed (files): `src/core/projectIO.ts`, `src/ui/common/SizeWarningModal.tsx`, `src/ui/start/StartScreen.tsx`, `src/ui/editor/EditorDesktop.tsx`, `src/ui/editor/EditorMobile.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/projectIO.test.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented project serialization to JSON bundle (`ExportedProjectBundle`) embedding all referenced media images as base64 data URLs via `blobToDataUrl` (using fast ArrayBuffer conversion with Buffer/btoa chunking); detected size threshold (>5MB) per Spec §8.2 with accessible `SizeWarningModal` warning users before proceeding; provided `importProjectFromJSON` which validates JSON, restores embedded base64 images into IndexedDB (`assetStore.saveAsset`), and runs schema migration via `migrate()`; integrated export buttons on StartScreen recent cards, Editor desktop header, and Editor mobile export tab; added descriptive error handling for corrupt/invalid JSON; localized all strings in English and Arabic.
+- Tests run and result: Vitest 298 passed across 35 test files (including 8 new unit tests in projectIO.test.ts testing round-trip with assets and >5MB threshold), Playwright 9 passed (28.0s), ESLint 0 errors 0 warnings, typecheck clean, production build clean.
+- Remaining / next step: Merge to main, proceed to P4-3 (Paste-to-slides: parser per Spec §8.3, dialog with preview list, append/replace).
+- Needs from the owner: None.
+
 
 
 

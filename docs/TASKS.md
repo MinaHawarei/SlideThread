@@ -71,7 +71,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
 | P4-1 | Persistence: autosave, versioned localStorage, IndexedDB assets, graceful quota UI | G3 | [x] | Antigravity 2026-11-22 · feature/p4-1 · ed4e5ac |
-| P4-2 | Project JSON export/import: images embedded base64, size warning, validation & migration | P4-1 | [ ] | |
+| P4-2 | Project JSON export/import: images embedded base64, size warning, validation & migration | P4-1 | [x] | Antigravity 2026-11-22 · feature/p4-2 · b775e45 |
 | P4-3 | Paste-to-slides: parser per Spec §8.3, dialog with preview list, append/replace | P4-2 | [ ] | |
 | P4-4 | Export dialog and pipeline: candidate library, PNG, ZIP, PDF, Web Share API | P4-3 | [ ] | |
 | P4-5 | Export fidelity tests: Playwright exports project, golden compare, PDF & ZIP assertions | P4-4 | [ ] | |
