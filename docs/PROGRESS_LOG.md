@@ -644,3 +644,21 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` (pass); `npm run typecheck` (pass); `npm test` (329 passed, 40 files; existing React `act(...)` warnings); `npm run build` (pass; existing Rollup notices for Zod purity annotations).
 - Remaining / next step: First eligible revision task is R0-1.
 - Needs from the owner: None.
+
+
+### R0-1 — started — 2026-11-23 00:52 — Codex
+- Branch / commit: feature/r0-1
+- What changed (files): `docs/TASKS.md` (claimed R0-1)
+- Decisions / deviations from the plan: Based the task branch on the latest completed task branch `feature/p5-2` so the revision setup and P5-2 completion are included.
+- Tests run and result: N/A (audit task)
+- Remaining / next step: Inspect current repo state against REVISION_PLAN §2, §5, §7 and original plans.
+- Needs from the owner: None.
+
+
+### R0-1 — done — 2026-11-23 00:55 — Codex
+- Branch / commit: feature/r0-1 / 68b9d49
+- What changed (files): `docs/REVISION_AUDIT.md`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`
+- Decisions / deviations from the plan: Audited the original P0–P5 work and amendment gaps. No unfinished original task was superseded, so no `[s]` task assignment was needed. The audit/log record conflicts between the baseline spec and revision plan: free-form editor, v1 schema/plain strings/closed template IDs, combined signature/counter, three code templates, brand panel vs settings/inline override, plain-text paste, neutral chrome interpretation, and missing revision budgets/acceptance criteria. Also recorded the P5 sequencing conflict.
+- Tests run and result: `npm run lint` (pass); `npm run typecheck` (pass); `npm test` (329 passed, 40 files; pre-existing React `act(...)` warnings); `npm run build` (pass; pre-existing Zod Rollup annotation notices).
+- Remaining / next step: R0-2, manipulation-library spike.
+- Needs from the owner: None.
