@@ -196,3 +196,11 @@ Agent name: Antigravity
 - Tests run and result: N/A.
 - Remaining / next step: Install culori, implement generatePalette(primaryHex, theme) in OKLCH, contrast checks (ink/bg >= 7:1, mute/bg >= 4.5:1, onAcc/acc >= 4.5:1, acc/bg >= 3:1), default presets, and write unit tests.
 - Needs from the owner: None.
+
+### P1-3 — done — 2026-11-22 19:38 — Antigravity
+- Branch / commit: feature/p1-3 / 1318e07
+- What changed (files): `package.json`, `package-lock.json`, `src/core/palette.ts`, `tests/unit/palette.test.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Installed culori and @types/culori. Implemented generatePalette in OKLCH with automatic contrast adjustment for edge colors and default Network presets.
+- Tests run and result: Vitest 58 passed (11 files), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P1-4 (Text fit: useFitText).
+- Needs from the owner: None.
