@@ -35,7 +35,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P1-1 | Schema & migrations: Spec §3 types, schemaVersion, migrate(), zod runtime validation | G0 | [x] | Antigravity 2026-11-22 · feature/p1-1 · ceb308f |
 | P1-2 | Format & platform registries: Spec §4 helpers, dimension/aspect tests | P1-1 | [x] | Antigravity 2026-11-22 · feature/p1-2 · 81a31e1 |
 | P1-3 | Palette: generatePalette(primaryHex, theme) per Spec §7.2 with culori | P1-2 | [x] | Antigravity 2026-11-22 · feature/p1-3 · 1318e07 |
-| P1-4 | Text fit: useFitText with measure-then-scale loop, min scale 0.6 | P1-3 | [~] | Antigravity 2026-11-22 |
+| P1-4 | Text fit: useFitText with measure-then-scale loop, min scale 0.6 | P1-3 | [x] | Antigravity 2026-11-22 · feature/p1-4 · 7a14b08 |
 | P1-5 | Slide components (9 types) with 4 aspect-class variants, dev gallery route /gallery | P1-4 | [ ] | |
 | P1-6 | Media support: MediaRef, downscale util, IndexedDB store (idb-keyval), placements, focal point | P1-5 | [ ] | |
 | P1-7 | Signature bar (+ socials row, counter, placeholder avatar) per Spec §6.2 | P1-6 | [ ] | |
