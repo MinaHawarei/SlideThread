@@ -1,4 +1,4 @@
-import type { Slide, AspectClass, TextDir } from '../core/schema';
+import type { Slide, AspectClass, TextDir, BrandSettings } from '../core/schema';
 import type { Palette } from '../core/palette';
 
 export interface SlideProps {
@@ -8,4 +8,8 @@ export interface SlideProps {
   textDir?: TextDir;
   isStory?: boolean;
   className?: string;
+  brand?: BrandSettings;
+  slideIndex?: number;
+  totalSlides?: number;
+  showCounter?: boolean;
 }

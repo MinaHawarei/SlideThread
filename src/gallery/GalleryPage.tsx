@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { AspectClass, SlideType, ThemeMode, TextDir } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { SlideRenderer } from '../slides/SlideRenderer';
-import { SAMPLE_SLIDES } from '../slides/sampleSlides';
+import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../slides/sampleSlides';
 
 const SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -221,6 +221,10 @@ export const GalleryPage: React.FC = () => {
                             palette={palette}
                             aspectClass={aspect}
                             textDir={textDir}
+                            brand={lang === 'ar' ? SAMPLE_BRAND_AR : SAMPLE_BRAND_EN}
+                            slideIndex={2}
+                            totalSlides={7}
+                            showCounter={true}
                           />
                         </div>
                       </div>

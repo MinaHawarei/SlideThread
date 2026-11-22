@@ -17,11 +17,12 @@
 .slide-content-area {
   position: relative;
   width: 100%;
-  height: 100%;
+  flex: 1 1 0%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding-inline: 80px;
-  padding-block: 80px;
+  padding-block: 80px 24px;
   box-sizing: border-box;
   z-index: 10;
 }
@@ -29,13 +30,13 @@
 /* Aspect Class Layout Variations */
 .aspect-landscape .slide-content-area {
   padding-inline: 100px;
-  padding-block: 60px;
+  padding-block: 60px 16px;
 }
 
 .aspect-tall .slide-content-area {
   padding-inline: 70px;
   /* 14% safe zones top and bottom for stories per Spec §5.4 */
-  padding-block: 268px 180px;
+  padding-block: 268px 32px;
   justify-content: center;
 }
 
@@ -528,4 +529,172 @@
   cursor: pointer;
   margin-block-start: 36px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Signature Bar per Spec §6.2 */
+.slide-signature-container {
+  width: 100%;
+  padding-inline: 80px;
+  padding-block-end: 60px;
+  box-sizing: border-box;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.aspect-landscape .slide-signature-container {
+  padding-inline: 100px;
+  padding-block-end: 48px;
+}
+
+.aspect-tall .slide-signature-container {
+  padding-inline: 70px;
+  /* Above the bottom 14% safe zone for 1080x1920 stories (268px) */
+  padding-block-end: 268px;
+}
+
+.slide-signature-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sig-author-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.sig-avatar-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid var(--acc);
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+}
+
+.sig-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sig-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--acc) 0%, var(--acc2) 100%);
+  color: var(--on-acc);
+  font-weight: 700;
+  font-size: 26px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.sig-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.sig-names-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sig-display-name {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sig-handle {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--mute);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
+.sig-socials-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  overflow: hidden;
+  margin-block-start: 2px;
+}
+
+.sig-social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mute);
+  font-size: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.sig-social-handle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sig-social-more {
+  font-size: 18px;
+  color: var(--mute);
+  font-weight: 600;
+  flex-shrink: 0;
+  background: var(--card);
+  padding-inline: 8px;
+  padding-block: 2px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+}
+
+.sig-counter-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--mute);
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  padding-inline: 16px;
+  padding-block: 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  direction: ltr !important;
 }

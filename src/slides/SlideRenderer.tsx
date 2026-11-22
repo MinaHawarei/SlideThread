@@ -10,6 +10,7 @@ import { QuoteSlide } from './QuoteSlide';
 import { ImageSlide } from './ImageSlide';
 import { CtaSlide } from './CtaSlide';
 import { MediaRenderer } from './MediaRenderer';
+import { SignatureBar } from './SignatureBar';
 import './slides.css';
 
 export interface SlideRendererProps extends SlideProps {
@@ -17,7 +18,23 @@ export interface SlideRendererProps extends SlideProps {
 }
 
 export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
-  const { slide, palette, aspectClass, textDir, className = '', style = {} } = props;
+  const {
+    slide,
+    palette,
+    aspectClass,
+    textDir,
+    brand,
+    slideIndex,
+    totalSlides,
+    showCounter = true,
+    className = '',
+    style = {},
+  } = props;
+
+  const shouldRenderSignature =
+    slide.type !== 'cta' &&
+    !slide.hideSignature &&
+    Boolean(brand && brand.showSignature !== false);
 
   const paletteStyle: React.CSSProperties = {
     '--bg': palette.bg,
@@ -90,6 +107,16 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
         </div>
       )}
       {renderComponent()}
+      {shouldRenderSignature && (
+        <div className="slide-signature-container">
+          <SignatureBar
+            brand={brand}
+            slideIndex={slideIndex}
+            totalSlides={totalSlides}
+            showCounter={showCounter}
+          />
+        </div>
+      )}
     </div>
   );
 };
