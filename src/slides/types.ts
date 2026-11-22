@@ -12,6 +12,7 @@ export interface SlideProps {
   slideIndex?: number;
   totalSlides?: number;
   showCounter?: boolean;
+  showSafeZones?: boolean;
   templateId?: TemplateId;
   dimensions?: { width: number; height: number };
 }

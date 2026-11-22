@@ -33,6 +33,7 @@ export const GalleryPage: React.FC = () => {
   const [lang, setLang] = useState<'en' | 'ar'>('en');
   const [textDir, setTextDir] = useState<TextDir>('auto');
   const [templateId, setTemplateId] = useState<TemplateId>('network');
+  const [showSafeZones, setShowSafeZones] = useState<boolean>(false);
   const [previewScale, setPreviewScale] = useState<number>(0.22);
 
   const palette = generatePalette(theme === 'dark' ? '#35D0E6' : '#0B7FA6', theme);
@@ -148,6 +149,27 @@ export const GalleryPage: React.FC = () => {
             </button>
           </div>
 
+          {/* Safe Zones Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              type="button"
+              onClick={() => setShowSafeZones(!showSafeZones)}
+              style={{
+                background: showSafeZones ? '#dc2626' : '#1e293b',
+                color: showSafeZones ? '#ffffff' : '#f87171',
+                border: '1px solid #ef4444',
+                padding: '6px 14px',
+                borderRadius: '6px',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+              data-testid="toggle-safe-zones"
+            >
+              {showSafeZones ? '🛡️ Safe Zones: ON' : '🛡️ Safe Zones: OFF'}
+            </button>
+          </div>
+
           {/* Language Toggle */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <label style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Content:</label>
@@ -170,6 +192,27 @@ export const GalleryPage: React.FC = () => {
               }}
             >
               {lang === 'en' ? 'English (LTR)' : 'العربية (RTL)'}
+            </button>
+          </div>
+
+          {/* Safe Zones Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              type="button"
+              onClick={() => setShowSafeZones(!showSafeZones)}
+              style={{
+                background: showSafeZones ? '#dc2626' : '#1e293b',
+                color: showSafeZones ? '#ffffff' : '#f87171',
+                border: '1px solid #ef4444',
+                padding: '6px 14px',
+                borderRadius: '6px',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+              data-testid="toggle-safe-zones"
+            >
+              {showSafeZones ? '🛡️ Safe Zones: ON' : '🛡️ Safe Zones: OFF'}
             </button>
           </div>
 
@@ -250,6 +293,7 @@ export const GalleryPage: React.FC = () => {
                             slideIndex={2}
                             totalSlides={7}
                             showCounter={true}
+                            showSafeZones={showSafeZones}
                             templateId={templateId}
                             dimensions={dims}
                           />

@@ -53,3 +53,10 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
   - **Facebook:** Multi-image carousels support 1:1 and 4:5; stories support 9:16.
   - **Custom (Direct Size):** Offers all formats for post/carousel and 9:16 for stories.
   - **Export Defaults:** Preselects PDF for LinkedIn carousel, ZIP for Instagram/Facebook/Custom carousel, and PNG for single posts and stories per Spec §4.2. Soft warning for carousels with >30 slides across platforms.
+
+## 2026-11-22 — Story safe zones verification (P1-9)
+- **Official Platform Specs:** Re-verified story safe zones against official Instagram/Facebook design specifications for 9:16 vertical content (1080×1920 px):
+  - Top ~14% (~250–270 px; exactly 268.8 px at 14% of 1920) is covered by native UI: user avatar, username, timestamp, close button, progress bars, audio name.
+  - Bottom ~14% (~250–270 px; exactly 268.8 px at 14% of 1920) is covered by interactive UI: "Send message" reply input, quick reactions, share icon, like heart.
+  - Safe area is vertical bounds 14% to 86% (269 px to 1651 px).
+- **Implementation:** Defined `STORY_SAFE_ZONE_PERCENT = 0.14` in `src/core/storySafeZones.ts`. Built `StorySafeZoneOverlay` component rendering visual boundaries, dashed guides, and UI labels when toggled on. Added safe zone toggle in `/gallery` and wired safe zone padding in `slides.css` (`.aspect-tall .slide-content-area` and `.aspect-tall .slide-signature-container`). Overlay carries `data-no-export="true"` so it is never captured in final exports.

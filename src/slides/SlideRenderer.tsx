@@ -11,6 +11,7 @@ import { ImageSlide } from './ImageSlide';
 import { CtaSlide } from './CtaSlide';
 import { MediaRenderer } from './MediaRenderer';
 import { SignatureBar } from './SignatureBar';
+import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
 import { getTemplate } from '../templates';
 import type { AspectClass } from '../core/schema';
 import './slides.css';
@@ -36,6 +37,8 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
     slideIndex,
     totalSlides,
     showCounter = true,
+    showSafeZones = false,
+    isStory = false,
     templateId = 'network',
     dimensions,
     className = '',
@@ -150,6 +153,9 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
             showCounter={showCounter}
           />
         </div>
+      )}
+      {(showSafeZones || isStory) && (aspectClass === 'tall' || isStory) && (
+        <StorySafeZoneOverlay height={slideDims.height} />
       )}
     </div>
   );
