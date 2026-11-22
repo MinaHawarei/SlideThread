@@ -228,3 +228,11 @@ Agent name: Antigravity
 - Tests run and result: N/A.
 - Remaining / next step: Implement 9 slide components under src/slides/ with 4 aspect-class variants each, plain CSS modules with logical properties and CSS variables, dir='auto' bidi handling, code always LTR, build /gallery dev route, and write unit/e2e tests.
 - Needs from the owner: None.
+
+### P1-5 — done — 2026-11-22 19:51 — Antigravity
+- Branch / commit: feature/p1-5 / 02ce8bf
+- What changed (files): `src/slides/*` (9 components, types, sampleSlides, SlideRenderer, slides.css), `src/gallery/GalleryPage.tsx`, `src/App.tsx`, `src/spike/SpikePage.tsx`, `tests/unit/slides.test.tsx`, `tests/e2e/gallery.spec.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented strictly isolated CSS with CSS variables and logical properties (no Tailwind inside slides, no letter-spacing, no viewport units). Added bilingual sample dataset and full interactive dev gallery at `/gallery`.
+- Tests run and result: Vitest 78 passed (13 files), Playwright 6 passed (including gallery e2e), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P1-6 (Media support).
+- Needs from the owner: None.
