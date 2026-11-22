@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { APP_NAME, OWNER } from './config/site';
+import { SpikePage } from './spike/SpikePage';
 
 export const App: React.FC = () => {
+  const [currentPath, setCurrentPath] = useState(
+    typeof window !== 'undefined' ? window.location.pathname : '/'
+  );
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPath(window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  if (currentPath === '/spike') {
+    return <SpikePage />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col justify-between p-6">
-      <header className="border-b pb-4">
-        <h1 className="text-2xl font-bold">{APP_NAME}</h1>
-        <p className="text-sm text-slate-500">Free Carousel &amp; Post Maker for Content Creators</p>
+      <header className="border-b pb-4 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">{APP_NAME}</h1>
+          <p className="text-sm text-slate-500">Free Carousel &amp; Post Maker for Content Creators</p>
+        </div>
+        <button
+          onClick={() => {
+            window.history.pushState({}, '', '/spike');
+            setCurrentPath('/spike');
+          }}
+          className="text-xs bg-sky-600 hover:bg-sky-500 text-white font-medium px-3 py-1.5 rounded"
+        >
+          View Export Spike (/spike)
+        </button>
       </header>
 
       <main className="my-auto py-12 text-center">
