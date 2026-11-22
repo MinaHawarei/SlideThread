@@ -172,3 +172,11 @@ Agent name: Antigravity
 - Tests run and result: Vitest 24 passed (9 files), typecheck clean, lint clean.
 - Remaining / next step: Merge to main, proceed to P1-2 (Format & platform registries).
 - Needs from the owner: None.
+
+### P1-2 — started — 2026-11-22 19:32 — Antigravity
+- Branch / commit: feature/p1-2
+- What changed (files): Claimed P1-2 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement format registry (src/core/formats.ts), platform registry and helpers (src/core/platforms.ts), aspectClass calculation, export recommendations, slide limit warnings, verify against official docs, and write comprehensive unit tests.
+- Needs from the owner: None.

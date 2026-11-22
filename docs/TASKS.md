@@ -33,7 +33,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
 | P1-1 | Schema & migrations: Spec §3 types, schemaVersion, migrate(), zod runtime validation | G0 | [x] | Antigravity 2026-11-22 · feature/p1-1 · ceb308f |
-| P1-2 | Format & platform registries: Spec §4 helpers, dimension/aspect tests | P1-1 | [ ] | |
+| P1-2 | Format & platform registries: Spec §4 helpers, dimension/aspect tests | P1-1 | [~] | Antigravity 2026-11-22 |
 | P1-3 | Palette: generatePalette(primaryHex, theme) per Spec §7.2 with culori | P1-2 | [ ] | |
 | P1-4 | Text fit: useFitText with measure-then-scale loop, min scale 0.6 | P1-3 | [ ] | |
 | P1-5 | Slide components (9 types) with 4 aspect-class variants, dev gallery route /gallery | P1-4 | [ ] | |
