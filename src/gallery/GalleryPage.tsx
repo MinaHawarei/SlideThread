@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import type { AspectClass, SlideType, ThemeMode, TextDir } from '../core/schema';
+import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateId } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { SlideRenderer } from '../slides/SlideRenderer';
 import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../slides/sampleSlides';
+import { getAllTemplates } from '../templates';
 
 const SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -31,6 +32,7 @@ export const GalleryPage: React.FC = () => {
   const [theme, setTheme] = useState<ThemeMode>('dark');
   const [lang, setLang] = useState<'en' | 'ar'>('en');
   const [textDir, setTextDir] = useState<TextDir>('auto');
+  const [templateId, setTemplateId] = useState<TemplateId>('network');
   const [previewScale, setPreviewScale] = useState<number>(0.22);
 
   const palette = generatePalette(theme === 'dark' ? '#35D0E6' : '#0B7FA6', theme);
@@ -98,6 +100,29 @@ export const GalleryPage: React.FC = () => {
               <option value="all">All 4 Aspects</option>
               {ASPECT_CLASSES.map((a) => (
                 <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Template Select */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Template:</label>
+            <select
+              value={templateId}
+              onChange={(e) => setTemplateId(e.target.value as TemplateId)}
+              style={{
+                background: '#1e293b',
+                color: '#f8fafc',
+                border: '1px solid #334155',
+                borderRadius: '6px',
+                padding: '6px 10px',
+                fontSize: '13px',
+              }}
+            >
+              {getAllTemplates().map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.id.toUpperCase()}
+                </option>
               ))}
             </select>
           </div>
@@ -225,6 +250,8 @@ export const GalleryPage: React.FC = () => {
                             slideIndex={2}
                             totalSlides={7}
                             showCounter={true}
+                            templateId={templateId}
+                            dimensions={dims}
                           />
                         </div>
                       </div>

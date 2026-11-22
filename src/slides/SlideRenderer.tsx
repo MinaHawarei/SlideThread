@@ -11,7 +11,16 @@ import { ImageSlide } from './ImageSlide';
 import { CtaSlide } from './CtaSlide';
 import { MediaRenderer } from './MediaRenderer';
 import { SignatureBar } from './SignatureBar';
+import { getTemplate } from '../templates';
+import type { AspectClass } from '../core/schema';
 import './slides.css';
+
+const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }> = {
+  landscape: { width: 1920, height: 1080 },
+  square: { width: 1080, height: 1080 },
+  portrait: { width: 1080, height: 1350 },
+  tall: { width: 1080, height: 1920 },
+};
 
 export interface SlideRendererProps extends SlideProps {
   style?: React.CSSProperties;
@@ -27,9 +36,14 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
     slideIndex,
     totalSlides,
     showCounter = true,
+    templateId = 'network',
+    dimensions,
     className = '',
     style = {},
   } = props;
+
+  const template = getTemplate(templateId);
+  const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
 
   const shouldRenderSignature =
     slide.type !== 'cta' &&
@@ -89,6 +103,26 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
       data-slide-type={slide.type}
       data-aspect-class={aspectClass}
     >
+      <div
+        className="slide-template-bg"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+      >
+        <template.Background
+          index={slideIndex ?? 0}
+          count={totalSlides ?? 1}
+          width={slideDims.width}
+          height={slideDims.height}
+          tokens={palette}
+        />
+      </div>
+
       {slide.media?.placement === 'background' && (
         <div
           className="slide-bg-media"
@@ -97,7 +131,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
             inset: 0,
             width: '100%',
             height: '100%',
-            zIndex: 1,
+            zIndex: 2,
             opacity: 0.22,
             overflow: 'hidden',
             pointerEvents: 'none',
