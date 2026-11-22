@@ -140,3 +140,19 @@ Agent name: Antigravity
 - Tests run and result: lint clean, typecheck clean, vitest 15 passed, build clean.
 - Remaining / next step: Merge to main, proceed to Gate G0 verification.
 - Needs from the owner: None.
+
+### G0 — started — 2026-11-22 19:23 — Antigravity
+- Branch / commit: feature/g0
+- What changed (files): Claimed G0 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Run full validation suite (lint, typecheck, vitest, build, test:e2e), verify all G0 gate conditions, update IMPLEMENTATION_PLAN.md checkboxes.
+- Needs from the owner: Vercel preview and real-device check (owner-verify pending per G0 rules).
+
+### G0 — done — 2026-11-22 19:27 — Antigravity
+- Branch / commit: feature/g0 / 94c2001
+- What changed (files): docs/IMPLEMENTATION_PLAN.md, playwright.config.ts, tests/e2e/exportSpike.spec.ts
+- Decisions / deviations from the plan: Verified all G0 criteria. Automated Playwright test suite passes completely (15 unit tests, 5 e2e tests). Marked G0 as passed with owner-verify pending for Vercel preview (D-01) and real-device testing per plan rules.
+- Tests run and result: lint clean, typecheck clean, vitest 15 passed, build clean, test:e2e 5 passed.
+- Remaining / next step: Merge to main, proceed to Phase 1 (P1-1).
+- Needs from the owner: Connect Vercel and verify preview URL (D-01).
