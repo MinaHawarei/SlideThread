@@ -40,7 +40,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P1-6 | Media support: MediaRef, downscale util, IndexedDB store (idb-keyval), placements, focal point | P1-5 | [x] | Antigravity 2026-11-22 · feature/p1-6 · ce3948a |
 | P1-7 | Signature bar (+ socials row, counter, placeholder avatar) per Spec §6.2 | P1-6 | [x] | Antigravity 2026-11-22 · feature/p1-7 · a7261e0 |
 | P1-8 | Template system: TemplateDef registry, Network template complete (mulberry32 seeded) | P1-7 | [x] | Antigravity 2026-11-22 · feature/p1-8 · 40b91b5 |
-| P1-9 | Story safe zones and overlay | P1-8 | [ ] | |
+| P1-9 | Story safe zones and overlay | P1-8 | [x] | Antigravity 2026-11-22 · feature/p1-9 · a36b63c |
 | G1 | Gate G1 verification | P1-1…P1-9 | [ ] | |
 
 ## Phase P2 — Templates 2 and 3

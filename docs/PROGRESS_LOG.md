@@ -285,3 +285,19 @@ Agent name: Antigravity
 - Tests run and result: Vitest 114 passed (18 files), Playwright 6 passed, typecheck clean, lint clean, build clean.
 - Remaining / next step: Merge to main, proceed to P1-9 (Story safe zones and overlay).
 - Needs from the owner: None.
+
+### P1-9 — started — 2026-11-22 20:16 — Antigravity
+- Branch / commit: feature/p1-9
+- What changed (files): Claimed P1-9 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Define story safe zone constants and helper (14% top/bottom per Spec §5.4), implement StorySafeZoneOverlay component with visual boundary markers and platform UI simulation, integrate into SlideRenderer and GalleryPage with toggle, record official platform metrics in DECISIONS.md, and write unit tests.
+- Needs from the owner: None.
+
+### P1-9 — done — 2026-11-22 20:18 — Antigravity
+- Branch / commit: feature/p1-9 / a36b63c
+- What changed (files): `src/core/storySafeZones.ts`, `src/slides/StorySafeZoneOverlay.tsx`, `src/slides/SlideRenderer.tsx`, `src/slides/types.ts`, `src/gallery/GalleryPage.tsx`, `docs/DECISIONS.md`, `tests/unit/safeZones.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Defined `STORY_SAFE_ZONE_PERCENT = 0.14` and safe zone inset calculation helpers in `src/core/storySafeZones.ts`. Implemented `StorySafeZoneOverlay` with visual warnings, dashed guides, and UI labels (marked with `data-no-export="true"`). Re-verified against official Instagram/Facebook story UI specs in `docs/DECISIONS.md`. Integrated overlay into SlideRenderer and added interactive toggle in `/gallery`.
+- Tests run and result: Vitest 122 passed (19 files), Playwright 6 passed, typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to Gate G1 verification.
+- Needs from the owner: None.
