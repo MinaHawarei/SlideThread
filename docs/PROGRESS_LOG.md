@@ -92,3 +92,19 @@ Agent name: Antigravity
 - Tests run and result: lint clean, typecheck clean, vitest 10 passed, build clean, test:e2e 3 passed.
 - Remaining / next step: Merge to main, proceed to P0-6 (Evaluate candidate libraries).
 - Needs from the owner: None.
+
+### P0-6 — started — 2026-11-22 18:28 — Antigravity
+- Branch / commit: feature/p0-6
+- What changed (files): Claimed P0-6 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Evaluate candidate libraries on browser matrix with automated Playwright benchmark, compare fidelity and timing, and prepare QA checklist for owner-only checks.
+- Needs from the owner: None.
+
+### P0-6 — done — 2026-11-22 19:18 — Antigravity
+- Branch / commit: feature/p0-6 / 331ad36
+- What changed (files): tests/e2e/benchmark.spec.ts, docs/QA_CHECKLIST.md, docs/DECISIONS.md
+- Decisions / deviations from the plan: Automated matrix benchmark in Playwright proved both html-to-image and modern-screenshot capture all 4 formats with high fidelity; html-to-image is ~2.5x faster. 10-slide multi-capture passed without memory issues. Created QA_CHECKLIST.md with owner verification steps.
+- Tests run and result: lint clean, typecheck clean, vitest 10 passed, build clean, test:e2e 4 passed.
+- Remaining / next step: Merge to main, proceed to P0-7 (Build PDF and ZIP).
+- Needs from the owner: Run manual iOS Safari and Android Chrome checks per docs/QA_CHECKLIST.md when preview is deployed.
