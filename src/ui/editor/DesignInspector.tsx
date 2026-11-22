@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { getAllTemplates } from '../../templates';
+import { ChangeFormatDialog } from './ChangeFormatDialog';
 import type { TemplateId, ThemeMode, TextDir } from '../../core/schema';
 
 const PRESET_COLORS = [
@@ -19,6 +20,7 @@ export const DesignInspector: React.FC = () => {
   const { t } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
+  const [isChangeFormatOpen, setIsChangeFormatOpen] = useState(false);
 
   const allTemplates = getAllTemplates();
 
@@ -162,7 +164,7 @@ export const DesignInspector: React.FC = () => {
                 type="button"
                 data-testid={`design-dir-${dir}`}
                 onClick={() => handleDirChange(dir)}
-                className={`py-2 px-1 rounded-xl border text-xs font-semibold uppercase transition-all ${
+                className={`py-2 px-1 rounded-xl border text-xs font-semibold uppercase transition-all min-h-[44px] flex items-center justify-center ${
                   isSelected
                     ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm'
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750'
@@ -175,6 +177,24 @@ export const DesignInspector: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* Change Format Dialog Trigger */}
+      <div className="pt-2">
+        <button
+          type="button"
+          data-testid="design-change-format-btn"
+          onClick={() => setIsChangeFormatOpen(true)}
+          className="w-full min-h-[44px] py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-cyan-500 text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center gap-2 shadow-xs"
+        >
+          <span>📐</span>
+          <span>{t('design.changeFormat')}</span>
+        </button>
+      </div>
+
+      <ChangeFormatDialog
+        isOpen={isChangeFormatOpen}
+        onClose={() => setIsChangeFormatOpen(false)}
+      />
     </div>
   );
 };

@@ -154,6 +154,14 @@ export const ar: Record<TranslationKey, string> = {
   'design.textDir.ltr': 'من اليسار لليمين (LTR)',
   'design.textDir.rtl': 'من اليمين لليسار (RTL)',
   'design.changeFormat': 'تغيير القياس والأبعاد',
+  'design.changeFormat.desc': 'غيّر القياس أو أبعاد العرض في أي وقت دون أن تفقد أي نصوص أو محتويات.',
+  'design.changeFormat.current': 'الحالي: {format}',
+  'design.changeFormat.apply': 'تطبيق القياس',
+  'design.changeFormat.cancel': 'إلغاء',
+  'design.changeFormat.orientation': 'الاتجاه',
+  'design.changeFormat.landscape': 'أفقي (عريض)',
+  'design.changeFormat.portrait': 'عمودي (رأسي)',
+  'design.changeFormat.preview': 'معاينة التوزيع',
   'design.safeZones': 'المناطق الآمنة للقصص (14%)',
 
   // Editor Actions

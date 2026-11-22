@@ -152,6 +152,14 @@ export const en = {
   'design.textDir.ltr': 'LTR (Left to Right)',
   'design.textDir.rtl': 'RTL (Right to Left)',
   'design.changeFormat': 'Change Format / Ratio',
+  'design.changeFormat.desc': 'Switch format or ratio anytime without losing any slide text or content.',
+  'design.changeFormat.current': 'Current: {format}',
+  'design.changeFormat.apply': 'Apply Format',
+  'design.changeFormat.cancel': 'Cancel',
+  'design.changeFormat.orientation': 'Orientation',
+  'design.changeFormat.landscape': 'Landscape (Horizontal)',
+  'design.changeFormat.portrait': 'Portrait (Vertical)',
+  'design.changeFormat.preview': 'Preview Relayout',
   'design.safeZones': 'Story Safe Zones (14%)',
 
   // Editor Actions

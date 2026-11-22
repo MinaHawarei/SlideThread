@@ -9,3 +9,4 @@ export * from './Inspector';
 export * from './SlideInspector';
 export * from './DesignInspector';
 export * from './BrandInspector';
+export * from './ChangeFormatDialog';
