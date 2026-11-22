@@ -42,7 +42,14 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
 - **Validation Engine:** Added `zod` for runtime schema validation on import and persistence.
 - **Data Model:** Defined all Spec §3 domain models (`Project`, `Slide`, `MediaRef`, `BrandSettings`, `FormatDef`) in `src/core/schema.ts` with `CURRENT_SCHEMA_VERSION = 1`.
 - **Migration:** Implemented `migrate(data)` in `src/core/migrate.ts`. Handles v0 legacy formats with safe defaults, preserves valid v1 projects, and explicitly throws on unsupported future versions or malformed payloads.
-- **CSP Policy:** Restricts scripts and connections to self and Vercel Analytics (`va.vercel-scripts.com`, `vitals.vercel-insights.com`). Allows `data:` and `blob:` for images and client-side canvas/download generation.
-- **Security Headers:** Added `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`.
-- **SPA Rewrites:** Added rewrite for client-side routing on Vercel.
-- **Owner Action:** Vercel deployment connection requires repository owner permissions (tracked under D-01 in `docs/TASKS.md` for Gate G0).
+
+## 2026-11-22 — Format & platform registries (P1-2)
+- **Format Registry:** Implemented `src/core/formats.ts` with 4 formats (`r_4_5`, `r_1_1`, `r_9_16`, `r_16_9`). All formats share short side 1080 px per Spec §4.1.
+- **Orientation:** Handled for orientable format `r_16_9` (1920×1080 landscape default, 1080×1920 portrait).
+- **Aspect Classes:** `aspectClass(w, h)` per Spec §5.2 (`landscape` > 1.2, `square` 0.9..1.2, `portrait` 0.65..<0.9, `tall` < 0.65).
+- **Platform Matrix Re-verification:** Re-verified platform image sizes, formats, and limits against official platform specs:
+  - **Instagram:** Feed posts and carousels support 4:5 (1080×1350), 1:1 (1080×1080), 16:9 (1920×1080 / 1080×566). Stories support 9:16 (1080×1920). Instagram officially expanded carousel slide limit to 20 media items in August 2024. Soft warning implemented for carousel > 20 slides.
+  - **LinkedIn:** Document post carousels support 4:5 (1080×1350), 1:1 (1080×1080), 16:9 (1920×1080) exported as PDF (up to 300 pages, 100MB). Stories were sunset by LinkedIn in late 2021, so stories are not offered.
+  - **Facebook:** Multi-image carousels support 1:1 and 4:5; stories support 9:16.
+  - **Custom (Direct Size):** Offers all formats for post/carousel and 9:16 for stories.
+  - **Export Defaults:** Preselects PDF for LinkedIn carousel, ZIP for Instagram/Facebook/Custom carousel, and PNG for single posts and stories per Spec §4.2. Soft warning for carousels with >30 slides across platforms.

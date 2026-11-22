@@ -23,6 +23,7 @@ export type AspectClass = z.infer<typeof AspectClassSchema>;
 export const FormatDefSchema = z.object({
   id: z.string(),
   label: z.string(),
+  aspectRatio: z.string().optional(),
   width: z.number().positive(),
   height: z.number().positive(),
   orientable: z.boolean(),
