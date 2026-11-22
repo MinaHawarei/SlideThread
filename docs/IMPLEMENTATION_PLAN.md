@@ -78,7 +78,7 @@ Commands the repo must provide (document in README): `dev`, `build`, `preview`, 
 - **P2-4 Design review pass:** compare against Spec §7.1 intent; ensure each template has a clear point of view and holds up with long Arabic text and with image-heavy slides.
 
 ### Gate G2
-- [ ] 3 templates, all 9 slide types each, no visual regressions in snapshots, contrast verified by tests where applicable.
+- [x] 3 templates, all 9 slide types each, no visual regressions in snapshots, contrast verified by tests where applicable.
 
 ---
 
@@ -178,4 +178,4 @@ More slide types, more templates, user-uploaded templates (JSON), shareable proj
 Code merged, tests added/updated and passing, lint + typecheck clean, relevant docs updated, no new console errors, and the gate checklist for the phase updated in this file (tick boxes in a short `## Status` section appended at the end as phases complete).
 
 ## Status
-- [x] G0 (owner-verify pending: D-01)  - [x] G1  - [ ] G2  - [ ] G3  - [ ] G4  - [ ] G5
+- [x] G0 (owner-verify pending: D-01)  - [x] G1  - [x] G2  - [ ] G3  - [ ] G4  - [ ] G5
