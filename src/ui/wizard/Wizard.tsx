@@ -242,9 +242,11 @@ export const Wizard: React.FC<WizardProps> = ({
           </div>
 
           <button
+            type="button"
             data-testid="wizard-cancel-btn"
             onClick={onCancel}
-            className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+            aria-label={t('wizard.btn.cancel')}
+            className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500"
           >
             {t('wizard.btn.cancel')}
           </button>
@@ -256,7 +258,20 @@ export const Wizard: React.FC<WizardProps> = ({
         {/* Left Column: Steps Form */}
         <div className="lg:col-span-7 space-y-8">
           {/* Step Progress Tracker */}
-          <div data-testid="wizard-step-indicator" className="space-y-2">
+          <div
+            data-testid="wizard-step-indicator"
+            role="progressbar"
+            aria-valuenow={step}
+            aria-valuemin={1}
+            aria-valuemax={4}
+            aria-valuetext={`Step ${step} of 4: ${
+              step === 1 ? t('wizard.step1Title') :
+              step === 2 ? t('wizard.step2Title') :
+              step === 3 ? t('wizard.step3Title') :
+              t('wizard.step4Title')
+            }`}
+            className="space-y-2"
+          >
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               <span>{t('wizard.stepIndicator', { current: step, total: 4 })}</span>
               <span>
@@ -286,7 +301,7 @@ export const Wizard: React.FC<WizardProps> = ({
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div role="radiogroup" aria-label={t('wizard.step1Title')} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {PLATFORM_LIST.map((p) => {
                   const isSelected = platform === p.id;
                   const platformKey = `wizard.platform.${p.id}` as const;
@@ -296,9 +311,11 @@ export const Wizard: React.FC<WizardProps> = ({
                     <button
                       key={p.id}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       data-testid={`platform-${p.id}`}
                       onClick={() => handleSelectPlatform(p.id)}
-                      className={`p-5 rounded-2xl border-2 text-left transition-all flex flex-col justify-between space-y-3 ${
+                      className={`p-5 rounded-2xl border-2 text-left transition-all flex flex-col justify-between space-y-3 focus-visible:ring-2 focus-visible:ring-cyan-500 ${
                         isSelected
                           ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20 shadow-sm ring-1 ring-cyan-500'
                           : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900'
@@ -343,7 +360,7 @@ export const Wizard: React.FC<WizardProps> = ({
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
+              <div role="radiogroup" aria-label={t('wizard.step2Title')} className="grid grid-cols-1 gap-4">
                 {supportedContentTypes.map((type) => {
                   const isSelected = contentType === type;
                   const typeKey = `wizard.type.${type}` as const;
@@ -353,9 +370,11 @@ export const Wizard: React.FC<WizardProps> = ({
                     <button
                       key={type}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       data-testid={`type-${type}`}
                       onClick={() => handleSelectContentType(type)}
-                      className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center justify-between ${
+                      className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center justify-between focus-visible:ring-2 focus-visible:ring-cyan-500 ${
                         isSelected
                           ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20 shadow-sm ring-1 ring-cyan-500'
                           : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900'
@@ -395,7 +414,7 @@ export const Wizard: React.FC<WizardProps> = ({
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div role="radiogroup" aria-label={t('wizard.step3Title')} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {allowedFormats.map((f) => {
                   const isSelected = formatId === f.id;
                   let formatKey: 'wizard.format.portrait' | 'wizard.format.square' | 'wizard.format.landscape' | 'wizard.format.tall';
@@ -408,9 +427,11 @@ export const Wizard: React.FC<WizardProps> = ({
                     <button
                       key={f.id}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       data-testid={`format-${f.id}`}
                       onClick={() => handleSelectFormat(f.id as FormatId)}
-                      className={`p-4 rounded-2xl border-2 text-left transition-all flex flex-col justify-between space-y-2 ${
+                      className={`p-4 rounded-2xl border-2 text-left transition-all flex flex-col justify-between space-y-2 focus-visible:ring-2 focus-visible:ring-cyan-500 ${
                         isSelected
                           ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20 shadow-sm ring-1 ring-cyan-500'
                           : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900'
@@ -483,7 +504,7 @@ export const Wizard: React.FC<WizardProps> = ({
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
+              <div role="radiogroup" aria-label={t('wizard.step4Title')} className="grid grid-cols-1 gap-4">
                 {allTemplates.map((tmpl) => {
                   const isSelected = templateId === tmpl.id;
                   const templateNameKey = `wizard.template.${tmpl.id}` as const;
@@ -493,9 +514,11 @@ export const Wizard: React.FC<WizardProps> = ({
                     <button
                       key={tmpl.id}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       data-testid={`template-${tmpl.id}`}
                       onClick={() => setTemplateId(tmpl.id)}
-                      className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center justify-between ${
+                      className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center justify-between focus-visible:ring-2 focus-visible:ring-cyan-500 ${
                         isSelected
                           ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20 shadow-sm ring-1 ring-cyan-500'
                           : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900'

@@ -169,6 +169,8 @@ export const en = {
   'editor.deleteSlide': 'Delete Slide',
   'editor.moveUp': 'Move Earlier',
   'editor.moveDown': 'Move Later',
+  'editor.prevSlide': 'Previous Slide',
+  'editor.nextSlide': 'Next Slide',
   'editor.export': 'Export',
   'editor.pasteText': 'Paste Text to Slides',
   'editor.slideCounter': 'Slide {current} of {total}',

@@ -88,10 +88,17 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   setActiveSlideId(slide.id);
+                } else if (!isPost && (e.altKey || e.ctrlKey) && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) {
+                  e.preventDefault();
+                  if (idx > 0) reorderSlides(idx, idx - 1);
+                } else if (!isPost && (e.altKey || e.ctrlKey) && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) {
+                  e.preventDefault();
+                  if (idx < slides.length - 1) reorderSlides(idx, idx + 1);
                 }
               }}
               aria-label={`Slide ${idx + 1}`}
-              className={`relative shrink-0 rounded-lg overflow-hidden border-2 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center p-0.5 cursor-pointer ${
+              aria-current={isActive ? 'true' : undefined}
+              className={`relative shrink-0 rounded-lg overflow-hidden border-2 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center p-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:outline-none ${
                 isActive
                   ? 'border-cyan-500 shadow-md ring-2 ring-cyan-500/30'
                   : 'border-slate-200 dark:border-slate-700 opacity-80 hover:opacity-100'

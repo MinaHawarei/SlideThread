@@ -171,6 +171,8 @@ export const ar: Record<TranslationKey, string> = {
   'editor.deleteSlide': 'حذف الشريحة',
   'editor.moveUp': 'تقديم للأمام',
   'editor.moveDown': 'تأخير للخلف',
+  'editor.prevSlide': 'الشريحة السابقة',
+  'editor.nextSlide': 'الشريحة التالية',
   'editor.export': 'تصدير',
   'editor.pasteText': 'لصق نص وتحويله لشرائح',
   'editor.slideCounter': 'شريحة {current} من {total}',

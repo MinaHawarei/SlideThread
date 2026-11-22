@@ -302,12 +302,15 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
       {/* Bottom Tab Bar (Slides | Edit | Design | Export) */}
       <nav
         data-testid="mobile-bottom-tabs"
+        role="tablist"
         aria-label="Mobile Navigation Tabs"
         className="h-16 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-stretch shrink-0 z-30"
       >
         {/* Slides Tab */}
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'slides'}
           data-testid="mobile-tab-slides"
           onClick={() => handleTabClick('slides')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
@@ -325,6 +328,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         {/* Edit Tab */}
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'edit'}
           data-testid="mobile-tab-edit"
           onClick={() => handleTabClick('edit')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
@@ -342,6 +347,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         {/* Design Tab */}
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'design'}
           data-testid="mobile-tab-design"
           onClick={() => handleTabClick('design')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
@@ -359,6 +366,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         {/* Export Tab */}
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'export'}
           data-testid="mobile-tab-export"
           onClick={() => handleTabClick('export')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${

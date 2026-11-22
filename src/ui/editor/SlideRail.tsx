@@ -72,9 +72,11 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
         {/* Add slide button is hidden for single-slide posts per Spec §4.4 */}
         {!isPost && (
           <button
+            type="button"
             data-testid="rail-add-slide-btn"
             onClick={() => handleAddSlide('explain')}
-            className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors flex items-center gap-1 shadow-sm"
+            className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
+            aria-label={t('editor.addSlide')}
             title={t('editor.addSlide')}
           >
             <span>+</span>
@@ -95,12 +97,28 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
             <div
               key={slide.id}
               data-testid={`rail-slide-${slide.id}`}
+              role="button"
+              tabIndex={0}
+              aria-label={`${typeLabel} slide ${idx + 1}`}
+              aria-current={isActive ? 'true' : undefined}
               draggable={!isPost}
               onDragStart={() => handleDragStart(idx)}
               onDragOver={handleDragOver}
               onDrop={() => handleDrop(idx)}
               onClick={() => setActiveSlideId(slide.id)}
-              className={`group relative p-2.5 rounded-2xl border-2 transition-all cursor-pointer ${
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveSlideId(slide.id);
+                } else if (!isPost && (e.altKey || e.ctrlKey) && e.key === 'ArrowUp') {
+                  e.preventDefault();
+                  if (idx > 0) reorderSlides(idx, idx - 1);
+                } else if (!isPost && (e.altKey || e.ctrlKey) && e.key === 'ArrowDown') {
+                  e.preventDefault();
+                  if (idx < slides.length - 1) reorderSlides(idx, idx + 1);
+                }
+              }}
+              className={`group relative p-2.5 rounded-2xl border-2 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:outline-none ${
                 isActive
                   ? 'border-cyan-500 bg-cyan-50/40 dark:bg-cyan-950/20 shadow-sm ring-1 ring-cyan-500'
                   : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-950'
@@ -175,7 +193,8 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                         e.stopPropagation();
                         if (idx > 0) reorderSlides(idx, idx - 1);
                       }}
-                      className="w-6 h-6 rounded flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none"
+                      className="w-6 h-6 rounded flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none focus-visible:ring-1 focus-visible:ring-cyan-500"
+                      aria-label={t('editor.moveUp')}
                       title={t('editor.moveUp')}
                     >
                       ▲
@@ -188,7 +207,8 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                         e.stopPropagation();
                         if (idx < slides.length - 1) reorderSlides(idx, idx + 1);
                       }}
-                      className="w-6 h-6 rounded flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none"
+                      className="w-6 h-6 rounded flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none focus-visible:ring-1 focus-visible:ring-cyan-500"
+                      aria-label={t('editor.moveDown')}
                       title={t('editor.moveDown')}
                     >
                       ▼
@@ -206,7 +226,8 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                         e.stopPropagation();
                         duplicateSlide(slide.id);
                       }}
-                      className="p-1 rounded text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                      className="p-1 rounded text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors focus-visible:ring-1 focus-visible:ring-cyan-500"
+                      aria-label={t('editor.duplicateSlide')}
                       title={t('editor.duplicateSlide')}
                     >
                       ⎘
@@ -220,7 +241,8 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                         e.stopPropagation();
                         deleteSlide(slide.id);
                       }}
-                      className="p-1 rounded text-slate-500 hover:text-red-500 transition-colors"
+                      className="p-1 rounded text-slate-500 hover:text-red-500 transition-colors focus-visible:ring-1 focus-visible:ring-cyan-500"
+                      aria-label={t('editor.deleteSlide')}
                       title={t('editor.deleteSlide')}
                     >
                       🗑
