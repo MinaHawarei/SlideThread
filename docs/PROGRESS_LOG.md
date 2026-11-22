@@ -697,3 +697,19 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 329 passed / 40 files (existing React `act(...)` warnings); `npm run build` pass (existing Zod Rollup annotation notices); `npm run test:e2e` 14 passed. The first E2E invocation ran concurrently with build/unit tests and had two timeouts; a standalone full rerun passed all 14.
 - Remaining / next step: R0-4, sortable animation spike.
 - Needs from the owner: Complete D-09 physical Arabic IME and touch checks before R9-1.
+
+### R0-4 — started — 2026-11-23 01:28 — Codex
+- Branch / commit: feature/r0-4
+- What changed (files): `docs/TASKS.md` (claimed R0-4)
+- Decisions / deviations from the plan: None yet.
+- Tests run and result: N/A (spike in progress)
+- Remaining / next step: Compare sortable and animation candidates; prototype and measure keyboard, touch activation, spring reorder, reduced-motion behavior, and bundle size; write `docs/spikes/SORTABLE.md`.
+- Needs from the owner: None.
+
+### R0-4 — done — 2026-11-23 01:40 — Codex
+- Branch / commit: feature/r0-4 / 96ce7ab
+- What changed (files): `docs/spikes/SORTABLE.md`, `docs/DECISIONS.md`, `docs/QA_CHECKLIST.md`, `docs/TASKS.md`
+- Decisions / deviations from the plan: Selected Motion React `Reorder` alone for R7-1. Chrome probes verified spring layout, keyboard reorder, long-press touch reorder, short-tap preservation, and reorder state under reduced motion. Current dnd-kit plus Motion also worked but measured ~35.5 kB gzip more for the route. No app dependency added. Added exact owner long-press/scroll/reduced-motion steps to D-09; physical devices remain unverified.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 329 passed / 40 files (existing React `act(...)` warning); `npm run build` pass (existing Zod Rollup annotation notices); `npm run test:e2e` 14 passed. Temporary browser prototype probes passed in Chrome mobile emulation and desktop Chrome.
+- Remaining / next step: R0-5, continuous pattern spike.
+- Needs from the owner: Complete D-09 real-device touch checks before R9-1.
