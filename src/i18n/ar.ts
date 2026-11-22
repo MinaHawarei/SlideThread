@@ -170,6 +170,12 @@ export const ar: Record<TranslationKey, string> = {
   'editor.tabBrand': 'الهوية',
   'editor.overflowWarning': 'النص طويل — فكّر في تقسيم هذه الشريحة إلى شريحتين',
   'editor.splitAction': 'تقسيم إلى شريحتين',
+  'editor.mobileTabSlides': 'الشرائح',
+  'editor.mobileTabEdit': 'تعديل',
+  'editor.mobileTabDesign': 'التصميم',
+  'editor.mobileTabExport': 'تصدير',
+  'editor.closeInspector': 'إغلاق',
+  'editor.swipeHint': 'اسحب للتنقل بين الشرائح',
 
   // Export Dialog
   'export.title': 'تصدير العرض',

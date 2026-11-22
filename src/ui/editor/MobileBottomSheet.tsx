@@ -1,0 +1,81 @@
+import React, { useEffect } from 'react';
+import { useT } from '../../i18n';
+
+export interface MobileBottomSheetProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+export const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+}) => {
+  const { t } = useT();
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      data-testid="mobile-bottom-sheet-backdrop"
+      className="fixed inset-0 z-50 flex flex-col justify-end bg-black/50 backdrop-blur-xs transition-opacity"
+      onClick={onClose}
+    >
+      {/* Bottom Sheet Modal Panel */}
+      <div
+        data-testid="mobile-bottom-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-h-[85vh] min-h-[40vh] bg-white dark:bg-slate-900 rounded-t-2xl shadow-2xl border-t border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-200"
+      >
+        {/* Grab Handle */}
+        <div className="py-2 flex justify-center shrink-0">
+          <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full" />
+        </div>
+
+        {/* Sheet Header */}
+        <div className="px-4 pb-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+          <h2 className="font-bold text-sm text-slate-800 dark:text-slate-100">
+            {title}
+          </h2>
+
+          <button
+            type="button"
+            data-testid="mobile-sheet-close-btn"
+            onClick={onClose}
+            aria-label={t('editor.closeInspector')}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto overscroll-contain">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};

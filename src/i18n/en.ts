@@ -168,6 +168,12 @@ export const en = {
   'editor.tabBrand': 'Brand',
   'editor.overflowWarning': 'Text is long — consider splitting this slide',
   'editor.splitAction': 'Split into two slides',
+  'editor.mobileTabSlides': 'Slides',
+  'editor.mobileTabEdit': 'Edit',
+  'editor.mobileTabDesign': 'Design',
+  'editor.mobileTabExport': 'Export',
+  'editor.closeInspector': 'Close',
+  'editor.swipeHint': 'Swipe to change slide',
 
   // Export Dialog
   'export.title': 'Export Presentation',

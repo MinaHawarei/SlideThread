@@ -3,7 +3,7 @@ import { SpikePage } from './spike/SpikePage';
 import { GalleryPage } from './gallery/GalleryPage';
 import { StartScreen } from './ui/start/StartScreen';
 import { Wizard } from './ui/wizard/Wizard';
-import { EditorDesktop } from './ui/editor';
+import { Editor } from './ui/editor';
 
 export type AppScreen = 'start' | 'wizard' | 'editor';
 
@@ -38,7 +38,7 @@ export const App: React.FC = () => {
 
   if (currentScreen === 'editor') {
     return (
-      <EditorDesktop
+      <Editor
         onHome={() => setCurrentScreen('start')}
       />
     );
