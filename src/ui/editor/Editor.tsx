@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { EditorDesktop } from './EditorDesktop';
 import { EditorMobile } from './EditorMobile';
+import { ExportDialog } from './ExportDialog';
 
 export interface EditorProps {
   onHome?: () => void;
@@ -15,6 +16,8 @@ export const Editor: React.FC<EditorProps> = (props) => {
     return false;
   });
 
+  const [isExportOpen, setIsExportOpen] = useState(false);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -24,9 +27,26 @@ export const Editor: React.FC<EditorProps> = (props) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (isMobile) {
-    return <EditorMobile {...props} />;
-  }
+  const handleOpenExport = () => {
+    if (props.onOpenExport) {
+      props.onOpenExport();
+    } else {
+      setIsExportOpen(true);
+    }
+  };
 
-  return <EditorDesktop {...props} />;
+  const sharedProps = {
+    ...props,
+    onOpenExport: handleOpenExport,
+  };
+
+  return (
+    <>
+      {isMobile ? <EditorMobile {...sharedProps} /> : <EditorDesktop {...sharedProps} />}
+      <ExportDialog
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+      />
+    </>
+  );
 };
