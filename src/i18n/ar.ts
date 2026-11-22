@@ -25,6 +25,13 @@ export const ar: Record<TranslationKey, string> = {
   'start.openProject': 'فتح المشروع',
   'start.duplicateProject': 'تكرار',
   'start.deleteProject': 'حذف',
+  'start.continueWorking': 'متابعة العمل على {title}',
+  'start.resumeProject': 'استئناف المشروع',
+  'start.directModalTitle': 'اختر أبعاد الشريحة',
+  'start.directModalDesc': 'حدد نسبة الأبعاد لبدء التحرير مباشرةً بشرائح فارغة.',
+  'start.importError': 'ملف المشروع غير صالح: {error}',
+  'start.confirmDelete': 'هل أنت متأكد من حذف هذا المشروع؟',
+  'start.slidesCount': '{count} شرائح',
 
   // Wizard Steps & Labels
   'wizard.step1Title': 'اختر المنصة',

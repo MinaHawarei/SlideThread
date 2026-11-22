@@ -23,6 +23,13 @@ export const en = {
   'start.openProject': 'Open Project',
   'start.duplicateProject': 'Duplicate',
   'start.deleteProject': 'Delete',
+  'start.continueWorking': 'Continue working on {title}',
+  'start.resumeProject': 'Resume Project',
+  'start.directModalTitle': 'Choose Canvas Dimensions',
+  'start.directModalDesc': 'Pick an aspect ratio to immediately launch the editor with blank slides.',
+  'start.importError': 'Invalid project file: {error}',
+  'start.confirmDelete': 'Are you sure you want to delete this project?',
+  'start.slidesCount': '{count} slides',
 
   // Wizard Steps & Labels
   'wizard.step1Title': 'Select Platform',
