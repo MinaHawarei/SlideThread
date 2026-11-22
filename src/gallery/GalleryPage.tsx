@@ -81,6 +81,7 @@ export const GalleryPage: React.FC = () => {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
+              data-testid="type-select"
               style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '6px 12px', borderRadius: '6px', fontSize: '14px' }}
             >
               <option value="all">All 9 Types</option>
@@ -96,6 +97,7 @@ export const GalleryPage: React.FC = () => {
             <select
               value={selectedAspect}
               onChange={(e) => setSelectedAspect(e.target.value)}
+              data-testid="aspect-select"
               style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '6px 12px', borderRadius: '6px', fontSize: '14px' }}
             >
               <option value="all">All 4 Aspects</option>
@@ -111,6 +113,7 @@ export const GalleryPage: React.FC = () => {
             <select
               value={templateId}
               onChange={(e) => setTemplateId(e.target.value as TemplateId)}
+              data-testid="template-select"
               style={{
                 background: '#1e293b',
                 color: '#f8fafc',
@@ -134,6 +137,7 @@ export const GalleryPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              data-testid="toggle-theme"
               style={{
                 background: theme === 'dark' ? '#0284c7' : '#f59e0b',
                 color: '#ffffff',
@@ -180,6 +184,7 @@ export const GalleryPage: React.FC = () => {
                 setLang(nextLang);
                 setTextDir(nextLang === 'ar' ? 'rtl' : 'ltr');
               }}
+              data-testid="toggle-lang"
               style={{
                 background: '#1e293b',
                 color: '#38bdf8',
