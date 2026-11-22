@@ -15,3 +15,12 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
 - **Security Headers:** Added `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`.
 - **SPA Rewrites:** Added rewrite for client-side routing on Vercel.
 - **Owner Action:** Vercel deployment connection requires repository owner permissions (tracked under D-01 in `docs/TASKS.md` for Gate G0).
+
+## 2026-11-22 — Typography & font loading (P0-3)
+- **Self-hosted Fonts:** Installed `@fontsource/ibm-plex-sans`, `@fontsource/ibm-plex-sans-arabic`, and `@fontsource/jetbrains-mono` (OFL license). Self-hosted and bundled with Vite to ensure offline availability and avoid Google Fonts CDN requests.
+- **Weights:** 400, 500, 700 for Sans and Sans Arabic; 400, 700 for JetBrains Mono.
+- **Font Readiness:** Created `fontsReady()` helper in `src/core/fonts.ts` awaiting `document.fonts.ready` and explicitly calling `document.fonts.load()` with Arabic test glyphs and Latin test text before any measurement or export.
+- **CSP Policy:** Restricts scripts and connections to self and Vercel Analytics (`va.vercel-scripts.com`, `vitals.vercel-insights.com`). Allows `data:` and `blob:` for images and client-side canvas/download generation.
+- **Security Headers:** Added `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`.
+- **SPA Rewrites:** Added rewrite for client-side routing on Vercel.
+- **Owner Action:** Vercel deployment connection requires repository owner permissions (tracked under D-01 in `docs/TASKS.md` for Gate G0).
