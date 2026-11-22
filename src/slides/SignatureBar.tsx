@@ -169,6 +169,7 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
   // Counter check
   const shouldShowCounter =
     showCounter &&
+    (brand?.showCounter !== false) &&
     typeof slideIndex === 'number' &&
     typeof totalSlides === 'number' &&
     totalSlides > 0;

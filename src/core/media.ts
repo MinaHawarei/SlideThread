@@ -179,3 +179,66 @@ export async function downscaleImage(
     mimeType: outputMime,
   };
 }
+
+/**
+ * Calculates coordinates for center-cropping an image to a square.
+ */
+export function calculateSquareCrop(
+  width: number,
+  height: number
+): { srcX: number; srcY: number; side: number } {
+  if (width <= 0 || height <= 0 || !Number.isFinite(width) || !Number.isFinite(height)) {
+    return { srcX: 0, srcY: 0, side: 0 };
+  }
+  const side = Math.min(width, height);
+  const srcX = Math.round((width - side) / 2);
+  const srcY = Math.round((height - side) / 2);
+  return { srcX, srcY, side };
+}
+
+/**
+ * Center-crops an image to square and downscales to targetSize (default 400x400 px),
+ * returning a JPEG data URL per Spec §8.1.
+ */
+export async function processBrandPhoto(
+  fileOrBlob: Blob | File,
+  targetSize = 400
+): Promise<string> {
+  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    return new Promise<string>((resolve, reject) => {
+      const url = URL.createObjectURL(fileOrBlob);
+      const img = new Image();
+
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const w = img.naturalWidth || img.width;
+        const h = img.naturalHeight || img.height;
+
+        const { srcX, srcY, side } = calculateSquareCrop(w, h);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = targetSize;
+        canvas.height = targetSize;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Failed to get 2D canvas context'));
+          return;
+        }
+
+        ctx.drawImage(img, srcX, srcY, side, side, 0, 0, targetSize, targetSize);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        resolve(dataUrl);
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Failed to load brand photo for square crop'));
+      };
+
+      img.src = url;
+    });
+  }
+
+  return blobToBase64(fileOrBlob);
+}
+

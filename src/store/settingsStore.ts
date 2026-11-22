@@ -9,6 +9,7 @@ export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
   photoDataUrl: undefined,
   showSignature: true,
   showSocials: false,
+  showCounter: true,
   socials: [
     { platform: 'linkedin', handle: 'in/minahawarei' },
     { platform: 'github', handle: 'minahawarei' },
@@ -28,6 +29,7 @@ export interface SettingsState {
   setPhotoDataUrl: (photoDataUrl?: string) => void;
   toggleSignature: (show?: boolean) => void;
   toggleSocials: (show?: boolean) => void;
+  toggleCounter: (show?: boolean) => void;
   setSocials: (socials: { platform: SocialPlatform; handle: string }[]) => void;
   addSocial: (platform: SocialPlatform, handle: string) => void;
   removeSocial: (platform: SocialPlatform) => void;
@@ -75,6 +77,11 @@ export const useSettingsStore = create<SettingsState>()(
         get().updateSettings({ showSocials: show !== undefined ? show : !current });
       },
 
+      toggleCounter: (show) => {
+        const current = get().settings.showCounter !== false;
+        get().updateSettings({ showCounter: show !== undefined ? show : !current });
+      },
+
       setSocials: (socials) => {
         get().updateSettings({ socials });
       },
@@ -112,7 +119,8 @@ export const useSettingsStore = create<SettingsState>()(
       },
     }),
     {
-      name: 'slidethread:settings',
+      name: 'app:settings:v1',
+      version: 1,
     }
   )
 );

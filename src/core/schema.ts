@@ -101,6 +101,7 @@ export const BrandSettingsSchema = z.object({
   photoDataUrl: z.string().optional(),
   showSignature: z.boolean(),
   showSocials: z.boolean(),
+  showCounter: z.boolean().optional(),
   socials: z.array(
     z.object({
       platform: SocialPlatformSchema,
