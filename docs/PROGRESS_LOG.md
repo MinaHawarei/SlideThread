@@ -618,3 +618,12 @@ Agent name: Antigravity
 - Tests run and result: N/A.
 - Remaining / next step: Create LICENSE (MIT), NOTICE (font licenses), issue templates (bug, feature, feedback), CONTRIBUTING.md, and .github/workflows/ci.yml.
 - Needs from the owner: None.
+
+
+### REVISION-SETUP — started — 2026-11-23 00:00 — Codex
+- Branch / commit: chore/revision-setup / pending
+- What changed (files): `docs/TASKS.md`, `docs/PROGRESS_LOG.md`
+- Decisions / deviations from the plan: Revision mode started; project docs folder is `docs/` at repository root. Agent name: Codex.
+- Tests run and result: N/A (tracker setup)
+- Remaining / next step: Commit revision tracker setup, then orient and resume in-progress P5-2 as instructed.
+- Needs from the owner: None.
