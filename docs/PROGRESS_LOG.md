@@ -236,3 +236,11 @@ Agent name: Antigravity
 - Tests run and result: Vitest 78 passed (13 files), Playwright 6 passed (including gallery e2e), typecheck clean, lint clean, build clean.
 - Remaining / next step: Merge to main, proceed to P1-6 (Media support).
 - Needs from the owner: None.
+
+### P1-6 — started — 2026-11-22 19:52 — Antigravity
+- Branch / commit: feature/p1-6
+- What changed (files): Claimed P1-6 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Install idb-keyval, implement MediaRef support, downscale util (max long side 2400, alpha preservation), IndexedDB asset store with object URL lifecycle management, placements (background, top, side, replace-text), focal point, and write unit tests.
+- Needs from the owner: None.
