@@ -108,3 +108,19 @@ Agent name: Antigravity
 - Tests run and result: lint clean, typecheck clean, vitest 10 passed, build clean, test:e2e 4 passed.
 - Remaining / next step: Merge to main, proceed to P0-7 (Build PDF and ZIP).
 - Needs from the owner: Run manual iOS Safari and Android Chrome checks per docs/QA_CHECKLIST.md when preview is deployed.
+
+### P0-7 — started — 2026-11-22 19:18 — Antigravity
+- Branch / commit: feature/p0-7
+- What changed (files): Claimed P0-7 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Install jspdf and jszip, implement PDF and ZIP generators from slide PNGs, add export buttons to /spike, and test page size and archive integrity.
+- Needs from the owner: None.
+
+### P0-7 — done — 2026-11-22 19:21 — Antigravity
+- Branch / commit: feature/p0-7 / 2faecda
+- What changed (files): package.json, package-lock.json, src/export/pdf.ts, src/export/zip.ts, src/spike/SpikePage.tsx, tests/unit/exportP07.test.ts, tests/e2e/exportSpike.spec.ts, docs/DECISIONS.md
+- Decisions / deviations from the plan: Implemented createPdfFromPngs (jsPDF with pixel unit and scaling hotfix) and createZipFromPngs (JSZip with standard naming). Added interactive export actions and download links to /spike.
+- Tests run and result: lint clean, typecheck clean, vitest 14 passed, build clean, test:e2e 5 passed.
+- Remaining / next step: Merge to main, proceed to P0-8 (Write docs/EXPORT_SPIKE.md).
+- Needs from the owner: None.
