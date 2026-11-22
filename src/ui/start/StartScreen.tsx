@@ -160,7 +160,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   const recentList = (recents || []).slice(0, 10);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+    <div data-testid="start-screen" className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
       {/* Top Header */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur sticky top-0 z-30 px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">

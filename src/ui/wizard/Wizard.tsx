@@ -228,7 +228,7 @@ export const Wizard: React.FC<WizardProps> = ({
   const scaledHeight = dims.height * previewScale;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between">
+    <div data-testid="wizard-screen" className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between">
       {/* Top Bar */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
