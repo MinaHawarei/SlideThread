@@ -478,6 +478,14 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P3-7 (Design controls).
 - Needs from the owner: None.
 
+### P3-7 — done — 2026-11-22 21:28 — Antigravity
+- Branch / commit: feature/p3-7 / e83c5d4
+- What changed (files): `src/ui/editor/ChangeFormatDialog.tsx`, `src/ui/editor/DesignInspector.tsx`, `src/ui/editor/index.ts`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/designControls.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented full suite of Design controls per Spec §7, §4.3, §10.2: template picker (Network, Clean, Bold), free hex color picker (`type="color"`) regenerating palettes in real-time plus 8 preset color chips, theme mode toggle (Dark / Light), text direction selector (Auto / LTR / RTL), and `ChangeFormatDialog` supporting all registered formats (4:5, 1:1, 16:9, 9:16) with orientation selector (Landscape / Portrait for 16:9), live scaled relayout mini-preview, and lossless automatic relayout without losing any slide text, field values, or styling (Gate G3 condition verified).
+- Tests run and result: Vitest 249 passed (30 files), Playwright 7 passed (all E2E), ESLint 0 errors 0 warnings, typecheck clean, build clean.
+- Remaining / next step: Merge to main, proceed to P3-8 (Brand panel).
+- Needs from the owner: None.
+
 
 
 

@@ -61,7 +61,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P3-4 | Wizard: platform → content type → format (+ orientation) → template | P3-3 | [x] | Antigravity 2026-11-22 · feature/p3-4 · 47471f7 |
 | P3-5 | Editor desktop: slide rail, main canvas with scaled preview, inspector tabs | P3-4 | [x] | Antigravity 2026-11-22 · feature/p3-5 · f761302 |
 | P3-6 | Editor mobile: single-slide swipe canvas, bottom tab bar, bottom-sheet inspector | P3-5 | [x] | Antigravity 2026-11-22 · feature/p3-6 · 38d32ae |
-| P3-7 | Design controls: template picker, free color picker, dark/light toggle, direction, change format | P3-6 | [ ] | |
+| P3-7 | Design controls: template picker, free color picker, dark/light toggle, direction, change format | P3-6 | [x] | Antigravity 2026-11-22 · feature/p3-7 · e83c5d4 |
 | P3-8 | Brand panel: name, handle, photo upload, remove photo, signature on/off, socials, counter | P3-7 | [ ] | |
 | P3-9 | Footer: owner name + social links, GitHub star link, feedback button, privacy note, analytics | P3-8 | [ ] | |
 | P3-10 | Accessibility pass: focus order, labels, keyboard rail reorder, reduced motion | P3-9 | [ ] | |
