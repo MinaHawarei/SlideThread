@@ -6,6 +6,7 @@ export const en = {
   'app.privacy': 'Your content stays in your browser. We use cookieless analytics.',
   'app.starGithub': 'Star on GitHub',
   'app.feedback': 'Send Feedback',
+  'footer.createdBy': 'Created by',
 
   // Start Screen
   'start.guidedTitle': 'Start with Wizard',

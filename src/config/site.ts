@@ -21,5 +21,5 @@ export const OWNER: OwnerConfig = {
   },
 };
 
-export const FEEDBACK_URL = '';
+export const FEEDBACK_URL: string = '';
 export const GITHUB_URL = 'https://github.com/minahawarei/SlideThread';

@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { useT } from '../../i18n';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
-import { APP_NAME, OWNER, GITHUB_URL, FEEDBACK_URL } from '../../config/site';
+import { Footer } from '../common/Footer';
+import { APP_NAME } from '../../config/site';
 import { useProjectStore } from '../../store/projectStore';
 import { useRecentStore } from '../../store/recentStore';
 import { getDemoProjectEn, getDemoProjectAr } from '../../store/seedProjects';
@@ -646,47 +647,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       )}
 
       {/* Footer (Spec §10.3) */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-6 text-xs text-slate-500 dark:text-slate-400">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span>
-              Built by{' '}
-              <a
-                href={OWNER.socials.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                className="font-medium text-slate-700 dark:text-slate-300 hover:underline"
-              >
-                {OWNER.name}
-              </a>{' '}
-              ({OWNER.handle})
-            </span>
-          </div>
-
-          <div className="text-center sm:text-left">
-            <span>{t('app.privacy')}</span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <a
-              href={FEEDBACK_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-cyan-600 dark:text-cyan-400 hover:underline"
-            >
-              {t('app.feedback')}
-            </a>
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-slate-700 dark:text-slate-300 hover:underline flex items-center gap-1"
-            >
-              ★ {t('app.starGithub')}
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

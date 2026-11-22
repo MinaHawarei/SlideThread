@@ -8,6 +8,7 @@ export const ar: Record<TranslationKey, string> = {
   'app.privacy': 'بياناتك ومحتواك يبقيان بالكامل في متصفحك. نستخدم تحليلات رقمية بدون ملفات تعريف ارتباط.',
   'app.starGithub': 'نجمة على GitHub',
   'app.feedback': 'إرسال ملاحظات',
+  'footer.createdBy': 'صُمم بواسطة',
 
   // Start Screen
   'start.guidedTitle': 'البدء مع المعالج',

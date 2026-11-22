@@ -17,6 +17,7 @@ import {
 import { getAllTemplates } from '../../templates';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
+import { Footer } from '../common/Footer';
 import { APP_NAME } from '../../config/site';
 import type {
   PlatformId,
@@ -634,6 +635,9 @@ export const Wizard: React.FC<WizardProps> = ({
           </div>
         </div>
       </main>
+
+      {/* Unobtrusive Footer per Spec §10.3 */}
+      <Footer />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { SpikePage } from './spike/SpikePage';
 import { GalleryPage } from './gallery/GalleryPage';
 import { StartScreen } from './ui/start/StartScreen';
@@ -19,40 +20,49 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  if (currentPath === '/spike') {
-    return <SpikePage />;
-  }
+  const renderScreen = () => {
+    if (currentPath === '/spike') {
+      return <SpikePage />;
+    }
 
-  if (currentPath === '/gallery') {
-    return <GalleryPage />;
-  }
+    if (currentPath === '/gallery') {
+      return <GalleryPage />;
+    }
 
-  if (currentScreen === 'wizard') {
+    if (currentScreen === 'wizard') {
+      return (
+        <Wizard
+          onComplete={() => setCurrentScreen('editor')}
+          onCancel={() => setCurrentScreen('start')}
+        />
+      );
+    }
+
+    if (currentScreen === 'editor') {
+      return (
+        <Editor
+          onHome={() => setCurrentScreen('start')}
+        />
+      );
+    }
+
     return (
-      <Wizard
-        onComplete={() => setCurrentScreen('editor')}
-        onCancel={() => setCurrentScreen('start')}
+      <StartScreen
+        onStartWizard={() => setCurrentScreen('wizard')}
+        onOpenProject={() => setCurrentScreen('editor')}
+        onNavigate={(path) => {
+          window.history.pushState({}, '', path);
+          setCurrentPath(path);
+        }}
       />
     );
-  }
-
-  if (currentScreen === 'editor') {
-    return (
-      <Editor
-        onHome={() => setCurrentScreen('start')}
-      />
-    );
-  }
+  };
 
   return (
-    <StartScreen
-      onStartWizard={() => setCurrentScreen('wizard')}
-      onOpenProject={() => setCurrentScreen('editor')}
-      onNavigate={(path) => {
-        window.history.pushState({}, '', path);
-        setCurrentPath(path);
-      }}
-    />
+    <>
+      {renderScreen()}
+      <Analytics />
+    </>
   );
 };
 
