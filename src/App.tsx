@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SpikePage } from './spike/SpikePage';
 import { GalleryPage } from './gallery/GalleryPage';
 import { StartScreen } from './ui/start/StartScreen';
+import { Wizard } from './ui/wizard/Wizard';
 
 export type AppScreen = 'start' | 'wizard' | 'editor';
 
@@ -27,16 +28,10 @@ export const App: React.FC = () => {
 
   if (currentScreen === 'wizard') {
     return (
-      <div className="min-h-screen p-8 text-center flex flex-col items-center justify-center space-y-4">
-        <h2 className="text-2xl font-bold">Wizard</h2>
-        <p className="text-sm text-slate-500">Wizard will be implemented in P3-4.</p>
-        <button
-          onClick={() => setCurrentScreen('start')}
-          className="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm hover:bg-slate-700"
-        >
-          Back to Start
-        </button>
-      </div>
+      <Wizard
+        onComplete={() => setCurrentScreen('editor')}
+        onCancel={() => setCurrentScreen('start')}
+      />
     );
   }
 
