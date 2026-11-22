@@ -60,3 +60,18 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
   - Bottom ~14% (~250–270 px; exactly 268.8 px at 14% of 1920) is covered by interactive UI: "Send message" reply input, quick reactions, share icon, like heart.
   - Safe area is vertical bounds 14% to 86% (269 px to 1651 px).
 - **Implementation:** Defined `STORY_SAFE_ZONE_PERCENT = 0.14` in `src/core/storySafeZones.ts`. Built `StorySafeZoneOverlay` component rendering visual boundaries, dashed guides, and UI labels when toggled on. Added safe zone toggle in `/gallery` and wired safe zone padding in `slides.css` (`.aspect-tall .slide-content-area` and `.aspect-tall .slide-signature-container`). Overlay carries `data-no-export="true"` so it is never captured in final exports.
+
+## 2026-11-22 — Templates 2 & 3: Clean & Bold and Design Review Pass (P2-1, P2-2, P2-4)
+- **Design Review Comparison (Spec §7.1):**
+  - **Network:** Developer / technology identity. Seeded deterministic mulberry32 graph spanning across carousel width, smooth gradient canvas, 24px radius translucent cards, cyan and violet dual-accent motifs, pill-shaped tags (radius 9999px).
+  - **Clean:** Editorial / minimalist identity. Pure whitespace-led layout, solid flat background, no background graphics, flat cards with subtle 1px border, crisp 12px corners, 6px chip radius, single accent (no dual-accent gradients), lighter airy typography scale (h1: 96, h2: 64, body: 38).
+  - **Bold:** High-contrast neo-brutalist / architectural identity. Large type (h1: 124, h2: 80, body: 44), 3.5px solid borders, sharp 0px radius geometry, high contrast color blocks with solid offset shadows (`box-shadow: 6px 6px 0px var(--acc)` / `var(--ink)`), uppercase badges, square avatar blocks, solid button with ink border, and giant stat values with ink text shadows.
+- **Long Arabic Text Handling:**
+  - Evaluated multi-line Arabic text with mixed bidi (English technical terms, commands, numbers), complex ligatures, and diacritics.
+  - Verified `dir="rtl"` logical CSS properties (`padding-inline`, `border-inline-start`, `text-align: start`) mirror accurately without text clipping.
+  - Confirmed strict absence of `letter-spacing` anywhere in slide text rules (preserving Arabic font ligature joining per Spec §5.5 and engineering conventions).
+  - Slide counters strictly maintain `dir="ltr"` and tabular figures across both English and Arabic projects.
+- **Image-Heavy Slides & Media Placements:**
+  - Full-bleed media (`ImageSlide`), `background`, `top`, `side`, and `replace-text` placements hold up across all 3 templates.
+  - Caption bar styled appropriately for each template: gradient overlay in Network, flat semi-transparent dark bar in Clean, solid contrast block with top accent border in Bold.
+

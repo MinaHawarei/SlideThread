@@ -897,6 +897,15 @@
   border: 1px solid rgba(128, 128, 128, 0.14);
 }
 
+/* Image Slide Caption Bar — Clean */
+.template-clean .image-caption-bar {
+  background: rgba(0, 0, 0, 0.72);
+  padding-inline: 60px;
+  padding-block: 28px;
+  font-weight: 400;
+  font-size: 30px;
+}
+
 /* ==========================================================================
    Bold Template (Spec §7.1): Large type, color blocks, thick borders, high contrast
    ========================================================================== */
@@ -1160,5 +1169,17 @@
   border: 2px solid var(--ink);
   font-weight: 800;
 }
+
+/* Image Slide Caption Bar — Bold */
+.template-bold .image-caption-bar {
+  background: var(--bg);
+  color: var(--ink);
+  border-block-start: 4px solid var(--acc);
+  padding-inline: 60px;
+  padding-block: 28px;
+  font-weight: 700;
+  font-size: 34px;
+}
+
 
 
