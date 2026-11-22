@@ -21,7 +21,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 |---|---|---|---|---|
 | P0-1 | Scaffold: Vite + React + TS strict, Tailwind, ESLint, Prettier, Vitest, Playwright, Zustand | — | [x] | Antigravity 2026-11-22 · feature/p0-1 · 5f9517a |
 | P0-2 | Deploy: connect to Vercel, confirm preview URL works, vercel.json CSP & security headers | P0-1 | [x] | Antigravity 2026-11-22 · feature/p0-2 · 9e0f497 |
-| P0-3 | Fonts: install and wire @fontsource packages, fontsReady() helper | P0-2 | [ ] | |
+| P0-3 | Fonts: install and wire @fontsource packages, fontsReady() helper | P0-2 | [x] | Antigravity 2026-11-22 · feature/p0-3 · da8edb4 |
 | P0-4 | Export spike page (/spike) with test slides | P0-3 | [ ] | |
 | P0-5 | Candidate libraries: capture(node, size) with html-to-image and modern-screenshot | P0-4 | [ ] | |
 | P0-6 | Evaluate on matrix: Chrome, Firefox, Safari macOS, iOS Safari, Android Chrome | P0-5 | [ ] | |

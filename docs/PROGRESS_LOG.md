@@ -44,3 +44,19 @@ Agent name: Antigravity
 - Tests run and result: lint clean, typecheck clean, vitest 2 passed, build clean.
 - Remaining / next step: Merge to main, proceed to P0-3 (Fonts).
 - Needs from the owner: Deploy to Vercel when ready (tracked in D-01).
+
+### P0-3 — started — 2026-11-22 18:10 — Antigravity
+- Branch / commit: feature/p0-3
+- What changed (files): Claimed P0-3 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Install @fontsource packages, import font weights, implement fontsReady() helper and unit tests.
+- Needs from the owner: None.
+
+### P0-3 — done — 2026-11-22 18:12 — Antigravity
+- Branch / commit: feature/p0-3 / da8edb4
+- What changed (files): package.json, package-lock.json, src/styles/fonts.css, src/core/fonts.ts, src/main.tsx, tailwind.config.ts, tests/unit/fonts.test.ts, docs/DECISIONS.md
+- Decisions / deviations from the plan: Self-hosted IBM Plex Sans, IBM Plex Sans Arabic, and JetBrains Mono with @fontsource; fontsReady() helper awaits document.fonts.ready and document.fonts.load with fallback timeout.
+- Tests run and result: lint clean, typecheck clean, vitest 5 passed, build clean, test:e2e 1 passed.
+- Remaining / next step: Merge to main, proceed to P0-4 (Export spike page).
+- Needs from the owner: None.
