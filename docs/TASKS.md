@@ -28,7 +28,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
 | R0-1 | Repo audit. Read the repo, `TASKS.md`, and the log. Write `docs/REVISION_AUDIT.md`: what exists per original task, gaps versus §2 amendments. Apply §2.1 to rows not `[x]` (mark superseded rows `[s]` with a pointer). | — | [x] | Codex 2026-11-23 · feature/r0-1 · 68b9d49 |
-| R0-2 | Spike: manipulation. Compare `react-moveable` and a custom pointer/`@use-gesture` approach: move/resize/rotate, snapping, touch pinch, RTL, 60 fps on a mid-range phone, export capture of transformed elements. Write `docs/spikes/MANIPULATION.md`. | R0-1 | [ ] | |
+| R0-2 | Spike: manipulation. Compare `react-moveable` and a custom pointer/`@use-gesture` approach: move/resize/rotate, snapping, touch pinch, RTL, 60 fps on a mid-range phone, export capture of transformed elements. Write `docs/spikes/MANIPULATION.md`. | R0-1 | [x] | Codex 2026-11-23 · feature/r0-2 · 1e05582 |
 | R0-3 | Spike: rich text. Compare Tiptap and Lexical (fallback: minimal custom). Test Arabic composition, bidi selection, marks serialization, paste, bundle size. Devices needed for IME checks → add owner action (D-09). Write `docs/spikes/RICHTEXT.md`. | R0-2 | [ ] | |
 | R0-4 | Spike: sortable animation. `dnd-kit` + `motion` (or alternatives): spring reorder, touch long-press, keyboard, reduced motion. `docs/spikes/SORTABLE.md`. | R0-3 | [ ] | |
 | R0-5 | Spike: continuous pattern. Prefix-stable tile-based `mesh` prototype; verify boundary continuity and that appending slides does not change earlier ones, including in exported crops. `docs/spikes/PATTERN.md`. | R0-4 | [ ] | |

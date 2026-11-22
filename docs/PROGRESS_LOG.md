@@ -662,3 +662,21 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` (pass); `npm run typecheck` (pass); `npm test` (329 passed, 40 files; pre-existing React `act(...)` warnings); `npm run build` (pass; pre-existing Zod Rollup annotation notices).
 - Remaining / next step: R0-2, manipulation-library spike.
 - Needs from the owner: None.
+
+
+### R0-2 — started — 2026-11-23 00:57 — Codex
+- Branch / commit: feature/r0-2
+- What changed (files): `docs/TASKS.md` (claimed R0-2)
+- Decisions / deviations from the plan: No new package will be added for this spike. Compare existing browser pointer handling with the named library approaches using official docs and a local prototype.
+- Tests run and result: N/A (spike in progress)
+- Remaining / next step: Gather primary-source package/API/license data and measure move/resize/pinch/snap/export behavior.
+- Needs from the owner: None.
+
+
+### R0-2 — done — 2026-11-23 01:06 — Codex
+- Branch / commit: feature/r0-2 / 1e05582
+- What changed (files): `docs/spikes/MANIPULATION.md`, `tests/e2e/manipulationSpike.spec.ts`, `docs/QA_CHECKLIST.md`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`
+- Decisions / deviations from the plan: Chose native Pointer Events for R3-2; no new dependency. Verified RTL physical deltas and transformed PNG capture in a reproducible Chromium Playwright check. Official candidate sources/licenses and unmeasured bundle-size gap are recorded in the spike. The 4× CPU proxy returned ~61 animation callbacks/s but p95 frame gap was 16.8 ms, so steady 60 fps on a physical mid-range phone remains unverified. Added exact manual steps to QA checklist; existing D-09 tracks owner device verification. Firefox/WebKit were not run; this repo's Playwright config and local browser setup use Chromium only.
+- Tests run and result: `npm run lint` (pass); `npm run typecheck` (pass); `npm test` (329 passed, 40 files; existing React `act(...)` warnings); `npm run build` (pass; existing Zod Rollup annotation notices); targeted manipulation Playwright test (pass); full `npm run test:e2e` (14 passed).
+- Remaining / next step: R0-3, rich-text engine spike.
+- Needs from the owner: Complete D-09 real-device touch/performance checks before R9-1.
