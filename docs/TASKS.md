@@ -11,7 +11,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | ID | Item | Blocks | Answer | Done |
 |---|---|---|---|---|
 | D-01 | Connect the repo to Vercel and confirm the preview URL works | G0 | | [ ] |
-| D-02 | Provide `FEEDBACK_URL` (external form), `GITHUB_URL`, and owner social links for `site.ts` (placeholders are used until then) | P3-9 | | [ ] |
+| D-02 | Provide `FEEDBACK_URL` (external form), `GITHUB_URL`, and owner social links for `site.ts` (placeholders are used until then) | P3-9 | Placeholders in site.ts (Mina Hawarei, @minahawarei, mailto: fallback per Spec §10.4) | [x] |
 | D-03 | Choose the final app name from the 5 candidates (agent checks repo-name and domain availability first) | P5-5 | | [ ] |
 | D-04 | Run the manual device checks listed in `docs/QA_CHECKLIST.md` (iOS Safari, Android Chrome) | P5-3 | | [ ] |
 | D-05 | Production deploy and the `v0.1.0-beta` tag | P5-6 | | [ ] |
@@ -63,7 +63,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P3-6 | Editor mobile: single-slide swipe canvas, bottom tab bar, bottom-sheet inspector | P3-5 | [x] | Antigravity 2026-11-22 · feature/p3-6 · 38d32ae |
 | P3-7 | Design controls: template picker, free color picker, dark/light toggle, direction, change format | P3-6 | [x] | Antigravity 2026-11-22 · feature/p3-7 · e83c5d4 |
 | P3-8 | Brand panel: name, handle, photo upload, remove photo, signature on/off, socials, counter | P3-7 | [x] | Antigravity 2026-11-22 · feature/p3-8 · 21d2aee |
-| P3-9 | Footer: owner name + social links, GitHub star link, feedback button, privacy note, analytics | P3-8 | [ ] | |
+| P3-9 | Footer: owner name + social links, GitHub star link, feedback button, privacy note, analytics | P3-8 | [x] | Antigravity 2026-11-22 · feature/p3-9 · 93e3e5e |
 | P3-10 | Accessibility pass: focus order, labels, keyboard rail reorder, reduced motion | P3-9 | [ ] | |
 | G3 | Gate G3 verification | P3-1…P3-10 | [ ] | |
 
