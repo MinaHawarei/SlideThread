@@ -32,6 +32,11 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
   - `modern-screenshot`: ~600–1100ms per slide; functional but noticeably higher latency.
 - **Multi-slide Sequential Export:** 10 consecutive slide captures completed without memory bloat or canvas exhaustion.
 - **Device Checks:** Documented real-device iOS Safari and Android Chrome test procedures in `docs/QA_CHECKLIST.md` for owner verification.
+
+## 2026-11-22 — PDF and ZIP generation (P0-7)
+- **Libraries:** Added `jspdf` for raster PDF assembly and `jszip` for multi-PNG packaging.
+- **PDF Page Sizing:** Configured `unit: 'px'` with `hotfixes: ['px_scaling']` to ensure PDF dimensions match the slide pixel dimensions 1:1.
+- **ZIP Naming:** Enforces `{project-title-slug}-{nn}.png` naming convention per Spec §9.2.
 - **CSP Policy:** Restricts scripts and connections to self and Vercel Analytics (`va.vercel-scripts.com`, `vitals.vercel-insights.com`). Allows `data:` and `blob:` for images and client-side canvas/download generation.
 - **Security Headers:** Added `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`.
 - **SPA Rewrites:** Added rewrite for client-side routing on Vercel.

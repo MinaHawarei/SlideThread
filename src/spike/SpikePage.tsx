@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { TestSlide } from './TestSlide';
 import { SPIKE_FORMATS } from './types';
 import { capture, CaptureLibrary } from '../export/capture';
+import { createPdfFromPngs } from '../export/pdf';
+import { createZipFromPngs } from '../export/zip';
 
 interface CaptureResult {
   library: CaptureLibrary;
@@ -15,6 +17,7 @@ export const SpikePage: React.FC = () => {
   const [scale, setScale] = useState<number>(0.35);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [lastResult, setLastResult] = useState<CaptureResult | null>(null);
+  const [exportUrl, setExportUrl] = useState<{ url: string; name: string } | null>(null);
   const [captureLog, setCaptureLog] = useState<string[]>([]);
 
   const displayedFormats =
@@ -58,6 +61,70 @@ export const SpikePage: React.FC = () => {
     }
   };
 
+  const handleExportPdf = async () => {
+    setIsCapturing(true);
+    try {
+      const slidePngs = [];
+      for (const fmt of displayedFormats) {
+        const el = document.getElementById(`stage-slide-${fmt.width}x${fmt.height}`);
+        if (!el) continue;
+        const dataUrl = await capture(el, {
+          library: 'html-to-image',
+          dimensions: { width: fmt.width, height: fmt.height },
+          warmUp: false,
+        });
+        slidePngs.push({ dataUrl, width: fmt.width, height: fmt.height });
+      }
+
+      const pdfBlob = await createPdfFromPngs(slidePngs, 'slidethread-spike');
+      const url = URL.createObjectURL(pdfBlob);
+      setExportUrl({ url, name: 'slidethread-spike.pdf' });
+      setCaptureLog((prev) => [
+        ...prev,
+        `[PDF] Successfully generated PDF (${Math.round(pdfBlob.size / 1024)} KB) with ${slidePngs.length} page(s)`,
+      ]);
+    } catch (err) {
+      setCaptureLog((prev) => [
+        ...prev,
+        `[PDF Error] ${err instanceof Error ? err.message : String(err)}`,
+      ]);
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
+  const handleExportZip = async () => {
+    setIsCapturing(true);
+    try {
+      const zipEntries = [];
+      for (const fmt of displayedFormats) {
+        const el = document.getElementById(`stage-slide-${fmt.width}x${fmt.height}`);
+        if (!el) continue;
+        const dataUrl = await capture(el, {
+          library: 'html-to-image',
+          dimensions: { width: fmt.width, height: fmt.height },
+          warmUp: false,
+        });
+        zipEntries.push({ dataUrl, filename: `slide-${fmt.width}x${fmt.height}.png` });
+      }
+
+      const zipBlob = await createZipFromPngs(zipEntries, 'slidethread-spike');
+      const url = URL.createObjectURL(zipBlob);
+      setExportUrl({ url, name: 'slidethread-spike.zip' });
+      setCaptureLog((prev) => [
+        ...prev,
+        `[ZIP] Successfully generated ZIP archive (${Math.round(zipBlob.size / 1024)} KB) with ${zipEntries.length} file(s)`,
+      ]);
+    } catch (err) {
+      setCaptureLog((prev) => [
+        ...prev,
+        `[ZIP Error] ${err instanceof Error ? err.message : String(err)}`,
+      ]);
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 p-6 flex flex-col gap-6">
       <header className="border-b border-slate-700 pb-4 flex flex-wrap justify-between items-center gap-4">
@@ -85,6 +152,24 @@ export const SpikePage: React.FC = () => {
             className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded text-sm transition"
           >
             {isCapturing ? 'Capturing...' : 'Capture (modern-screenshot)'}
+          </button>
+
+          <button
+            data-testid="btn-export-pdf"
+            disabled={isCapturing}
+            onClick={handleExportPdf}
+            className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded text-sm transition"
+          >
+            Export PDF
+          </button>
+
+          <button
+            data-testid="btn-export-zip"
+            disabled={isCapturing}
+            onClick={handleExportZip}
+            className="bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded text-sm transition"
+          >
+            Export ZIP
           </button>
 
           <div className="h-6 w-px bg-slate-700 mx-1" />
@@ -124,11 +209,23 @@ export const SpikePage: React.FC = () => {
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Capture Diagnostics &amp; Log
             </span>
-            {lastResult && (
-              <span data-testid="capture-status" className="text-xs text-emerald-400 font-mono">
-                Last: {lastResult.library} in {lastResult.durationMs}ms
-              </span>
-            )}
+            <div className="flex items-center gap-3">
+              {lastResult && (
+                <span data-testid="capture-status" className="text-xs text-emerald-400 font-mono">
+                  Last: {lastResult.library} in {lastResult.durationMs}ms
+                </span>
+              )}
+              {exportUrl && (
+                <a
+                  data-testid="download-export-link"
+                  href={exportUrl.url}
+                  download={exportUrl.name}
+                  className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded"
+                >
+                  Download {exportUrl.name}
+                </a>
+              )}
+            </div>
           </div>
           <div className="font-mono text-xs text-slate-300 max-h-24 overflow-y-auto space-y-1">
             {captureLog.slice(-4).map((log, i) => (
