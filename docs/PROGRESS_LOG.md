@@ -414,6 +414,23 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P3-2 (State: Zustand stores for settings, current project, recent projects list).
 - Needs from the owner: None.
 
+### P3-2 — started — 2026-11-22 20:45 — Antigravity
+- Branch / commit: feature/p3-2
+- What changed (files): Claimed P3-2 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement Zustand stores in `src/store/`: `settingsStore.ts` (brand settings, language, dark/light theme default, persistence in `slidethread:settings`), `projectStore.ts` (current project with CRUD for slides, activeSlideId, selectors avoiding full-canvas re-renders), and `recentStore.ts` (recent projects list metadata, open, duplicate, delete), along with comprehensive unit tests.
+- Needs from the owner: None.
+
+### P3-2 — done — 2026-11-22 20:49 — Antigravity
+- Branch / commit: feature/p3-2 / 30177d1
+- What changed (files): `src/store/settingsStore.ts`, `src/store/projectStore.ts`, `src/store/recentStore.ts`, `src/store/seedProjects.ts`, `src/store/index.ts`, `tests/unit/store.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented Zustand stores with localStorage persistence: settingsStore (`slidethread:settings`) syncing with i18n store, projectStore (`slidethread:current-project`) with active slide ID and full slide CRUD (add, duplicate, delete, reorder, update fields, update media, setSlideType preserving compatible fields, splitSlide for long explain slides), and recentStore (`slidethread:recent-projects`, max 20 items). Implemented granular selectors (`useActiveSlide`, `useSlide(id)`, `useSlideIds`, `useSlideCount`, `useProjectMeta`) using `useShallow` to prevent full-canvas re-renders during typing. Provided demo projects for English and Arabic in Network template per Spec §11.
+- Tests run and result: Vitest 188 passed (25 files), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P3-3 (Start screen).
+- Needs from the owner: None.
+
+
 
 
 
