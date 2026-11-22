@@ -75,7 +75,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P4-3 | Paste-to-slides: parser per Spec §8.3, dialog with preview list, append/replace | P4-2 | [x] | Antigravity 2026-11-22 · feature/p4-3 · d84a54b |
 | P4-4 | Export dialog and pipeline: candidate library, PNG, ZIP, PDF, Web Share API | P4-3 | [x] | Antigravity 2026-11-22 · feature/p4-4 · c53ccf7 |
 | P4-5 | Export fidelity tests: Playwright exports project, golden compare, PDF & ZIP assertions | P4-4 | [x] | Antigravity 2026-11-22 · feature/p4-5 · eef9110 |
-| P4-6 | Performance pass: memoization, code-splitting, typing latency check, bundle size check | P4-5 | [ ] | |
+| P4-6 | Performance pass: memoization, code-splitting, typing latency check, bundle size check | P4-5 | [x] | Antigravity 2026-11-22 · feature/p4-6 · c0a72fe |
 | G4 | Gate G4 verification | P4-1…P4-6 | [ ] | |
 
 ## Phase P5 — Beta release

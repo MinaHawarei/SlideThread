@@ -560,6 +560,14 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P4-6 (Performance pass: memoization, code-splitting, typing latency check, bundle size check).
 - Needs from the owner: None.
 
+### P4-6 — done — 2026-11-22 22:44 — Antigravity
+- Branch / commit: feature/p4-6 / c0a72fe
+- What changed (files): `src/config/chunks.ts`, `src/slides/SlideRenderer.tsx`, `vite.config.ts`, `tests/unit/performance.test.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented strategic chunk splitting in `vite.config.ts` via `src/config/chunks.ts`, cleanly partitioning vendor chunks into `vendor-export` (html-to-image, modern-screenshot, jspdf, jszip), `vendor-react` (react, react-dom, vercel analytics), and `vendor-core` (culori, zod, idb-keyval, zustand); reduced main application bundle from 1,053 kB to 235 kB (78% reduction) with 0 oversized chunk warnings; wrapped `SlideRenderer` in `React.memo` to eliminate re-rendering of inactive slides and thumbnails during rapid keystrokes; verified state update latency is <0.2ms per keystroke (well below 1ms threshold).
+- Tests run and result: Vitest 329 passed across 40 test files (including 3 new performance tests), Playwright 12 passed (44.4s), ESLint 0 errors 0 warnings, typecheck clean, production build clean.
+- Remaining / next step: Merge to main, proceed to Gate G4 verification.
+- Needs from the owner: None.
+
 
 
 
