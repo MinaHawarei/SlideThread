@@ -713,3 +713,19 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 329 passed / 40 files (existing React `act(...)` warning); `npm run build` pass (existing Zod Rollup annotation notices); `npm run test:e2e` 14 passed. Temporary browser prototype probes passed in Chrome mobile emulation and desktop Chrome.
 - Remaining / next step: R0-5, continuous pattern spike.
 - Needs from the owner: Complete D-09 real-device touch checks before R9-1.
+
+### R0-5 — started — 2026-11-23 01:41 — Codex
+- Branch / commit: feature/r0-5
+- What changed (files): `docs/TASKS.md` (claimed R0-5)
+- Decisions / deviations from the plan: The baseline `Spec.md` describes a whole-carousel-width seeded graph, and current `generateCarouselNetwork` scales earlier node coordinates with total slide count. Revision Plan §5.1 requires per-tile prefix-stable generation and takes precedence; this spike will prototype the amended model without rewriting the baseline implementation.
+- Tests run and result: Existing `tests/unit/network.test.ts` checks deterministic graph counts and cross-boundary edges but does not prove prefix stability or exported crop equality.
+- Remaining / next step: Build a deterministic per-tile mesh fixture with shared boundary segments; add unit and Playwright export-crop verification; write `docs/spikes/PATTERN.md`.
+- Needs from the owner: None.
+
+### R0-5 — done — 2026-11-23 01:52 — Codex
+- Branch / commit: feature/r0-5 / 78c0ce8
+- What changed (files): `docs/spikes/PATTERN.md`, `docs/DECISIONS.md`, `tests/fixtures/meshPatternPrototype.ts`, `tests/unit/patternSpike.test.ts`, `tests/e2e/patternSpike.spec.ts`
+- Decisions / deviations from the plan: The baseline whole-carousel `generateCarouselNetwork()` is not prefix-stable because coordinates depend on total width; revision plan §5.1 supersedes it. Added an isolated per-tile prototype with deterministic seam connectors. An exploratory wide-composite crop differed in six raster channels at a nonzero tile offset; the final E2E follows the actual per-slide export path and confirms exact prior-crop equality after append plus visible color pixels at the seam. Production Network code remains unchanged for R2-3.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 332 passed / 41 files (existing React `act(...)` warnings); `npm run build` pass (existing Zod Rollup annotation notices); full `npm run test:e2e` 15 passed, including new prefix export/seam test.
+- Remaining / next step: R0-6, UX direction preview.
+- Needs from the owner: Pick UX direction A/B/C from `/ux-preview` (D-06) after the review pack is ready; GR0 remains gated by this decision.
