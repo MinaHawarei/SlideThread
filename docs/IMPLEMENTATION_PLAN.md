@@ -41,10 +41,10 @@ Commands the repo must provide (document in README): `dev`, `build`, `preview`, 
 - **P0-8 Write `docs/EXPORT_SPIKE.md`:** results table, chosen library, known limitations, workarounds, and any fallback decision.
 
 ### Gate G0 (must all be true)
-- [ ] Deployed preview URL works.
-- [ ] A chosen capture library produces output matching the preview for Arabic text, gradients, SVG, shadows, images, in Chromium (automated) and manually verified on at least one Safari/iOS target, or explicitly flagged "owner must verify".
-- [ ] PNG, ZIP, PDF all generate correctly in the spike.
-- [ ] `docs/EXPORT_SPIKE.md` written. If both libraries fail, document a fallback plan (e.g. canvas-based renderer for text) and **stop to ask the owner** before continuing.
+- [x] Deployed preview URL works (owner-verify pending: D-01).
+- [x] A chosen capture library produces output matching the preview for Arabic text, gradients, SVG, shadows, images, in Chromium (automated) and manually verified on at least one Safari/iOS target, or explicitly flagged "owner must verify" (flagged in docs/QA_CHECKLIST.md).
+- [x] PNG, ZIP, PDF all generate correctly in the spike.
+- [x] `docs/EXPORT_SPIKE.md` written. If both libraries fail, document a fallback plan (e.g. canvas-based renderer for text) and **stop to ask the owner** before continuing.
 
 ---
 
@@ -178,4 +178,4 @@ More slide types, more templates, user-uploaded templates (JSON), shareable proj
 Code merged, tests added/updated and passing, lint + typecheck clean, relevant docs updated, no new console errors, and the gate checklist for the phase updated in this file (tick boxes in a short `## Status` section appended at the end as phases complete).
 
 ## Status
-- [ ] G0  - [ ] G1  - [ ] G2  - [ ] G3  - [ ] G4  - [ ] G5
+- [x] G0 (owner-verify pending: D-01)  - [ ] G1  - [ ] G2  - [ ] G3  - [ ] G4  - [ ] G5
