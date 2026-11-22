@@ -317,3 +317,20 @@ Agent name: Antigravity
 - Tests run and result: Vitest 122 passed (19 files), Playwright 6 passed (all E2E), typecheck clean, lint clean, build clean.
 - Remaining / next step: Merge to main, proceed to Phase 2 (P2-1 Clean template).
 - Needs from the owner: None.
+
+### P2-1 — started — 2026-11-22 20:22 — Antigravity
+- Branch / commit: feature/p2-1
+- What changed (files): Claimed P2-1 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement Clean template (minimal, whitespace-led, flat cards, single accent, crisp geometry card radius 12, chip radius 6, no background graphics, distinct typeScale and typography styling via .template-clean), integrate into SlideRenderer and slides.css, and write unit tests.
+- Needs from the owner: None.
+
+### P2-1 — done — 2026-11-22 20:28 — Antigravity
+- Branch / commit: feature/p2-1 / dc958db
+- What changed (files): `src/templates/clean.ts`, `src/slides/SlideRenderer.tsx`, `src/slides/slides.css`, `tests/unit/cleanTemplate.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented Clean template per Spec §7.1 (minimal, whitespace-led, flat cards, single accent, no background graphics). Refined type scale (h1: 96, h2: 64, body: 38, small: 26, mono: 30) and geometry (card: 12, chip: 6). Configured `.template-clean` in `slides.css` with solid background, generous whitespace padding, flat cards with crisp corners, borderless chips, single accent avatar and CTA button, and distinct typography. Applied `template-${templateId}` class and CSS variable tokens (`--card-radius`, `--chip-radius`, `--ts-*`) in `SlideRenderer`.
+- Tests run and result: Vitest 126 passed (20 files), Playwright 6 passed (all E2E), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P2-2 (Bold template).
+- Needs from the owner: None.
+

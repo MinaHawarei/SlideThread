@@ -46,7 +46,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ## Phase P2 — Templates 2 and 3
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| P2-1 | Clean template: minimal, whitespace-led, flat cards, single accent | G1 | [ ] | |
+| P2-1 | Clean template: minimal, whitespace-led, flat cards, single accent | G1 | [x] | Antigravity 2026-11-22 · feature/p2-1 · dc958db |
 | P2-2 | Bold template: large type, color blocks, thick borders, high contrast | G1 | [ ] | |
 | P2-3 | Template QA: gallery snapshots for all templates × formats × themes × RTL/LTR | P2-1, P2-2 | [ ] | |
 | P2-4 | Design review pass: compare against Spec §7.1 intent | P2-3 | [ ] | |
