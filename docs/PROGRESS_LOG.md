@@ -244,3 +244,11 @@ Agent name: Antigravity
 - Tests run and result: N/A.
 - Remaining / next step: Install idb-keyval, implement MediaRef support, downscale util (max long side 2400, alpha preservation), IndexedDB asset store with object URL lifecycle management, placements (background, top, side, replace-text), focal point, and write unit tests.
 - Needs from the owner: None.
+
+### P1-6 — done — 2026-11-22 20:02 — Antigravity
+- Branch / commit: feature/p1-6 / ce3948a
+- What changed (files): `package.json`, `package-lock.json`, `src/core/media.ts`, `src/core/assetStore.ts`, `src/slides/MediaRenderer.tsx`, `src/slides/SlideRenderer.tsx`, `src/slides/ExplainSlide.tsx`, `src/slides/ImageSlide.tsx`, `tests/setup.ts`, `tests/unit/media.test.ts`, `tests/unit/assetStore.test.ts`, `tests/unit/slides.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Installed idb-keyval and fake-indexeddb. Implemented calculateDownscaleDimensions (max long side 2400), downscaleImage (preserves alpha for PNG/WebP, quality 0.85 for JPEG), IndexedDB store with object-URL caching and lifecycle management, MediaRenderer with fit & focal point, and placements (background, top, side, replace-text). Polyfilled tests/setup.ts with Node native Blob/File for fake-indexeddb compatibility.
+- Tests run and result: Vitest 90 passed (15 files), Playwright 6 passed, typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P1-7 (Signature bar).
+- Needs from the owner: None.
