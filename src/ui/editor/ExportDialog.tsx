@@ -50,12 +50,24 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
   // Auto-align range when format changes
   const handleFormatChange = (newFormat: ExportFormat) => {
     setFormat(newFormat);
+    setSuccess(false);
+    setError(null);
     if (newFormat === 'png') {
       setRange('current');
     } else {
       setRange('all');
     }
   };
+
+  // Reset dialog state when opened
+  useEffect(() => {
+    if (isOpen) {
+      setError(null);
+      setSuccess(false);
+      setProgress(null);
+      setIsExporting(false);
+    }
+  }, [isOpen]);
 
   // Close on Escape key when not exporting
   useEffect(() => {

@@ -568,6 +568,15 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to Gate G4 verification.
 - Needs from the owner: None.
 
+### G4 — done — 2026-11-22 23:04 — Antigravity
+- Branch / commit: feature/g4
+- What changed (files): `tests/e2e/gateG4.spec.ts`, `src/ui/editor/ExportDialog.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented end-of-Phase-4 verification test suite (`tests/e2e/gateG4.spec.ts`) validating end-to-end user workflows: Start Screen creation, desktop editor interaction, Project JSON export and JSON file import, text paste-to-slides heuristics, export of single PNG, multi-slide ZIP archive (checked with JSZip), multi-page PDF document (checked with `%PDF-` magic header), slide title editing and autosave persistence across page reloads. Fixed dialog state caching in `ExportDialog` where `success: true` was previously retained upon subsequent opens, preventing consecutive multi-format exports.
+- Tests run and result: Vitest 329 passed (40 files), Playwright 13 passed across all suites (including 15.5s Gate G4 E2E test), ESLint clean (0 errors, 0 warnings), TypeScript strict clean, production build clean.
+- Remaining / next step: Merge to main, proceed to Phase 5 (P5-1: README).
+- Needs from the owner: None.
+
+
 
 
 
