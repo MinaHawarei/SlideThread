@@ -269,3 +269,19 @@ Agent name: Antigravity
 - Tests run and result: Vitest 102 passed (16 files), Playwright 6 passed, typecheck clean, lint clean, build clean.
 - Remaining / next step: Merge to main, proceed to P1-8 (Template system: Network complete).
 - Needs from the owner: None.
+
+### P1-8 — started — 2026-11-22 20:11 — Antigravity
+- Branch / commit: feature/p1-8
+- What changed (files): Claimed P1-8 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement TemplateDef and template registry (src/templates/index.ts), implement NetworkTemplate complete with continuous cross-slide seeded background (mulberry32 seed 7, 8 nodes per slide width, 2 nearest neighbors < 560px distance, accent rings every 5th node), integrate into SlideRenderer, and write unit tests for determinism and cross-slide continuity.
+- Needs from the owner: None.
+
+### P1-8 — done — 2026-11-22 20:15 — Antigravity
+- Branch / commit: feature/p1-8 / 40b91b5
+- What changed (files): `src/core/network.ts`, `src/templates/*` (types, NetworkBackground, network, clean, bold, index), `src/slides/types.ts`, `src/slides/SlideRenderer.tsx`, `src/gallery/GalleryPage.tsx`, `tests/unit/network.test.ts`, `tests/unit/templates.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented TemplateDef interface and registry (`TEMPLATES`, `getTemplate`, `getAllTemplates`). Implemented complete Network template with continuous seeded network across carousel slides (`generateCarouselNetwork`, mulberry32 seed 7, 8 nodes per slide width, 2 nearest neighbors < 560px scaled distance, every 5th node accent ring). Verified determinism and cross-slide boundary line continuity with unit tests.
+- Tests run and result: Vitest 114 passed (18 files), Playwright 6 passed, typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P1-9 (Story safe zones and overlay).
+- Needs from the owner: None.
