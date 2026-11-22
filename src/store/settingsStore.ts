@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { BrandSettings, SocialPlatform, ThemeMode } from '../core/schema';
 import { useI18nStore } from '../i18n';
+import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
 
 export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
   displayName: 'Mina Hawarei',
@@ -119,8 +120,9 @@ export const useSettingsStore = create<SettingsState>()(
       },
     }),
     {
-      name: 'app:settings:v1',
+      name: STORAGE_KEYS.SETTINGS,
       version: 1,
+      storage: createJSONStorage(() => createSafeStorage()),
     }
   )
 );

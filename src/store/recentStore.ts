@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Project, PlatformId, ContentType } from '../core/schema';
+import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
 
 export interface RecentProjectItem {
   id: string;
@@ -116,7 +117,9 @@ export const useRecentStore = create<RecentState>()(
       },
     }),
     {
-      name: 'slidethread:recent-projects',
+      name: STORAGE_KEYS.PROJECTS,
+      version: 1,
+      storage: createJSONStorage(() => createSafeStorage()),
     }
   )
 );

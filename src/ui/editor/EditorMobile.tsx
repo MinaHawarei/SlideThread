@@ -11,6 +11,7 @@ import { SlideInspector } from './SlideInspector';
 import { DesignInspector } from './DesignInspector';
 import { BrandInspector } from './BrandInspector';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
+import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 
 export type MobileTab = 'slides' | 'edit' | 'design' | 'export';
 
@@ -157,6 +158,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
       data-testid="editor-mobile"
       className="h-screen w-screen flex flex-col bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden select-none"
     >
+      <StorageQuotaBanner />
       {/* Mobile Top Navigation Header */}
       <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 flex items-center justify-between shrink-0 z-20">
         {/* Left: Home & Title */}

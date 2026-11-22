@@ -8,6 +8,7 @@ export const ar: Record<TranslationKey, string> = {
   'app.privacy': 'بياناتك ومحتواك يبقيان بالكامل في متصفحك. نستخدم تحليلات رقمية بدون ملفات تعريف ارتباط.',
   'app.starGithub': 'نجمة على GitHub',
   'app.feedback': 'إرسال ملاحظات',
+  'app.storageQuotaWarning': 'مساحة تخزين المتصفح ممتلئة. عملك محفوظ في الذاكرة، ولكن الحفظ التلقائي متوقف مؤقتًا. قم بتصدير ملف المشروع أو حذف مشاريع قديمة لتفريغ المساحة.',
   'footer.createdBy': 'صُمم بواسطة',
 
   // Start Screen
@@ -142,6 +143,9 @@ export const ar: Record<TranslationKey, string> = {
   'brand.showSocials': 'إظهار حسابات التواصل',
   'brand.socialsTitle': 'الحسابات الاجتماعية',
   'brand.addSocial': 'إضافة حساب',
+  'brand.clearAllData': 'مسح جميع بياناتي',
+  'brand.clearAllConfirm': 'هل أنت متأكد من رغبتك في مسح جميع المشاريع، إعدادات الهوية، والوسائط؟ لا يمكن التراجع عن هذا الإجراء.',
+  'brand.clearAllDesc': 'يحذف جميع المشاريع المحفوظة، الإعدادات، والوسائط المخزنة على هذا الجهاز.',
 
   // Design Inspector
   'design.panelTitle': 'التصميم والألوان',

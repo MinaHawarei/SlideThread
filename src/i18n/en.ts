@@ -6,6 +6,7 @@ export const en = {
   'app.privacy': 'Your content stays in your browser. We use cookieless analytics.',
   'app.starGithub': 'Star on GitHub',
   'app.feedback': 'Send Feedback',
+  'app.storageQuotaWarning': 'Browser storage is full. Your work is safe in memory, but autosave is paused. Export project JSON or delete old projects to free space.',
   'footer.createdBy': 'Created by',
 
   // Start Screen
@@ -140,6 +141,9 @@ export const en = {
   'brand.showSocials': 'Show Social Media Handles',
   'brand.socialsTitle': 'Social Accounts',
   'brand.addSocial': 'Add Account',
+  'brand.clearAllData': 'Clear All My Data',
+  'brand.clearAllConfirm': 'Are you sure you want to clear all projects, brand settings, and media assets? This action cannot be undone.',
+  'brand.clearAllDesc': 'Removes all saved projects, settings, and cached assets from this device.',
 
   // Design Inspector
   'design.panelTitle': 'Design & Styling',

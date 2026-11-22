@@ -1,7 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { useT } from '../../i18n';
 import { useSettingsStore } from '../../store/settingsStore';
+import { useRecentStore } from '../../store/recentStore';
+import { useProjectStore } from '../../store/projectStore';
 import { processBrandPhoto } from '../../core/media';
+import { clearAllUserData } from '../../core/storage';
 import { SocialIcon } from '../../slides/SignatureBar';
 import type { SocialPlatform } from '../../core/schema';
 
@@ -311,8 +314,8 @@ export const BrandInspector: React.FC = () => {
         </div>
       </div>
 
-      {/* Reset Settings to Defaults */}
-      <div className="pt-2">
+      {/* Reset Settings to Defaults & Clear All Data */}
+      <div className="pt-2 space-y-2">
         <button
           type="button"
           data-testid="brand-reset-btn"
@@ -320,6 +323,29 @@ export const BrandInspector: React.FC = () => {
           className="w-full min-h-[44px] py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors"
         >
           Reset Brand to Default
+        </button>
+
+        <button
+          type="button"
+          data-testid="brand-clear-all-data-btn"
+          onClick={async () => {
+            if (window.confirm(t('brand.clearAllConfirm'))) {
+              await clearAllUserData();
+              resetSettings();
+              useRecentStore.getState().clearRecents();
+              useProjectStore.getState().createProject({
+                title: 'Untitled Project',
+                platform: 'linkedin',
+                contentType: 'carousel',
+                formatId: 'r_4_5',
+                orientation: 'portrait',
+                templateId: 'network',
+              });
+            }
+          }}
+          className="w-full min-h-[44px] py-2 px-3 rounded-xl border border-red-200 dark:border-red-950/60 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 text-xs font-semibold transition-colors"
+        >
+          {t('brand.clearAllData')}
         </button>
       </div>
     </div>

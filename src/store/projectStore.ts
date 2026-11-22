@@ -1,8 +1,10 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
 import type { Project, Slide, SlideType, MediaRef, TemplateId } from '../core/schema';
 import { CURRENT_SCHEMA_VERSION } from '../core/schema';
+import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
+import { useRecentStore } from './recentStore';
 
 export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide {
   const id = `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -391,10 +393,26 @@ export const useProjectStore = create<ProjectState>()(
       },
     }),
     {
-      name: 'slidethread:current-project',
+      name: STORAGE_KEYS.CURRENT_PROJECT,
+      version: 1,
+      storage: createJSONStorage(() => createSafeStorage()),
     }
   )
 );
+
+let autosaveTimer: ReturnType<typeof setTimeout> | null = null;
+
+// Debounced autosave (~500ms) automatically syncing active project into recent projects per Spec §8.2
+useProjectStore.subscribe((state) => {
+  if (autosaveTimer) {
+    clearTimeout(autosaveTimer);
+  }
+  autosaveTimer = setTimeout(() => {
+    if (state.project && state.project.slides && state.project.slides.length > 0) {
+      useRecentStore.getState().saveProject(state.project);
+    }
+  }, 500);
+});
 
 // ============================================================================
 // Granular Performance Selectors

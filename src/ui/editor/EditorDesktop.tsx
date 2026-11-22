@@ -5,6 +5,7 @@ import { SlideRail } from './SlideRail';
 import { MainCanvas } from './MainCanvas';
 import { Inspector } from './Inspector';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
+import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { APP_NAME } from '../../config/site';
 
 export interface EditorDesktopProps {
@@ -29,6 +30,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
       data-testid="editor-desktop"
       className="h-screen w-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden"
     >
+      <StorageQuotaBanner />
       {/* Editor Top Navigation Bar */}
       <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 flex items-center justify-between shrink-0 z-20">
         {/* Left: Home & Project Title */}
