@@ -698,3 +698,202 @@
   white-space: nowrap;
   direction: ltr !important;
 }
+
+/* ==========================================================================
+   Clean Template (Spec §7.1): Minimal, whitespace-led, flat cards, single accent
+   ========================================================================== */
+
+.template-clean.slide-canvas {
+  background: var(--bg);
+}
+
+.template-clean .slide-content-area {
+  padding-inline: 96px;
+  padding-block: 96px 40px;
+}
+
+.template-clean.aspect-landscape .slide-content-area {
+  padding-inline: 120px;
+  padding-block: 72px 28px;
+}
+
+.template-clean.aspect-tall .slide-content-area {
+  padding-inline: 80px;
+  padding-block: 280px 48px;
+}
+
+/* Typography overrides for Clean template */
+.template-clean .slide-title-h1 {
+  font-size: 88px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.template-clean.aspect-landscape .slide-title-h1 {
+  font-size: 80px;
+}
+
+.template-clean.aspect-tall .slide-title-h1 {
+  font-size: 82px;
+}
+
+.template-clean .slide-title-h2 {
+  font-size: 58px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.template-clean .slide-sub {
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Flat Cards & Crisp Corners */
+.template-clean .slide-card,
+.template-clean .rule-card,
+.template-clean .code-container {
+  border-radius: var(--card-radius, 12px);
+  box-shadow: none;
+  background: var(--card);
+}
+
+.template-clean .slide-card,
+.template-clean .rule-card {
+  border: 1px solid rgba(128, 128, 128, 0.12);
+}
+
+/* Chips, Tags & Badges */
+.template-clean .slide-tag {
+  border-radius: var(--chip-radius, 6px);
+  border: none;
+  background: var(--card);
+  color: var(--acc);
+  font-weight: 500;
+  font-size: 24px;
+  padding-inline: 16px;
+  padding-block: 6px;
+}
+
+.template-clean .rule-badge {
+  border-radius: var(--chip-radius, 6px);
+  background: var(--card);
+  color: var(--acc);
+  font-weight: 600;
+}
+
+.template-clean .slide-mono-line {
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.14);
+}
+
+/* Explain Slide */
+.template-clean .explain-bullet-node {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--acc);
+  box-shadow: none;
+  margin-block-start: 16px;
+}
+
+.template-clean .explain-number-node {
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--acc);
+  font-weight: 600;
+  border: none;
+}
+
+/* Rule Slide */
+.template-clean .rule-connector-h,
+.template-clean .rule-connector-v {
+  color: var(--mute);
+  font-weight: 300;
+}
+
+/* Compare Slide */
+.template-clean .compare-card-bad {
+  border: 1px solid rgba(128, 128, 128, 0.14);
+  border-inline-start: 4px solid var(--bad);
+  border-radius: var(--card-radius, 12px);
+  box-shadow: none;
+}
+
+.template-clean .compare-card-ok {
+  border: 1px solid rgba(128, 128, 128, 0.14);
+  border-inline-start: 4px solid var(--ok);
+  border-radius: var(--card-radius, 12px);
+  box-shadow: none;
+}
+
+/* Stat Slide */
+.template-clean .stat-big-value {
+  font-size: 130px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--acc);
+}
+
+.template-clean .stat-label {
+  font-size: 40px;
+  font-weight: 500;
+}
+
+/* Quote Slide */
+.template-clean .quote-mark {
+  font-size: 64px;
+  color: var(--acc);
+  opacity: 0.6;
+}
+
+.template-clean .quote-text {
+  font-size: 44px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.template-clean .quote-author {
+  font-size: 30px;
+  font-weight: 500;
+}
+
+/* CTA Slide — Single Accent, No Glow */
+.template-clean .cta-avatar-ring {
+  border-width: 2px;
+  border-color: var(--acc);
+}
+
+.template-clean .cta-avatar-placeholder {
+  background: var(--acc);
+}
+
+.template-clean .cta-action-button {
+  border-radius: 8px;
+  box-shadow: none;
+  background: var(--acc);
+  color: var(--on-acc);
+  font-weight: 600;
+}
+
+/* Signature Bar — Flat & Minimal */
+.template-clean .sig-avatar-ring {
+  border-width: 2px;
+}
+
+.template-clean .sig-avatar-placeholder {
+  background: var(--acc);
+}
+
+.template-clean .sig-counter-badge {
+  border-radius: 6px;
+  border: 1px solid rgba(128, 128, 128, 0.14);
+  background: var(--card);
+}
+
+.template-clean .sig-social-more {
+  border-radius: 6px;
+  border: 1px solid rgba(128, 128, 128, 0.14);
+}
+

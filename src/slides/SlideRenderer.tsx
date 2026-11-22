@@ -65,6 +65,13 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
     '--ok': palette.ok,
     '--bad': palette.bad,
     '--on-acc': palette.onAcc,
+    '--card-radius': `${template.radius.card}px`,
+    '--chip-radius': `${template.radius.chip}px`,
+    '--ts-h1': `${template.typeScale.h1}px`,
+    '--ts-h2': `${template.typeScale.h2}px`,
+    '--ts-body': `${template.typeScale.body}px`,
+    '--ts-small': `${template.typeScale.small}px`,
+    '--ts-mono': `${template.typeScale.mono}px`,
     direction: textDir && textDir !== 'auto' ? textDir : undefined,
     ...style,
   } as React.CSSProperties;
@@ -100,11 +107,12 @@ export const SlideRenderer: React.FC<SlideRendererProps> = (props) => {
 
   return (
     <div
-      className={`slide-canvas aspect-${aspectClass} ${className}`.trim()}
+      className={`slide-canvas aspect-${aspectClass} template-${templateId} ${className}`.trim()}
       style={paletteStyle}
       data-slide-id={slide.id}
       data-slide-type={slide.type}
       data-aspect-class={aspectClass}
+      data-template-id={templateId}
     >
       <div
         className="slide-template-bg"

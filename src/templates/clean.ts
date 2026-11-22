@@ -9,15 +9,16 @@ export const cleanTemplate: TemplateDef = {
     mono: 'JetBrains Mono, monospace',
   },
   typeScale: {
-    h1: 104,
-    h2: 72,
-    body: 42,
-    small: 28,
-    mono: 32,
+    h1: 96,
+    h2: 64,
+    body: 38,
+    small: 26,
+    mono: 30,
   },
   radius: {
-    card: 16,
-    chip: 8,
+    card: 12,
+    chip: 6,
   },
   Background: () => null,
 };
+
