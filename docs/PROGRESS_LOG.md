@@ -430,6 +430,22 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P3-3 (Start screen).
 - Needs from the owner: None.
 
+### P3-3 — started — 2026-11-22 20:50 — Antigravity
+- Branch / commit: feature/p3-3
+- What changed (files): Claimed P3-3 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement StartScreen component with guided path ("Start with Wizard"), direct-size path ("Pick Dimensions"), recent projects list with open/duplicate/delete actions, project import with schema validation/migration, and demo projects ("Try an example: English / Arabic"). Write comprehensive unit tests and wire into App.tsx.
+- Needs from the owner: None.
+
+### P3-3 — done — 2026-11-22 20:57 — Antigravity
+- Branch / commit: feature/p3-3 / 86f9a21
+- What changed (files): `src/ui/start/StartScreen.tsx`, `src/App.tsx`, `src/store/recentStore.ts`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/startScreen.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented StartScreen per Spec §10.2 & §11: guided entry path ("Start with Wizard"), direct-size dimension modal ("Pick Dimensions") offering 4:5, 1:1, 16:9, and 9:16 aspect ratios, recent projects list (up to 10 items with open, duplicate, delete actions), project import via file picker with schema migration and user-friendly error banners, demo seed projects (English and Arabic 9-slide Network presentations per Spec §11), resume active project banner, responsive layout for mobile (360px) and desktop, and full bilingual LTR/RTL support. Enhanced recentStore with full project storage and duplication. Wired StartScreen into App.tsx.
+- Tests run and result: Vitest 200 passed (26 files), Playwright 7 passed (all E2E), typecheck clean, lint clean, build clean.
+- Remaining / next step: Merge to main, proceed to P3-4 (Wizard).
+- Needs from the owner: None.
+
 
 
 
