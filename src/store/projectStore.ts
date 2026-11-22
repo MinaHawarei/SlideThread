@@ -148,6 +148,8 @@ export interface ProjectState {
   setSlideType: (id: string, nextType: SlideType) => void;
   toggleHideSignature: (id: string) => void;
   splitSlide: (id: string) => void;
+  appendSlides: (slides: Slide[]) => void;
+  replaceSlides: (slides: Slide[]) => void;
 }
 
 const initialProject = createDefaultProject();
@@ -255,6 +257,31 @@ export const useProjectStore = create<ProjectState>()(
             updatedAt: Date.now(),
           },
           activeSlideId: nextActiveId,
+        }));
+      },
+
+      appendSlides: (newSlides: Slide[]) => {
+        if (newSlides.length === 0) return;
+        const slides = [...get().project.slides, ...newSlides];
+        set((state) => ({
+          project: {
+            ...state.project,
+            slides,
+            updatedAt: Date.now(),
+          },
+          activeSlideId: newSlides[0]?.id || state.activeSlideId,
+        }));
+      },
+
+      replaceSlides: (newSlides: Slide[]) => {
+        if (newSlides.length === 0) return;
+        set((state) => ({
+          project: {
+            ...state.project,
+            slides: newSlides,
+            updatedAt: Date.now(),
+          },
+          activeSlideId: newSlides[0]?.id || '',
         }));
       },
 

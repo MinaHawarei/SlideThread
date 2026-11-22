@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
+import { PasteSlidesDialog } from './PasteSlidesDialog';
 import type { SlideType } from '../../core/schema';
 
 export interface MobileThumbnailStripProps {
@@ -23,6 +24,8 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
   const deleteSlide = useProjectStore((state) => state.deleteSlide);
   const reorderSlides = useProjectStore((state) => state.reorderSlides);
   const settings = useSettingsStore((state) => state.settings);
+
+  const [isPasteOpen, setIsPasteOpen] = useState(false);
 
   const isPost = project.contentType === 'post';
   const slides = project.slides;
@@ -164,15 +167,27 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
 
         {/* Add slide button inline in the strip if not single-slide post */}
         {!isPost && (
-          <button
-            type="button"
-            data-testid="mobile-add-slide-btn"
-            onClick={() => handleAddSlide('explain')}
-            aria-label={t('editor.addSlide')}
-            className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-lg border-2 border-dashed border-cyan-400 dark:border-cyan-600 bg-cyan-50/50 dark:bg-cyan-950/30 text-cyan-600 dark:text-cyan-400 flex flex-col items-center justify-center font-bold text-lg hover:bg-cyan-100 transition-colors"
-          >
-            <span>+</span>
-          </button>
+          <>
+            <button
+              type="button"
+              data-testid="mobile-add-slide-btn"
+              onClick={() => handleAddSlide('explain')}
+              aria-label={t('editor.addSlide')}
+              className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-lg border-2 border-dashed border-cyan-400 dark:border-cyan-600 bg-cyan-50/50 dark:bg-cyan-950/30 text-cyan-600 dark:text-cyan-400 flex flex-col items-center justify-center font-bold text-lg hover:bg-cyan-100 transition-colors"
+            >
+              <span>+</span>
+            </button>
+            <button
+              type="button"
+              data-testid="mobile-paste-slides-btn"
+              onClick={() => setIsPasteOpen(true)}
+              aria-label={t('paste.title')}
+              title={t('paste.title')}
+              className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 flex flex-col items-center justify-center font-bold text-sm hover:bg-slate-100 transition-colors"
+            >
+              <span>📋</span>
+            </button>
+          </>
         )}
       </div>
 
@@ -247,6 +262,12 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
           )}
         </div>
       </div>
+
+      {/* Paste to Slides Dialog */}
+      <PasteSlidesDialog
+        isOpen={isPasteOpen}
+        onClose={() => setIsPasteOpen(false)}
+      />
     </div>
   );
 };

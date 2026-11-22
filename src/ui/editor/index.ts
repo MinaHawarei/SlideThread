@@ -10,3 +10,4 @@ export * from './SlideInspector';
 export * from './DesignInspector';
 export * from './BrandInspector';
 export * from './ChangeFormatDialog';
+export * from './PasteSlidesDialog';

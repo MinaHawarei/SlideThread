@@ -5,6 +5,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
+import { PasteSlidesDialog } from './PasteSlidesDialog';
 import type { SlideType } from '../../core/schema';
 
 export interface SlideRailProps {
@@ -23,6 +24,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
   const settings = useSettingsStore((state) => state.settings);
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [isPasteOpen, setIsPasteOpen] = useState(false);
 
   const isPost = project.contentType === 'post';
   const slides = project.slides;
@@ -69,19 +71,31 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
           Slides ({slides.length})
         </span>
 
-        {/* Add slide button is hidden for single-slide posts per Spec §4.4 */}
+        {/* Actions are hidden for single-slide posts per Spec §4.4 */}
         {!isPost && (
-          <button
-            type="button"
-            data-testid="rail-add-slide-btn"
-            onClick={() => handleAddSlide('explain')}
-            className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
-            aria-label={t('editor.addSlide')}
-            title={t('editor.addSlide')}
-          >
-            <span>+</span>
-            <span>{t('editor.addSlide')}</span>
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              data-testid="rail-paste-slides-btn"
+              onClick={() => setIsPasteOpen(true)}
+              className="text-xs font-semibold px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-cyan-500"
+              aria-label={t('paste.title')}
+              title={t('paste.title')}
+            >
+              <span>📋</span>
+            </button>
+            <button
+              type="button"
+              data-testid="rail-add-slide-btn"
+              onClick={() => handleAddSlide('explain')}
+              className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
+              aria-label={t('editor.addSlide')}
+              title={t('editor.addSlide')}
+            >
+              <span>+</span>
+              <span>{t('editor.addSlide')}</span>
+            </button>
+          </div>
         )}
       </div>
 
@@ -254,6 +268,12 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
           );
         })}
       </div>
+
+      {/* Paste to Slides Dialog */}
+      <PasteSlidesDialog
+        isOpen={isPasteOpen}
+        onClose={() => setIsPasteOpen(false)}
+      />
     </aside>
   );
 };
