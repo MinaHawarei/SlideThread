@@ -204,3 +204,11 @@ Agent name: Antigravity
 - Tests run and result: Vitest 58 passed (11 files), typecheck clean, lint clean, build clean.
 - Remaining / next step: Merge to main, proceed to P1-4 (Text fit: useFitText).
 - Needs from the owner: None.
+
+### P1-4 — started — 2026-11-22 19:39 — Antigravity
+- Branch / commit: feature/p1-4
+- What changed (files): Claimed P1-4 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement calculateFitScale pure math & useFitText hook (src/core/textFit.ts) with measure-then-scale loop, min scale 0.6, overflow detection, synchronous fitTextElement helper for export pipeline, and write unit tests.
+- Needs from the owner: None.
