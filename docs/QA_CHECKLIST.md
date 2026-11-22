@@ -73,3 +73,13 @@ Run on a physical iPhone in Safari with the Arabic keyboard and a physical mid-r
 6. Repeat the checks after switching the project between LTR and RTL, then reload and confirm the saved rich text still renders in the correct order.
 
 Attach notes with the device/browser/keyboard and pass/fail result to the D-09 owner verification record. Do not treat Chromium desktop or WebKit automation as proof of native Arabic IME behavior.
+
+### Sortable slide strip on real touch devices
+
+On the same physical iPhone and Android devices:
+
+1. In the mobile editor, tap a thumbnail once and confirm it selects the slide without starting a reorder.
+2. Press and hold the slide drag handle until the lift state appears, then move it before and after neighboring slides. Confirm it reorders only after the hold delay, the list does not scroll accidentally, and the released slide settles into place.
+3. Try a brief hold followed by a vertical scroll and confirm the strip scrolls without changing slide order. Repeat near the beginning and end of a long strip.
+4. Enable the operating system's reduced-motion setting and reorder again. Confirm the operation still completes and uses no spring travel animation.
+5. Record the device, browser, whether short tap / long press / scroll / reduced motion passed, and any accidental reorder or stuck touch.
