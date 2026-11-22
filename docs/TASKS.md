@@ -19,7 +19,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ## Phase P0 — Foundation and export spike
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| P0-1 | Scaffold: Vite + React + TS strict, Tailwind, ESLint, Prettier, Vitest, Playwright, Zustand | — | [ ] | |
+| P0-1 | Scaffold: Vite + React + TS strict, Tailwind, ESLint, Prettier, Vitest, Playwright, Zustand | — | [x] | Antigravity 2026-11-22 · feature/p0-1 · 5f9517a |
 | P0-2 | Deploy: connect to Vercel, confirm preview URL works, vercel.json CSP & security headers | P0-1 | [ ] | |
 | P0-3 | Fonts: install and wire @fontsource packages, fontsReady() helper | P0-2 | [ ] | |
 | P0-4 | Export spike page (/spike) with test slides | P0-3 | [ ] | |

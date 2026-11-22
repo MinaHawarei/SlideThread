@@ -12,3 +12,19 @@ Agent name: Antigravity
 - Tests run and result: N/A (initial setup)
 - Remaining / next step: Orient and pick P0-1.
 - Needs from the owner: None.
+
+### P0-1 — started — 2026-11-22 17:42 — Antigravity
+- Branch / commit: feature/p0-1
+- What changed (files): Claimed P0-1 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Scaffold Vite + React + TS strict, Tailwind, ESLint, Prettier, Vitest, Playwright, Zustand, folder layout, site.ts, and npm scripts.
+- Needs from the owner: None.
+
+### P0-1 — done — 2026-11-22 18:08 — Antigravity
+- Branch / commit: feature/p0-1 / 5f9517a
+- What changed (files): package.json, tsconfig.json, vite.config.ts, vitest.config.ts, playwright.config.ts, tailwind.config.ts, postcss.config.js, eslint.config.js, .prettierrc, index.html, src/config/site.ts, src/App.tsx, src/main.tsx, src/index.css, tests/setup.ts, tests/unit/site.test.ts, tests/e2e/smoke.spec.ts, Spec §13 directory structure
+- Decisions / deviations from the plan: Configured Playwright to use system google-chrome in headless mode with HTML open 'never'.
+- Tests run and result: npm run lint (clean), npm run typecheck (clean), npm test (1 passed), npm run build (clean), npm run test:e2e (1 passed).
+- Remaining / next step: Merge to main, then proceed to P0-2.
+- Needs from the owner: None.
