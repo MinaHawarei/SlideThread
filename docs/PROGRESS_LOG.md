@@ -76,3 +76,19 @@ Agent name: Antigravity
 - Tests run and result: lint clean, typecheck clean, vitest 7 passed, build clean, test:e2e 2 passed.
 - Remaining / next step: Merge to main, proceed to P0-5 (Candidate libraries).
 - Needs from the owner: None.
+
+### P0-5 — started — 2026-11-22 18:24 — Antigravity
+- Branch / commit: feature/p0-5
+- What changed (files): Claimed P0-5 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Install html-to-image and modern-screenshot, build unified capture(node, size) interface with warm-up capture, font/image readiness waits, and offscreen stage integration.
+- Needs from the owner: None.
+
+### P0-5 — done — 2026-11-22 18:27 — Antigravity
+- Branch / commit: feature/p0-5 / 4a16978
+- What changed (files): package.json, package-lock.json, src/export/capture.ts, src/spike/SpikePage.tsx, tests/unit/capture.test.ts, tests/e2e/capture.spec.ts, docs/DECISIONS.md
+- Decisions / deviations from the plan: Implemented unified capture() function supporting html-to-image and modern-screenshot with fontsReady, imagesReady, and warm-up pass.
+- Tests run and result: lint clean, typecheck clean, vitest 10 passed, build clean, test:e2e 3 passed.
+- Remaining / next step: Merge to main, proceed to P0-6 (Evaluate candidate libraries).
+- Needs from the owner: None.
