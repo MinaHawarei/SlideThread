@@ -75,3 +75,12 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
   - Full-bleed media (`ImageSlide`), `background`, `top`, `side`, and `replace-text` placements hold up across all 3 templates.
   - Caption bar styled appropriately for each template: gradient overlay in Network, flat semi-transparent dark bar in Clean, solid contrast block with top accent border in Bold.
 
+## 2026-11-22 — Persistence architecture & quota resilience (P4-1)
+- **localStorage vs IndexedDB Partitioning (Spec §8.2):**
+  - Text metadata and project settings are stored in `localStorage` (`app:current-project:v1` and `app:projects:v1`).
+  - Large binary assets (images, photos) are stored in `IndexedDB` (`idb-keyval` store `slidethread-assets-db`/`media-assets`) keyed by `assetId`.
+  - Rationale: Browsers strictly limit `localStorage` to ~5 MB. Storing image bytes in localStorage exhausts this limit immediately. Offloading binaries to IndexedDB while keeping text and settings in localStorage satisfies the owner's preference for client-side privacy while ensuring storage longevity.
+- **Autosave Pipeline:** Debounced ~500ms on project mutation in `useProjectStore`, automatically syncing changes to `app:current-project:v1` and updating the recent projects list in `app:projects:v1`.
+- **Quota Resilience:** Custom storage wrapper traps `DOMException` (`QuotaExceededError`). If localStorage quota is reached, in-memory state is preserved, an unobtrusive banner alerts the user to export JSON or delete older projects, and execution never crashes.
+- **Data Cleanup ("Clear all my data"):** Removes `app:settings:v1`, `app:projects:v1`, and `app:current-project:v1` from localStorage and clears all IndexedDB media assets via `clearAllAssets()`.
+
