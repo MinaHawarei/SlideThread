@@ -216,6 +216,15 @@ export const en = {
   'paste.apply': 'Apply to Project',
   'paste.cancel': 'Cancel',
 
+  // Project JSON I/O
+  'io.exportJson': 'Export JSON',
+  'io.exportSuccess': 'Project exported successfully.',
+  'io.exportError': 'Failed to export project: {error}',
+  'io.importError': 'Failed to import project: {error}',
+  'io.largeWarningTitle': 'Large Project File',
+  'io.largeWarningDesc': 'This project file is {size} MB, exceeding the recommended 5 MB limit due to embedded image assets. Download anyway?',
+  'io.downloadAnyway': 'Download Anyway',
+
   // Common UI
   'common.close': 'Close',
   'common.save': 'Save',

@@ -7,8 +7,9 @@ import { useProjectStore } from '../../store/projectStore';
 import { useRecentStore } from '../../store/recentStore';
 import { getDemoProjectEn, getDemoProjectAr } from '../../store/seedProjects';
 import type { FormatId } from '../../core/formats';
-import { migrate } from '../../core/migrate';
 import type { Project } from '../../core/schema';
+import { importProjectFromJSON, handleExportProject } from '../../core/projectIO';
+import { SizeWarningModal } from '../common/SizeWarningModal';
 
 export interface StartScreenProps {
   onStartWizard?: () => void;
@@ -35,6 +36,16 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   const [isDirectModalOpen, setIsDirectModalOpen] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [sizeWarning, setSizeWarning] = useState<{
+    isOpen: boolean;
+    sizeMB: string;
+    proceed: () => void;
+  }>({
+    isOpen: false,
+    sizeMB: '0',
+    proceed: () => {},
+  });
 
   // Resume active project
   const handleResumeCurrent = () => {
@@ -115,6 +126,23 @@ export const StartScreen: React.FC<StartScreenProps> = ({
     }
   };
 
+  // Export a recent project JSON
+  const handleExportRecent = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const proj = getProject(id);
+    if (!proj) return;
+    await handleExportProject(proj, (sizeMB, proceed) => {
+      setSizeWarning({
+        isOpen: true,
+        sizeMB,
+        proceed: () => {
+          setSizeWarning((prev) => ({ ...prev, isOpen: false }));
+          proceed();
+        },
+      });
+    });
+  };
+
   // File import handling
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -123,19 +151,12 @@ export const StartScreen: React.FC<StartScreenProps> = ({
     setImportError(null);
     try {
       const text = await file.text();
-      let rawData: unknown;
-      try {
-        rawData = JSON.parse(text);
-      } catch {
-        throw new Error('File content is not valid JSON');
-      }
-
-      const migrated = migrate(rawData);
-      saveProject(migrated);
-      setProject(migrated);
+      const imported = await importProjectFromJSON(text);
+      saveProject(imported);
+      setProject(imported);
 
       if (onOpenProject) {
-        onOpenProject(migrated);
+        onOpenProject(imported);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -502,6 +523,14 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                     </button>
                     <div className="flex items-center gap-3">
                       <button
+                        data-testid={`recent-export-${item.id}`}
+                        onClick={(e) => handleExportRecent(item.id, e)}
+                        className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                        title={t('io.exportJson')}
+                      >
+                        {t('io.exportJson')}
+                      </button>
+                      <button
                         data-testid={`recent-dup-${item.id}`}
                         onClick={(e) => handleDuplicateRecent(item.id, e)}
                         className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white"
@@ -648,6 +677,14 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
       {/* Footer (Spec §10.3) */}
       <Footer />
+
+      {/* Project Size Warning Modal */}
+      <SizeWarningModal
+        isOpen={sizeWarning.isOpen}
+        sizeMB={sizeWarning.sizeMB}
+        onConfirm={sizeWarning.proceed}
+        onCancel={() => setSizeWarning((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };

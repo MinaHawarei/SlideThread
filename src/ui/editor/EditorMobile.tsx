@@ -12,6 +12,8 @@ import { DesignInspector } from './DesignInspector';
 import { BrandInspector } from './BrandInspector';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
+import { handleExportProject } from '../../core/projectIO';
+import { SizeWarningModal } from '../common/SizeWarningModal';
 
 export type MobileTab = 'slides' | 'edit' | 'design' | 'export';
 
@@ -42,6 +44,29 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
   const [designSubTab, setDesignSubTab] = useState<'design' | 'brand'>('design');
   const [showSafeZones, setShowSafeZones] = useState<boolean>(false);
+
+  const [sizeWarning, setSizeWarning] = useState<{
+    isOpen: boolean;
+    sizeMB: string;
+    proceed: () => void;
+  }>({
+    isOpen: false,
+    sizeMB: '0',
+    proceed: () => {},
+  });
+
+  const handleExportJson = async () => {
+    await handleExportProject(project, (sizeMB, proceed) => {
+      setSizeWarning({
+        isOpen: true,
+        sizeMB,
+        proceed: () => {
+          setSizeWarning((prev) => ({ ...prev, isOpen: false }));
+          proceed();
+        },
+      });
+    });
+  };
 
   // Measure container for responsive slide auto-fit
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -453,9 +478,27 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               <span>↓</span>
               <span>{t('editor.export')}</span>
             </button>
+
+            <button
+              type="button"
+              data-testid="mobile-export-json-btn"
+              onClick={handleExportJson}
+              className="w-full min-h-[44px] py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium text-xs transition-colors flex items-center justify-center gap-2"
+            >
+              <span>📄</span>
+              <span>{t('io.exportJson')}</span>
+            </button>
           </div>
         )}
       </MobileBottomSheet>
+
+      {/* Size Warning Modal */}
+      <SizeWarningModal
+        isOpen={sizeWarning.isOpen}
+        sizeMB={sizeWarning.sizeMB}
+        onConfirm={sizeWarning.proceed}
+        onCancel={() => setSizeWarning((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };

@@ -218,6 +218,15 @@ export const ar: Record<TranslationKey, string> = {
   'paste.apply': 'تطبيق على المشروع',
   'paste.cancel': 'إلغاء',
 
+  // Project JSON I/O
+  'io.exportJson': 'تصدير JSON',
+  'io.exportSuccess': 'تم تصدير المشروع بنجاح.',
+  'io.exportError': 'فشل تصدير المشروع: {error}',
+  'io.importError': 'فشل استيراد المشروع: {error}',
+  'io.largeWarningTitle': 'حجم ملف المشروع كبير',
+  'io.largeWarningDesc': 'حجم ملف هذا المشروع هو {size} ميغابايت، وهو يتجاوز الحد الموصى به (5 ميغابايت) لاحتوائه على صور مضمنة. هل ترغب بالتنزيل على أي حال؟',
+  'io.downloadAnyway': 'تنزيل على أي حال',
+
   // Common UI
   'common.close': 'إغلاق',
   'common.save': 'حفظ',

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
+import { handleExportProject } from '../../core/projectIO';
+import { SizeWarningModal } from '../common/SizeWarningModal';
 import { SlideRail } from './SlideRail';
 import { MainCanvas } from './MainCanvas';
 import { Inspector } from './Inspector';
@@ -21,8 +23,31 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
 
+  const [sizeWarning, setSizeWarning] = useState<{
+    isOpen: boolean;
+    sizeMB: string;
+    proceed: () => void;
+  }>({
+    isOpen: false,
+    sizeMB: '0',
+    proceed: () => {},
+  });
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateProjectMeta({ title: e.target.value });
+  };
+
+  const handleExportJson = async () => {
+    await handleExportProject(project, (sizeMB, proceed) => {
+      setSizeWarning({
+        isOpen: true,
+        sizeMB,
+        proceed: () => {
+          setSizeWarning((prev) => ({ ...prev, isOpen: false }));
+          proceed();
+        },
+      });
+    });
   };
 
   return (
@@ -82,6 +107,17 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
 
           <button
             type="button"
+            data-testid="editor-export-json-btn"
+            onClick={handleExportJson}
+            className="py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors flex items-center gap-1.5"
+            title={t('io.exportJson')}
+          >
+            <span>📄</span>
+            <span>{t('io.exportJson')}</span>
+          </button>
+
+          <button
+            type="button"
             data-testid="editor-export-btn"
             onClick={onOpenExport}
             className="py-1.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5"
@@ -98,6 +134,14 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
         <MainCanvas />
         <Inspector />
       </div>
+
+      {/* Size Warning Modal */}
+      <SizeWarningModal
+        isOpen={sizeWarning.isOpen}
+        sizeMB={sizeWarning.sizeMB}
+        onConfirm={sizeWarning.proceed}
+        onCancel={() => setSizeWarning((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };
