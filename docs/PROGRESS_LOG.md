@@ -627,3 +627,20 @@ Agent name: Antigravity
 - Tests run and result: N/A (tracker setup)
 - Remaining / next step: Commit revision tracker setup, then orient and resume in-progress P5-2 as instructed.
 - Needs from the owner: None.
+
+
+### REVISION-SETUP — done — 2026-11-23 00:50 — Codex
+- Branch / commit: chore/revision-setup / 69df610 (fast-forwarded into feature/p5-2)
+- What changed (files): `docs/TASKS.md`, `docs/PROGRESS_LOG.md`
+- Decisions / deviations from the plan: Added revision phases R0–R9 and D-06…D-11; documented `[s]`; set original P5 dependencies to GR9.
+- Tests run and result: N/A (tracker setup)
+- Remaining / next step: Resume R0-1 after finishing the pre-existing P5-2 in-progress task.
+- Needs from the owner: None.
+
+### P5-2 — done — 2026-11-23 00:50 — Codex
+- Branch / commit: feature/p5-2 / 1b6473e
+- What changed (files): `LICENSE`, `NOTICE`
+- Decisions / deviations from the plan: Added the project MIT license and documented the three bundled font packages, versions, copyright notices, and full SIL OFL 1.1 text. **Ordering conflict:** REVISION_PLAN §2.1 says P5 tasks execute after GR9, while MASTER_PROMPT_REVISION procedure step 2 requires resuming any `[~]` task unless it is superseded. P5-2 was already `[~]` and is retained (not superseded), so I followed the resume instruction.
+- Tests run and result: `npm run lint` (pass); `npm run typecheck` (pass); `npm test` (329 passed, 40 files; existing React `act(...)` warnings); `npm run build` (pass; existing Rollup notices for Zod purity annotations).
+- Remaining / next step: First eligible revision task is R0-1.
+- Needs from the owner: None.
