@@ -220,3 +220,11 @@ Agent name: Antigravity
 - Tests run and result: Vitest 69 passed (12 files), typecheck clean, lint clean, build clean.
 - Remaining / next step: Merge to main, proceed to P1-5 (Slide components 9 types & /gallery route).
 - Needs from the owner: None.
+
+### P1-5 — started — 2026-11-22 19:42 — Antigravity
+- Branch / commit: feature/p1-5
+- What changed (files): Claimed P1-5 in TASKS.md.
+- Decisions / deviations from the plan: None.
+- Tests run and result: N/A.
+- Remaining / next step: Implement 9 slide components under src/slides/ with 4 aspect-class variants each, plain CSS modules with logical properties and CSS variables, dir='auto' bidi handling, code always LTR, build /gallery dev route, and write unit/e2e tests.
+- Needs from the owner: None.
