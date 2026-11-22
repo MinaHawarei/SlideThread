@@ -97,9 +97,9 @@ Commands the repo must provide (document in README): `dev`, `build`, `preview`, 
 - **P3-10 Accessibility pass:** focus order, labels, keyboard operation for rail reorder (alternate buttons), reduced motion, contrast on app chrome.
 
 ### Gate G3
-- [ ] A new user can go from start → export-ready carousel on desktop and on a phone viewport using only the UI.
-- [ ] Switching format/orientation/template/color/theme never loses content (Playwright test).
-- [ ] No console errors; keyboard navigation works for the main flow.
+- [x] A new user can go from start → export-ready carousel on desktop and on a phone viewport using only the UI.
+- [x] Switching format/orientation/template/color/theme never loses content (Playwright test).
+- [x] No console errors; keyboard navigation works for the main flow.
 
 ---
 
@@ -178,4 +178,4 @@ More slide types, more templates, user-uploaded templates (JSON), shareable proj
 Code merged, tests added/updated and passing, lint + typecheck clean, relevant docs updated, no new console errors, and the gate checklist for the phase updated in this file (tick boxes in a short `## Status` section appended at the end as phases complete).
 
 ## Status
-- [x] G0 (owner-verify pending: D-01)  - [x] G1  - [x] G2  - [ ] G3  - [ ] G4  - [ ] G5
+- [x] G0 (owner-verify pending: D-01)  - [x] G1  - [x] G2  - [x] G3  - [ ] G4  - [ ] G5

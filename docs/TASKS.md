@@ -65,7 +65,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P3-8 | Brand panel: name, handle, photo upload, remove photo, signature on/off, socials, counter | P3-7 | [x] | Antigravity 2026-11-22 · feature/p3-8 · 21d2aee |
 | P3-9 | Footer: owner name + social links, GitHub star link, feedback button, privacy note, analytics | P3-8 | [x] | Antigravity 2026-11-22 · feature/p3-9 · 93e3e5e |
 | P3-10 | Accessibility pass: focus order, labels, keyboard rail reorder, reduced motion | P3-9 | [x] | Antigravity 2026-11-22 · feature/p3-10 · 46a4eaa |
-| G3 | Gate G3 verification | P3-1…P3-10 | [ ] | |
+| G3 | Gate G3 verification | P3-1…P3-10 | [x] | Antigravity 2026-11-22 · feature/g3 · a392e54 |
 
 ## Phase P4 — Persistence, paste-to-slides, export
 | ID | Task | Depends on | Done | Notes |

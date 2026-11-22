@@ -510,6 +510,17 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to Gate G3 verification.
 - Needs from the owner: None.
 
+### G3 — done — 2026-11-22 21:59 — Antigravity
+- Branch / commit: feature/g3 / a392e54
+- What changed (files): `src/ui/start/StartScreen.tsx`, `src/ui/wizard/Wizard.tsx`, `tests/e2e/gateG3.spec.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`, `docs/IMPLEMENTATION_PLAN.md`.
+- Decisions / deviations from the plan: Implemented and passed Gate G3 verification suite in `tests/e2e/gateG3.spec.ts`:
+  1. Desktop flow: verified start screen -> wizard (platform, content type, format, template) -> editor workspace (rail, canvas, inspector); verified custom title edits and slide additions; verified format switching to 1:1, template switching to Clean, color switching to Emerald, and theme switching to Light mode without losing any slide text or styling (100% lossless relayout); verified keyboard navigation (ArrowLeft/ArrowRight); verified export button readiness; verified 0 console errors.
+  2. Mobile phone viewport flow (390x844): verified start screen -> demo project -> mobile single-slide canvas, thumbnail strip, floating next navigation, bottom tabs (Slides, Edit, Design, Export), bottom sheets with subtabs and keyboard Escape closing; verified 0 console errors.
+- Tests run and result: Vitest 282 passed (33 files), Playwright 9 passed (all E2E), ESLint 0 errors 0 warnings, typecheck clean, build clean.
+- Remaining / next step: Merge to main, proceed to Phase 4 (Task P4-1: Persistence: autosave, versioned localStorage, IndexedDB assets, graceful quota UI).
+- Needs from the owner: None.
+
+
 
 
 
