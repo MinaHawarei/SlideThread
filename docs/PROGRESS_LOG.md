@@ -486,6 +486,14 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P3-8 (Brand panel).
 - Needs from the owner: None.
 
+### P3-8 — done — 2026-11-22 21:34 — Antigravity
+- Branch / commit: feature/p3-8 / 21d2aee
+- What changed (files): `src/core/media.ts`, `src/core/schema.ts`, `src/slides/SignatureBar.tsx`, `src/store/settingsStore.ts`, `src/ui/editor/BrandInspector.tsx`, `tests/unit/brandPanel.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Implemented full Brand panel per Spec §6.2, §8.1, §10.2: display name, primary handle, avatar photo upload with center-crop to square and downscale to 400x400 px (`processBrandPhoto`, `calculateSquareCrop`), remove photo button, signature bar visibility toggle, slide counter toggle (`showCounter` respected across all slides), social accounts list with icons and dynamic add/remove with max-3 signature notice, UI language switcher (English/Arabic), reset to defaults action, and versioned localStorage persistence under key `app:settings:v1` (version: 1). All interactive touch targets >= 44px.
+- Tests run and result: Vitest 261 passed (31 files), Playwright 7 passed (all E2E), ESLint 0 errors 0 warnings, typecheck clean, build clean.
+- Remaining / next step: Merge to main, proceed to P3-9 (Footer).
+- Needs from the owner: None.
+
 
 
 
