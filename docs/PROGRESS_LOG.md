@@ -680,3 +680,20 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` (pass); `npm run typecheck` (pass); `npm test` (329 passed, 40 files; existing React `act(...)` warnings); `npm run build` (pass; existing Zod Rollup annotation notices); targeted manipulation Playwright test (pass); full `npm run test:e2e` (14 passed).
 - Remaining / next step: R0-3, rich-text engine spike.
 - Needs from the owner: Complete D-09 real-device touch/performance checks before R9-1.
+
+
+### R0-3 — started — 2026-11-23 01:07 — Codex
+- Branch / commit: feature/r0-3
+- What changed (files): `docs/TASKS.md` (claimed R0-3)
+- Decisions / deviations from the plan: Compare the named engines and a custom option without adding any app dependency during the spike.
+- Tests run and result: N/A (spike in progress)
+- Remaining / next step: Gather official package/docs/license evidence; probe browser behavior and serialization/paste; record the real-device IME action in QA.
+- Needs from the owner: None before R0-3; D-09 remains tracked for later release hardening.
+
+### R0-3 — done — 2026-11-23 01:27 — Codex
+- Branch / commit: feature/r0-3 / 6530bac
+- What changed (files): `docs/spikes/RICHTEXT.md`, `docs/DECISIONS.md`, `docs/QA_CHECKLIST.md`, `docs/TASKS.md`
+- Decisions / deviations from the plan: Selected Tiptap with an explicit small extension set; keep the app's RichText model as persisted data and use adapters. Measured prototype initial-route JS at 146.35 kB gzip for Tiptap versus 127.27 kB for Lexical; these are indicative stacks, and Tiptap's small probe omitted local history. No app dependency added. Native Arabic IME could not be verified in desktop Chromium; exact real-device owner checks added under D-09 and remain required before R9-1.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 329 passed / 40 files (existing React `act(...)` warnings); `npm run build` pass (existing Zod Rollup annotation notices); `npm run test:e2e` 14 passed. The first E2E invocation ran concurrently with build/unit tests and had two timeouts; a standalone full rerun passed all 14.
+- Remaining / next step: R0-4, sortable animation spike.
+- Needs from the owner: Complete D-09 physical Arabic IME and touch checks before R9-1.
