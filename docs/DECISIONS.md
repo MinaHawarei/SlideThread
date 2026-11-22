@@ -25,6 +25,13 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
 - **Libraries:** Installed `html-to-image` and `modern-screenshot` behind unified `capture(element, options)` interface in `src/export/capture.ts`.
 - **Pre-capture Pipeline:** Runs `fontsReady()` and `imagesReady()` (decoding `<img>` elements) prior to capture.
 - **Warm-up Pass:** Executes a pre-pass capture to prevent first-render font/layout glitches common on WebKit/Safari.
+
+## 2026-11-22 — Candidate evaluation & matrix results (P0-6)
+- **Candidate Performance:** Tested in Chromium across 1080×1350, 1080×1080, 1080×1920, and 1920×1080.
+  - `html-to-image`: ~200–450ms per slide; excellent fidelity for Arabic ligatures, diacritics, SVG network, shadows, and images.
+  - `modern-screenshot`: ~600–1100ms per slide; functional but noticeably higher latency.
+- **Multi-slide Sequential Export:** 10 consecutive slide captures completed without memory bloat or canvas exhaustion.
+- **Device Checks:** Documented real-device iOS Safari and Android Chrome test procedures in `docs/QA_CHECKLIST.md` for owner verification.
 - **CSP Policy:** Restricts scripts and connections to self and Vercel Analytics (`va.vercel-scripts.com`, `vitals.vercel-insights.com`). Allows `data:` and `blob:` for images and client-side canvas/download generation.
 - **Security Headers:** Added `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`.
 - **SPA Rewrites:** Added rewrite for client-side routing on Vercel.
