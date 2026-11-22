@@ -502,6 +502,15 @@ Agent name: Antigravity
 - Remaining / next step: Merge to main, proceed to P3-10 (Accessibility pass).
 - Needs from the owner: None.
 
+### P3-10 — done — 2026-11-22 21:52 — Antigravity
+- Branch / commit: feature/p3-10 / 46a4eaa
+- What changed (files): `src/index.css`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `src/ui/editor/SlideRail.tsx`, `src/ui/editor/MobileThumbnailStrip.tsx`, `src/ui/editor/MainCanvas.tsx`, `src/ui/editor/Inspector.tsx`, `src/ui/editor/EditorMobile.tsx`, `src/ui/editor/ChangeFormatDialog.tsx`, `src/ui/wizard/Wizard.tsx`, `tests/unit/accessibility.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Comprehensive accessibility overhaul per Spec §10.1 & WCAG 2.1 AA: added global `:focus-visible` styling (`outline: 2px solid #06b6d4`, `outline-offset: 2px`) and `@media (prefers-reduced-motion: reduce)` rules; added keyboard slide reordering on desktop SlideRail (`Alt+ArrowUp` / `Alt+ArrowDown`) and mobile strip (`Alt+ArrowLeft` / `Alt+ArrowRight`); slide selection with Space/Enter; full ARIA roles (`role="radiogroup"`, `role="radio"`, `role="tablist"`, `role="tab"`, `role="tabpanel"`, `role="dialog"`, `role="progressbar"`, `aria-selected`, `aria-checked`, `aria-current`, `aria-controls`, `aria-labelledby`, `aria-modal`); accessible `aria-label` across all action, zoom, and navigation buttons; verified contrast on app chrome (≥ 4.5:1).
+- Tests run and result: Vitest 282 passed (33 files), Playwright 7 passed (all E2E), ESLint 0 errors 0 warnings, typecheck clean, build clean.
+- Remaining / next step: Merge to main, proceed to Gate G3 verification.
+- Needs from the owner: None.
+
+
 
 
 
