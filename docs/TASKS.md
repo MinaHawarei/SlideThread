@@ -62,7 +62,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ### Phase R3 — Editor core (GATE GR3)
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| R3-1 | Element model plumbing: overrides resolution per aspect class, extras layer, z-order, selection state, hit testing. | GR2 | [ ] | |
+| R3-1 | Element model plumbing: overrides resolution per aspect class, extras layer, z-order, selection state, hit testing. | GR2 | [x] | Codex 2026-11-23 · feature/r3-1 · bd7f903 |
 | R3-2 | Manipulation: select/move/resize/rotate, snapping and guides, reset controls (library from R0-2). | R3-1 | [ ] | |
 | R3-3 | Keyboard and accessibility for canvas editing, numeric inspector, live-region announcements (§5.2). | R3-2 | [ ] | |
 | R3-4 | Touch editing: drag, pinch, rotate, ≥ 44 px handles, bottom toolbar. | R3-3 | [ ] | |

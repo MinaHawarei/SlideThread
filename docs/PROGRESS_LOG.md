@@ -1055,3 +1055,19 @@ Agent name: Antigravity
 - Tests run and result: `npm run template:validate` (5 templates / 80 stress combinations), template index `--check`, preview `--check`, documented R2-8 scaffold/preview/validate dry-run (6 templates / 96 combinations), `tests/unit/patternSpike.test.ts` (3 passed), and `tests/e2e/patternSpike.spec.ts` (1 passed including exported crops and seam continuity).
 - Remaining / next step: R3-1, element model plumbing.
 - Needs from the owner: None.
+
+### R3-1 — started — 2026-11-23 16:00 — Codex
+- Branch / commit: feature/r3-1
+- What changed (files): `docs/TASKS.md` (claimed R3-1).
+- Decisions / deviations from the plan: Build shared pure model utilities on the existing stable layout frame IDs, applying normalized overrides only for the active aspect class. Keep selection transient and separate from persisted project content.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Implement layout override resolution, extras ordering and hit testing, plus transient selection state; add unit tests and run all required checks.
+- Needs from the owner: None.
+
+### R3-1 — done — 2026-11-23 16:14 — Codex
+- Branch / commit: feature/r3-1 / `bd7f903`
+- What changed (files): Added `src/core/elementModel.ts` for aspect-specific override resolution, combined stable slot/extra ordering, and rotated normalized hit testing; added transient `src/store/selectionStore.ts`; added unit coverage in `tests/unit/elementModel.test.ts`.
+- Decisions / deviations from the plan: Existing layout frames provide the stable IDs and normalized base geometry. Selection remains editor state and is not persisted with project content. Visual canvas integration remains for subsequent R3 tasks.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (416 passed / 55 files), `npm run build`, and `git diff --check` passed. Build emits existing Zod annotation notices. No E2E was run because this change adds pure model plumbing without changing UI or rendering.
+- Remaining / next step: R3-2, direct manipulation.
+- Needs from the owner: None.
