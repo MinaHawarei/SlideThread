@@ -54,11 +54,11 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 ### R2-2 — done — 2026-11-23 13:28 — Codex
-- Branch / commit: feature/r2-2 / COMMIT
+- Branch / commit: feature/r2-2 / e4eec5c
 - What changed (files): Added 18 engine layout archetypes (two per slide type), stable slot ids with logical normalized geometry for all four aspect classes, a dev-only localized gallery route previewing all 72 variants, unit and browser coverage, and the 12-state exact-viewport screenshot matrix plus full-page overview in `docs/ux-review/R2-2/`.
 - Decisions / deviations from the plan: Kept these archetypes as a self-contained registry; connecting them to the template renderer remains R2-5. Iterative screenshot review found and fixed several overlapping slot frames; a unit test now enforces non-overlapping normalized frames.
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (359 passed / 49 files), and `npm run build` passed; build retains existing Zod Rollup annotation notices. New layout gallery E2E screenshot matrix passed 12/12. Full E2E run: 63 passed, 4 failed; three legacy export spike tests timed out with the app left on its font loading status under parallel load, then passed when rerun serially. The fourth failure is the unrelated stale UX preview Arabic heading assertion, reproduced in prior task runs and still fails serially. `git diff --check` passed.
-- Remaining / next step: R2-3, deterministic and prefix-stable decoration generators.
+- Remaining / next step: R2-3, deterministic and prefix-stable decoration generators. The implementation commit was created on `feature/r2-1`; `feature/r2-2` now points to it.
 - Needs from the owner: None.
 
 ### R1-1 — checkpoint — 2026-11-23 11:42 — Codex
