@@ -965,6 +965,15 @@ Agent name: Antigravity
 - Remaining / next step: R2-5, template runtime.
 - Needs from the owner: None.
 
+
+### R2-5 — done — 2026-11-23 13:55 — Codex
+- Branch / commit: feature/r2-5 / 4555d77
+- What changed (files): Added a lazy manifest runtime with inheritance loading/caching, merged palette/font/type-scale/radius tokens, layout resolution with same-slide-type archetype fallback, background and overlay generator execution, and scoped CSS sanitization. Added runtime unit tests; existing editor switch tests verify slide fields persist across template changes.
+- Decisions / deviations from the plan: Runtime receives lazy data loaders so starter template manifests can be split into their own chunks as R2-6 adds them. Missing or mismatched layouts use the registered `<slideType>-editorial` archetype; if unavailable, the centered archetype is used.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (383 passed / 52 files), `npm run build`, and `git diff --check` passed. Build retains existing Zod Rollup annotation notices.
+- Remaining / next step: R2-6, the five starter templates with previews.
+- Needs from the owner: None.
+
 ### R2-5 — started — 2026-11-23 13:49 — Codex
 - Branch / commit: feature/r2-5
 - What changed (files): `docs/TASKS.md` (claimed R2-5).
