@@ -1176,3 +1176,12 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress).
 - Remaining / next step: Implement RichText utilities, `RichTextRenderer` component, unit tests covering Arabic and mixed bidi, and run full test suites.
 - Needs from the owner: None.
+
+
+### R4-1 — done — 2026-11-23 18:56 — Antigravity
+- Branch / commit: feature/r4-1 / `78f02e5`
+- What changed (files): `src/core/richText.ts`, `src/slides/RichTextRenderer.tsx`, `src/core/schema.ts`, `src/slides/ExtrasRenderer.tsx`, `src/slides/index.ts`, `tests/unit/richText.test.tsx`.
+- Decisions / deviations from the plan: Implemented bidirectional isolation `<bdi>` for Arabic/English mixed runs, enforced `letter-spacing: 0` on Arabic runs to prevent broken cursive ligatures, provided clean migration helpers (`parsePlainTextToRichText`, `serializeRichTextToPlainText`), and rendered paragraphs, unordered/ordered lists, and marks (bold, underline, size, color, font, highlight).
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (56 files, 439 passed), `npm run build` all clean.
+- Remaining / next step: Claim and implement R4-2 (In-place editing and floating toolbar with font, size, color, bold, underline, highlight, alignment, direction, plain-text paste).
+- Needs from the owner: None.
