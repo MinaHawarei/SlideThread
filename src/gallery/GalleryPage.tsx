@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateId } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { SlideRenderer } from '../slides/SlideRenderer';
@@ -6,6 +6,16 @@ import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../slides/sampl
 import { getAllTemplates, getTemplate } from '../templates';
 import { useT } from '../i18n';
 import { LanguageSwitcher } from '../ui/common/LanguageSwitcher';
+import {
+  filterGalleryTemplates,
+  getTemplatePreviewUrl,
+  getAvailableCategories,
+  readTemplateFavorites,
+  TEMPLATE_CATEGORIES,
+  TEMPLATE_FAVORITES_KEY,
+  TEMPLATE_GALLERY_INDEX,
+  toggleTemplateFavorite,
+} from './data';
 
 const SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -29,7 +39,7 @@ const ASPECT_DIMENSIONS: Record<AspectClass, { width: number; height: number; fo
 };
 
 export const GalleryPage: React.FC = () => {
-  const { t, dir } = useT();
+  const { t, dir, locale } = useT();
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedAspect, setSelectedAspect] = useState<string>('all');
   const [theme, setTheme] = useState<ThemeMode>('dark');
@@ -38,9 +48,33 @@ export const GalleryPage: React.FC = () => {
   const [templateId, setTemplateId] = useState<TemplateId>('tech-mesh');
   const [showSafeZones, setShowSafeZones] = useState<boolean>(false);
   const [previewScale, setPreviewScale] = useState<number>(0.22);
+  const [query, setQuery] = useState('');
+  const [categoryId, setCategoryId] = useState('all');
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(() => readTemplateFavorites());
+
+  useEffect(() => {
+    const syncFavorites = (event: StorageEvent) => {
+      if (event.key === TEMPLATE_FAVORITES_KEY || event.key === null) setFavoriteIds(readTemplateFavorites());
+    };
+    window.addEventListener('storage', syncFavorites);
+    return () => window.removeEventListener('storage', syncFavorites);
+  }, []);
 
   const palette = generatePalette(theme === 'dark' ? '#35D0E6' : '#0B7FA6', theme);
   const selectedTemplate = getTemplate(templateId);
+  const availableCategories = getAvailableCategories(TEMPLATE_CATEGORIES, TEMPLATE_GALLERY_INDEX.templates);
+  const visibleTemplates = useMemo(() => filterGalleryTemplates(TEMPLATE_GALLERY_INDEX.templates, {
+    query,
+    categoryId: categoryId === 'all' ? undefined : categoryId,
+    language: lang,
+    mode: theme,
+    formatId: selectedAspect === 'all' ? undefined : ASPECT_DIMENSIONS[selectedAspect as AspectClass].formatId,
+    favoritesOnly,
+    favoriteIds,
+  }), [query, categoryId, lang, theme, selectedAspect, favoritesOnly, favoriteIds]);
+
+  const updateFavorite = (id: string) => setFavoriteIds(toggleTemplateFavorite(id));
 
   const typesToRender = selectedType === 'all' ? SLIDE_TYPES : [selectedType as SlideType];
   const aspectsToRender = selectedAspect === 'all' ? ASPECT_CLASSES : [selectedAspect as AspectClass];
@@ -80,6 +114,39 @@ export const GalleryPage: React.FC = () => {
         </div>
 
         {/* Filter Toolbar */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '20px', alignItems: 'center' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', fontSize: 13 }}>
+            {t('gallery.search')}
+            <input data-testid="gallery-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('gallery.searchPlaceholder')} style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '7px 10px', borderRadius: 6 }} />
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', fontSize: 13 }}>
+            {t('gallery.category')}
+            <select data-testid="gallery-category" value={categoryId} onChange={(event) => setCategoryId(event.target.value)} style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '7px 10px', borderRadius: 6 }}>
+              <option value="all">{t('gallery.allCategories')}</option>
+              {availableCategories.map((category) => <option key={category.id} value={category.id}>{category.name[locale]}</option>)}
+            </select>
+          </label>
+          <button type="button" data-testid="favorites-filter" aria-pressed={favoritesOnly} onClick={() => setFavoritesOnly((value) => !value)} style={{ background: favoritesOnly ? '#7c3aed' : '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '7px 12px', borderRadius: 6, cursor: 'pointer' }}>{favoritesOnly ? '★' : '☆'} {t('gallery.favorites')}</button>
+          <span data-testid="gallery-template-count" style={{ color: '#94a3b8', fontSize: 13 }}>{t('gallery.templateCount', { count: visibleTemplates.length })}</span>
+        </div>
+
+        <section aria-label={t('gallery.templateChoices')} data-testid="gallery-template-choices" style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 16 }}>
+          {visibleTemplates.map((item) => {
+            const active = templateId === item.id;
+            return (
+              <article key={item.id} data-testid="gallery-template-card" data-template-id={item.id} style={{ width: 190, border: `1px solid ${active ? '#38bdf8' : '#334155'}`, borderRadius: 10, overflow: 'hidden', background: '#111827' }}>
+                <button type="button" aria-pressed={active} onClick={() => setTemplateId(item.id)} style={{ display: 'block', width: '100%', padding: 0, border: 0, background: 'transparent', color: '#f8fafc', textAlign: 'start', cursor: 'pointer' }}>
+                  <img src={getTemplatePreviewUrl(item.id)} alt="" width="190" height="150" style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
+                  <span style={{ display: 'block', padding: '9px 10px 2px', fontWeight: 700 }}>{item.name[locale]}</span>
+                  <span style={{ display: 'block', padding: '2px 10px 10px', color: '#94a3b8', fontSize: 12 }}>{item.categories.map((id) => availableCategories.find((category) => category.id === id)?.name[locale]).filter(Boolean).join(' · ')}</span>
+                </button>
+                <button type="button" data-testid={`favorite-${item.id}`} aria-label={`${favoriteIds.includes(item.id) ? t('gallery.removeFavorite') : t('gallery.addFavorite')} ${item.name[locale]}`} aria-pressed={favoriteIds.includes(item.id)} onClick={() => updateFavorite(item.id)} style={{ width: '100%', border: 0, borderTop: '1px solid #334155', background: 'transparent', color: '#fbbf24', padding: 7, cursor: 'pointer' }}>{favoriteIds.includes(item.id) ? '★' : '☆'} {favoriteIds.includes(item.id) ? t('gallery.removeFavorite') : t('gallery.addFavorite')}</button>
+              </article>
+            );
+          })}
+          {visibleTemplates.length === 0 && <p data-testid="gallery-empty-state" style={{ color: '#cbd5e1' }}>{t('gallery.noTemplates')}</p>}
+        </section>
+
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '20px', alignItems: 'center' }}>
           {/* Slide Type Filter */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

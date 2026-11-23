@@ -1,6 +1,32 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Component Gallery Route (/gallery)', () => {
+  test('searches templates, filters categories, and persists favorites', async ({ page }) => {
+    await page.goto('/gallery');
+    await page.getByTestId('gallery-search').fill('Weave');
+    await expect(page.getByTestId('gallery-template-card')).toHaveCount(1);
+    await expect(page.getByTestId('gallery-template-card')).toHaveAttribute('data-template-id', 'tech-mesh');
+
+    await page.getByTestId('gallery-search').fill('');
+    const categories = page.getByTestId('gallery-category');
+    await expect(categories.locator('option')).toHaveCount(8); // All + six populated categories (coding, marketing, education, lifestyle, personal-brand, general, heritage)
+    await expect(categories.locator('option[value="coptic"]')).toHaveCount(0);
+    await expect(categories.locator('option[value="islamic"]')).toHaveCount(0);
+    await categories.selectOption('marketing');
+    await expect(page.getByTestId('gallery-template-card')).toHaveCount(1);
+    await expect(page.getByTestId('gallery-template-card')).toHaveAttribute('data-template-id', 'bold-marketing');
+
+    await page.getByTestId('gallery-category').selectOption('all');
+    await page.getByTestId('favorite-tech-mesh').click();
+    await page.getByTestId('favorites-filter').click();
+    await expect(page.getByTestId('gallery-template-card')).toHaveCount(1);
+    await expect(page.getByTestId('gallery-template-card')).toHaveAttribute('data-template-id', 'tech-mesh');
+    await page.reload();
+    await expect(page.getByTestId('favorite-tech-mesh')).toHaveAttribute('aria-pressed', 'true');
+    await page.getByTestId('favorites-filter').click();
+    await page.getByTestId('favorite-tech-mesh').click();
+  });
+
   test('renders all 9 slide types across aspect classes without errors', async ({ page }) => {
     const consoleErrors: string[] = [];
     page.on('console', (msg) => {

@@ -64,7 +64,7 @@ Templates are untrusted data. The CI validator checks the JSON Schema and Zod sc
 
 This example deliberately adds no app code, registered layout, decoration, or asset. The `colorFlexible` flag lets the app generate light and dark palettes from a creator color; fixed palettes should provide complete `theme.modes.dark` and `theme.modes.light` values that pass contrast validation.
 
-The current Gallery page still uses its starter registry. R2-9 will connect the generated index to the gallery data layer; until then, the new template is available in the template lab and CI pipeline but is not automatically selectable in the production gallery.
+The Gallery reads cards and filter metadata from the generated index. Its current slide renderer still uses the application's registered visual adapters; a theme-only manifest can appear in the gallery data without creating a new slide renderer or app layout implementation.
 
 ## Four contribution levels
 
