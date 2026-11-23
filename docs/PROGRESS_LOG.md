@@ -867,3 +867,19 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 344 passed / 46 files; `npm run build` pass; Playwright E2E 42 passed using a temporary port-5174 config because port 5173 is occupied by an existing Vite server. Screenshots reviewed at all required sizes, themes, and directions; rubric scores are all 4 or higher.
 - Remaining / next step: R1-5, fonts registry and lazy loader.
 - Needs from the owner: None.
+
+### R1-5 — started — 2026-11-23 12:40 — Codex
+- Branch / commit: feature/r1-5
+- What changed (files): `docs/TASKS.md` (claimed R1-5)
+- Decisions / deviations from the plan: Keep the three already-installed OFL font families; add a metadata registry and explicit per-family/weight CSS loaders. No new font packages or external font assets.
+- Tests run and result: N/A (task in progress)
+- Remaining / next step: Replace eager font stylesheet imports with lazy registry loading, integrate awaited font loading into export/readiness paths, then test registry and license records.
+- Needs from the owner: None.
+
+### R1-5 — done — 2026-11-23 13:01 — Codex
+- Branch / commit: feature/r1-5 / 18fb7b5
+- What changed (files): Added a typed local font registry for IBM Plex Sans, IBM Plex Sans Arabic, JetBrains Mono, and Noto Sans Coptic; dynamically loads requested font CSS; awaits relevant fonts before export capture and interface display; added registry/loader unit and browser tests, verified font license records, and added the required responsive UX review and screenshots.
+- Decisions / deviations from the plan: Added the locally bundled Noto Sans Coptic OFL font to fulfill Coptic script coverage; details and license sources are in `docs/DECISIONS.md`. Existing full browser suite contains a stale UX preview Arabic heading assertion: the Arabic preview heading renders as `اجعل فكرتك القادمة تستحق التوقف عندها.` while the test expects a gallery heading `اختر إطارك الأول.`. Reproduced in isolation; left unrelated preview/test behavior unchanged.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 351 passed / 47 files; `npm run build` pass (Rollup emitted two existing removable `@__PURE__` annotation warnings in Zod); `npm run test:e2e -- --config=playwright.r1-5.config.ts` 54 passed, 1 failed (stale `uxPreview.spec.ts` expectation, reproduced in isolation).
+- Remaining / next step: Verify GR1, then proceed to R2-1.
+- Needs from the owner: None.
