@@ -1,6 +1,7 @@
 import * as htmlToImage from 'html-to-image';
 import * as modernScreenshot from 'modern-screenshot';
-import { fontsReady } from '../core/fonts';
+import { fontsReady, getFontRequirementsForText } from '../core/fonts';
+import { FONT_REGISTRY, type FontWeight } from '../fonts/registry';
 
 export type CaptureLibrary = 'html-to-image' | 'modern-screenshot';
 
@@ -49,7 +50,17 @@ export async function capture(
   } = options;
 
   // 1. Ensure fonts & images are ready
-  await fontsReady();
+  const textFonts = getFontRequirementsForText(element.textContent || '');
+  const usesMono = Boolean(element.querySelector('code, pre, .slide-mono-line, .code-container, .sig-counter-badge'));
+  const monoFonts = usesMono
+    ? FONT_REGISTRY['jetbrains-mono'].weights.map((weight) => ({
+        id: 'jetbrains-mono' as const,
+        family: FONT_REGISTRY['jetbrains-mono'].family,
+        weight: weight as FontWeight,
+      }))
+    : [];
+  const areFontsReady = await fontsReady([...textFonts, ...monoFonts]);
+  if (!areFontsReady) throw new Error('Font loading timed out before export capture');
   await imagesReady(element);
 
   const width = dimensions?.width || element.offsetWidth;

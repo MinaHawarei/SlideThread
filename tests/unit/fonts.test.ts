@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { fontsReady, REQUIRED_FONTS } from '@/core/fonts';
+import { fontsReady, getFontRequirementsForText, REQUIRED_FONTS } from '@/core/fonts';
 
 describe('fontsReady helper', () => {
   beforeEach(() => {
@@ -59,5 +59,35 @@ describe('fontsReady helper', () => {
     expect(loadMock).toHaveBeenCalledWith('normal 400 16px "IBM Plex Sans"', 'SlideThread');
     expect(loadMock).toHaveBeenCalledWith('normal 400 16px "IBM Plex Sans Arabic"', 'مرحبا');
     expect(loadMock).toHaveBeenCalledWith('normal 400 16px "JetBrains Mono"', 'SlideThread');
+  });
+
+  it('loads Coptic glyphs before measurement can run', async () => {
+    const order: string[] = [];
+    Object.defineProperty(document, 'fonts', {
+      value: {
+        ready: Promise.resolve(),
+        load: vi.fn(async () => {
+          order.push('face');
+          return [];
+        }),
+      },
+      configurable: true,
+    });
+    const coptic = getFontRequirementsForText('Ϣⲉⲛⲟⲩϩ');
+    const ready = await fontsReady(coptic);
+    order.push('measure');
+    expect(ready).toBe(true);
+    expect(order).toEqual(['face', 'measure']);
+    expect(coptic[0]?.sampleText).toBe('Ϣⲉⲛⲟⲩϩ');
+  });
+
+  it('returns false when a requested browser font face does not finish loading in time', async () => {
+    const loadMock = vi.fn(() => new Promise<FontFace[]>((resolve) => setTimeout(() => resolve([]), 25)));
+    Object.defineProperty(document, 'fonts', {
+      value: { ready: Promise.resolve(), load: loadMock },
+      configurable: true,
+    });
+
+    await expect(fontsReady([REQUIRED_FONTS[0]!], 1)).resolves.toBe(false);
   });
 });

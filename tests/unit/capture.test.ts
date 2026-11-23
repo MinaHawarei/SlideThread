@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { capture, imagesReady } from '@/export/capture';
 import * as htmlToImage from 'html-to-image';
 import * as modernScreenshot from 'modern-screenshot';
@@ -12,8 +12,14 @@ vi.mock('modern-screenshot', () => ({
 }));
 
 describe('capture interface', () => {
+  const originalFonts = Object.getOwnPropertyDescriptor(document, 'fonts');
+
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    if (originalFonts) Object.defineProperty(document, 'fonts', originalFonts);
   });
 
   it('captures using html-to-image by default with warm-up', async () => {
@@ -31,6 +37,43 @@ describe('capture interface', () => {
 
     expect(result).toBe('data:image/png;base64,mock-modern-screenshot');
     expect(modernScreenshot.domToPng).toHaveBeenCalledTimes(2);
+  });
+
+  it('loads the mono face used by slide counters before capturing', async () => {
+    const loadMock = vi.fn().mockResolvedValue([]);
+    Object.defineProperty(document, 'fonts', {
+      configurable: true,
+      value: { ready: Promise.resolve(), load: loadMock },
+    });
+    const div = document.createElement('div');
+    div.innerHTML = '<span class="sig-counter-badge">02</span>';
+    await capture(div, { warmUp: false });
+    expect(loadMock).toHaveBeenCalledWith('normal 400 16px "JetBrains Mono"', 'SlideThread');
+    expect(htmlToImage.toPng).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not capture until the requested font face has loaded', async () => {
+    let release: (() => void) | undefined;
+    const gate = new Promise<FontFace[]>((resolve) => {
+      release = () => resolve([]);
+    });
+    Object.defineProperty(document, 'fonts', {
+      configurable: true,
+      value: { ready: Promise.resolve(), load: () => gate },
+    });
+    const div = document.createElement('div');
+    div.textContent = 'Hello';
+    let settled = false;
+    const pending = capture(div, { warmUp: false }).then((value) => {
+      settled = true;
+      return value;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(settled).toBe(false);
+    expect(htmlToImage.toPng).not.toHaveBeenCalled();
+    release?.();
+    await expect(pending).resolves.toBe('data:image/png;base64,mock-html-to-image');
+    expect(htmlToImage.toPng).toHaveBeenCalledTimes(1);
   });
 
   it('imagesReady handles images with and without decode method', async () => {

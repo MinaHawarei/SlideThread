@@ -2,6 +2,8 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { undo, redo } from './store/history';
 import { useT } from './i18n';
+import { loadFont, loadFontForScript } from './fonts/loader';
+import { FONT_REGISTRY } from './fonts/registry';
 
 const StartScreen = React.lazy(() => import('./ui/start/StartScreen').then((m) => ({ default: m.StartScreen })));
 const Wizard = React.lazy(() => import('./ui/wizard/Wizard').then((m) => ({ default: m.Wizard })));
@@ -21,6 +23,7 @@ function LoadingScreen() {
 
 export const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(() => typeof window !== 'undefined' ? window.location.pathname : '/');
+  const [fontsLoadedLocale, setFontsLoadedLocale] = useState<string | null>(null);
   const { locale, dir } = useT();
 
   const navigate = (path: string) => {
@@ -33,6 +36,23 @@ export const App: React.FC = () => {
     document.documentElement.dir = dir;
     document.documentElement.classList.toggle('rtl', dir === 'rtl');
   }, [locale, dir]);
+
+  useEffect(() => {
+    let active = true;
+    setFontsLoadedLocale(null);
+    void loadFontForScript(locale === 'ar' ? 'arabic' : 'latin')
+      .catch((error: unknown) => console.warn('Bundled interface font failed to load', error))
+      .finally(() => {
+        if (active) setFontsLoadedLocale(locale);
+      });
+    return () => { active = false; };
+  }, [locale]);
+
+  useEffect(() => {
+    if (currentPath === '/editor') {
+      void Promise.all(FONT_REGISTRY['jetbrains-mono'].weights.map((weight) => loadFont('jetbrains-mono', weight)));
+    }
+  }, [currentPath]);
 
   useEffect(() => {
     const handlePopState = () => setCurrentPath(window.location.pathname);
@@ -61,7 +81,7 @@ export const App: React.FC = () => {
   else if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) route = <UxPreview />;
   else route = <StartScreen onStartWizard={() => navigate('/wizard')} onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;
 
-  return <><Suspense fallback={<LoadingScreen />}>{route}</Suspense><Analytics /></>;
+  return <>{fontsLoadedLocale === locale ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<Analytics /></>;
 };
 
 export default App;

@@ -8,6 +8,11 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
 - New v2 defaults use the standard bottom-right number counter and bottom-center inline signature. Counter display is enabled only for carousels; the `network` template maps to an enabled mesh pattern at intensity 1, while other legacy templates default to no pattern.
 - These are deterministic compatibility defaults because the plan defines the v2 shape but does not define per-project migration values.
 
+## 2026-11-23 — Coptic font package for the lazy font registry (R1-5)
+- Add `@fontsource/noto-sans-coptic@5.3.0` to satisfy the plan's Coptic-script registry requirement. The selected Coptic WOFF2 subset is 20,196 bytes (20,260 bytes when gzip-wrapped); it is dynamically imported only when a Coptic font is requested or Coptic text is exported. Package unpacked size is approximately 107 KB.
+- License checked in the installed package metadata and license file and against Fontsource's [Noto Sans Coptic details](https://fontsource.org/fonts/noto-sans-coptic/about) on 2026-11-23: SIL OFL-1.1; attribution is recorded in `NOTICE` and `docs/ASSET_LICENSES.md`. Upstream font source: [notofonts/coptic](https://github.com/notofonts/coptic).
+- Alternative considered: keep a platform fallback and omit Coptic registration. Rejected because output would vary by device and the R1-5 plan explicitly requires Coptic-capable fonts in the registry. No additional typeface package is needed for English, Arabic, or code; their existing OFL packages remain unchanged.
+
 ---
 
 ## 2026-11-22 — Project scaffolding & tooling (P0-1)

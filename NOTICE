@@ -5,6 +5,7 @@ This project bundles the following fonts from the @fontsource npm packages:
 - IBM Plex Sans, @fontsource/ibm-plex-sans 5.3.0; copyright 2019 IBM Corp.
 - IBM Plex Sans Arabic, @fontsource/ibm-plex-sans-arabic 5.3.0; copyright 2019 IBM Corp.
 - JetBrains Mono, @fontsource/jetbrains-mono 5.3.0; copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono).
+- Noto Sans Coptic, @fontsource/noto-sans-coptic 5.3.0; copyright 2022 The Noto Project Authors (https://github.com/notofonts/coptic).
 
 Each font package is licensed under the SIL Open Font License, Version 1.1
 (OFL-1.1). Its copyright notice and the full license text are included below.
