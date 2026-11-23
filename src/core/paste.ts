@@ -1,9 +1,10 @@
-import { plainTextFieldsToRichText, type Slide, type SlideType } from './schema';
+import { plainTextFieldsToRichText, type RichText, type Slide, type SlideType } from './schema';
 
 export interface ParsedCandidateSlide {
   id: string;
   type: SlideType;
   fields: Record<string, string>;
+  richFields?: Record<string, RichText>;
   rawChunk: string;
 }
 
@@ -47,6 +48,21 @@ function cleanHeader(line: string): string {
   return line.replace(/^#+\s*/, '').trim();
 }
 
+function makeCandidate(
+  id: string,
+  type: SlideType,
+  fields: Record<string, string>,
+  rawChunk: string
+): ParsedCandidateSlide {
+  return {
+    id,
+    type,
+    fields,
+    richFields: plainTextFieldsToRichText(fields),
+    rawChunk,
+  };
+}
+
 function parseChunk(chunk: string, index: number, total: number): ParsedCandidateSlide {
   const id = `cand_${Date.now()}_${index}_${Math.random().toString(36).substring(2, 6)}`;
   const lines = chunk
@@ -72,17 +88,17 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
       // Note: text after code block
       const afterCode = chunk.split('```')[2]?.trim() || '';
 
-      return {
+      return makeCandidate(
         id,
-        type: 'code',
-        fields: {
+        'code',
+        {
           title,
           code,
           lang,
           note: afterCode,
         },
-        rawChunk: chunk,
-      };
+        chunk
+      );
     }
   }
 
@@ -105,16 +121,16 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
       role = parts.slice(1).join(', ') || '';
     }
 
-    return {
+    return makeCandidate(
       id,
-      type: 'quote',
-      fields: {
+      'quote',
+      {
         text: quoteText,
         author,
         role,
       },
-      rawChunk: chunk,
-    };
+      chunk
+    );
   }
 
   // 3. Stat detection: line matching prominent metric ($10M, 99%, 4.5x, 100k, 10x)
@@ -136,16 +152,16 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
     const label = otherLines[0] ? cleanHeader(otherLines[0]) : 'Key Metric';
     const note = otherLines.slice(1).join(' ') || '';
 
-    return {
+    return makeCandidate(
       id,
-      type: 'stat',
-      fields: {
+      'stat',
+      {
         value: matchedStatValue,
         label,
         note,
       },
-      rawChunk: chunk,
-    };
+      chunk
+    );
   }
 
   // 4. Compare detection: Bad vs OK, Don't vs Do, Problem vs Solution, ❌ vs ✅
@@ -178,18 +194,18 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
       }
     }
 
-    return {
+    return makeCandidate(
       id,
-      type: 'compare',
-      fields: {
+      'compare',
+      {
         title,
         l1,
         t1: t1 || 'Suboptimal approach',
         l2,
         t2: t2 || 'Recommended approach',
       },
-      rawChunk: chunk,
-    };
+      chunk
+    );
   }
 
   // 5. Rule detection: IF / THEN, When / Then
@@ -218,10 +234,10 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
     const noteLine = lines.find((l) => l !== lines[0] && l !== ifLine && l !== thenLine);
     if (noteLine) note = noteLine;
 
-    return {
+    return makeCandidate(
       id,
-      type: 'rule',
-      fields: {
+      'rule',
+      {
         title,
         cond: cond || 'Condition occurs',
         res: res || 'Execute action',
@@ -229,8 +245,8 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
         condLabel: 'IF',
         resLabel: 'THEN',
       },
-      rawChunk: chunk,
-    };
+      chunk
+    );
   }
 
   // 6. CTA closing slide detection: last slide with call-to-action signals
@@ -240,16 +256,16 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
     const title = cleanHeader(lines[0] || 'Thanks for Reading');
     const body = lines.slice(1).join(' ') || 'Follow for more insights on modern software architecture.';
 
-    return {
+    return makeCandidate(
       id,
-      type: 'cta',
-      fields: {
+      'cta',
+      {
         title,
         body,
         action: 'Follow & Share',
       },
-      rawChunk: chunk,
-    };
+      chunk
+    );
   }
 
   // 7. Cover slide detection: first slide if it has title + subtitle structure (no list bullets)
@@ -259,17 +275,17 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
     const sub = lines[1] ? cleanHeader(lines[1]) : '';
     const rule = lines[2] || '';
 
-    return {
+    return makeCandidate(
       id,
-      type: 'cover',
-      fields: {
+      'cover',
+      {
         tag: 'CAROUSEL',
         title,
         sub,
         rule,
       },
-      rawChunk: chunk,
-    };
+      chunk
+    );
   }
 
   // 8. Explain slide (Default topic breakdown)
@@ -279,15 +295,15 @@ function parseChunk(chunk: string, index: number, total: number): ParsedCandidat
     ? bodyLines.map((l) => (l.startsWith('-') || l.startsWith('*') || /^\d+\./.test(l) ? l : `- ${l}`)).join('\n')
     : '- Core insight for this slide';
 
-  return {
+  return makeCandidate(
     id,
-    type: 'explain',
-    fields: {
+    'explain',
+    {
       title,
       body,
     },
-    rawChunk: chunk,
-  };
+    chunk
+  );
 }
 
 /**
@@ -297,6 +313,6 @@ export function candidateToSlide(candidate: ParsedCandidateSlide): Slide {
   return {
     id: candidate.id || `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     type: candidate.type,
-    fields: plainTextFieldsToRichText(candidate.fields),
+    fields: candidate.richFields || plainTextFieldsToRichText(candidate.fields),
   };
 }

@@ -3,7 +3,7 @@ import type { RichText, RichTextBlock, RichTextRun } from '../core/schema';
 import { parsePlainTextToRichText, isArabicText, resolveFontFamily, detectRunDirection, hasManualTextSize } from '../core/richText';
 
 export interface RichTextRendererProps {
-  content: RichText | string;
+  content?: RichText | string;
   className?: string;
   style?: React.CSSProperties;
   dir?: 'ltr' | 'rtl' | 'auto';
@@ -17,6 +17,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
   dir = 'auto',
   inline = false,
 }) => {
+  if (!content) return null;
   const doc: RichText = typeof content === 'string' ? parsePlainTextToRichText(content) : content;
 
   if (!doc || !doc.blocks || doc.blocks.length === 0) {
@@ -95,7 +96,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
           return (
             <p
               key={idx}
-              className="rich-text-paragraph"
+              className="explain-paragraph rich-text-paragraph"
               style={{
                 margin: 0,
                 padding: 0,
@@ -117,25 +118,38 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
             className={`rich-text-list rich-text-${seg.type}`}
             style={{
               margin: 0,
-              paddingInlineStart: '1.25em',
-              listStyleType: seg.type === 'ol' ? 'decimal' : 'disc',
+              padding: 0,
+              listStyle: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
             }}
             dir="auto"
           >
             {seg.items.map((liBlock, liIdx) => (
               <li
                 key={liIdx}
-                className="rich-text-list-item"
+                className="explain-bullet-item rich-text-list-item"
                 style={{
-                  margin: 0,
-                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '20px',
                   textAlign: liBlock.align,
                 }}
                 dir={liBlock.dir || 'auto'}
               >
-                {liBlock.runs.map((run, runIdx) => (
-                  <RunRenderer key={runIdx} run={run} />
-                ))}
+                {seg.type === 'ol' ? (
+                  <span className="explain-number-node" aria-hidden="true">
+                    {liIdx + 1}
+                  </span>
+                ) : (
+                  <span className="explain-bullet-node" aria-hidden="true" />
+                )}
+                <div className="explain-bullet-content" style={{ flex: 1, minWidth: 0 }}>
+                  {liBlock.runs.map((run, runIdx) => (
+                    <RunRenderer key={runIdx} run={run} />
+                  ))}
+                </div>
               </li>
             ))}
           </ListTag>

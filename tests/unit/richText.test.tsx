@@ -151,6 +151,44 @@ describe('RichTextRenderer Component (§5.3)', () => {
     expect(['0', '0px']).toContain(run.style.letterSpacing);
   });
 
+  it('parses single line bullets and numbered items correctly into list items', () => {
+    const bulletDoc = parsePlainTextToRichText('- Single bullet item');
+    expect(bulletDoc.blocks.length).toBe(1);
+    expect(bulletDoc.blocks[0]?.type).toBe('li');
+    const bulletBlock = bulletDoc.blocks[0];
+    if (bulletBlock && bulletBlock.type === 'li') {
+      expect(bulletBlock.ordered).toBe(false);
+    }
+    expect(bulletDoc.blocks[0]?.runs[0]?.text).toBe('Single bullet item');
+
+    const numDoc = parsePlainTextToRichText('1. First item');
+    expect(numDoc.blocks.length).toBe(1);
+    expect(numDoc.blocks[0]?.type).toBe('li');
+    const numBlock = numDoc.blocks[0];
+    if (numBlock && numBlock.type === 'li') {
+      expect(numBlock.ordered).toBe(true);
+    }
+    expect(numDoc.blocks[0]?.runs[0]?.text).toBe('First item');
+  });
+
+  it('renders list items with template bullet and number nodes', () => {
+    const doc = createDoc([
+      createListItem([createRun('Bullet Node Item')], false),
+      createListItem([createRun('Numbered Node Item')], true),
+    ]);
+
+    const { container } = render(<RichTextRenderer content={doc} />);
+    const bulletItem = container.querySelector('.explain-bullet-item');
+    expect(bulletItem).toBeTruthy();
+
+    const bulletNode = container.querySelector('.explain-bullet-node');
+    expect(bulletNode).toBeTruthy();
+
+    const numberNode = container.querySelector('.explain-number-node');
+    expect(numberNode).toBeTruthy();
+    expect(numberNode?.textContent).toBe('1');
+  });
+
   it('isolates bidirectional text using <bdi> to protect Arabic punctuation with English words', () => {
     const mixedDoc: RichText = createDoc([
       createParagraph([

@@ -169,13 +169,51 @@ Follow for weekly software architecture deep-dives.
     expect(ctaCand.fields.body).toContain('Follow for weekly');
   });
 
-  it('converts candidate to valid Slide schema', () => {
-    const cand = parsePastedText('### Key Insight\n- Point 1\n- Point 2')[0]!;
-    const slide = candidateToSlide(cand);
+  it('converts candidate to valid Slide schema with rich text list blocks', () => {
+    const cand = parsePastedText('### Key Insight\n- Point 1\n- Point 2\n1. Numbered item')[0]!;
+    expect(cand.richFields).toBeDefined();
+    expect(cand.richFields?.body?.type).toBe('doc');
 
+    const bodyBlocks = cand.richFields?.body?.blocks;
+    expect(bodyBlocks).toBeDefined();
+    expect(bodyBlocks?.length).toBe(3);
+    expect(bodyBlocks?.[0]?.type).toBe('li');
+    expect(bodyBlocks?.[0]?.runs[0]?.text).toBe('Point 1');
+    expect(bodyBlocks?.[1]?.type).toBe('li');
+    expect(bodyBlocks?.[2]?.type).toBe('li');
+    const thirdBlock = bodyBlocks?.[2];
+    if (thirdBlock && thirdBlock.type === 'li') {
+      expect(thirdBlock.ordered).toBe(true);
+    }
+
+    const slide = candidateToSlide(cand);
     expect(slide.id).toBeDefined();
     expect(slide.type).toBe('explain');
     expect(richTextToPlainText(slide.fields.title!)).toBe('Key Insight');
     expect(richTextToPlainText(slide.fields.body!)).toContain('- Point 1');
+    expect(slide.fields.body?.blocks[0]?.type).toBe('li');
+  });
+
+  it('outputs rich text with inline markdown bold formatting', () => {
+    const raw = `
+### Advanced Patterns
+- **Pure Functions:** Zero side-effects
+- **Immutability:** Structural sharing
+    `;
+    const candidates = parsePastedText(raw);
+    expect(candidates.length).toBe(1);
+
+    const explain = candidates[0]!;
+    const body = explain.richFields?.body;
+    expect(body).toBeDefined();
+    expect(body?.blocks.length).toBe(2);
+
+    const firstLi = body?.blocks[0];
+    expect(firstLi).toBeDefined();
+    expect(firstLi?.type).toBe('li');
+    expect(firstLi?.runs[0]?.text).toBe('Pure Functions:');
+    expect(firstLi?.runs[0]?.marks?.bold).toBe(true);
+    expect(firstLi?.runs[1]?.text).toBe(' Zero side-effects');
+    expect(firstLi?.runs[1]?.marks?.bold).toBeUndefined();
   });
 });

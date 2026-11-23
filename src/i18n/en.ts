@@ -221,6 +221,8 @@ export const en = {
   'editor.bold': 'Bold',
   'editor.underline': 'Underline',
   'editor.highlight': 'Highlight',
+  'editor.bulletList': 'Bulleted list',
+  'editor.orderedList': 'Numbered list',
   'editor.alignLeft': 'Align left',
   'editor.alignCenter': 'Align center',
   'editor.alignRight': 'Align right',

@@ -59,7 +59,11 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   } as typeof palette;
   const renderProps: SlideProps = {
     ...props,
-    slide: { ...slide, fields: richTextFieldsToPlainText(slide.fields) },
+    slide: {
+      ...slide,
+      fields: richTextFieldsToPlainText(slide.fields),
+      richFields: slide.fields,
+    },
   };
   const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
 

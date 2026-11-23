@@ -223,6 +223,8 @@ export const ar: Record<TranslationKey, string> = {
   'editor.bold': 'عريض',
   'editor.underline': 'تسطير',
   'editor.highlight': 'تمييز',
+  'editor.bulletList': 'قائمة نقطية',
+  'editor.orderedList': 'قائمة رقمية',
   'editor.alignLeft': 'محاذاة لليسار',
   'editor.alignCenter': 'محاذاة للوسط',
   'editor.alignRight': 'محاذاة لليمين',

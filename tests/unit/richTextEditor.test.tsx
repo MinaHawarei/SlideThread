@@ -131,6 +131,8 @@ describe('RichTextEditor Component (R4-2, §5.3)', () => {
     expect(screen.getByTestId('toolbar-bold')).toBeTruthy();
     expect(screen.getByTestId('toolbar-underline')).toBeTruthy();
     expect(screen.getByTestId('toolbar-highlight')).toBeTruthy();
+    expect(screen.getByTestId('toolbar-bullet-list')).toBeTruthy();
+    expect(screen.getByTestId('toolbar-ordered-list')).toBeTruthy();
     expect(screen.getByTestId('toolbar-align-left')).toBeTruthy();
     expect(screen.getByTestId('toolbar-align-center')).toBeTruthy();
     expect(screen.getByTestId('toolbar-align-right')).toBeTruthy();

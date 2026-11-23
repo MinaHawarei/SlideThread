@@ -9,6 +9,9 @@ import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
+import BulletList from '@tiptap/extension-bullet-list';
+import OrderedList from '@tiptap/extension-ordered-list';
+import ListItem from '@tiptap/extension-list-item';
 import type { RichText } from '../../core/schema';
 import { richTextToTiptapJSON, tiptapJSONToRichText, resolveFontFamily } from '../../core/richText';
 import { useT } from '../../i18n';
@@ -98,7 +101,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       CustomTextStyle,
       Color,
       Highlight.configure({ multicolor: true }),
-      TextAlign.configure({ types: ['paragraph'] }),
+      TextAlign.configure({ types: ['paragraph', 'listItem'] }),
+      BulletList,
+      OrderedList,
+      ListItem,
     ],
     content: initialJSON.current,
     autofocus: autoFocus ? 'all' : false,
@@ -142,6 +148,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const isBold = editor.isActive('bold');
   const isUnderline = editor.isActive('underline');
   const isHighlight = editor.isActive('highlight');
+  const isBulletList = editor.isActive('bulletList');
+  const isOrderedList = editor.isActive('orderedList');
   const isLeft = editor.isActive({ textAlign: 'left' });
   const isCenter = editor.isActive({ textAlign: 'center' });
   const isRight = editor.isActive({ textAlign: 'right' });
@@ -307,6 +315,48 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           }}
         >
           H
+        </button>
+
+        {/* Bullet List */}
+        <button
+          type="button"
+          aria-label={t('editor.bulletList')}
+          data-testid="toolbar-bullet-list"
+          aria-pressed={isBulletList}
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          style={{
+            minWidth: touchLayout ? 44 : 32,
+            minHeight: touchLayout ? 44 : 32,
+            borderRadius: 6,
+            background: isBulletList ? '#0891b2' : '#f1f5f9',
+            color: isBulletList ? 'white' : '#0f172a',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 14,
+          }}
+        >
+          •≡
+        </button>
+
+        {/* Ordered List */}
+        <button
+          type="button"
+          aria-label={t('editor.orderedList')}
+          data-testid="toolbar-ordered-list"
+          aria-pressed={isOrderedList}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          style={{
+            minWidth: touchLayout ? 44 : 32,
+            minHeight: touchLayout ? 44 : 32,
+            borderRadius: 6,
+            background: isOrderedList ? '#0891b2' : '#f1f5f9',
+            color: isOrderedList ? 'white' : '#0f172a',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 14,
+          }}
+        >
+          1≡
         </button>
 
         {/* Alignment controls */}

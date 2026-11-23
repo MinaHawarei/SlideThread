@@ -1,8 +1,11 @@
-import type { Slide, AspectClass, TextDir, BrandSettings, TemplateId, ThemeMode } from '../core/schema';
+import type { Slide, AspectClass, TextDir, BrandSettings, TemplateId, ThemeMode, RichText } from '../core/schema';
 import type { Palette } from '../core/palette';
 
 export interface SlideProps {
-  slide: Omit<Slide, 'fields'> & { fields: Record<string, string> };
+  slide: Omit<Slide, 'fields'> & {
+    fields: Record<string, string>;
+    richFields?: Record<string, RichText>;
+  };
   palette: Palette;
   aspectClass: AspectClass;
   textDir?: TextDir;

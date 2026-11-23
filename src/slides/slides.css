@@ -1224,6 +1224,21 @@
 .template-heritage .slide-mono-line { border-inline-start: 3px solid var(--acc2); }
 .template-heritage .stat-big-value { color: var(--acc); }
 .template-heritage .quote-mark { color: var(--acc2); }
+.template-heritage .explain-bullet-node {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  background: var(--acc);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--acc) 40%, transparent);
+  margin-block-start: 18px;
+}
+.template-heritage .explain-number-node {
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--acc);
+  border: 1px solid var(--line);
+}
 
 /* Weave's connected visual language: linked bullets, if/then rails, and a code window. */
 .template-network .explain-bullet-node {
