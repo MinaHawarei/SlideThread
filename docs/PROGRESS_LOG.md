@@ -981,3 +981,19 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress).
 - Remaining / next step: Inspect rendering and store ownership, design lazy resolution API, and ensure changing a template retains slide content.
 - Needs from the owner: None.
+
+### R2-6 — started — 2026-11-23 13:56 — Codex
+- Branch / commit: feature/r2-6
+- What changed (files): `docs/TASKS.md` (claimed R2-6).
+- Decisions / deviations from the plan: Keep the three existing visual identities and add two distinct theme directions, storing starter manifests as lazily imported schema data and pairing them with previews.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Read §5.8 starter requirements, inspect the gallery/preview flow and asset constraints, then implement five validated starter templates with previews.
+- Needs from the owner: None.
+
+### R2-6 — done — 2026-11-23 14:39 — Codex
+- Branch / commit: feature/r2-6 / `2e8f6af`
+- What changed (files): Added five schema-validated starter manifests and committed WebP previews; registered the new categories and bilingual names; integrated per-template palette and decoration behavior, gallery preview cards, legacy ID aliases, and template stress tests. Added preview license records and the 12-state UX review pack in `docs/ux-review/R2-6/`.
+- Decisions / deviations from the plan: Bold Marketing keeps its campaign surfaces fixed while its accent follows the creator color, representing the plan's partially flexible palette using the schema's existing boolean plus per-mode palette overrides. Existing visual CSS class names remain internal adapter names while public template IDs use the five canonical slugs. No dependencies added. Each preview is 864×1080 and under 40 KB.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (409 passed / 53 files), `npm run build`, `git diff --check`, and the targeted gallery E2E (2 passed) passed. Full E2E: 61 passed / 6 failed; four pre-existing export-spike checks cannot find the legacy `/spike` heading, the known R0-6 UX preview test expects a stale Arabic heading, and one 1440×900 dark LTR font specimen failed its load check under parallel execution. R2-6 gallery preview checks passed in the full run. `npm run template:validate` is not available yet; R2-7 owns that tooling.
+- Remaining / next step: R2-7, template CLI and CI.
+- Needs from the owner: None.
