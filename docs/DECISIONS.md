@@ -10,6 +10,11 @@ Records rationale, alternatives, sizes, and platform verifications per `Spec.md`
 - **Dependency size:** Development-only Node tools; browser bundle/gzip delta: 0 KB. No production asset is added.
 - **Decision:** Use the existing `src/templates/starters/<id>/` folders named by R2-6, rather than introducing the prose example's category/slug directory shape. This preserves current manifests, preview URLs, and lazy loaders; the index derives category relationships from each manifest.
 
+## 2026-11-23 — Template CSS manifest representation (R2-8)
+- **Conflict:** `REVISION_PLAN.md` §5.1 describes level-4 CSS as a `style.css` file path, while the implemented Zod and JSON Schemas define `customCss` as CSS text. The runtime accepts CSS text separately from its template load path, and the application preview does not yet apply contributed template CSS.
+- **Decision:** Document the current inline `customCss` representation and clearly label preview/runtime application as pending. Do not promise separate `style.css` support until the schema and runtime are reconciled; the contributor's ordinary theme-only path remains fully data-only and verified.
+- **Remaining:** Reconcile the plan/schema contract and apply sanitized custom CSS in the template runtime before advertising level 4 as a supported user-visible extension.
+
 ## 2026-11-23 — Schema v2 migration defaults (R1-1)
 - Plain string fields migrate to one unmarked paragraph/run; existing content remains editable in the legacy field editor until R4 provides rich text editing.
 - Legacy template IDs map `network` → `tech-mesh`, `clean` → `clean-minimal`, and `bold` → `bold-marketing`.

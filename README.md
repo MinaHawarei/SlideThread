@@ -190,10 +190,17 @@ To add a new social platform format or custom aspect ratio:
 3. Add corresponding localization keys in `src/i18n/en.ts` and `src/i18n/ar.ts`.
 
 ### Adding a New Design Template
-To register a new design aesthetic:
-1. Open `src/core/templates.ts`.
-2. Define the template tokens, font pairings, and default signature layout in `TEMPLATES`.
-3. Add specific template styling rules in `src/slides/slides.css` targeting `[data-template="your-template-id"]`.
+Add templates through the data-only workflow rather than editing app registries:
+
+```bash
+npm run template:new -- creator-notes
+npm run template:dev -- creator-notes
+npm run template:preview -- creator-notes
+npm run template:validate
+npm run template:index
+```
+
+See the [Template Guide](docs/TEMPLATE_GUIDE.md) for worked examples at all four contribution levels and the [Content Policy](docs/CONTENT_POLICY.md) for licensing and safety requirements.
 
 ---
 
@@ -208,12 +215,7 @@ SlideThread is continuously tested across desktop and mobile form factors:
 
 ## 🤝 Contributing
 
-Contributions, bug reports, and suggestions are warmly welcome!
-1. Fork the repository.
-2. Create your feature branch (`git checkout -b feature/amazing-feature`).
-3. Commit your changes with clear messages (`git commit -m "Add amazing feature"`).
-4. Verify all checks pass: `npm run lint && npm run typecheck && npm test && npm run build`.
-5. Push to your branch and open a Pull Request.
+Contributions, bug reports, and suggestions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup and review steps, and use the [pull request template](.github/PULL_REQUEST_TEMPLATE.md). For templates, follow the [Template Guide](docs/TEMPLATE_GUIDE.md) and [Content Policy](docs/CONTENT_POLICY.md).
 
 ---
 
