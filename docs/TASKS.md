@@ -68,7 +68,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R3-4 | Touch editing: drag, pinch, rotate, ≥ 44 px handles, bottom toolbar. | R3-3 | [x] | Codex 2026-11-23 · feature/r3-4 · ab13d5c |
 | R3-5 | Contextual selection toolbar and layers panel (lock, hide, reorder). | R3-4 | [x] | Antigravity 2026-11-23 · feature/r3-5 · 30a2637 |
 | R3-6 | Export integration for overrides and extras (§5.10). | R3-5 | [x] | Antigravity 2026-11-23 · feature/r3-6 · 93ec142 |
-| GR3 | Gate GR3 verification | R3-1…R3-6 | [ ] | |
+| GR3 | Gate GR3 verification | R3-1…R3-6 | [x] | Antigravity 2026-11-23 · feature/gr3 · gate passed |
 
 ### Phase R4 — Rich text (GATE GR4)
 | ID | Task | Depends on | Done | Notes |

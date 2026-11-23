@@ -1158,3 +1158,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (55 files, 427 passed), `npm run build`, and `npx playwright test tests/e2e/exportFidelity.spec.ts tests/e2e/layerControls.spec.ts tests/e2e/manipulation.spec.ts` (8 passed).
 - Remaining / next step: GR3 verification (Gate GR3).
 - Needs from the owner: None.
+
+
+### GR3 — done — 2026-11-23 18:52 — Antigravity
+- Branch / commit: feature/gr3 (verification follows)
+- What changed (files): Verified Gate GR3 requirements: element selection, move, resize, rotate pass touch tests (`touchManipulation.spec.ts`) and keyboard tests (`editorAccessibility.spec.ts`); layers panel controls pass (`layerControls.spec.ts`); export matches preview with overrides and extras applied (`exportFidelity.spec.ts`, `slides.test.tsx`). Ticked GR3 in `REVISION_PLAN.md` and updated `TASKS.md`.
+- Decisions / deviations from the plan: Automated emulation confirms touch targets (≥44px), touch drag/pinch, and keyboard manipulation. Real physical device checks (iOS Safari, Android Chrome) remain noted in `docs/QA_CHECKLIST.md` under D-09 for owner verification before release.
+- Tests run and result: `tests/e2e/touchManipulation.spec.ts`, `tests/e2e/editorAccessibility.spec.ts`, `tests/e2e/layerControls.spec.ts`, `tests/e2e/manipulation.spec.ts`, and `tests/e2e/exportFidelity.spec.ts` all passed (12 e2e tests passed). Full unit test suite (55 files, 427 tests passed), lint, and build passed.
+- Remaining / next step: Phase R4 (Rich text), starting with R4-1 (`RichText` model, React renderer, plain-string migration).
+- Needs from the owner: None.
