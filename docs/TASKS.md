@@ -54,7 +54,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R2-4 | Sanitizers and validators for SVG and CSS (§5.1) using vetted libraries. | R2-3 | [x] | Codex 2026-11-23 · feature/r2-4 · 2ece08a |
 | R2-5 | Template runtime: lazy load, resolve tokens/layouts/decor, fallbacks for missing archetypes. | R2-4 | [x] | Codex 2026-11-23 · feature/r2-5 · 4555d77 |
 | R2-6 | The 5 starter templates (§5.8) with previews. | R2-5 | [x] | Codex 2026-11-23 · feature/r2-6 · 2e8f6af |
-| R2-7 | Template CLI and CI (§5.1). | R2-6 | [~] | Codex 2026-11-23 |
+| R2-7 | Template CLI and CI (§5.1). | R2-6 | [x] | Codex 2026-11-23 · feature/r2-7 · cff9d37 |
 | R2-8 | Contributor docs: `CONTRIBUTING.md`, `docs/TEMPLATE_GUIDE.md`, `docs/CONTENT_POLICY.md`, PR template, `CODEOWNERS`. | R2-7 | [ ] | |
 | R2-9 | Gallery data layer: generated index, search/filter by category/language/format/mode, favorites in localStorage, hide categories with `status: planned` and zero templates. | R2-8 | [ ] | |
 | GR2 | Gate GR2 verification | R2-1…R2-9 | [ ] | |

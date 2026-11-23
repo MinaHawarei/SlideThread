@@ -1005,3 +1005,11 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress).
 - Remaining / next step: Implement scaffold, dev preview, validation, preview generation, index generation, and PR CI; exercise them against the five current templates and a temporary scaffold.
 - Needs from the owner: None.
+
+### R2-7 — done — 2026-11-23 15:16 — Codex
+- Branch / commit: feature/r2-7 / `cff9d37`
+- What changed (files): Added five `template:*` npm commands and the template lab route; implemented scaffolding, JSON Schema + runtime validation, sanitizer/security and contrast checks, asset/license/size validation, 80-case stress rendering, WebP preview generation and tolerant drift checks, and generated gallery index. Updated CI, the README script list, category schema enum, and all five generated previews.
+- Decisions / deviations from the plan: Kept R2-6's `src/templates/starters/<id>/` manifest folders. Added development-only Ajv/ajv-formats and Sharp dependencies (0 KB browser gzip); justifications, alternatives, and licenses are in `docs/DECISIONS.md`. Temporary scaffold contribution validated through preview generation and 96 stress combinations, then removed.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (409 passed / 53 files), `npm run build`, `git diff --check`, `npm run template:validate` (80 combinations), `npm run template:preview -- --check` (all 5 previews, 0.00 mean pixel difference), `npm run template:index -- --check`, and `npm audit --omit=dev` (0 vulnerabilities) passed. Scaffold dry run validated (96 combinations) and Playwright confirmed manifest HMR without a page reload. Full E2E: 63 passed / 4 failed; existing failures are three stale `/spike` heading checks and the R0-6 Arabic heading expectation. Build retains the existing Zod Rollup annotation notices.
+- Remaining / next step: R2-8, contributor documentation and PR template.
+- Needs from the owner: None.
