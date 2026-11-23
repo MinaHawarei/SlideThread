@@ -70,7 +70,7 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 ### R2-3 — done — 2026-11-23 13:36 — Codex
-- Branch / commit: feature/r2-3 / COMMIT
+- Branch / commit: feature/r2-3 / 04c4cb3
 - What changed (files): Added typed `SvgFragment` primitives and generators for mesh, dots-grid, waves, original eight-point geometric tessellation, blobs, and none; added intensity/toggle behavior, bounded params, input validation, and unit coverage.
 - Decisions / deviations from the plan: Generator output is structured primitive data rather than SVG strings, so later React runtime rendering does not need to trust generated markup. The existing legacy `NetworkBackground` remains unchanged until template runtime integration in R2-5; the new mesh generator satisfies prefix stability and shared boundaries for the template platform.
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 365 passed / 50 files; `npm run build` pass (existing Zod Rollup annotation notices). E2E not applicable: generators are pure and are not connected to rendering until R2-5. `git diff --check` pass.
