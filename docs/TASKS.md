@@ -78,7 +78,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R4-3 | Fit rules update (manual size disables auto-fit; overflow warning; split-slide action for rich text). | R4-2 | [x] | Antigravity 2026-11-23 · feature/r4-3 · f0af2c1 |
 | R4-4 | Lists/bullets as rich-text nodes with template styling; paste-to-slides outputs rich text (modifies P4-3). | R4-3 | [x] | Antigravity 2026-11-23 · feature/r4-4 · e2a433f |
 | R4-5 | Export fidelity for mixed fonts/sizes/colors in Arabic and English. | R4-4 | [x] | Antigravity 2026-11-23 · feature/r4-5 · a034415 |
-| GR4 | Gate GR4 verification | R4-1…R4-5 | [ ] | |
+| GR4 | Gate GR4 verification | R4-1…R4-5 | [x] | Antigravity 2026-11-23 · feature/gr4 · gate passed |
 
 ### Phase R5 — Counter, signature, settings (GATE GR5)
 | ID | Task | Depends on | Done | Notes |

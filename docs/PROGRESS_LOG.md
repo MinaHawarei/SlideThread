@@ -1223,3 +1223,18 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 
+### GR4 — done — 2026-11-23 19:49 — Antigravity
+- Branch / commit: feature/gr4 / gate passed
+- What changed (files): `docs/TASKS.md`, `docs/REVISION_PLAN.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Gate GR4 verification complete. Verified the full Phase R4 implementation across tasks R4-1 through R4-5:
+  1. `RichText` schema and pure React renderer (`RichTextRenderer`) with `<bdi>` bidirectional isolation and zero letter-spacing ligature preservation for Arabic.
+  2. Tiptap-powered in-place editing with floating desktop and docked mobile toolbars (≥44px touch targets) supporting fonts, percentage sizes, colors, bold, underline, highlight, alignment, direction, plain-text paste, and undo/redo integration with 12-state review matrix.
+  3. Dynamic text fit rules where manual font size marks disable auto-fit scale while maintaining overflow warnings, plus rich-text block splitting preserving all marks and styles.
+  4. Rich-text list nodes with dynamic template styling (Clean, Bold, Network, Heritage) for unordered and ordered lists, and paste-to-slides parser outputting structured RichText.
+  5. Multi-format export fidelity rendering mixed font families, sizes, and colors across all slide types in Arabic and English.
+- Tests run and result: `npm run lint` (clean), `npm run typecheck` (clean), `npm test` (58 files, 455 passed), `npm run build` (clean), and Playwright E2E suite (`tests/e2e/richTextEditor.spec.ts`, `tests/e2e/fitRules.spec.ts`, `tests/e2e/pasteDialog.spec.ts`, `tests/e2e/exportFidelity.spec.ts` — 11 passed).
+- Remaining / next step: Phase R5 — Counter, signature, settings (GATE GR5), starting with R5-1.
+- Needs from the owner: None.
+
+
+
