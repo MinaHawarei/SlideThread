@@ -376,3 +376,10 @@ ORIGINAL TEMPLATE PREVIEW ASSETS
 ================================
 
 The five WebP previews under `src/templates/starters/` were captured from the original SlideThread template renderers using in-repository sample content. They are original project assets licensed under MIT. See `ASSET_LICENSES.md` for each file and its source renderer.
+
+
+BUILT-IN ASSET PACKS
+====================
+
+The vector assets under `assets/packs/shapes/` are original vector illustrations, shapes, lines, and callout badges authored for SlideThread. They are original project assets licensed under MIT. See `ASSET_LICENSES.md` for individual pack details.
+
