@@ -169,6 +169,8 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
               slideIndex={validIndex}
               totalSlides={slides.length}
               showCounter={project.contentType !== 'post'}
+              counterConfig={project.counter}
+              signatureConfig={project.signature}
               showSafeZones={effectiveSafeZones}
               isStory={isStory}
               templateId={project.templateId}

@@ -11,11 +11,19 @@ import { ImageSlide } from './ImageSlide';
 import { CtaSlide } from './CtaSlide';
 import { MediaRenderer } from './MediaRenderer';
 import { SignatureBar } from './SignatureBar';
+import { SlideCounter } from './SlideCounter';
 import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
 import { ExtrasRenderer } from './ExtrasRenderer';
 import { getTemplate } from '../templates';
 import type { TemplateDef } from '../templates';
-import { richTextFieldsToPlainText, type AspectClass, type Slide } from '../core/schema';
+import {
+  richTextFieldsToPlainText,
+  DEFAULT_COUNTER_CONFIG,
+  type AspectClass,
+  type Slide,
+  type CounterConfig,
+  type SignatureConfig,
+} from '../core/schema';
 import { SLOT_SELECTORS } from '../core/elementModel';
 import './slides.css';
 
@@ -30,6 +38,8 @@ export interface SlideRendererProps extends Omit<SlideProps, 'slide'> {
   slide: Slide;
   style?: React.CSSProperties;
   templateOverride?: TemplateDef;
+  counterConfig?: CounterConfig;
+  signatureConfig?: SignatureConfig;
 }
 
 export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) => {
@@ -42,6 +52,8 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     slideIndex,
     totalSlides,
     showCounter = true,
+    counterConfig,
+    signatureConfig,
     showSafeZones = false,
     isStory = false,
     templateId = 'network',
@@ -70,7 +82,14 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   const shouldRenderSignature =
     slide.type !== 'cta' &&
     !slide.hideSignature &&
-    Boolean(brand && brand.showSignature !== false);
+    Boolean(brand && brand.showSignature !== false && signatureConfig?.show !== false);
+
+  const signatureAnchor = signatureConfig?.anchor || brand?.defaultSignature?.anchor || 'br';
+
+  const effectiveCounterConfig: CounterConfig = counterConfig ?? {
+    ...DEFAULT_COUNTER_CONFIG,
+    show: (brand?.showCounter !== false) && (showCounter !== false),
+  };
 
   const paletteStyle: React.CSSProperties = {
     '--bg': templatePalette.bg,
@@ -245,10 +264,20 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
             brand={brand}
             slideIndex={slideIndex}
             totalSlides={totalSlides}
-            showCounter={showCounter}
+            showCounter={false}
           />
         </div>
       )}
+      <SlideCounter
+        counterConfig={effectiveCounterConfig}
+        slideIndex={slideIndex}
+        totalSlides={totalSlides}
+        aspectClass={aspectClass}
+        palette={templatePalette}
+        textDir={textDir}
+        signatureAnchor={signatureAnchor}
+        isSignatureVisible={shouldRenderSignature}
+      />
       {(showSafeZones || isStory) && (aspectClass === 'tall' || isStory) && (
         <StorySafeZoneOverlay height={slideDims.height} />
       )}

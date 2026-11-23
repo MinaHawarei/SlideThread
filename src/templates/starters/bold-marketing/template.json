@@ -18,5 +18,6 @@
     "radius": { "card": 0, "chip": 0 }
   },
   "layouts": { "cover": "cover-editorial", "explain": "explain-centered", "rule": "rule-centered", "compare": "compare-editorial", "code": "code-editorial", "stat": "stat-centered", "quote": "quote-editorial", "image": "image-centered", "cta": "cta-editorial" },
-  "formats": "all"
+  "formats": "all",
+  "counter": { "styles": ["number", "bar"], "defaultStyle": "number" }
 }

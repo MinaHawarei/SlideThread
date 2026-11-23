@@ -22,5 +22,6 @@ export const networkTemplate: TemplateDef = {
     card: 24,
     chip: 9999,
   },
+  counter: { styles: ['number', 'bar', 'dots'], defaultStyle: 'number' },
   Background: NetworkBackground,
 };

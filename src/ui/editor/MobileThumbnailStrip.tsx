@@ -143,6 +143,8 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                     slideIndex={idx}
                     totalSlides={slides.length}
                     showCounter={!isPost}
+                    counterConfig={project.counter}
+                    signatureConfig={project.signature}
                     showSafeZones={false}
                     isStory={project.contentType === 'story'}
                     templateId={project.templateId}

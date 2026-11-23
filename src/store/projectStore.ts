@@ -1,7 +1,18 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
-import type { Project, Slide, SlideType, MediaRef, TemplateId, AspectClass, ElementOverride, ExtraElement, RichText } from '../core/schema';
+import type {
+  Project,
+  Slide,
+  SlideType,
+  MediaRef,
+  TemplateId,
+  AspectClass,
+  ElementOverride,
+  ExtraElement,
+  RichText,
+  CounterConfig,
+} from '../core/schema';
 import {
   CURRENT_SCHEMA_VERSION,
   DEFAULT_COUNTER_CONFIG,
@@ -14,6 +25,7 @@ import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
 import { useRecentStore } from './recentStore';
 import { migrate } from '../core/migrate';
 import { recordHistoryChange, registerHistoryChannel } from './history';
+import { getTemplate } from '../templates';
 
 export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide {
   const id = `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -156,6 +168,7 @@ export interface ProjectState {
   updateProjectMeta: (
     meta: Partial<Omit<Project, 'slides' | 'id' | 'schemaVersion' | 'createdAt'>>
   ) => void;
+  updateCounterConfig: (counter: Partial<CounterConfig>) => void;
   setActiveSlideId: (id: string) => void;
 
   // Slide CRUD
@@ -211,10 +224,37 @@ export const useProjectStore = create<ProjectState>()(
         },
 
         updateProjectMeta: (meta) => {
+          set((state) => {
+            const currentCounter = state.project.counter ?? DEFAULT_COUNTER_CONFIG;
+            let nextCounter: CounterConfig = meta.counter ? { ...currentCounter, ...meta.counter } : currentCounter;
+            if (meta.templateId && meta.templateId !== state.project.templateId) {
+              const tmpl = getTemplate(meta.templateId);
+              if (tmpl?.counter && !tmpl.counter.styles.includes(nextCounter.style)) {
+                nextCounter = {
+                  ...nextCounter,
+                  style: tmpl.counter.defaultStyle,
+                };
+              }
+            }
+            return {
+              project: {
+                ...state.project,
+                ...meta,
+                counter: nextCounter,
+                updatedAt: Date.now(),
+              },
+            };
+          });
+        },
+
+        updateCounterConfig: (counterUpdate) => {
           set((state) => ({
             project: {
               ...state.project,
-              ...meta,
+              counter: {
+                ...(state.project.counter ?? DEFAULT_COUNTER_CONFIG),
+                ...counterUpdate,
+              },
               updatedAt: Date.now(),
             },
           }));

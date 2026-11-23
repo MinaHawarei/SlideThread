@@ -460,6 +460,8 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               slideIndex={renderIndex}
               totalSlides={slides.length}
               showCounter={project.contentType !== 'post'}
+              counterConfig={project.counter}
+              signatureConfig={project.signature}
               showSafeZones={false}
               isStory={isStory}
               templateId={project.templateId}

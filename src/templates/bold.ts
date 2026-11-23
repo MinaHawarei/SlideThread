@@ -27,6 +27,7 @@ export const boldTemplate: TemplateDef = {
     card: 0,
     chip: 0,
   },
+  counter: { styles: ['number', 'bar'], defaultStyle: 'number' },
   paletteOverridesByMode: boldPaletteOverrides,
   Background: () => null,
 };

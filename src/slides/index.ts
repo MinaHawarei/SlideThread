@@ -10,4 +10,6 @@ export * from './ImageSlide';
 export * from './CtaSlide';
 export * from './ExtrasRenderer';
 export * from './RichTextRenderer';
+export * from './counterUtils';
+export * from './SlideCounter';
 export * from './SlideRenderer';

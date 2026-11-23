@@ -1237,4 +1237,19 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 
+### R5-1 — done — 2026-11-23 23:12 — Antigravity
+- Branch / commit: feature/r5-1 / counter system complete
+- What changed (files): `src/core/schema.ts`, `src/slides/SlideCounter.tsx`, `src/slides/counterUtils.ts`, `src/slides/SlideRenderer.tsx`, `src/slides/index.ts`, `src/slides/slides.css`, `src/slides/types.ts`, `src/templates/types.ts`, `src/templates/*.ts`, `src/templates/starters/*/template.json`, `src/store/projectStore.ts`, `src/ui/editor/DesignInspector.tsx`, `src/ui/editor/MainCanvas.tsx`, `src/ui/editor/SlideRail.tsx`, `src/ui/editor/EditorMobile.tsx`, `src/ui/editor/ExportDialog.tsx`, `src/ui/editor/MobileThumbnailStrip.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/counterSystem.test.tsx`, `tests/e2e/counterSystem.spec.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan:
+  1. Built configurable `SlideCounter` component implementing 6 physical anchors (`tl`, `tc`, `tr`, `bl`, `bc`, `br`), 3 styles (`number`, `bar`, `dots`), 3 number formats (`nn/nn`, `n`, `n/nn`), `hideOnFirst`, and `hideOnLast`.
+  2. Enforced template-declared style restrictions per Spec §5.4 (e.g. `clean-minimal` allows only `bar`; `bold-marketing` allows `number`, `bar`; `heritage-geometric` allows `number`, `dots`; `soft-gradient` allows `dots`, `bar`, `number`; `tech-mesh` allows all 3). Switching templates automatically falls back to the template's default counter style if the current style is unsupported.
+  3. Integrated collision handling: when counter and signature share an anchor and signature is visible, the UI warns with an accessible collision banner and the counter automatically offsets (`bottom: 124px` instead of `40px`) to prevent overlapping.
+  4. Preserved strict LTR number formatting (`dir="ltr" !important`) in both LTR and RTL orientations while keeping anchors physical.
+  5. Wired `counterConfig` and `signatureConfig` into `SlideRenderer`, `MainCanvas`, `SlideRail`, `EditorMobile`, `ExportDialog`, and `MobileThumbnailStrip`, suppressing duplicate counter rendering in `SignatureBar`.
+- Tests run and result: `npm run lint` (clean), `npm run typecheck` (clean), `npm test` (59 files, 481 passed), `npm run build` (clean), and Playwright E2E test `tests/e2e/counterSystem.spec.ts` (1 passed).
+- Remaining / next step: Claim and implement R5-2 (Signature system (§5.4): anchors, arrangement, size, photo shape, handle/socials, free move via overrides; CTA large avatar variants).
+- Needs from the owner: None.
+
+
+
 

@@ -287,6 +287,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 slideIndex={validIndex}
                 totalSlides={slides.length}
                 showCounter={project.contentType !== 'post'}
+                counterConfig={project.counter}
+                signatureConfig={project.signature}
                 showSafeZones={showSafeZones}
                 isStory={isStory}
                 templateId={project.templateId}

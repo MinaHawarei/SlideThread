@@ -21,6 +21,7 @@ export const cleanTemplate: TemplateDef = {
     card: 12,
     chip: 6,
   },
+  counter: { styles: ['bar'], defaultStyle: 'bar' },
   Background: () => null,
 };
 

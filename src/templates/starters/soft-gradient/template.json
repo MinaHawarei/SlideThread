@@ -15,5 +15,6 @@
   },
   "layouts": { "cover": "cover-centered", "explain": "explain-centered", "rule": "rule-editorial", "compare": "compare-centered", "code": "code-centered", "stat": "stat-centered", "quote": "quote-centered", "image": "image-editorial", "cta": "cta-centered" },
   "decor": { "background": { "id": "blobs", "params": { "count": 7 }, "intensity": 0.5 }, "overlay": [{ "id": "waves", "params": { "cycles": 1 }, "intensity": 0.18 }] },
+  "counter": { "styles": ["dots", "bar", "number"], "defaultStyle": "dots" },
   "formats": "all"
 }

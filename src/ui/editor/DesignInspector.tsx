@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
+import { useSettingsStore } from '../../store/settingsStore';
 import { getAllTemplates, getTemplate } from '../../templates';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
-import type { TemplateId, ThemeMode, TextDir } from '../../core/schema';
+import type { TemplateId, ThemeMode, TextDir, Anchor } from '../../core/schema';
 
 const PRESET_COLORS = [
   { name: 'Cyan (Network)', hex: '#35D0E6' },
@@ -20,9 +21,24 @@ export const DesignInspector: React.FC = () => {
   const { t } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
+  const updateCounterConfig = useProjectStore((state) => state.updateCounterConfig);
+  const settings = useSettingsStore((state) => state.settings);
   const [isChangeFormatOpen, setIsChangeFormatOpen] = useState(false);
 
   const allTemplates = getAllTemplates();
+  const currentTemplate = getTemplate(project.templateId);
+  const allowedStyles = currentTemplate.counter?.styles ?? ['number', 'bar', 'dots'];
+  const counter = project.counter ?? {
+    show: true,
+    anchor: 'br',
+    style: 'number',
+    format: 'nn/nn',
+    hideOnFirst: false,
+    hideOnLast: false,
+  };
+  const signatureAnchor = project.signature?.anchor || settings.defaultSignature?.anchor || 'br';
+  const isSignatureVisible = (settings.showSignature !== false) && (project.signature?.show !== false);
+  const hasCollision = counter.show && isSignatureVisible && counter.anchor === signatureAnchor;
 
   const handleTemplateChange = (templateId: TemplateId) => {
     updateProjectMeta({ templateId });
@@ -176,6 +192,154 @@ export const DesignInspector: React.FC = () => {
             );
           })}
         </div>
+      </div>
+
+      {/* Slide Counter System (§5.4) */}
+      <div className="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between">
+          <label htmlFor="counter-toggle-input" className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 cursor-pointer">
+            {t('counter.title')}
+          </label>
+          <input
+            id="counter-toggle-input"
+            type="checkbox"
+            data-testid="counter-toggle"
+            checked={counter.show}
+            onChange={(e) => updateCounterConfig({ show: e.target.checked })}
+            className="w-5 h-5 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+          />
+        </div>
+
+        {counter.show && (
+          <div className="space-y-4 rounded-xl bg-slate-50 dark:bg-slate-850 p-3 border border-slate-200 dark:border-slate-750">
+            {/* Anchor Selector (6 physical anchors) */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                {t('counter.anchor')}
+              </span>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(['tl', 'tc', 'tr', 'bl', 'bc', 'br'] as Anchor[]).map((a) => {
+                  const isSelected = counter.anchor === a;
+                  const labelKey = `counter.anchor.${a}` as const;
+                  return (
+                    <button
+                      key={a}
+                      type="button"
+                      data-testid={`counter-anchor-${a}`}
+                      onClick={() => updateCounterConfig({ anchor: a })}
+                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${
+                        isSelected
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {t(labelKey as Parameters<typeof t>[0])}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Collision warning banner */}
+            {hasCollision && (
+              <div
+                data-testid="counter-collision-warning"
+                className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-xs text-amber-800 dark:text-amber-300 space-y-1"
+              >
+                <div className="flex items-center gap-1.5 font-semibold">
+                  <span>⚠️</span>
+                  <span>{t('counter.collisionWarning')}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Style Selector (filtered by template) */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                {t('counter.style')}
+              </span>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(['number', 'bar', 'dots'] as const)
+                  .filter((style) => allowedStyles.includes(style))
+                  .map((style) => {
+                    const isSelected = counter.style === style;
+                    const styleKey = `counter.style.${style}` as const;
+                    return (
+                      <button
+                        key={style}
+                        type="button"
+                        data-testid={`counter-style-${style}`}
+                        onClick={() => updateCounterConfig({ style })}
+                        className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${
+                          isSelected
+                            ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
+                      >
+                        {t(styleKey as Parameters<typeof t>[0])}
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+
+            {/* Format Selector (only when style is number) */}
+            {counter.style === 'number' && (
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                  {t('counter.format')}
+                </span>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {(['nn/nn', 'n', 'n/nn'] as const).map((fmt) => {
+                    const isSelected = counter.format === fmt;
+                    const fmtKey = `counter.format.${fmt === 'nn/nn' ? 'nn_nn' : fmt === 'n/nn' ? 'n_nn' : 'n'}` as const;
+                    return (
+                      <button
+                        key={fmt}
+                        type="button"
+                        data-testid={`counter-format-${fmt}`}
+                        onClick={() => updateCounterConfig({ format: fmt })}
+                        className={`py-1.5 px-1 rounded-lg border text-[11px] font-mono font-semibold transition-all ${
+                          isSelected
+                            ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
+                        title={t(fmtKey as Parameters<typeof t>[0])}
+                      >
+                        {fmt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Hide on First / Last Checkboxes */}
+            <div className="space-y-2 pt-1 border-t border-slate-200 dark:border-slate-700">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-700 dark:text-slate-300">
+                <input
+                  type="checkbox"
+                  data-testid="counter-hide-first"
+                  checked={counter.hideOnFirst}
+                  onChange={(e) => updateCounterConfig({ hideOnFirst: e.target.checked })}
+                  className="w-4 h-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+                />
+                <span>{t('counter.hideOnFirst')}</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-700 dark:text-slate-300">
+                <input
+                  type="checkbox"
+                  data-testid="counter-hide-last"
+                  checked={counter.hideOnLast}
+                  onChange={(e) => updateCounterConfig({ hideOnLast: e.target.checked })}
+                  className="w-4 h-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+                />
+                <span>{t('counter.hideOnLast')}</span>
+              </label>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Change Format Dialog Trigger */}

@@ -16,6 +16,7 @@ export const heritageGeometricTemplate: TemplateDef = {
   fonts: { display: 'IBM Plex Sans Arabic, sans-serif', body: 'IBM Plex Sans Arabic, sans-serif', mono: 'JetBrains Mono, monospace' },
   typeScale: { h1: 104, h2: 72, body: 42, small: 28, mono: 32 },
   radius: { card: 20, chip: 12 },
+  counter: { styles: ['number', 'dots'], defaultStyle: 'number' },
   paletteByMode: heritagePalettes,
   Background: HeritageGeometricBackground,
 };

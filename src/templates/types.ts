@@ -17,6 +17,7 @@ export interface TemplateDef {
   fonts: { display: string; body: string; mono: string };
   typeScale: Record<'h1' | 'h2' | 'body' | 'small' | 'mono', number>; // px at 1080 short side
   radius: { card: number; chip: number };
+  counter?: { styles: Array<'number' | 'bar' | 'dots'>; defaultStyle: 'number' | 'bar' | 'dots' };
   paletteByMode?: Record<ThemeMode, Palette>;
   paletteOverridesByMode?: Partial<Record<ThemeMode, Partial<Palette>>>;
   Background: React.FC<TemplateBackgroundProps>;
