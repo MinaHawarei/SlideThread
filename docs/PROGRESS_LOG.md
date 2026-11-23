@@ -755,3 +755,12 @@ Agent name: Antigravity
 - Tests run and result: D-06 is the only R0-6 completion dependency not resolved by implementation; the code and review checks were recorded with the task commit.
 - Remaining / next step: Verify GR0 against the audit, spike decisions, and D-06 selection.
 - Needs from the owner: None for R0-6.
+
+
+### GR0 — started — 2026-11-23 11:12 — Codex
+- Branch / commit: feature/gr0
+- What changed (files): `docs/TASKS.md` (claimed GR0)
+- Decisions / deviations from the plan: Owner selected A — Atelier and D-06 is marked done. Gate evidence will be checked against every R0-1…R0-6 deliverable and the GR0 text in `REVISION_PLAN.md` §6.
+- Tests run and result: N/A (gate check in progress)
+- Remaining / next step: Verify audit existence/completion, all R0 spike decisions and UX review pack, and the owner selection; then mark the GR0 status checkbox only if the checks pass.
+- Needs from the owner: None.
