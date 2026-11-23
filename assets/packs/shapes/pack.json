@@ -1,0 +1,138 @@
+{
+  "id": "shapes",
+  "name": {
+    "en": "Essential Shapes & Lines",
+    "ar": "الأشكال والخطوط الأساسية"
+  },
+  "description": {
+    "en": "Original geometric accents, hand-drawn lines, and callout shapes for carousel highlights.",
+    "ar": "تأثيرات هندسية أصلية وخطوط مرسومة يدوياً وأشكال تنبيه لإبراز عناصر الشرائح."
+  },
+  "kind": "shapes",
+  "version": "1.0.0",
+  "license": "MIT",
+  "sourceUrl": "https://github.com/minarezk/SlideThread",
+  "author": "SlideThread Authors",
+  "items": [
+    {
+      "id": "line-straight",
+      "name": {
+        "en": "Straight Line",
+        "ar": "خط مستقيم"
+      },
+      "tags": {
+        "en": ["line", "divider", "separator", "rule"],
+        "ar": ["خط", "فاصل", "مستقيم"]
+      },
+      "file": "line-straight.svg",
+      "recolorable": true,
+      "defaultWidth": 120,
+      "defaultHeight": 12
+    },
+    {
+      "id": "line-arrow",
+      "name": {
+        "en": "Straight Arrow",
+        "ar": "سهم مستقيم"
+      },
+      "tags": {
+        "en": ["arrow", "pointer", "direction", "right"],
+        "ar": ["سهم", "مؤشر", "اتجاه", "يمين"]
+      },
+      "file": "line-arrow.svg",
+      "recolorable": true,
+      "defaultWidth": 120,
+      "defaultHeight": 24
+    },
+    {
+      "id": "arrow-curved",
+      "name": {
+        "en": "Curved Arrow",
+        "ar": "سهم منحنٍ"
+      },
+      "tags": {
+        "en": ["arrow", "curve", "callout", "pointer"],
+        "ar": ["سهم", "منحن", "تنبيه"]
+      },
+      "file": "arrow-curved.svg",
+      "recolorable": true,
+      "defaultWidth": 80,
+      "defaultHeight": 80
+    },
+    {
+      "id": "circle-outline",
+      "name": {
+        "en": "Circle Outline",
+        "ar": "إطار دائري"
+      },
+      "tags": {
+        "en": ["circle", "ring", "highlight", "focus"],
+        "ar": ["دائرة", "حلقة", "إطار", "تركيز"]
+      },
+      "file": "circle-outline.svg",
+      "recolorable": true,
+      "defaultWidth": 80,
+      "defaultHeight": 80
+    },
+    {
+      "id": "badge-star",
+      "name": {
+        "en": "8-Point Starburst",
+        "ar": "شعار نجمي ثماني"
+      },
+      "tags": {
+        "en": ["badge", "star", "burst", "highlight", "new"],
+        "ar": ["شعار", "نجمة", "تألق", "جديد"]
+      },
+      "file": "badge-star.svg",
+      "recolorable": true,
+      "defaultWidth": 80,
+      "defaultHeight": 80
+    },
+    {
+      "id": "highlight-underline",
+      "name": {
+        "en": "Marker Underline",
+        "ar": "خط تمييز سفلي"
+      },
+      "tags": {
+        "en": ["highlight", "underline", "marker", "hand-drawn"],
+        "ar": ["تمييز", "خط سفلي", "يدوي"]
+      },
+      "file": "highlight-underline.svg",
+      "recolorable": true,
+      "defaultWidth": 140,
+      "defaultHeight": 18
+    },
+    {
+      "id": "bracket-curly",
+      "name": {
+        "en": "Curly Bracket",
+        "ar": "قوس معقوف"
+      },
+      "tags": {
+        "en": ["bracket", "curly", "group", "callout"],
+        "ar": ["قوس", "معقوف", "تجميع"]
+      },
+      "file": "bracket-curly.svg",
+      "recolorable": true,
+      "defaultWidth": 30,
+      "defaultHeight": 120
+    },
+    {
+      "id": "speech-bubble",
+      "name": {
+        "en": "Speech Bubble",
+        "ar": "فقاعة كلام"
+      },
+      "tags": {
+        "en": ["bubble", "speech", "comment", "message"],
+        "ar": ["فقاعة", "كلام", "تعليق", "رسالة"]
+      },
+      "file": "speech-bubble.svg",
+      "recolorable": true,
+      "defaultWidth": 100,
+      "defaultHeight": 80
+    }
+  ]
+}
