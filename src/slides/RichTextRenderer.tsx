@@ -93,8 +93,12 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
             <p
               key={idx}
               className="rich-text-paragraph"
-              style={{ margin: 0, padding: 0 }}
-              dir="auto"
+              style={{
+                margin: 0,
+                padding: 0,
+                textAlign: seg.block.align,
+              }}
+              dir={seg.block.dir || 'auto'}
             >
               {seg.block.runs.map((run, runIdx) => (
                 <RunRenderer key={runIdx} run={run} />
@@ -119,8 +123,12 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
               <li
                 key={liIdx}
                 className="rich-text-list-item"
-                style={{ margin: 0, padding: 0 }}
-                dir="auto"
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  textAlign: liBlock.align,
+                }}
+                dir={liBlock.dir || 'auto'}
               >
                 {liBlock.runs.map((run, runIdx) => (
                   <RunRenderer key={runIdx} run={run} />

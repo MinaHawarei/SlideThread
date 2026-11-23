@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
-import type { Project, Slide, SlideType, MediaRef, TemplateId, AspectClass, ElementOverride, ExtraElement } from '../core/schema';
+import type { Project, Slide, SlideType, MediaRef, TemplateId, AspectClass, ElementOverride, ExtraElement, RichText } from '../core/schema';
 import {
   CURRENT_SCHEMA_VERSION,
   DEFAULT_COUNTER_CONFIG,
   DEFAULT_SIGNATURE_CONFIG,
   plainTextFieldsToRichText,
+  plainTextToRichText,
   richTextFieldsToPlainText,
 } from '../core/schema';
 import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
@@ -162,7 +163,7 @@ export interface ProjectState {
   duplicateSlide: (id: string) => Slide | undefined;
   deleteSlide: (id: string) => void;
   reorderSlides: (startIndex: number, endIndex: number) => void;
-  updateSlideFields: (id: string, fields: Record<string, string>) => void;
+  updateSlideFields: (id: string, fields: Record<string, string | RichText>) => void;
   updateSlideMedia: (id: string, media?: MediaRef) => void;
   updateSlotOverride: (slideId: string, aspect: AspectClass, elementId: string, override?: ElementOverride) => void;
   updateExtraElement: (slideId: string, extra: ExtraElement) => void;
@@ -334,8 +335,16 @@ export const useProjectStore = create<ProjectState>()(
           }));
         },
 
-        updateSlideFields: (id: string, fields: Record<string, string>) => {
+        updateSlideFields: (id: string, fields: Record<string, string | RichText>) => {
           pendingCoalesceKey = `slide-field:${id}:${Object.keys(fields).sort().join(',')}`;
+          const normalized: Record<string, RichText> = {};
+          for (const [key, value] of Object.entries(fields)) {
+            if (typeof value === 'string') {
+              normalized[key] = plainTextToRichText(value);
+            } else {
+              normalized[key] = value;
+            }
+          }
           set((state) => ({
             project: {
               ...state.project,
@@ -343,7 +352,7 @@ export const useProjectStore = create<ProjectState>()(
                 s.id === id
                   ? {
                       ...s,
-                      fields: { ...s.fields, ...plainTextFieldsToRichText(fields) },
+                      fields: { ...s.fields, ...normalized },
                     }
                   : s
               ),

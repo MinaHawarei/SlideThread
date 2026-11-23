@@ -1,5 +1,6 @@
-import type { RichText, RichTextBlock, RichTextRun, RichTextMarks } from './schema';
+import type { RichText, RichTextBlock, RichTextRun, RichTextMarks, TextAlignment, TextDirection } from './schema';
 import { FONT_REGISTRY, type FontId } from '../fonts/registry';
+import type { JSONContent } from '@tiptap/core';
 
 /** Checks if a string contains any Arabic characters. */
 export function isArabicText(text: string): boolean {
@@ -123,4 +124,116 @@ export function resolveFontFamily(font?: string): string | undefined {
   if (!font) return undefined;
   const def = FONT_REGISTRY[font as FontId];
   return def ? def.family : font;
+}
+
+/**
+ * Converts a RichText document into Tiptap JSON document representation.
+ */
+export function richTextToTiptapJSON(doc: RichText): JSONContent {
+  return {
+    type: 'doc',
+    content: doc.blocks.map((block) => {
+      const attrs: Record<string, unknown> = {};
+      if (block.align) attrs.textAlign = block.align;
+      if (block.dir) attrs.dir = block.dir;
+
+      const content = block.runs.map((run) => {
+        const marks: Array<{ type: string; attrs?: Record<string, unknown> }> = [];
+        if (run.marks?.bold) marks.push({ type: 'bold' });
+        if (run.marks?.underline) marks.push({ type: 'underline' });
+        if (run.marks?.highlight) marks.push({ type: 'highlight', attrs: { color: run.marks.highlight } });
+
+        const styleAttrs: Record<string, unknown> = {};
+        if (run.marks?.color) styleAttrs.color = run.marks.color;
+        if (run.marks?.size) styleAttrs.fontSize = `${run.marks.size}%`;
+        if (run.marks?.font) styleAttrs.fontFamily = resolveFontFamily(run.marks.font);
+        if (Object.keys(styleAttrs).length > 0) {
+          marks.push({ type: 'textStyle', attrs: styleAttrs });
+        }
+
+        return {
+          type: 'text',
+          text: run.text,
+          ...(marks.length > 0 ? { marks } : {}),
+        };
+      });
+
+      return {
+        type: 'paragraph',
+        ...(Object.keys(attrs).length > 0 ? { attrs } : {}),
+        content: content.length > 0 ? content : undefined,
+      };
+    }),
+  };
+}
+
+/**
+ * Converts a Tiptap JSON document representation back into the application's RichText model.
+ */
+export function tiptapJSONToRichText(json: JSONContent): RichText {
+  if (!json || json.type !== 'doc' || !Array.isArray(json.content)) {
+    return { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] };
+  }
+
+  const blocks: RichTextBlock[] = [];
+
+  for (const node of json.content) {
+    if (node.type === 'paragraph' || node.type === 'heading') {
+      const align = (node.attrs?.textAlign as TextAlignment) || undefined;
+      const dir = (node.attrs?.dir as TextDirection) || undefined;
+      const runs: RichTextRun[] = [];
+
+      if (Array.isArray(node.content)) {
+        for (const child of node.content) {
+          if (child.type === 'text' && typeof child.text === 'string') {
+            const marks: RichTextMarks = {};
+            if (Array.isArray(child.marks)) {
+              for (const mark of child.marks) {
+                if (mark.type === 'bold') marks.bold = true;
+                if (mark.type === 'underline') marks.underline = true;
+                if (mark.type === 'highlight') {
+                  marks.highlight = (mark.attrs?.color as string) || '#fef08a';
+                }
+                if (mark.type === 'textStyle' && mark.attrs) {
+                  if (typeof mark.attrs.color === 'string') marks.color = mark.attrs.color;
+                  if (typeof mark.attrs.fontSize === 'string') {
+                    const parsed = parseInt(mark.attrs.fontSize, 10);
+                    if (!isNaN(parsed) && parsed >= 50 && parsed <= 300) {
+                      marks.size = parsed;
+                    }
+                  } else if (typeof mark.attrs.fontSize === 'number') {
+                    marks.size = Math.max(50, Math.min(300, mark.attrs.fontSize));
+                  }
+                  if (typeof mark.attrs.fontFamily === 'string') {
+                    const fam = mark.attrs.fontFamily.toLowerCase();
+                    if (fam.includes('arabic')) marks.font = 'ibm-plex-sans-arabic';
+                    else if (fam.includes('mono')) marks.font = 'jetbrains-mono';
+                    else if (fam.includes('coptic')) marks.font = 'noto-sans-coptic';
+                    else if (fam.includes('ibm') || fam.includes('sans')) marks.font = 'ibm-plex-sans';
+                    else marks.font = mark.attrs.fontFamily;
+                  }
+                }
+              }
+            }
+            runs.push({
+              text: child.text,
+              ...(Object.keys(marks).length > 0 ? { marks } : {}),
+            });
+          }
+        }
+      }
+
+      blocks.push({
+        type: 'p',
+        runs: runs.length > 0 ? runs : [{ text: '' }],
+        ...(align ? { align } : {}),
+        ...(dir ? { dir } : {}),
+      });
+    }
+  }
+
+  return {
+    type: 'doc',
+    blocks: blocks.length > 0 ? blocks : [{ type: 'p', runs: [{ text: '' }] }],
+  };
 }

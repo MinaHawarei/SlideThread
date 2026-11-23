@@ -69,15 +69,25 @@ export const RichTextRunSchema = z.object({
 }).strict();
 export type RichTextRun = z.infer<typeof RichTextRunSchema>;
 
+export const TextAlignmentSchema = z.enum(['left', 'center', 'right']);
+export type TextAlignment = z.infer<typeof TextAlignmentSchema>;
+
+export const TextDirectionSchema = z.enum(['ltr', 'rtl']);
+export type TextDirection = z.infer<typeof TextDirectionSchema>;
+
 export const RichTextParagraphSchema = z.object({
   type: z.literal('p'),
   runs: z.array(RichTextRunSchema),
+  align: TextAlignmentSchema.optional(),
+  dir: TextDirectionSchema.optional(),
 }).strict();
 
 export const RichTextListItemSchema = z.object({
   type: z.literal('li'),
   runs: z.array(RichTextRunSchema),
   ordered: z.boolean().optional(),
+  align: TextAlignmentSchema.optional(),
+  dir: TextDirectionSchema.optional(),
 }).strict();
 
 export const RichTextBlockSchema = z.discriminatedUnion('type', [
