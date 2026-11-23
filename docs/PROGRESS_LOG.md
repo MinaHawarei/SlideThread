@@ -1071,3 +1071,19 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (416 passed / 55 files), `npm run build`, and `git diff --check` passed. Build emits existing Zod annotation notices. No E2E was run because this change adds pure model plumbing without changing UI or rendering.
 - Remaining / next step: R3-2, direct manipulation.
 - Needs from the owner: None.
+
+### R3-2 — started — 2026-11-23 16:15 — Codex
+- Branch / commit: feature/r3-2
+- What changed (files): `docs/TASKS.md` (claimed R3-2).
+- Decisions / deviations from the plan: Follow the R0-2 spike and keep pointer handling native. Store normalized geometry in project data; render selection and snap guides in an editor-only overlay so they do not enter the export model.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Add model update/reset APIs, canvas pointer move/resize/rotate and snapping, then test gestures and run required checks.
+- Needs from the owner: None.
+
+### R3-2 — done — 2026-11-23 16:15 — Codex
+- Branch / commit: feature/r3-2 / `625e390`
+- What changed (files): Added native pointer selection, move, resize, extra rotation, snap guides, and per-aspect reset controls to the desktop canvas; stored slot overrides and extra geometry through project history; added bilingual control labels, pure geometry tests, editor tests, a drag/reset browser test, and the 12-state screenshot/self-review pack in `docs/ux-review/R3-2/`.
+- Decisions / deviations from the plan: Followed the R0-2 native Pointer Events decision; no dependency added. Touch manipulation remains R3-4; rendering/export integration remains R3-6. The overlay is editor-only.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (418 passed / 55 files), `npm run build`, and `git diff --check` passed. Manipulation E2E and screenshot matrix passed. Full E2E: 67 passed / 3 failed; existing failures are stale `/spike` heading checks in `benchmark.spec.ts` and `exportSpike.spec.ts`, and the stale Arabic heading in `uxPreview.spec.ts`. Build emits existing Zod annotation notices.
+- Remaining / next step: R3-3, keyboard and accessibility for canvas editing.
+- Needs from the owner: None.
