@@ -832,3 +832,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 340 passed / 44 files; `npm run build` pass; Playwright E2E 16 passed via temporary port-5174 config because port 5173 was already occupied by an existing Vite server. Targeted history and performance tests pass after the final formatting pass.
 - Remaining / next step: R1-3, design tokens and component kit for Atelier.
 - Needs from the owner: None.
+
+
+### R1-3 — started — 2026-11-23 11:55 — Codex
+- Branch / commit: feature/r1-3
+- What changed (files): `docs/TASKS.md` (claimed R1-3)
+- Decisions / deviations from the plan: Apply the selected Atelier palette (warm paper, terracotta, ink, IBM Plex pairing), preserve logical spacing for RTL, and use the explicitly named Radix primitives without adding other UI dependencies.
+- Tests run and result: N/A (task in progress)
+- Remaining / next step: Install the planned Radix primitives, build tokens and `/kit`, add bilingual keys and interaction coverage, capture the required 18-state screenshot matrix, and run full checks.
+- Needs from the owner: None.
