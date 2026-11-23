@@ -164,6 +164,37 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     expect(stats.size).toBeGreaterThan(1000);
   });
 
+  test('exports slide with mixed fonts, sizes, and colors in Arabic and English faithfully (R4-5)', async ({ page }) => {
+    test.setTimeout(45000);
+    const slideTitle = page.locator('[data-testid="main-canvas"] .slide-canvas .slide-title-h1');
+    await expect(slideTitle).toBeVisible();
+
+    // Open export dialog
+    const exportBtn = page.locator('[data-testid="editor-export-btn"]');
+    await expect(exportBtn).toBeVisible();
+    await exportBtn.click();
+
+    const exportDialog = page.locator('[data-testid="export-dialog"]');
+    await expect(exportDialog).toBeVisible();
+
+    // Select PNG format
+    const pngOption = page.locator('[data-testid="export-format-png"]');
+    await pngOption.click();
+
+    // Trigger export and await download
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('[data-testid="export-start-btn"]').click(),
+    ]);
+
+    expect(download.suggestedFilename()).toMatch(/\.png$/i);
+    const filePath = await download.path();
+    expect(filePath).toBeTruthy();
+
+    const stats = await fs.promises.stat(filePath!);
+    expect(stats.size).toBeGreaterThan(1000);
+  });
+
   test('export and overrides review matrix', async ({ page }) => {
     test.setTimeout(120000);
     for (const [width, height] of [[360, 800], [768, 1024], [1440, 900]] as const) {

@@ -76,6 +76,35 @@ describe('capture interface', () => {
     expect(htmlToImage.toPng).toHaveBeenCalledTimes(1);
   });
 
+  it('loads both Arabic and Latin font faces when mixed font runs are present (R4-5)', async () => {
+    const loadMock = vi.fn().mockResolvedValue([]);
+    Object.defineProperty(document, 'fonts', {
+      configurable: true,
+      value: { ready: Promise.resolve(), load: loadMock },
+    });
+    const div = document.createElement('div');
+    div.innerHTML = '<span style="font-family: IBM Plex Sans">SlideThread</span> <span style="font-family: IBM Plex Sans Arabic">للشرائح</span>';
+    await capture(div, { warmUp: false });
+
+    const fontDescs = loadMock.mock.calls.map((c) => c[0]);
+    expect(fontDescs.some((d: string) => d.includes('IBM Plex Sans Arabic'))).toBe(true);
+    expect(fontDescs.some((d: string) => d.includes('IBM Plex Sans"') && !d.includes('Arabic'))).toBe(true);
+  });
+
+  it('detects explicit inline font-family styles from rich-text runs (R4-5)', async () => {
+    const loadMock = vi.fn().mockResolvedValue([]);
+    Object.defineProperty(document, 'fonts', {
+      configurable: true,
+      value: { ready: Promise.resolve(), load: loadMock },
+    });
+    const div = document.createElement('div');
+    div.innerHTML = '<span style="font-family: JetBrains Mono">custom code</span>';
+    await capture(div, { warmUp: false });
+
+    const fontDescs = loadMock.mock.calls.map((c) => c[0]);
+    expect(fontDescs.some((d: string) => d.includes('JetBrains Mono'))).toBe(true);
+  });
+
   it('imagesReady handles images with and without decode method', async () => {
     const container = document.createElement('div');
     const img1 = document.createElement('img');

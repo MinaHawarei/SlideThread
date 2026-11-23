@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SlideProps } from './types';
 import { MediaRenderer } from './MediaRenderer';
+import { RichTextRenderer } from './RichTextRenderer';
 
 export const ImageSlide: React.FC<SlideProps> = ({ slide, textDir }) => {
   const { caption, imageUrl } = slide.fields;
@@ -39,7 +40,7 @@ export const ImageSlide: React.FC<SlideProps> = ({ slide, textDir }) => {
 
       {caption && (
         <div className="image-caption-bar" dir={effectiveDir}>
-          {caption}
+          <RichTextRenderer content={slide.richFields?.caption ?? caption} inline />
         </div>
       )}
     </div>

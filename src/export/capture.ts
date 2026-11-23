@@ -1,7 +1,7 @@
 import * as htmlToImage from 'html-to-image';
 import * as modernScreenshot from 'modern-screenshot';
-import { fontsReady, getFontRequirementsForText } from '../core/fonts';
-import { FONT_REGISTRY, type FontWeight } from '../fonts/registry';
+import { fontsReady, getFontRequirementsForText, type FontRequirement } from '../core/fonts';
+import { FONT_REGISTRY, type FontId, type FontWeight } from '../fonts/registry';
 
 export type CaptureLibrary = 'html-to-image' | 'modern-screenshot';
 
@@ -59,7 +59,35 @@ export async function capture(
         weight: weight as FontWeight,
       }))
     : [];
-  const areFontsReady = await fontsReady([...textFonts, ...monoFonts]);
+
+  // Inspect any explicit font family styles on child elements (e.g. rich text runs)
+  const fontEls = Array.from(element.querySelectorAll<HTMLElement>('[style*="font-family"]'));
+  const extraFontReqs: FontRequirement[] = [];
+  for (const el of fontEls) {
+    const fam = el.style.fontFamily.toLowerCase();
+    for (const [id, def] of Object.entries(FONT_REGISTRY)) {
+      if (fam.includes(def.family.toLowerCase()) || fam.includes(id)) {
+        extraFontReqs.push(
+          ...def.weights.map((weight) => ({
+            id: id as FontId,
+            family: def.family,
+            weight: weight as FontWeight,
+          }))
+        );
+      }
+    }
+  }
+
+  const allReqs = [...textFonts, ...monoFonts, ...extraFontReqs];
+  const seen = new Set<string>();
+  const uniqueReqs = allReqs.filter((req) => {
+    const key = `${req.family}:${req.weight}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  const areFontsReady = await fontsReady(uniqueReqs);
   if (!areFontsReady) throw new Error('Font loading timed out before export capture');
   await imagesReady(element);
 
