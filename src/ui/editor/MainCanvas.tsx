@@ -5,6 +5,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
+import { CanvasManipulationLayer } from './CanvasManipulationLayer';
 
 export interface MainCanvasProps {
   className?: string;
@@ -174,6 +175,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
               themeMode={project.theme}
               dimensions={dims}
             />
+            <CanvasManipulationLayer slide={currentSlide} aspect={aspect} width={dims.width} height={dims.height} />
           </div>
         </div>
       </div>

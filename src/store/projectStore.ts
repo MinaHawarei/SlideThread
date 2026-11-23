@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
-import type { Project, Slide, SlideType, MediaRef, TemplateId } from '../core/schema';
+import type { Project, Slide, SlideType, MediaRef, TemplateId, AspectClass, ElementOverride, ExtraElement } from '../core/schema';
 import {
   CURRENT_SCHEMA_VERSION,
   DEFAULT_COUNTER_CONFIG,
@@ -164,6 +164,8 @@ export interface ProjectState {
   reorderSlides: (startIndex: number, endIndex: number) => void;
   updateSlideFields: (id: string, fields: Record<string, string>) => void;
   updateSlideMedia: (id: string, media?: MediaRef) => void;
+  updateSlotOverride: (slideId: string, aspect: AspectClass, elementId: string, override?: ElementOverride) => void;
+  updateExtraElement: (slideId: string, extra: ExtraElement) => void;
   setSlideType: (id: string, nextType: SlideType) => void;
   toggleHideSignature: (id: string) => void;
   splitSlide: (id: string) => void;
@@ -360,6 +362,37 @@ export const useProjectStore = create<ProjectState>()(
                     }
                   : s
               ),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        updateSlotOverride: (slideId, aspect, elementId, override) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((slide) => {
+                if (slide.id !== slideId) return slide;
+                const overrides = { ...(slide.overrides ?? {}) };
+                const aspectOverrides = { ...(overrides[aspect] ?? {}) };
+                if (override) aspectOverrides[elementId] = override;
+                else delete aspectOverrides[elementId];
+                overrides[aspect] = aspectOverrides;
+                return { ...slide, overrides };
+              }),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        updateExtraElement: (slideId, extra) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((slide) => slide.id !== slideId ? slide : {
+                ...slide,
+                extras: (slide.extras ?? []).map((item) => item.id === extra.id ? extra : item),
+              }),
               updatedAt: Date.now(),
             },
           }));

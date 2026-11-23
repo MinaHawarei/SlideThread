@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { hitTestElements, resolveSlideElements } from '@/core/elementModel';
+import { hitTestElements, resolveSlideElements, resizeElementGeometry, rotateElementGeometry, snapElementGeometry } from '@/core/elementModel';
 import { useSelectionStore } from '@/store/selectionStore';
 import type { Slide } from '@/core/schema';
 import type { LayoutVariant } from '@/templates/layouts/registry';
@@ -46,5 +46,16 @@ describe('element model plumbing', () => {
     expect(useSelectionStore.getState().selectedElementId).toBe('title');
     useSelectionStore.getState().selectElement();
     expect(useSelectionStore.getState().selectedElementId).toBeUndefined();
+  });
+
+  it('resizes with optional aspect lock, rotates extras and snaps to center guides', () => {
+    const original = { x: 0.2, y: 0.2, w: 0.2, h: 0.1, rotation: 0 };
+    const resized = resizeElementGeometry(original, 0.1, 0.7, true);
+    expect(resized.w).toBeCloseTo(0.3);
+    expect(resized.h).toBeCloseTo(0.15);
+    expect(rotateElementGeometry(original, -45).rotation).toBe(315);
+    const snapped = snapElementGeometry({ ...original, x: 0.395 }, 0.01);
+    expect(snapped.geometry.x).toBeCloseTo(0.4);
+    expect(snapped.guides).toContainEqual({ axis: 'x', at: 0.5 });
   });
 });

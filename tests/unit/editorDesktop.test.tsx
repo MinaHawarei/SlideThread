@@ -5,6 +5,7 @@ import { EditorDesktop } from '../../src/ui/editor/EditorDesktop';
 import { useProjectStore } from '../../src/store/projectStore';
 import { useSettingsStore } from '../../src/store/settingsStore';
 import { useI18nStore } from '../../src/i18n';
+import { useSelectionStore } from '../../src/store/selectionStore';
 import type { Project } from '../../src/core/schema';
 import { CURRENT_SCHEMA_VERSION } from '../../src/core/schema';
 
@@ -48,6 +49,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
   beforeEach(() => {
     useI18nStore.getState().setLocale('en');
     useProjectStore.getState().setProject(initialProject);
+    useSelectionStore.getState().selectElement();
   });
 
   it('renders top bar, left slide rail, center canvas, and right inspector', () => {
@@ -59,6 +61,13 @@ describe('EditorDesktop component (Task P3-5)', () => {
     expect(screen.getByTestId('slide-rail')).toBeInTheDocument();
     expect(screen.getByTestId('main-canvas')).toBeInTheDocument();
     expect(screen.getByTestId('inspector')).toBeInTheDocument();
+    expect(screen.getByTestId('manipulation-layer')).toBeInTheDocument();
+  });
+
+  it('selects a layout element in the canvas overlay', () => {
+    render(<EditorDesktop />);
+    fireEvent.click(screen.getByTestId('element-hit-title'));
+    expect(screen.getByTestId('reset-title')).toBeInTheDocument();
   });
 
   it('allows editing project title in the top bar', () => {
