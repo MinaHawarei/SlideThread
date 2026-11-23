@@ -28,6 +28,40 @@
 .settings-language-row { display: flex; justify-content: space-between; gap: 1rem; margin-block-start: 1.5rem; padding-block-start: 1rem; border-block-start: 1px solid hsl(var(--atelier-line)); }
 .settings-language-row strong { font-weight: 500; }
 .settings-note { font-size: .875rem; }
+.settings-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.settings-field-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--atelier-muted));
+}
+.settings-text-input,
+.settings-select-input {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--atelier-line));
+  background: hsl(var(--atelier-paper));
+  color: hsl(var(--atelier-ink));
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.settings-text-input:focus,
+.settings-select-input:focus {
+  border-color: hsl(var(--atelier-accent));
+  box-shadow: 0 0 0 2px hsl(var(--atelier-accent) / 0.2);
+}
 .route-loading { display: grid; min-height: 100vh; place-items: center; color: hsl(var(--atelier-muted)); background: hsl(var(--atelier-paper)); font-family: 'IBM Plex Sans', sans-serif; }
 @media (max-width: 600px) {
   .settings-header { flex-wrap: wrap; }

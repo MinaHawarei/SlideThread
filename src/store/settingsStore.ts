@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { BrandSettings, SocialPlatform, ThemeMode, SignatureConfig } from '../core/schema';
+import type { BrandSettings, SocialPlatform, ThemeMode, SignatureConfig, CounterConfig } from '../core/schema';
 import { useI18nStore } from '../i18n';
 import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
 import { DEFAULT_COUNTER_CONFIG, DEFAULT_SIGNATURE_CONFIG } from '../core/schema';
@@ -42,6 +42,7 @@ export interface SettingsState {
   setDefaultTemplate: (templateId: string) => void;
   setDefaultColor: (color: string) => void;
   setDefaultTheme: (theme: ThemeMode) => void;
+  updateDefaultCounter: (counter: Partial<CounterConfig>) => void;
   updateDefaultSignature: (signature: Partial<SignatureConfig>) => void;
   resetSettings: () => void;
 }
@@ -132,6 +133,13 @@ export const useSettingsStore = create<SettingsState>()(
 
         setDefaultTheme: (defaultTheme) => {
           get().updateSettings({ defaultTheme });
+        },
+
+        updateDefaultCounter: (counter) => {
+          const current = get().settings.defaultCounter ?? DEFAULT_COUNTER_CONFIG;
+          get().updateSettings({
+            defaultCounter: { ...current, ...counter },
+          });
         },
 
         updateDefaultSignature: (signature) => {
