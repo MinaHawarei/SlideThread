@@ -1275,7 +1275,7 @@ Agent name: Antigravity
 
 
 ### R5-3 — done — 2026-11-23 23:45 — Antigravity
-- Branch / commit: feature/r5-3 / pending merge
+- Branch / commit: feature/r5-3 / `36f75f5`
 - What changed (files): `src/core/media.ts`, `src/store/cropStore.ts`, `src/ui/common/PhotoCropDialog.tsx`, `src/ui/common/useAvatarUpload.ts`, `src/App.tsx`, `src/slides/SignatureBar.tsx`, `src/slides/CtaSlide.tsx`, `src/slides/slides.css`, `src/ui/editor/BrandInspector.tsx`, `src/ui/editor/CanvasManipulationLayer.tsx`, `src/ui/settings/SettingsPage.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/photoHandling.test.tsx`, `tests/e2e/photoHandling.spec.ts`, `tests/unit/appRouting.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
 - Decisions / deviations from the plan:
   1. Built interactive square crop dialog (`PhotoCropDialog.tsx` & `GlobalPhotoCropDialog`) with drag-to-pan, zoom slider (1x to 3x) with +/- step buttons, reset center button, accessible dialog attributes (`role="dialog"`, `aria-modal="true"`), and escape key handling.
