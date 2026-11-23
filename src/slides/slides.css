@@ -561,6 +561,125 @@
   box-sizing: border-box;
 }
 
+/* Signature Arrangements */
+.sig-arr-inline {
+  flex-direction: row;
+  align-items: center;
+}
+
+.sig-arr-stacked {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sig-arr-stacked .sig-author-section {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.sig-arr-stacked .sig-names-row {
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.sig-arr-stacked .sig-socials-row {
+  justify-content: center;
+}
+
+/* Signature Sizing */
+.sig-size-sm .sig-avatar-ring {
+  width: 44px;
+  height: 44px;
+  border-width: 2px;
+}
+.sig-size-sm .sig-display-name {
+  font-size: 22px;
+}
+.sig-size-sm .sig-handle {
+  font-size: 18px;
+}
+.sig-size-sm .sig-social-pill {
+  font-size: 16px;
+}
+
+.sig-size-md .sig-avatar-ring {
+  width: 60px;
+  height: 60px;
+  border-width: 3px;
+}
+.sig-size-md .sig-display-name {
+  font-size: 28px;
+}
+.sig-size-md .sig-handle {
+  font-size: 24px;
+}
+.sig-size-md .sig-social-pill {
+  font-size: 20px;
+}
+
+.sig-size-lg .sig-avatar-ring {
+  width: 76px;
+  height: 76px;
+  border-width: 4px;
+}
+.sig-size-lg .sig-display-name {
+  font-size: 34px;
+}
+.sig-size-lg .sig-handle {
+  font-size: 28px;
+}
+.sig-size-lg .sig-social-pill {
+  font-size: 24px;
+}
+
+/* Signature Photo Shapes */
+.sig-shape-circle .sig-avatar-ring,
+.sig-shape-circle .sig-avatar-img,
+.sig-shape-circle .sig-avatar-placeholder {
+  border-radius: 50% !important;
+}
+
+.sig-shape-rounded .sig-avatar-ring,
+.sig-shape-rounded .sig-avatar-img,
+.sig-shape-rounded .sig-avatar-placeholder {
+  border-radius: 14px !important;
+}
+
+.sig-size-lg.sig-shape-rounded .sig-avatar-ring,
+.sig-size-lg.sig-shape-rounded .sig-avatar-img,
+.sig-size-lg.sig-shape-rounded .sig-avatar-placeholder {
+  border-radius: 18px !important;
+}
+
+.sig-shape-square .sig-avatar-ring,
+.sig-shape-square .sig-avatar-img,
+.sig-shape-square .sig-avatar-placeholder {
+  border-radius: 0 !important;
+}
+
+/* CTA Avatar Shapes */
+.cta-shape-circle .cta-avatar-ring,
+.cta-shape-circle .cta-avatar-placeholder,
+.cta-shape-circle .cta-avatar-img {
+  border-radius: 50% !important;
+}
+
+.cta-shape-rounded .cta-avatar-ring,
+.cta-shape-rounded .cta-avatar-placeholder,
+.cta-shape-rounded .cta-avatar-img {
+  border-radius: 28px !important;
+}
+
+.cta-shape-square .cta-avatar-ring,
+.cta-shape-square .cta-avatar-placeholder,
+.cta-shape-square .cta-avatar-img {
+  border-radius: 0 !important;
+}
+
 .sig-author-section {
   display: flex;
   align-items: center;

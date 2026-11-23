@@ -2,28 +2,60 @@ import React from 'react';
 import type { SlideProps } from './types';
 import { RichTextRenderer } from './RichTextRenderer';
 
-export const CtaSlide: React.FC<SlideProps> = ({ slide, aspectClass, textDir }) => {
+export const CtaSlide: React.FC<SlideProps> = ({
+  slide,
+  aspectClass,
+  textDir,
+  brand,
+  signatureConfig,
+}) => {
   const { title, body, action, name, handle } = slide.fields;
   const isLandscape = aspectClass === 'landscape';
   const effectiveDir = textDir && textDir !== 'auto' ? textDir : 'auto';
 
-  const initial = (name || title || 'S').trim().charAt(0).toUpperCase();
+  const photoShape = signatureConfig?.photoShape || 'circle';
+  const photoDataUrl = brand?.photoDataUrl;
+  const displayName = name || brand?.displayName || '';
+  const displayHandle = handle || brand?.handle || '';
+  const initial = (displayName || title || 'S').trim().charAt(0).toUpperCase();
 
   return (
     <div className="slide-content-area" style={{ justifyContent: 'center' }}>
       <div className={isLandscape ? 'cta-layout-landscape' : 'cta-layout-stacked'} dir={effectiveDir}>
-        <div className="cta-profile-group" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div className="cta-avatar-ring">
-            <div className="cta-avatar-placeholder">{initial}</div>
+        <div
+          className={`cta-profile-group cta-shape-${photoShape}`}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+          <div
+            className="cta-avatar-ring"
+            data-testid="cta-avatar-ring"
+            data-shape={photoShape}
+          >
+            {photoDataUrl ? (
+              <img
+                src={photoDataUrl}
+                alt={displayName || 'Avatar'}
+                className="cta-avatar-img"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                data-testid="cta-avatar-img"
+              />
+            ) : (
+              <div
+                className="cta-avatar-placeholder"
+                data-testid="cta-avatar-placeholder"
+              >
+                {initial}
+              </div>
+            )}
           </div>
-          {name && (
+          {displayName && (
             <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--ink)' }}>
-              <RichTextRenderer content={slide.richFields?.name ?? name} inline />
+              <RichTextRenderer content={slide.richFields?.name ?? displayName} inline />
             </div>
           )}
-          {handle && (
+          {displayHandle && (
             <div style={{ fontSize: '28px', color: 'var(--mute)', marginTop: '4px' }}>
-              <RichTextRenderer content={slide.richFields?.handle ?? handle} inline />
+              <RichTextRenderer content={slide.richFields?.handle ?? displayHandle} inline />
             </div>
           )}
         </div>

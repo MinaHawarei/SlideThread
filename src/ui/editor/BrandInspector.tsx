@@ -6,7 +6,8 @@ import { useProjectStore } from '../../store/projectStore';
 import { processBrandPhoto } from '../../core/media';
 import { clearAllUserData } from '../../core/storage';
 import { SocialIcon } from '../../slides/SignatureBar';
-import type { SocialPlatform } from '../../core/schema';
+import type { SocialPlatform, SignatureConfig } from '../../core/schema';
+import { DEFAULT_SIGNATURE_CONFIG } from '../../core/schema';
 
 const ALL_SOCIAL_PLATFORMS: SocialPlatform[] = [
   'linkedin',
@@ -32,6 +33,31 @@ export const BrandInspector: React.FC = () => {
   const removeSocial = useSettingsStore((state) => state.removeSocial);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
   const resetSettings = useSettingsStore((state) => state.resetSettings);
+  const updateDefaultSignature = useSettingsStore((state) => state.updateDefaultSignature);
+
+  const project = useProjectStore((state) => state.project);
+  const updateSignatureConfig = useProjectStore((state) => state.updateSignatureConfig);
+
+  const sigConfig: SignatureConfig = project.signature ?? settings.defaultSignature ?? {
+    ...DEFAULT_SIGNATURE_CONFIG,
+  };
+
+  const handleSignatureUpdate = (patch: Partial<SignatureConfig>) => {
+    updateSignatureConfig(patch);
+    updateDefaultSignature(patch);
+  };
+
+  const handleToggleSignature = (show?: boolean) => {
+    const next = show !== undefined ? show : !settings.showSignature;
+    toggleSignature(next);
+    handleSignatureUpdate({ show: next });
+  };
+
+  const handleToggleSocials = (show?: boolean) => {
+    const next = show !== undefined ? show : !settings.showSocials;
+    toggleSocials(next);
+    handleSignatureUpdate({ showSocials: next });
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [newPlatform, setNewPlatform] = useState<SocialPlatform>('x');
@@ -163,11 +189,144 @@ export const BrandInspector: React.FC = () => {
           <input
             data-testid="brand-signature-toggle"
             type="checkbox"
-            checked={settings.showSignature}
-            onChange={() => toggleSignature()}
+            checked={settings.showSignature && sigConfig.show !== false}
+            onChange={() => handleToggleSignature()}
             className="w-5 h-5 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer"
           />
         </label>
+
+        {/* Signature Configuration Options (§5.4) */}
+        {settings.showSignature && sigConfig.show !== false && (
+          <div className="space-y-4 rounded-xl bg-slate-50 dark:bg-slate-850 p-3 border border-slate-200 dark:border-slate-750">
+            {/* Anchor Selector */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                {t('sig.anchor')}
+              </span>
+              <div className="grid grid-cols-4 gap-1.5">
+                {(['tl', 'tc', 'tr', 'bl', 'bc', 'br', 'free'] as const).map((a) => {
+                  const isSelected = sigConfig.anchor === a;
+                  const labelKey = `sig.anchor.${a}` as const;
+                  return (
+                    <button
+                      key={a}
+                      type="button"
+                      data-testid={`sig-anchor-${a}`}
+                      onClick={() => handleSignatureUpdate({ anchor: a })}
+                      className={`py-1.5 px-1.5 rounded-lg border text-[11px] font-semibold transition-all ${
+                        isSelected
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {t(labelKey as Parameters<typeof t>[0])}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Arrangement Selector */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                {t('sig.arrangement')}
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                {(['inline', 'stacked'] as const).map((arr) => {
+                  const isSelected = sigConfig.arrangement === arr;
+                  const labelKey = `sig.arrangement.${arr}` as const;
+                  return (
+                    <button
+                      key={arr}
+                      type="button"
+                      data-testid={`sig-arrangement-${arr}`}
+                      onClick={() => handleSignatureUpdate({ arrangement: arr })}
+                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${
+                        isSelected
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {t(labelKey as Parameters<typeof t>[0])}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Size Selector */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                {t('sig.size')}
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {(['sm', 'md', 'lg'] as const).map((sz) => {
+                  const isSelected = sigConfig.size === sz;
+                  const labelKey = `sig.size.${sz}` as const;
+                  return (
+                    <button
+                      key={sz}
+                      type="button"
+                      data-testid={`sig-size-${sz}`}
+                      onClick={() => handleSignatureUpdate({ size: sz })}
+                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold uppercase transition-all ${
+                        isSelected
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {t(labelKey as Parameters<typeof t>[0])}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Photo Shape Selector */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                {t('sig.photoShape')}
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {(['circle', 'rounded', 'square'] as const).map((sh) => {
+                  const isSelected = sigConfig.photoShape === sh;
+                  const labelKey = `sig.photoShape.${sh}` as const;
+                  return (
+                    <button
+                      key={sh}
+                      type="button"
+                      data-testid={`sig-shape-${sh}`}
+                      onClick={() => handleSignatureUpdate({ photoShape: sh })}
+                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${
+                        isSelected
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {t(labelKey as Parameters<typeof t>[0])}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Handle Toggle */}
+            <div className="pt-1 border-t border-slate-200 dark:border-slate-700">
+              <label className="flex items-center justify-between cursor-pointer py-1">
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  {t('sig.showHandle')}
+                </span>
+                <input
+                  type="checkbox"
+                  data-testid="sig-handle-toggle"
+                  checked={sigConfig.showHandle !== false}
+                  onChange={(e) => handleSignatureUpdate({ showHandle: e.target.checked })}
+                  className="w-4 h-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer"
+                />
+              </label>
+            </div>
+          </div>
+        )}
 
         <label className="min-h-[44px] flex items-center justify-between cursor-pointer p-1">
           <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -190,7 +349,7 @@ export const BrandInspector: React.FC = () => {
             data-testid="brand-socials-toggle"
             type="checkbox"
             checked={settings.showSocials}
-            onChange={() => toggleSocials()}
+            onChange={() => handleToggleSocials()}
             className="w-5 h-5 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer"
           />
         </label>

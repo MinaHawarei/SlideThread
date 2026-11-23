@@ -1,9 +1,10 @@
 import React from 'react';
-import type { BrandSettings, SocialPlatform } from '../core/schema';
+import type { BrandSettings, SocialPlatform, SignatureConfig } from '../core/schema';
 import { formatSlideCounter } from './signatureUtils';
 
 export interface SignatureBarProps {
   brand?: Partial<BrandSettings>;
+  signatureConfig?: SignatureConfig;
   slideIndex?: number; // 0-based
   totalSlides?: number;
   showCounter?: boolean;
@@ -143,20 +144,30 @@ export const SocialIcon: React.FC<{
 
 export const SignatureBar: React.FC<SignatureBarProps> = ({
   brand,
+  signatureConfig,
   slideIndex,
   totalSlides,
   showCounter = true,
   className = '',
   style = {},
 }) => {
-  if (brand?.showSignature === false) {
+  if (brand?.showSignature === false || signatureConfig?.show === false) {
     return null;
   }
+
+  const anchor = signatureConfig?.anchor || 'bc';
+  const arrangement = signatureConfig?.arrangement || 'inline';
+  const size = signatureConfig?.size || 'md';
+  const photoShape = signatureConfig?.photoShape || 'circle';
+  const showHandle = signatureConfig?.showHandle !== false;
+  const showSocials =
+    signatureConfig?.showSocials !== undefined
+      ? signatureConfig.showSocials
+      : brand?.showSocials === true;
 
   const displayName = brand?.displayName || '';
   const handle = brand?.handle || '';
   const photoDataUrl = brand?.photoDataUrl;
-  const showSocials = brand?.showSocials === true;
   const rawSocials = brand?.socials || [];
 
   // Spec §6.2: max 3 shown, the rest collapsed, never overflowing
@@ -165,6 +176,7 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
 
   // Initial for avatar placeholder
   const initial = displayName.trim().charAt(0).toUpperCase() || '?';
+  const iconSize = size === 'sm' ? 16 : size === 'lg' ? 24 : 20;
 
   // Counter check
   const shouldShowCounter =
@@ -180,9 +192,13 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
 
   return (
     <div
-      className={`slide-signature-bar ${className}`.trim()}
+      className={`slide-signature-bar sig-arr-${arrangement} sig-size-${size} sig-shape-${photoShape} ${className}`.trim()}
       style={style}
       data-testid="signature-bar"
+      data-anchor={anchor}
+      data-arrangement={arrangement}
+      data-size={size}
+      data-shape={photoShape}
     >
       <div className="sig-author-section">
         <div className="sig-avatar-ring">
@@ -200,14 +216,14 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
         <div className="sig-text-block">
           <div className="sig-names-row">
             {displayName && <span className="sig-display-name">{displayName}</span>}
-            {handle && <span className="sig-handle">{handle}</span>}
+            {showHandle && handle && <span className="sig-handle">{handle}</span>}
           </div>
 
           {showSocials && visibleSocials.length > 0 && (
             <div className="sig-socials-row">
               {visibleSocials.map((s, idx) => (
                 <div key={idx} className="sig-social-pill">
-                  <SocialIcon platform={s.platform} size={20} />
+                  <SocialIcon platform={s.platform} size={iconSize} />
                   <span className="sig-social-handle">{s.handle}</span>
                 </div>
               ))}

@@ -1251,5 +1251,25 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 
+### R5-2 — done — 2026-11-23 23:25 — Antigravity
+- Branch / commit: feature/r5-2 / signature system complete
+- What changed (files): `src/core/schema.ts`, `src/slides/SignatureBar.tsx`, `src/slides/CtaSlide.tsx`, `src/slides/SlideRenderer.tsx`, `src/slides/slides.css`, `src/store/projectStore.ts`, `src/store/settingsStore.ts`, `src/ui/editor/BrandInspector.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/signatureSystem.test.tsx`, `tests/e2e/signatureSystem.spec.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan:
+  1. Extended `SignatureBar` to support full configuration options:
+     - 6 physical anchors (`tl`, `tc`, `tr`, `bl`, `bc`, `br`) + `free` (unconstrained positioning via element overrides `overrides?.[aspectClass]?.signature`).
+     - 2 arrangements (`inline`, `stacked` with centered vertical typography).
+     - 3 sizes (`sm` [44px ring], `md` [60px ring], `lg` [76px ring]) with proportional font scaling.
+     - 3 photo shapes (`circle`, `rounded`, `square`).
+     - Independent toggles for handle display (`showHandle`) and social handles (`showSocials`).
+  2. Upgraded `CtaSlide` large avatar variants (§5.4 & REQ-08) to render photo image when `brand.photoDataUrl` is provided, and dynamically apply `circle`, `rounded`, and `square` shapes matching the configured `photoShape`.
+  3. Added comprehensive signature configuration controls in `BrandInspector` (anchor, arrangement, size, shape, handle toggle) updating project and default settings.
+  4. Added dedicated unit tests (`tests/unit/signatureSystem.test.tsx`) covering sampled matrix of all anchors, arrangements, sizes, shapes, free movement overrides, CTA avatar variants, and BrandInspector interactions (27 tests passed).
+  5. Added Playwright E2E test (`tests/e2e/signatureSystem.spec.ts`) testing anchor movement, arrangement, size, shape, and handle toggle in the canvas and inspector.
+- Tests run and result: `npm run lint` (clean), `npm run typecheck` (clean), `npm test` (60 files, 508 passed), `npm run build` (clean), and Playwright E2E test `tests/e2e/signatureSystem.spec.ts` (1 passed).
+- Remaining / next step: Claim and implement R5-3 (Photo handling (§5.5): click-to-upload everywhere, crop dialog, placeholder affordance; CTA photo regression test).
+- Needs from the owner: None.
+
+
+
 
 

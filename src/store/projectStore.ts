@@ -12,6 +12,7 @@ import type {
   ExtraElement,
   RichText,
   CounterConfig,
+  SignatureConfig,
 } from '../core/schema';
 import {
   CURRENT_SCHEMA_VERSION,
@@ -169,6 +170,7 @@ export interface ProjectState {
     meta: Partial<Omit<Project, 'slides' | 'id' | 'schemaVersion' | 'createdAt'>>
   ) => void;
   updateCounterConfig: (counter: Partial<CounterConfig>) => void;
+  updateSignatureConfig: (signature: Partial<SignatureConfig>) => void;
   setActiveSlideId: (id: string) => void;
 
   // Slide CRUD
@@ -254,6 +256,19 @@ export const useProjectStore = create<ProjectState>()(
               counter: {
                 ...(state.project.counter ?? DEFAULT_COUNTER_CONFIG),
                 ...counterUpdate,
+              },
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        updateSignatureConfig: (signatureUpdate) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              signature: {
+                ...(state.project.signature ?? DEFAULT_SIGNATURE_CONFIG),
+                ...signatureUpdate,
               },
               updatedAt: Date.now(),
             },

@@ -19,6 +19,7 @@ import type { TemplateDef } from '../templates';
 import {
   richTextFieldsToPlainText,
   DEFAULT_COUNTER_CONFIG,
+  DEFAULT_SIGNATURE_CONFIG,
   type AspectClass,
   type Slide,
   type CounterConfig,
@@ -69,8 +70,19 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     ...(template.paletteByMode?.[themeMode] ?? palette),
     ...template.paletteOverridesByMode?.[themeMode],
   } as typeof palette;
+
+  const shouldRenderSignature =
+    slide.type !== 'cta' &&
+    !slide.hideSignature &&
+    Boolean(brand && brand.showSignature !== false && signatureConfig?.show !== false);
+
+  const effectiveSignatureConfig =
+    signatureConfig ?? brand?.defaultSignature ?? DEFAULT_SIGNATURE_CONFIG;
+  const signatureAnchor = effectiveSignatureConfig.anchor ?? 'bc';
+
   const renderProps: SlideProps = {
     ...props,
+    signatureConfig: effectiveSignatureConfig,
     slide: {
       ...slide,
       fields: richTextFieldsToPlainText(slide.fields),
@@ -79,12 +91,39 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   };
   const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
 
-  const shouldRenderSignature =
-    slide.type !== 'cta' &&
-    !slide.hideSignature &&
-    Boolean(brand && brand.showSignature !== false && signatureConfig?.show !== false);
+  const getSignatureContainerStyle = (): React.CSSProperties => {
+    if (signatureAnchor === 'free') {
+      return {};
+    }
+    const isTall = aspectClass === 'tall' || isStory;
+    const bottomDist = isTall ? 268 : 40;
+    const topDist = 40;
+    const hDist = 48;
 
-  const signatureAnchor = signatureConfig?.anchor || brand?.defaultSignature?.anchor || 'br';
+    const base: React.CSSProperties = {
+      position: 'absolute',
+      zIndex: 20,
+      width: 'auto',
+      maxWidth: 'calc(100% - 96px)',
+      boxSizing: 'border-box',
+    };
+
+    switch (signatureAnchor) {
+      case 'tl':
+        return { ...base, top: topDist, left: hDist };
+      case 'tc':
+        return { ...base, top: topDist, left: '50%', transform: 'translateX(-50%)' };
+      case 'tr':
+        return { ...base, top: topDist, right: hDist };
+      case 'bl':
+        return { ...base, bottom: bottomDist, left: hDist };
+      case 'bc':
+        return { ...base, bottom: bottomDist, left: '50%', transform: 'translateX(-50%)' };
+      case 'br':
+      default:
+        return { ...base, bottom: bottomDist, right: hDist };
+    }
+  };
 
   const effectiveCounterConfig: CounterConfig = counterConfig ?? {
     ...DEFAULT_COUNTER_CONFIG,
@@ -259,9 +298,15 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
       {renderComponent()}
       <ExtrasRenderer extras={slide.extras} />
       {shouldRenderSignature && (
-        <div className="slide-signature-container">
+        <div
+          className={`slide-signature-container sig-anchor-${signatureAnchor}`}
+          style={getSignatureContainerStyle()}
+          data-slot="signature"
+          data-element-id="signature"
+        >
           <SignatureBar
             brand={brand}
+            signatureConfig={effectiveSignatureConfig}
             slideIndex={slideIndex}
             totalSlides={totalSlides}
             showCounter={false}
