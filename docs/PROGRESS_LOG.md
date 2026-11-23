@@ -824,3 +824,11 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress)
 - Remaining / next step: Add pure history tests, integrate project/settings store mutations and shortcuts, then run required checks.
 - Needs from the owner: None.
+
+### R1-2 — done — 2026-11-23 11:54 — Codex
+- Branch / commit: feature/r1-2 / 4c3dde9
+- What changed (files): Added bounded 100-step shared history with reference snapshots, undo/redo, and 750 ms coalescing in `src/store/history.ts`; connected project and brand settings mutations; added Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z shortcuts in `src/App.tsx`; added pure history, integration, shortcut, and history-limit tests.
+- Decisions / deviations from the plan: Reuses immutable Zustand snapshots by reference to keep keystroke updates under the existing 1 ms benchmark. History is global across project and brand settings; display name/handle edits and per-field typing coalesce by key.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 340 passed / 44 files; `npm run build` pass; Playwright E2E 16 passed via temporary port-5174 config because port 5173 was already occupied by an existing Vite server. Targeted history and performance tests pass after the final formatting pass.
+- Remaining / next step: R1-3, design tokens and component kit for Atelier.
+- Needs from the owner: None.
