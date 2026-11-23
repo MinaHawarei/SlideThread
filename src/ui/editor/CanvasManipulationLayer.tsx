@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
-import { resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotateElementGeometry, scaleElementGeometry, type ElementGeometry, type ResolvedElement } from '../../core/elementModel';
+import { resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotateElementGeometry, scaleElementGeometry, SLOT_SELECTORS, type ElementGeometry, type ResolvedElement } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
@@ -14,18 +14,6 @@ interface CanvasManipulationLayerProps {
   zoom: number;
 }
 
-const SLOT_SELECTORS: Record<string, string> = {
-  title: '.slide-title-h1, .slide-title-h2',
-  body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',
-  media: '.slide-media-element, .slide-bg-media',
-  counter: '.sig-counter-badge',
-  signature: '.slide-signature-container',
-  code: '.code-container',
-  value: '.stat-big-value',
-  left: '.compare-card-bad',
-  right: '.compare-card-ok',
-  source: '.quote-author',
-};
 
 type Gesture = { pointerIds: number[]; startX: number; startY: number; startAngle: number; startDistance: number; initial: ElementGeometry; mode: 'move' | 'resize' | 'rotate' | 'pinch' };
 
@@ -92,7 +80,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       if (!selector) continue;
       for (const node of canvas.querySelectorAll<HTMLElement>(selector)) {
         previousStyle.set(node, { visibility: node.style.visibility, zIndex: node.style.zIndex, position: node.style.position });
-        if (element.hidden) node.style.visibility = 'hidden';
+        node.style.visibility = element.hidden ? 'hidden' : 'visible';
         node.style.zIndex = String(element.z);
         if (window.getComputedStyle(node).position === 'static') node.style.position = 'relative';
       }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import type { SlideProps } from './types';
 import { CoverSlide } from './CoverSlide';
 import { ExplainSlide } from './ExplainSlide';
@@ -12,9 +12,11 @@ import { CtaSlide } from './CtaSlide';
 import { MediaRenderer } from './MediaRenderer';
 import { SignatureBar } from './SignatureBar';
 import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
+import { ExtrasRenderer } from './ExtrasRenderer';
 import { getTemplate } from '../templates';
 import type { TemplateDef } from '../templates';
 import { richTextFieldsToPlainText, type AspectClass, type Slide } from '../core/schema';
+import { SLOT_SELECTORS } from '../core/elementModel';
 import './slides.css';
 
 const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }> = {
@@ -119,8 +121,74 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     }
   };
 
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const overrides = slide.overrides?.[aspectClass];
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const manipulated: Array<{
+      el: HTMLElement;
+      visibility: string;
+      zIndex: string;
+      position: string;
+      transform: string;
+      transformOrigin: string;
+    }> = [];
+
+    if (overrides) {
+      for (const [slotId, override] of Object.entries(overrides)) {
+        const selector = SLOT_SELECTORS[slotId];
+        if (!selector) continue;
+        const nodes = canvas.querySelectorAll<HTMLElement>(selector);
+        for (const node of nodes) {
+          manipulated.push({
+            el: node,
+            visibility: node.style.visibility,
+            zIndex: node.style.zIndex,
+            position: node.style.position,
+            transform: node.style.transform,
+            transformOrigin: node.style.transformOrigin,
+          });
+
+          if (override.hidden !== undefined) {
+            node.style.visibility = override.hidden ? 'hidden' : 'visible';
+          }
+          if (override.z !== undefined) {
+            node.style.zIndex = String(override.z);
+            if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
+              node.style.position = 'relative';
+            }
+          }
+          const tx = (override.dx || 0) * slideDims.width;
+          const ty = (override.dy || 0) * slideDims.height;
+          const scale = override.scale ?? 1;
+          if (tx !== 0 || ty !== 0 || scale !== 1) {
+            node.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+            node.style.transformOrigin = 'center';
+            if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
+              node.style.position = 'relative';
+            }
+          }
+        }
+      }
+    }
+
+    return () => {
+      for (const item of manipulated) {
+        item.el.style.visibility = item.visibility;
+        item.el.style.zIndex = item.zIndex;
+        item.el.style.position = item.position;
+        item.el.style.transform = item.transform;
+        item.el.style.transformOrigin = item.transformOrigin;
+      }
+    };
+  }, [overrides, aspectClass, slideDims.width, slideDims.height]);
+
   return (
     <div
+      ref={canvasRef}
       className={`slide-canvas aspect-${aspectClass} template-${template.className} ${className}`.trim()}
       style={paletteStyle}
       data-slide-id={slide.id}
@@ -166,6 +234,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
         </div>
       )}
       {renderComponent()}
+      <ExtrasRenderer extras={slide.extras} />
       {shouldRenderSignature && (
         <div className="slide-signature-container">
           <SignatureBar

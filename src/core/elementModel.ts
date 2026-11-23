@@ -29,6 +29,19 @@ export interface SnapResult {
   guides: Array<{ axis: 'x' | 'y'; at: number }>;
 }
 
+export const SLOT_SELECTORS: Record<string, string> = {
+  title: '.slide-title-h1, .slide-title-h2',
+  body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',
+  media: '.slide-media-element, .slide-bg-media',
+  counter: '.sig-counter-badge',
+  signature: '.slide-signature-container',
+  code: '.code-container',
+  value: '.stat-big-value',
+  left: '.compare-card-bad',
+  right: '.compare-card-ok',
+  source: '.quote-author',
+};
+
 /** Snap a moved element to slide edges and center lines within a design-scale threshold. */
 export function snapElementGeometry(geometry: ElementGeometry, threshold: number): SnapResult {
   const result = { ...geometry };

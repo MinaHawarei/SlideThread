@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { SAMPLE_SLIDES } from '../../src/slides/sampleSlides';
 import { NETWORK_DARK_PALETTE } from '../../src/core/palette';
-import type { AspectClass, SlideType } from '../../src/core/schema';
+import { plainTextToRichText, type AspectClass, type SlideType } from '../../src/core/schema';
 
 describe('Slide Components (Spec §5.2, §6)', () => {
   const aspectClasses: AspectClass[] = ['landscape', 'square', 'portrait', 'tall'];
@@ -208,6 +208,180 @@ describe('Slide Components (Spec §5.2, §6)', () => {
       expect(screen.getByText('Three Pillars of Modern Frontend Architecture')).toBeTruthy();
       // Body list should be replaced
       expect(container.querySelector('.explain-bullet-item')).toBeFalsy();
+    });
+  });
+
+  describe('Overrides & Extras Rendering (R3-6, §5.10)', () => {
+    it('applies slot overrides (translation, scale, z-index, visibility) to rendered slide elements', () => {
+      const slideWithOverrides = {
+        ...SAMPLE_SLIDES.cover_en!,
+        overrides: {
+          portrait: {
+            title: {
+              dx: 0.05,
+              dy: 0.1,
+              scale: 1.2,
+              z: 4,
+              locked: false,
+              hidden: false,
+            },
+            body: {
+              dx: 0,
+              dy: 0,
+              scale: 1,
+              z: 2,
+              locked: false,
+              hidden: true,
+            },
+          },
+        },
+      };
+
+      const { container } = render(
+        <SlideRenderer
+          slide={slideWithOverrides}
+          palette={NETWORK_DARK_PALETTE}
+          aspectClass="portrait"
+          dimensions={{ width: 1080, height: 1350 }}
+        />
+      );
+
+      const titleNode = container.querySelector('.slide-title-h1') as HTMLElement;
+      expect(titleNode).toBeTruthy();
+      expect(titleNode.style.transform).toBe('translate(54px, 135px) scale(1.2)');
+      expect(titleNode.style.zIndex).toBe('4');
+      expect(titleNode.style.visibility).not.toBe('hidden');
+
+      const bodyNode = container.querySelector('.slide-sub') as HTMLElement;
+      expect(bodyNode).toBeTruthy();
+      expect(bodyNode.style.visibility).toBe('hidden');
+      expect(bodyNode.style.zIndex).toBe('2');
+    });
+
+    it('isolates overrides per aspect class and falls back cleanly on other formats', () => {
+      const slideWithOverrides = {
+        ...SAMPLE_SLIDES.cover_en!,
+        overrides: {
+          portrait: {
+            title: {
+              dx: 0.1,
+              dy: 0.2,
+              scale: 1.5,
+              z: 5,
+              locked: false,
+              hidden: true,
+            },
+          },
+        },
+      };
+
+      // Rendering on square (which has no overrides defined)
+      const { container } = render(
+        <SlideRenderer
+          slide={slideWithOverrides}
+          palette={NETWORK_DARK_PALETTE}
+          aspectClass="square"
+          dimensions={{ width: 1080, height: 1080 }}
+        />
+      );
+
+      const titleNode = container.querySelector('.slide-title-h1') as HTMLElement;
+      expect(titleNode).toBeTruthy();
+      // Should not have the portrait transform or visibility: hidden
+      expect(titleNode.style.visibility).not.toBe('hidden');
+      expect(titleNode.style.transform).toBe('');
+    });
+
+    it('renders user-added extra elements (shapes, text, media) with correct geometry and attributes', () => {
+      const slideWithExtras = {
+        ...SAMPLE_SLIDES.cover_en!,
+        extras: [
+          {
+            id: 'extra-rect',
+            kind: 'shape' as const,
+            shape: 'rectangle' as const,
+            fill: '#ff0055',
+            x: 0.1,
+            y: 0.15,
+            w: 0.2,
+            h: 0.1,
+            rotation: 15,
+            z: 8,
+            locked: false,
+          },
+          {
+            id: 'extra-ellipse',
+            kind: 'shape' as const,
+            shape: 'ellipse' as const,
+            fill: '#00ffcc',
+            x: 0.5,
+            y: 0.5,
+            w: 0.1,
+            h: 0.1,
+            rotation: 0,
+            z: 9,
+            locked: false,
+          },
+          {
+            id: 'extra-text-label',
+            kind: 'text' as const,
+            text: plainTextToRichText('Custom Sticker Note'),
+            fill: '#ffffff',
+            x: 0.3,
+            y: 0.7,
+            w: 0.4,
+            h: 0.08,
+            rotation: -5,
+            z: 10,
+            locked: false,
+          },
+          {
+            id: 'extra-hidden',
+            kind: 'shape' as const,
+            shape: 'rectangle' as const,
+            x: 0.2,
+            y: 0.2,
+            w: 0.1,
+            h: 0.1,
+            rotation: 0,
+            z: 1,
+            locked: false,
+            hidden: true,
+          },
+        ],
+      };
+
+      const { container } = render(
+        <SlideRenderer
+          slide={slideWithExtras}
+          palette={NETWORK_DARK_PALETTE}
+          aspectClass="portrait"
+        />
+      );
+
+      const extrasContainer = container.querySelector('[data-testid="slide-extras-container"]');
+      expect(extrasContainer).toBeTruthy();
+
+      const rectEl = container.querySelector('[data-testid="extra-element-extra-rect"]') as HTMLElement;
+      expect(rectEl).toBeTruthy();
+      expect(rectEl.style.left).toBe('10%');
+      expect(rectEl.style.top).toBe('15%');
+      expect(rectEl.style.width).toBe('20%');
+      expect(rectEl.style.height).toBe('10%');
+      expect(rectEl.style.transform).toBe('rotate(15deg)');
+      expect(rectEl.style.zIndex).toBe('8');
+      expect(container.querySelector('[data-testid="shape-rectangle-extra-rect"]')).toBeTruthy();
+
+      const ellipseEl = container.querySelector('[data-testid="extra-element-extra-ellipse"]') as HTMLElement;
+      expect(ellipseEl).toBeTruthy();
+      expect(container.querySelector('[data-testid="shape-ellipse-extra-ellipse"]')).toBeTruthy();
+
+      const textEl = container.querySelector('[data-testid="extra-element-extra-text-label"]') as HTMLElement;
+      expect(textEl).toBeTruthy();
+      expect(screen.getByText('Custom Sticker Note')).toBeTruthy();
+
+      // Hidden extra should not be rendered
+      expect(container.querySelector('[data-testid="extra-element-extra-hidden"]')).toBeNull();
     });
   });
 });
