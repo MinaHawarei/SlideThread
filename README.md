@@ -161,6 +161,11 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 | `npm run typecheck` | Validates TypeScript types across the entire project |
 | `npm test` | Runs the Vitest unit and component test suite |
 | `npm run test:e2e` | Executes Playwright end-to-end and fidelity tests across Chromium |
+| `npm run template:new -- <slug>` | Scaffolds a data-only template in `src/templates/starters/<slug>/` |
+| `npm run template:dev -- <id>` | Starts the hot-reloading template lab with English/Arabic, theme, and aspect controls |
+| `npm run template:validate` | Checks JSON Schema, runtime schema, security, WCAG contrast, assets, licenses, previews, and stress renders |
+| `npm run template:preview` | Regenerates committed WebP previews; pass `-- --check` in CI to compare with tolerant pixel drift |
+| `npm run template:index` | Regenerates the template gallery data index; pass `-- --check` to verify it is current |
 
 ---
 

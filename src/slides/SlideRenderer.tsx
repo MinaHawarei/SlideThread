@@ -13,6 +13,7 @@ import { MediaRenderer } from './MediaRenderer';
 import { SignatureBar } from './SignatureBar';
 import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
 import { getTemplate } from '../templates';
+import type { TemplateDef } from '../templates';
 import { richTextFieldsToPlainText, type AspectClass, type Slide } from '../core/schema';
 import './slides.css';
 
@@ -26,6 +27,7 @@ const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }>
 export interface SlideRendererProps extends Omit<SlideProps, 'slide'> {
   slide: Slide;
   style?: React.CSSProperties;
+  templateOverride?: TemplateDef;
 }
 
 export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) => {
@@ -45,9 +47,10 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     dimensions,
     className = '',
     style = {},
+    templateOverride,
   } = props;
 
-  const template = getTemplate(templateId);
+  const template = templateOverride ?? getTemplate(templateId);
   const templatePalette = {
     ...(template.paletteByMode?.[themeMode] ?? palette),
     ...template.paletteOverridesByMode?.[themeMode],

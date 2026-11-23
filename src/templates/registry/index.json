@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "categories": [
+    "coding",
+    "marketing",
+    "education",
+    "lifestyle",
+    "personal-brand",
+    "general",
+    "arabic-heritage",
+    "coptic",
+    "islamic"
+  ],
+  "templates": [
+    {
+      "id": "bold-marketing",
+      "name": {
+        "en": "Bold Marketing",
+        "ar": "تسويق جريء"
+      },
+      "description": {
+        "en": "High-contrast layouts for launches and campaigns.",
+        "ar": "تخطيطات عالية التباين للإطلاقات والحملات."
+      },
+      "categories": [
+        "marketing"
+      ],
+      "tags": [
+        "campaign",
+        "high-contrast",
+        "statement"
+      ],
+      "colorFlexible": true,
+      "formats": "all",
+      "modes": [
+        "dark",
+        "light"
+      ],
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "preview": "starters/bold-marketing/preview.webp"
+    },
+    {
+      "id": "clean-minimal",
+      "name": {
+        "en": "Clean Minimal",
+        "ar": "بسيط ونظيف"
+      },
+      "description": {
+        "en": "Quiet space for personal ideas.",
+        "ar": "مساحة هادئة للأفكار الشخصية."
+      },
+      "categories": [
+        "personal-brand",
+        "general"
+      ],
+      "tags": [
+        "minimal",
+        "editorial",
+        "whitespace"
+      ],
+      "colorFlexible": true,
+      "formats": "all",
+      "modes": [
+        "dark",
+        "light"
+      ],
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "preview": "starters/clean-minimal/preview.webp"
+    },
+    {
+      "id": "heritage-geometric",
+      "name": {
+        "en": "Heritage Geometric",
+        "ar": "هندسة تراثية"
+      },
+      "description": {
+        "en": "Arabic-first forms with original geometric tessellation.",
+        "ar": "أشكال عربية أولاً مع زخرفة هندسية أصلية."
+      },
+      "categories": [
+        "arabic-heritage"
+      ],
+      "tags": [
+        "arabic-first",
+        "geometric",
+        "warm"
+      ],
+      "colorFlexible": false,
+      "formats": "all",
+      "modes": [
+        "dark",
+        "light"
+      ],
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "preview": "starters/heritage-geometric/preview.webp"
+    },
+    {
+      "id": "soft-gradient",
+      "name": {
+        "en": "Soft Gradient",
+        "ar": "تدرّج ناعم"
+      },
+      "description": {
+        "en": "Rounded color fields for friendly explainers.",
+        "ar": "مساحات لونية مستديرة للشرح الودود."
+      },
+      "categories": [
+        "lifestyle",
+        "education"
+      ],
+      "tags": [
+        "soft",
+        "gradient",
+        "friendly"
+      ],
+      "colorFlexible": true,
+      "formats": "all",
+      "modes": [
+        "dark",
+        "light"
+      ],
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "preview": "starters/soft-gradient/preview.webp"
+    },
+    {
+      "id": "tech-mesh",
+      "name": {
+        "en": "Weave",
+        "ar": "نسيج"
+      },
+      "description": {
+        "en": "Connected ideas for technical stories.",
+        "ar": "أفكار مترابطة للقصص التقنية."
+      },
+      "categories": [
+        "coding"
+      ],
+      "tags": [
+        "technology",
+        "connected",
+        "original"
+      ],
+      "colorFlexible": true,
+      "formats": "all",
+      "modes": [
+        "dark",
+        "light"
+      ],
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "preview": "starters/tech-mesh/preview.webp"
+    }
+  ]
+}

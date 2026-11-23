@@ -22,6 +22,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Lint
         run: npm run lint
 
@@ -30,6 +33,15 @@ jobs:
 
       - name: Unit and integration tests
         run: npm test
+
+      - name: Validate template manifests, assets, contrast, and stress renders
+        run: npm run template:validate
+
+      - name: Check template previews
+        run: npm run template:preview -- --check
+
+      - name: Check generated template index
+        run: npm run template:index -- --check
 
       - name: Build production bundle
         run: npm run build

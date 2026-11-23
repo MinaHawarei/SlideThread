@@ -18,6 +18,9 @@ const SpikePage = React.lazy(() => import('./spike/SpikePage').then((m) => ({ de
 const UxPreview = import.meta.env.DEV
   ? React.lazy(() => import('./ux-preview/UxPreview').then((m) => ({ default: m.UxPreview })))
   : null;
+const TemplateDevPage = import.meta.env.DEV
+  ? React.lazy(() => import('./templates/TemplateDevPage').then((m) => ({ default: m.TemplateDevPage })))
+  : null;
 
 function LoadingScreen() {
   const { t } = useT();
@@ -83,6 +86,7 @@ export const App: React.FC = () => {
   else if (import.meta.env.DEV && currentPath === '/layout-preview' && LayoutPreviewPage) route = <LayoutPreviewPage />;
   else if (import.meta.env.DEV && currentPath === '/spike') route = <SpikePage />;
   else if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) route = <UxPreview />;
+  else if (import.meta.env.DEV && currentPath === '/template-dev' && TemplateDevPage) route = <TemplateDevPage />;
   else route = <StartScreen onStartWizard={() => navigate('/wizard')} onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;
 
   return <>{fontsLoadedLocale === locale ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<Analytics /></>;

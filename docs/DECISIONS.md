@@ -2,6 +2,14 @@
 
 Records rationale, alternatives, sizes, and platform verifications per `Spec.md` and `IMPLEMENTATION_PLAN.md`.
 
+## 2026-11-23 — Template CLI validation dependencies (R2-7)
+- **Decision:** Add `ajv` + `ajv-formats` for the template CLI to execute the repository's Draft 2020-12 JSON Schema, and `sharp` 0.35.5 to encode WebP previews and perform tolerant pixel comparisons. Keep all three in `devDependencies`; none is imported by the shipped browser app, so app gzip impact is 0 KB.
+- **Why:** The manifest's published JSON Schema must run in CI independently of the Zod runtime schema. Ajv uses a separate class for Draft 2020-12 and format validators are provided by `ajv-formats`. `sharp` avoids relying on system-installed image tools and supports the required WebP output and pixel-level comparison.
+- **Alternatives:** Zod-only validation would not execute the published JSON Schema. A custom JSON Schema evaluator or hand-built image conversion/diff code would duplicate standards and image codec behavior. System ImageMagick/cwebp would add an undocumented CI host dependency.
+- **License:** Ajv and ajv-formats are MIT; sharp is Apache-2.0. Sharp's ready-compiled libvips binaries are build-tool dependencies only and are not shipped in the browser application. Sources checked 2026-11-23: https://ajv.js.org/json-schema, https://github.com/ajv-validator/ajv/blob/master/LICENSE, https://github.com/ajv-validator/ajv-formats, https://www.npmjs.com/package/sharp, https://sharp.pixelplumbing.com/install/.
+- **Dependency size:** Development-only Node tools; browser bundle/gzip delta: 0 KB. No production asset is added.
+- **Decision:** Use the existing `src/templates/starters/<id>/` folders named by R2-6, rather than introducing the prose example's category/slug directory shape. This preserves current manifests, preview URLs, and lazy loaders; the index derives category relationships from each manifest.
+
 ## 2026-11-23 — Schema v2 migration defaults (R1-1)
 - Plain string fields migrate to one unmarked paragraph/run; existing content remains editable in the legacy field editor until R4 provides rich text editing.
 - Legacy template IDs map `network` → `tech-mesh`, `clean` → `clean-minimal`, and `bold` → `bold-marketing`.
