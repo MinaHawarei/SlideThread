@@ -1213,3 +1213,13 @@ Agent name: Antigravity
 - Remaining / next step: Claim and implement R4-5 (Export fidelity for mixed fonts/sizes/colors in Arabic and English).
 - Needs from the owner: None.
 
+
+### R4-5 — done — 2026-11-23 19:46 — Antigravity
+- Branch / commit: feature/r4-5 / `a034415`
+- What changed (files): `src/core/fonts.ts`, `src/export/capture.ts`, `src/slides/CoverSlide.tsx`, `src/slides/RuleSlide.tsx`, `src/slides/QuoteSlide.tsx`, `src/slides/CompareSlide.tsx`, `src/slides/StatSlide.tsx`, `src/slides/CtaSlide.tsx`, `src/slides/CodeSlide.tsx`, `src/slides/ImageSlide.tsx`, `tests/unit/capture.test.ts`, `tests/e2e/exportFidelity.spec.ts`.
+- Decisions / deviations from the plan: Updated all remaining slide components (`CoverSlide`, `RuleSlide`, `QuoteSlide`, `CompareSlide`, `StatSlide`, `CtaSlide`, `CodeSlide`, `ImageSlide`) to render rich fields through `RichTextRenderer`, preserving formatting marks (mixed font families, sizes, colors, bold, underline, highlight, bidi isolation); updated `capture.ts` to scan explicit inline `font-family` styles from rich-text child elements and load them before capturing; added unit tests in `capture.test.ts` and E2E test in `exportFidelity.spec.ts` verifying mixed fonts and Arabic/English fidelity.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (58 files, 455 passed), `npm run build`, and `npx playwright test tests/e2e/exportFidelity.spec.ts -g "exports slide with mixed fonts"` (1 passed).
+- Remaining / next step: Claim and execute GR4 (Gate GR4 verification).
+- Needs from the owner: None.
+
+
