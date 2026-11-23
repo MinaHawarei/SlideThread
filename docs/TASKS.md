@@ -73,7 +73,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ### Phase R4 — Rich text (GATE GR4)
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| R4-1 | `RichText` model, React renderer, plain-string migration. | GR3 | [ ] | |
+| R4-1 | `RichText` model, React renderer, plain-string migration. | GR3 | [~] | Antigravity 2026-11-23 |
 | R4-2 | In-place editing and floating toolbar (engine from R0-3): font, size, color, bold, underline, highlight, alignment, direction; plain-text paste. | R4-1 | [ ] | |
 | R4-3 | Fit rules update (manual size disables auto-fit; overflow warning; split-slide action for rich text). | R4-2 | [ ] | |
 | R4-4 | Lists/bullets as rich-text nodes with template styling; paste-to-slides outputs rich text (modifies P4-3). | R4-3 | [ ] | |
