@@ -1185,3 +1185,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (56 files, 439 passed), `npm run build` all clean.
 - Remaining / next step: Claim and implement R4-2 (In-place editing and floating toolbar with font, size, color, bold, underline, highlight, alignment, direction, plain-text paste).
 - Needs from the owner: None.
+
+
+### R4-2 — done — 2026-11-23 19:21 — Antigravity
+- Branch / commit: feature/r4-2 / `cc39e50`
+- What changed (files): `package.json`, `package-lock.json`, `src/core/richText.ts`, `src/core/schema.ts`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `src/slides/RichTextRenderer.tsx`, `src/store/projectStore.ts`, `src/ui/editor/CanvasManipulationLayer.tsx`, `src/ui/editor/RichTextEditor.tsx`, `src/ui/editor/index.ts`, `tests/unit/richTextEditor.test.tsx`, `tests/e2e/richTextEditor.spec.ts`, `docs/ux-review/R4-2/`.
+- Decisions / deviations from the plan: Implemented Tiptap editor with Document, Paragraph (with direction support), Text, Bold, Underline, TextStyle (with size percentage and font family support), Color, Highlight, and TextAlign extensions; implemented bidirectional serialization between Tiptap JSON and `RichText` model; enforced plain-text paste handler to strip all web styling; integrated floating toolbar for desktop and bottom-docked toolbar for mobile with >=44px touch targets; integrated canvas in-place editing via double-click, Enter key, and contextual toolbar edit button; verified undo/redo integration with project history.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (57 files, 446 passed), `npm run build`, and `npx playwright test tests/e2e/richTextEditor.spec.ts tests/e2e/touchManipulation.spec.ts` (5 passed). 12-state review screenshots and `REVIEW.md` generated in `docs/ux-review/R4-2/`.
+- Remaining / next step: Claim and implement R4-3 (Fit rules update: manual size disables auto-fit; overflow warning; split-slide action for rich text).
+- Needs from the owner: None.
