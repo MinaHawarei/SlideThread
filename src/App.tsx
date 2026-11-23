@@ -5,9 +5,12 @@ import { GalleryPage } from './gallery/GalleryPage';
 import { StartScreen } from './ui/start/StartScreen';
 import { Wizard } from './ui/wizard/Wizard';
 import { Editor } from './ui/editor';
+import { undo, redo } from './store/history';
 
 const UxPreview = import.meta.env.DEV
-  ? React.lazy(() => import('./ux-preview/UxPreview').then((module) => ({ default: module.UxPreview })))
+  ? React.lazy(() =>
+      import('./ux-preview/UxPreview').then((module) => ({ default: module.UxPreview }))
+    )
   : null;
 
 export type AppScreen = 'start' | 'wizard' | 'editor';
@@ -24,13 +27,35 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  useEffect(() => {
+    const handleHistoryShortcut = (event: KeyboardEvent) => {
+      if (
+        event.isComposing ||
+        event.altKey ||
+        !(event.metaKey || event.ctrlKey) ||
+        event.key.toLowerCase() !== 'z'
+      ) {
+        return;
+      }
+      event.preventDefault();
+      if (event.shiftKey) redo();
+      else undo();
+    };
+    window.addEventListener('keydown', handleHistoryShortcut);
+    return () => window.removeEventListener('keydown', handleHistoryShortcut);
+  }, []);
+
   const renderScreen = () => {
     if (currentPath === '/spike') {
       return <SpikePage />;
     }
 
     if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) {
-      return <Suspense fallback={null}><UxPreview /></Suspense>;
+      return (
+        <Suspense fallback={null}>
+          <UxPreview />
+        </Suspense>
+      );
     }
 
     if (currentPath === '/gallery') {
@@ -47,11 +72,7 @@ export const App: React.FC = () => {
     }
 
     if (currentScreen === 'editor') {
-      return (
-        <Editor
-          onHome={() => setCurrentScreen('start')}
-        />
-      );
+      return <Editor onHome={() => setCurrentScreen('start')} />;
     }
 
     return (

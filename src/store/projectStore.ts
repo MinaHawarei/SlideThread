@@ -2,10 +2,17 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
 import type { Project, Slide, SlideType, MediaRef, TemplateId } from '../core/schema';
-import { CURRENT_SCHEMA_VERSION, DEFAULT_COUNTER_CONFIG, DEFAULT_SIGNATURE_CONFIG, plainTextFieldsToRichText, richTextFieldsToPlainText } from '../core/schema';
+import {
+  CURRENT_SCHEMA_VERSION,
+  DEFAULT_COUNTER_CONFIG,
+  DEFAULT_SIGNATURE_CONFIG,
+  plainTextFieldsToRichText,
+  richTextFieldsToPlainText,
+} from '../core/schema';
 import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
 import { useRecentStore } from './recentStore';
 import { migrate } from '../core/migrate';
+import { recordHistoryChange, registerHistoryChannel } from './history';
 
 export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide {
   const id = `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -49,7 +56,7 @@ export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide 
         type: 'compare',
         fields: plainTextFieldsToRichText({
           title: 'Do This, Not That',
-          l1: 'Don\'t',
+          l1: "Don't",
           t1: 'Mix state and presentation in one giant unmaintainable file',
           l2: 'Do',
           t2: 'Separate concerns into pure rendering components and stores',
@@ -124,9 +131,15 @@ export function createDefaultProject(init?: Partial<Project>): Project {
     theme: init?.theme || 'dark',
     textDir: init?.textDir || 'auto',
     slides: init?.slides || [coverSlide, explainSlide, ctaSlide],
-    counter: init?.counter || { ...DEFAULT_COUNTER_CONFIG, show: (init?.contentType || 'carousel') === 'carousel' },
+    counter: init?.counter || {
+      ...DEFAULT_COUNTER_CONFIG,
+      show: (init?.contentType || 'carousel') === 'carousel',
+    },
     signature: init?.signature || { ...DEFAULT_SIGNATURE_CONFIG },
-    pattern: init?.pattern || { enabled: (init?.templateId || 'network') === 'network', intensity: 1 },
+    pattern: init?.pattern || {
+      enabled: (init?.templateId || 'network') === 'network',
+      intensity: 1,
+    },
     createdAt: init?.createdAt || now,
     updatedAt: now,
   };
@@ -139,7 +152,9 @@ export interface ProjectState {
   // Actions
   setProject: (project: Project) => void;
   createProject: (init?: Partial<Project>) => Project;
-  updateProjectMeta: (meta: Partial<Omit<Project, 'slides' | 'id' | 'schemaVersion' | 'createdAt'>>) => void;
+  updateProjectMeta: (
+    meta: Partial<Omit<Project, 'slides' | 'id' | 'schemaVersion' | 'createdAt'>>
+  ) => void;
   setActiveSlideId: (id: string) => void;
 
   // Slide CRUD
@@ -160,271 +175,283 @@ const initialProject = createDefaultProject();
 
 export const useProjectStore = create<ProjectState>()(
   persist(
-    (set, get) => ({
-      project: initialProject,
-      activeSlideId: initialProject.slides[0]?.id || '',
+    (setRaw, get) => {
+      let pendingCoalesceKey: string | undefined;
+      const set = (partial: Parameters<typeof setRaw>[0], replace?: boolean) => {
+        const before = get().project;
+        const coalesceKey = pendingCoalesceKey;
+        pendingCoalesceKey = undefined;
+        setRaw(partial, replace);
+        const after = get().project;
+        if (after !== before) recordHistoryChange('project', before, after, coalesceKey);
+      };
+      return {
+        project: initialProject,
+        activeSlideId: initialProject.slides[0]?.id || '',
 
-      setProject: (project: Project) => {
-        set({
-          project,
-          activeSlideId: project.slides[0]?.id || '',
-        });
-      },
+        setProject: (project: Project) => {
+          set({
+            project,
+            activeSlideId: project.slides[0]?.id || '',
+          });
+        },
 
-      createProject: (init) => {
-        const newProj = createDefaultProject(init);
-        set({
-          project: newProj,
-          activeSlideId: newProj.slides[0]?.id || '',
-        });
-        return newProj;
-      },
+        createProject: (init) => {
+          const newProj = createDefaultProject(init);
+          set({
+            project: newProj,
+            activeSlideId: newProj.slides[0]?.id || '',
+          });
+          return newProj;
+        },
 
-      updateProjectMeta: (meta) => {
-        set((state) => ({
-          project: {
-            ...state.project,
-            ...meta,
-            updatedAt: Date.now(),
-          },
-        }));
-      },
+        updateProjectMeta: (meta) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              ...meta,
+              updatedAt: Date.now(),
+            },
+          }));
+        },
 
-      setActiveSlideId: (activeSlideId: string) => {
-        set({ activeSlideId });
-      },
+        setActiveSlideId: (activeSlideId: string) => {
+          set({ activeSlideId });
+        },
 
-      addSlide: (type = 'explain', atIndex) => {
-        const slides = [...get().project.slides];
-        const newSlide = createDefaultSlide(type, slides.length);
-        const insertAt = atIndex !== undefined ? atIndex : slides.length;
-        slides.splice(insertAt, 0, newSlide);
+        addSlide: (type = 'explain', atIndex) => {
+          const slides = [...get().project.slides];
+          const newSlide = createDefaultSlide(type, slides.length);
+          const insertAt = atIndex !== undefined ? atIndex : slides.length;
+          slides.splice(insertAt, 0, newSlide);
 
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides,
-            updatedAt: Date.now(),
-          },
-          activeSlideId: newSlide.id,
-        }));
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides,
+              updatedAt: Date.now(),
+            },
+            activeSlideId: newSlide.id,
+          }));
 
-        return newSlide;
-      },
+          return newSlide;
+        },
 
-      duplicateSlide: (id: string) => {
-        const slides = [...get().project.slides];
-        const targetIndex = slides.findIndex((s) => s.id === id);
-        if (targetIndex === -1) return undefined;
+        duplicateSlide: (id: string) => {
+          const slides = [...get().project.slides];
+          const targetIndex = slides.findIndex((s) => s.id === id);
+          if (targetIndex === -1) return undefined;
 
-        const original = slides[targetIndex]!;
-        const duplicate: Slide = {
-          ...original,
-          id: `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-          fields: { ...original.fields },
-          media: original.media ? { ...original.media } : undefined,
-        };
+          const original = slides[targetIndex]!;
+          const duplicate: Slide = {
+            ...original,
+            id: `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+            fields: { ...original.fields },
+            media: original.media ? { ...original.media } : undefined,
+          };
 
-        slides.splice(targetIndex + 1, 0, duplicate);
+          slides.splice(targetIndex + 1, 0, duplicate);
 
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides,
-            updatedAt: Date.now(),
-          },
-          activeSlideId: duplicate.id,
-        }));
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides,
+              updatedAt: Date.now(),
+            },
+            activeSlideId: duplicate.id,
+          }));
 
-        return duplicate;
-      },
+          return duplicate;
+        },
 
-      deleteSlide: (id: string) => {
-        const currentSlides = get().project.slides;
-        if (currentSlides.length <= 1) return; // Keep at least one slide
+        deleteSlide: (id: string) => {
+          const currentSlides = get().project.slides;
+          if (currentSlides.length <= 1) return; // Keep at least one slide
 
-        const targetIndex = currentSlides.findIndex((s) => s.id === id);
-        if (targetIndex === -1) return;
+          const targetIndex = currentSlides.findIndex((s) => s.id === id);
+          if (targetIndex === -1) return;
 
-        const nextSlides = currentSlides.filter((s) => s.id !== id);
-        let nextActiveId = get().activeSlideId;
+          const nextSlides = currentSlides.filter((s) => s.id !== id);
+          let nextActiveId = get().activeSlideId;
 
-        if (nextActiveId === id) {
-          const newIndex = Math.min(targetIndex, nextSlides.length - 1);
-          nextActiveId = nextSlides[newIndex]!.id;
-        }
+          if (nextActiveId === id) {
+            const newIndex = Math.min(targetIndex, nextSlides.length - 1);
+            nextActiveId = nextSlides[newIndex]!.id;
+          }
 
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides: nextSlides,
-            updatedAt: Date.now(),
-          },
-          activeSlideId: nextActiveId,
-        }));
-      },
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: nextSlides,
+              updatedAt: Date.now(),
+            },
+            activeSlideId: nextActiveId,
+          }));
+        },
 
-      appendSlides: (newSlides: Slide[]) => {
-        if (newSlides.length === 0) return;
-        const slides = [...get().project.slides, ...newSlides];
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides,
-            updatedAt: Date.now(),
-          },
-          activeSlideId: newSlides[0]?.id || state.activeSlideId,
-        }));
-      },
+        appendSlides: (newSlides: Slide[]) => {
+          if (newSlides.length === 0) return;
+          const slides = [...get().project.slides, ...newSlides];
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides,
+              updatedAt: Date.now(),
+            },
+            activeSlideId: newSlides[0]?.id || state.activeSlideId,
+          }));
+        },
 
-      replaceSlides: (newSlides: Slide[]) => {
-        if (newSlides.length === 0) return;
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides: newSlides,
-            updatedAt: Date.now(),
-          },
-          activeSlideId: newSlides[0]?.id || '',
-        }));
-      },
+        replaceSlides: (newSlides: Slide[]) => {
+          if (newSlides.length === 0) return;
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: newSlides,
+              updatedAt: Date.now(),
+            },
+            activeSlideId: newSlides[0]?.id || '',
+          }));
+        },
 
-      reorderSlides: (startIndex: number, endIndex: number) => {
-        if (startIndex === endIndex) return;
-        const slides = [...get().project.slides];
-        const [removed] = slides.splice(startIndex, 1);
-        if (!removed) return;
-        slides.splice(endIndex, 0, removed);
+        reorderSlides: (startIndex: number, endIndex: number) => {
+          if (startIndex === endIndex) return;
+          const slides = [...get().project.slides];
+          const [removed] = slides.splice(startIndex, 1);
+          if (!removed) return;
+          slides.splice(endIndex, 0, removed);
 
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides,
-            updatedAt: Date.now(),
-          },
-        }));
-      },
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides,
+              updatedAt: Date.now(),
+            },
+          }));
+        },
 
-      updateSlideFields: (id: string, fields: Record<string, string>) => {
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides: state.project.slides.map((s) =>
-              s.id === id
-                ? {
-                    ...s,
-                    fields: { ...s.fields, ...plainTextFieldsToRichText(fields) },
-                  }
-                : s
-            ),
-            updatedAt: Date.now(),
-          },
-        }));
-      },
+        updateSlideFields: (id: string, fields: Record<string, string>) => {
+          pendingCoalesceKey = `slide-field:${id}:${Object.keys(fields).sort().join(',')}`;
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((s) =>
+                s.id === id
+                  ? {
+                      ...s,
+                      fields: { ...s.fields, ...plainTextFieldsToRichText(fields) },
+                    }
+                  : s
+              ),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
 
-      updateSlideMedia: (id: string, media?: MediaRef) => {
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides: state.project.slides.map((s) =>
-              s.id === id
-                ? {
-                    ...s,
-                    media,
-                  }
-                : s
-            ),
-            updatedAt: Date.now(),
-          },
-        }));
-      },
+        updateSlideMedia: (id: string, media?: MediaRef) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((s) =>
+                s.id === id
+                  ? {
+                      ...s,
+                      media,
+                    }
+                  : s
+              ),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
 
-      setSlideType: (id: string, nextType: SlideType) => {
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides: state.project.slides.map((s) => {
-              if (s.id !== id) return s;
-              // Preserve compatible fields across type change per Spec §10.2
-              const plainFields = richTextFieldsToPlainText(s.fields);
-              const preservedFields: Record<string, string> = {};
-              if (plainFields.title) preservedFields.title = plainFields.title;
-              if (plainFields.body) preservedFields.body = plainFields.body;
-              if (plainFields.note) preservedFields.note = plainFields.note;
+        setSlideType: (id: string, nextType: SlideType) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((s) => {
+                if (s.id !== id) return s;
+                // Preserve compatible fields across type change per Spec §10.2
+                const plainFields = richTextFieldsToPlainText(s.fields);
+                const preservedFields: Record<string, string> = {};
+                if (plainFields.title) preservedFields.title = plainFields.title;
+                if (plainFields.body) preservedFields.body = plainFields.body;
+                if (plainFields.note) preservedFields.note = plainFields.note;
 
-              return {
-                ...s,
-                type: nextType,
-                fields: {
-                  ...createDefaultSlide(nextType).fields,
-                  ...plainTextFieldsToRichText(preservedFields),
-                },
-              };
+                return {
+                  ...s,
+                  type: nextType,
+                  fields: {
+                    ...createDefaultSlide(nextType).fields,
+                    ...plainTextFieldsToRichText(preservedFields),
+                  },
+                };
+              }),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        toggleHideSignature: (id: string) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((s) =>
+                s.id === id ? { ...s, hideSignature: !s.hideSignature } : s
+              ),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        splitSlide: (id: string) => {
+          const slides = [...get().project.slides];
+          const targetIndex = slides.findIndex((s) => s.id === id);
+          if (targetIndex === -1) return;
+
+          const original = slides[targetIndex]!;
+          if (original.type !== 'explain') return;
+
+          const originalFields = richTextFieldsToPlainText(original.fields);
+          const lines = (originalFields.body || '').split('\n').filter((l) => l.trim().length > 0);
+          if (lines.length < 2) return;
+
+          const half = Math.ceil(lines.length / 2);
+          const part1Lines = lines.slice(0, half).join('\n');
+          const part2Lines = lines.slice(half).join('\n');
+
+          // Update original slide
+          slides[targetIndex] = {
+            ...original,
+            fields: {
+              ...original.fields,
+              ...plainTextFieldsToRichText({ body: part1Lines }),
+            },
+          };
+
+          // Insert new part 2 slide
+          const splitSlide: Slide = {
+            id: `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+            type: 'explain',
+            fields: plainTextFieldsToRichText({
+              title: `${originalFields.title || ''} (Cont.)`,
+              body: part2Lines,
             }),
-            updatedAt: Date.now(),
-          },
-        }));
-      },
+          };
 
-      toggleHideSignature: (id: string) => {
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides: state.project.slides.map((s) =>
-              s.id === id ? { ...s, hideSignature: !s.hideSignature } : s
-            ),
-            updatedAt: Date.now(),
-          },
-        }));
-      },
+          slides.splice(targetIndex + 1, 0, splitSlide);
 
-      splitSlide: (id: string) => {
-        const slides = [...get().project.slides];
-        const targetIndex = slides.findIndex((s) => s.id === id);
-        if (targetIndex === -1) return;
-
-        const original = slides[targetIndex]!;
-        if (original.type !== 'explain') return;
-
-        const originalFields = richTextFieldsToPlainText(original.fields);
-        const lines = (originalFields.body || '').split('\n').filter((l) => l.trim().length > 0);
-        if (lines.length < 2) return;
-
-        const half = Math.ceil(lines.length / 2);
-        const part1Lines = lines.slice(0, half).join('\n');
-        const part2Lines = lines.slice(half).join('\n');
-
-        // Update original slide
-        slides[targetIndex] = {
-          ...original,
-          fields: {
-            ...original.fields,
-            ...plainTextFieldsToRichText({ body: part1Lines }),
-          },
-        };
-
-        // Insert new part 2 slide
-        const splitSlide: Slide = {
-          id: `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-          type: 'explain',
-          fields: plainTextFieldsToRichText({
-            title: `${originalFields.title || ''} (Cont.)`,
-            body: part2Lines,
-          }),
-        };
-
-        slides.splice(targetIndex + 1, 0, splitSlide);
-
-        set((state) => ({
-          project: {
-            ...state.project,
-            slides,
-            updatedAt: Date.now(),
-          },
-          activeSlideId: splitSlide.id,
-        }));
-      },
-    }),
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides,
+              updatedAt: Date.now(),
+            },
+            activeSlideId: splitSlide.id,
+          }));
+        },
+      };
+    },
     {
       name: STORAGE_KEYS.CURRENT_PROJECT,
       version: 2,
@@ -448,6 +475,16 @@ export const useProjectStore = create<ProjectState>()(
   )
 );
 
+registerHistoryChannel('project', useProjectStore.getState().project, (project) => {
+  const restoredProject = project as Project;
+  useProjectStore.setState((state) => ({
+    project: restoredProject,
+    activeSlideId: restoredProject.slides.some((slide) => slide.id === state.activeSlideId)
+      ? state.activeSlideId
+      : restoredProject.slides[0]?.id || '',
+  }));
+});
+
 let autosaveTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Debounced autosave (~500ms) automatically syncing active project into recent projects per Spec §8.2
@@ -468,9 +505,7 @@ useProjectStore.subscribe((state) => {
 // ============================================================================
 
 export function useActiveSlide(): Slide | undefined {
-  return useProjectStore((state) =>
-    state.project.slides.find((s) => s.id === state.activeSlideId)
-  );
+  return useProjectStore((state) => state.project.slides.find((s) => s.id === state.activeSlideId));
 }
 
 export function useSlide(id: string): Slide | undefined {
@@ -478,9 +513,7 @@ export function useSlide(id: string): Slide | undefined {
 }
 
 export function useSlideIds(): string[] {
-  return useProjectStore(
-    useShallow((state) => state.project.slides.map((s) => s.id))
-  );
+  return useProjectStore(useShallow((state) => state.project.slides.map((s) => s.id)));
 }
 
 export function useSlideCount(): number {
