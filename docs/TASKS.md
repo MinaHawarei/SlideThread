@@ -51,7 +51,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R2-1 | Template schema (TS + JSON Schema), `categories.json`, `extends` resolution, fixed vs color-flexible palettes. | GR1 | [x] | Codex 2026-11-23 · feature/r2-1 · c6b89e8 |
 | R2-2 | Layout archetypes: ≥ 2 per slide type × 4 aspect classes, stable element ids (supersedes P1-5). | R2-1 | [x] | Codex 2026-11-23 · feature/r2-2 · e4eec5c |
 | R2-3 | Decoration generators (`mesh`, `dots-grid`, `waves`, `geometric`, `blobs`, `none`), toggle and intensity, prefix-stable. | R2-2 | [x] | Codex 2026-11-23 · feature/r2-3 · 04c4cb3 |
-| R2-4 | Sanitizers and validators for SVG and CSS (§5.1) using vetted libraries. | R2-3 | [~] | Codex 2026-11-23 |
+| R2-4 | Sanitizers and validators for SVG and CSS (§5.1) using vetted libraries. | R2-3 | [x] | Codex 2026-11-23 · feature/r2-4 · 2ece08a |
 | R2-5 | Template runtime: lazy load, resolve tokens/layouts/decor, fallbacks for missing archetypes. | R2-4 | [ ] | |
 | R2-6 | The 5 starter templates (§5.8) with previews. | R2-5 | [ ] | |
 | R2-7 | Template CLI and CI (§5.1). | R2-6 | [ ] | |

@@ -955,3 +955,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 351 passed / 47 files; `npm run build` pass (Rollup emitted two existing removable `@__PURE__` annotation warnings in Zod); `npm run test:e2e -- --config=playwright.r1-5.config.ts` 54 passed, 1 failed (stale `uxPreview.spec.ts` expectation, reproduced in isolation).
 - Remaining / next step: Verify GR1, then proceed to R2-1.
 - Needs from the owner: None.
+
+
+### R2-4 — done — 2026-11-23 13:48 — Codex
+- Branch / commit: feature/r2-4 / 2ece08a
+- What changed (files): Added DOMPurify-based SVG allowlist sanitization with XML validation, css-tree AST-based CSS scope/property/value validation and complexity limits, malicious-input unit tests, dependency/license decisions, package notices, and the R2-4 tracker entry.
+- Decisions / deviations from the plan: DOMPurify is a direct dependency because the sanitizer now imports it explicitly; css-tree and its type declarations are added for AST parsing. Sanitizers remain pure utilities for the R2-5 runtime to connect. Isolated minified browser sanitizer bundle measured 70,412 bytes gzip.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (379 passed / 51 files), `npm run build`, and `git diff --check` passed. Build retains existing Zod Rollup annotation notices. Malicious SVG/CSS samples were stripped or rejected.
+- Remaining / next step: R2-5, template runtime.
+- Needs from the owner: None.
