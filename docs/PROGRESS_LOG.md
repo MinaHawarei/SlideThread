@@ -61,6 +61,22 @@ Agent name: Antigravity
 - Remaining / next step: R2-3, deterministic and prefix-stable decoration generators. The implementation commit was created on `feature/r2-1`; `feature/r2-2` now points to it.
 - Needs from the owner: None.
 
+### R2-3 — started — 2026-11-23 13:30 — Codex
+- Branch / commit: feature/r2-3
+- What changed (files): `docs/TASKS.md` (claimed R2-3).
+- Decisions / deviations from the plan: Implement generators as typed SVG primitive data rather than SVG strings; this keeps the generator outputs safe for React rendering in R2-5 and avoids string-based markup generation.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: N/A — completed as `COMMIT`; proceed to R2-4.
+- Needs from the owner: None.
+
+### R2-3 — done — 2026-11-23 13:36 — Codex
+- Branch / commit: feature/r2-3 / COMMIT
+- What changed (files): Added typed `SvgFragment` primitives and generators for mesh, dots-grid, waves, original eight-point geometric tessellation, blobs, and none; added intensity/toggle behavior, bounded params, input validation, and unit coverage.
+- Decisions / deviations from the plan: Generator output is structured primitive data rather than SVG strings, so later React runtime rendering does not need to trust generated markup. The existing legacy `NetworkBackground` remains unchanged until template runtime integration in R2-5; the new mesh generator satisfies prefix stability and shared boundaries for the template platform.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 365 passed / 50 files; `npm run build` pass (existing Zod Rollup annotation notices). E2E not applicable: generators are pure and are not connected to rendering until R2-5. `git diff --check` pass.
+- Remaining / next step: R2-4, vetted SVG/CSS sanitizers and malicious-input tests.
+- Needs from the owner: None.
+
 ### R1-1 — checkpoint — 2026-11-23 11:42 — Codex
 - Branch / commit: feature/r1-1 / 1ba9d3c
 - What changed (files): `src/core/schema.ts` defines v2 RichText, overrides/extras, counter/signature, project and brand schemas; `src/core/migrate.ts` handles v0/v1 to v2 and future-version rejection; `src/config/features.ts` adds default-off flags; `docs/DECISIONS.md` records deterministic migration defaults; tracker remains `[~]`.
