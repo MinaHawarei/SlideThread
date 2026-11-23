@@ -1327,3 +1327,17 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (63 files, 544 passed), Playwright E2E suite (92 tests passed, 100%), and `npm run build` (clean).
 - Remaining / next step: Gate GR5 verification.
 - Needs from the owner: None.
+
+
+### GR5 — done — 2026-11-24 00:25 — Antigravity
+- Branch / commit: main / gate passed
+- What changed (files): `docs/TASKS.md`, `docs/REVISION_PLAN.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan: Gate GR5 verification complete. Verified the full Phase R5 implementation across tasks R5-1 through R5-5:
+  1. **R5-1 (Counter system §5.4):** 6 physical anchors (`tl`, `tc`, `tr`, `bl`, `bc`, `br`), 3 styles (`number`, `bar`, `dots`), 3 number formats (`nn/nn`, `n`, `n/nn`), `hideOnFirst`, `hideOnLast`, template-declared style restrictions (Clean, Bold, Heritage, Soft Gradient, Tech Mesh), and automatic collision handling offsetting the counter when sharing anchors with a visible signature.
+  2. **R5-2 (Signature system §5.4):** 6 physical anchors (`tl`..`br`) + free movement via overrides, 2 arrangements (`inline`, `stacked`), 3 sizes (`sm`, `md`, `lg`), 3 photo shapes (`circle`, `rounded`, `square`), independent toggles for handle and socials, and CTA slide large avatar variants dynamically reflecting shapes and custom photos.
+  3. **R5-3 (Photo handling §5.5):** Universal click-to-upload across all avatars (`SignatureBar`, `CtaSlide`, `BrandInspector`, `SettingsPage`), pure interactive square crop math (`calculateInteractiveCrop` & `renderCroppedSquare`) exporting 400×400 px JPEGs with boundary clamping, camera hover overlays, placeholder camera badges, and export DOM snapshot isolation.
+  4. **R5-4 (Settings page §5.5):** Atelier `/settings` route with profile defaults, socials management, design defaults (template, theme, color, counter, signature, language), data management (export/import all user data with lossless schema migration, clear data), and persistent state across page reload.
+  5. **R5-5 (Inline brand override popover §5.5):** In-canvas `BrandOverridePopover` activated upon selecting signature, supporting project-scoped name, handle, and photo editing (`brandOverride`), "Apply to defaults" promoting override to global settings, and "Reset to defaults" reverting project override.
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (63 test files, 544 passed), `npm run build` (clean, 0 errors), and all Phase R5 Playwright E2E tests (`tests/e2e/counterSystem.spec.ts`, `tests/e2e/signatureSystem.spec.ts`, `tests/e2e/photoHandling.spec.ts`, `tests/e2e/settingsPage.spec.ts`, `tests/e2e/brandOverride.spec.ts` — 8 passed).
+- Remaining / next step: Phase R6 — Assets and stickers (GATE GR6), starting with task R6-1 (Asset pack format, lazy loader, validator, license registry (`ASSET_LICENSES.md`, `NOTICE`)).
+- Needs from the owner: None.
