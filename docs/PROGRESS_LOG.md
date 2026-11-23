@@ -1252,7 +1252,7 @@ Agent name: Antigravity
 
 
 ### R5-2 — done — 2026-11-23 23:25 — Antigravity
-- Branch / commit: feature/r5-2 / signature system complete
+- Branch / commit: feature/r5-2 / `08419e0`
 - What changed (files): `src/core/schema.ts`, `src/slides/SignatureBar.tsx`, `src/slides/CtaSlide.tsx`, `src/slides/SlideRenderer.tsx`, `src/slides/slides.css`, `src/store/projectStore.ts`, `src/store/settingsStore.ts`, `src/ui/editor/BrandInspector.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/signatureSystem.test.tsx`, `tests/e2e/signatureSystem.spec.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
 - Decisions / deviations from the plan:
   1. Extended `SignatureBar` to support full configuration options:
