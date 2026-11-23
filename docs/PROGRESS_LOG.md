@@ -964,3 +964,11 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (379 passed / 51 files), `npm run build`, and `git diff --check` passed. Build retains existing Zod Rollup annotation notices. Malicious SVG/CSS samples were stripped or rejected.
 - Remaining / next step: R2-5, template runtime.
 - Needs from the owner: None.
+
+### R2-5 — started — 2026-11-23 13:49 — Codex
+- Branch / commit: feature/r2-5
+- What changed (files): `docs/TASKS.md` (claimed R2-5).
+- Decisions / deviations from the plan: Keep existing built-in templates working while introducing a lazy runtime boundary for validated template data. Fallback missing archetypes to the slide-type default for the current aspect class.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Inspect rendering and store ownership, design lazy resolution API, and ensure changing a template retains slide content.
+- Needs from the owner: None.
