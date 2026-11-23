@@ -1295,7 +1295,7 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 ### R5-4 — done — 2026-11-23 23:56 — Antigravity
-- Branch / commit: feature/r5-4 / pending merge
+- Branch / commit: feature/r5-4 / `aab6a45`
 - What changed (files): `src/core/dataBackup.ts`, `src/store/settingsStore.ts`, `src/ui/settings/SettingsPage.tsx`, `src/ui/settings/settings.css`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/settingsPage.test.tsx`, `tests/e2e/settingsPage.spec.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
 - Decisions / deviations from the plan:
   1. Built full `/settings` page per Spec §5.5 with atelier visual design:
