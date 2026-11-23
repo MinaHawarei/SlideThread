@@ -106,6 +106,9 @@ export const ElementOverrideSchema = z.object({
   scale: z.number().positive().finite(),
   w: z.number().positive().finite().optional(),
   h: z.number().positive().finite().optional(),
+  z: z.number().int().optional(),
+  locked: z.boolean().optional(),
+  hidden: z.boolean().optional(),
 }).strict();
 export type ElementOverride = z.infer<typeof ElementOverrideSchema>;
 
@@ -122,6 +125,7 @@ export const ExtraElementSchema = z.object({
   rotation: z.number().finite(),
   z: z.number().int(),
   locked: z.boolean(),
+  hidden: z.boolean().optional(),
   text: RichTextSchema.optional(),
   media: MediaRefSchema.optional(),
   assetId: z.string().min(1).optional(),

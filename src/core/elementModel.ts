@@ -11,6 +11,7 @@ export interface ResolvedElement {
   rotation: number;
   z: number;
   locked: boolean;
+  hidden: boolean;
   frame?: LayoutFrame;
   extra?: ExtraElement;
 }
@@ -64,7 +65,7 @@ export function scaleElementGeometry(geometry: ElementGeometry, factor: number):
   return { ...geometry, w: Math.max(0.02, geometry.w * safeFactor), h: Math.max(0.02, geometry.h * safeFactor) };
 }
 
-function resolveFrame(frame: LayoutFrame, override?: ElementOverride): ResolvedElement {
+function resolveFrame(frame: LayoutFrame, override?: ElementOverride, order = 0): ResolvedElement {
   return {
     id: frame.id,
     kind: 'slot',
@@ -73,8 +74,9 @@ function resolveFrame(frame: LayoutFrame, override?: ElementOverride): ResolvedE
     w: override?.w ?? frame.inlineSize * (override?.scale ?? 1),
     h: override?.h ?? frame.blockSize * (override?.scale ?? 1),
     rotation: 0,
-    z: 0,
-    locked: false,
+    z: override?.z ?? order,
+    locked: override?.locked ?? false,
+    hidden: override?.hidden ?? false,
     frame,
   };
 }
@@ -82,7 +84,7 @@ function resolveFrame(frame: LayoutFrame, override?: ElementOverride): ResolvedE
 /** Resolve template slots and user extras into one stable, bottom-to-top layer list. */
 export function resolveSlideElements(slide: Slide, variant: LayoutVariant, aspect: AspectClass): ResolvedElement[] {
   const overrides = slide.overrides?.[aspect] ?? {};
-  const slots = variant.elements.map((frame) => resolveFrame(frame, overrides[frame.id]));
+  const slots = variant.elements.map((frame, index) => resolveFrame(frame, overrides[frame.id], index));
   const extras: ResolvedElement[] = (slide.extras ?? []).map((extra) => ({
     id: extra.id,
     kind: extra.kind,
@@ -91,8 +93,9 @@ export function resolveSlideElements(slide: Slide, variant: LayoutVariant, aspec
     w: extra.w,
     h: extra.h,
     rotation: extra.rotation,
-    z: extra.z,
+    z: variant.elements.length + extra.z,
     locked: extra.locked,
+    hidden: extra.hidden ?? false,
     extra,
   }));
   return [...slots, ...extras].sort((a, b) => a.z - b.z);
@@ -103,7 +106,7 @@ export function hitTestElements(elements: readonly ResolvedElement[], x: number,
   if (!Number.isFinite(x) || !Number.isFinite(y)) return undefined;
   for (let index = elements.length - 1; index >= 0; index -= 1) {
     const element = elements[index];
-    if (!element || element.locked) continue;
+    if (!element || element.locked || element.hidden) continue;
     const centerX = element.x + element.w / 2;
     const centerY = element.y + element.h / 2;
     const radians = (-element.rotation * Math.PI) / 180;

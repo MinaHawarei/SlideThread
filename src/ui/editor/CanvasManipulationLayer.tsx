@@ -14,6 +14,19 @@ interface CanvasManipulationLayerProps {
   zoom: number;
 }
 
+const SLOT_SELECTORS: Record<string, string> = {
+  title: '.slide-title-h1, .slide-title-h2',
+  body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',
+  media: '.slide-media-element, .slide-bg-media',
+  counter: '.sig-counter-badge',
+  signature: '.slide-signature-container',
+  code: '.code-container',
+  value: '.stat-big-value',
+  left: '.compare-card-bad',
+  right: '.compare-card-ok',
+  source: '.quote-author',
+};
+
 type Gesture = { pointerIds: number[]; startX: number; startY: number; startAngle: number; startDistance: number; initial: ElementGeometry; mode: 'move' | 'resize' | 'rotate' | 'pinch' };
 
 export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = ({ slide, aspect, width, height, zoom }) => {
@@ -30,6 +43,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const [preview, setPreview] = useState<{ id: string; geometry: ElementGeometry; guides: Array<{ axis: 'x' | 'y'; at: number }> }>();
   const [announcement, setAnnouncement] = useState('');
   const [touchLayout, setTouchLayout] = useState(false);
+  const [layersOpen, setLayersOpen] = useState(false);
   const gesture = useRef<Gesture>();
   const activePointers = useRef(new Map<number, { x: number; y: number }>());
   const layerRef = useRef<HTMLDivElement>(null);
@@ -52,15 +66,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     const overlayRect = layerRef.current?.getBoundingClientRect();
     const canvas = stage?.querySelector<HTMLElement>('.slide-canvas');
     if (!overlayRect?.width || !overlayRect.height || !canvas) return;
-    const selectors: Record<string, string> = {
-      title: '.slide-title-h1, .slide-title-h2',
-      body: '.slide-sub, .explain-body-list, .slide-paragraph',
-      code: '.slide-code-block',
-      source: '.quote-source',
-      value: '.stat-value',
-    };
     const measured: Record<string, ElementGeometry> = {};
-    for (const [id, selector] of Object.entries(selectors)) {
+    for (const [id, selector] of Object.entries(SLOT_SELECTORS)) {
       if (slide.overrides?.[aspect]?.[id]) continue;
       const node = canvas.querySelector<HTMLElement>(selector);
       if (!node) continue;
@@ -76,12 +83,37 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     setMeasuredGeometry(measured);
   }, [slide.id, slide.type, slide.fields, slide.overrides, aspect, width, height, zoom]);
 
+  useLayoutEffect(() => {
+    const canvas = layerRef.current?.parentElement?.querySelector<HTMLElement>('.slide-canvas');
+    if (!canvas) return;
+    const previousStyle = new Map<HTMLElement, { visibility: string; zIndex: string; position: string }>();
+    for (const element of elements) {
+      const selector = SLOT_SELECTORS[element.id];
+      if (!selector) continue;
+      for (const node of canvas.querySelectorAll<HTMLElement>(selector)) {
+        previousStyle.set(node, { visibility: node.style.visibility, zIndex: node.style.zIndex, position: node.style.position });
+        if (element.hidden) node.style.visibility = 'hidden';
+        node.style.zIndex = String(element.z);
+        if (window.getComputedStyle(node).position === 'static') node.style.position = 'relative';
+      }
+    }
+    return () => {
+      for (const [node, style] of previousStyle) {
+        node.style.visibility = style.visibility;
+        node.style.zIndex = style.zIndex;
+        node.style.position = style.position;
+      }
+    };
+  }, [elements, slide.id, aspect]);
+
   const persistGeometry = (element: ResolvedElement, geometry: ElementGeometry) => {
     if (element.kind === 'slot' && element.frame) {
+      const prior = slide.overrides?.[aspect]?.[element.id];
       updateSlotOverride(slide.id, aspect, element.id, {
+        ...prior,
         dx: geometry.x - element.frame.inlineStart,
         dy: geometry.y - element.frame.blockStart,
-        scale: 1,
+        scale: prior?.scale ?? 1,
         w: geometry.w,
         h: geometry.h,
       });
@@ -107,6 +139,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, element: ResolvedElement) => {
+    if (element.locked && event.key !== 'Escape') return;
     const step = event.shiftKey ? 10 : 1;
     const geometry: ElementGeometry = { x: element.x, y: element.y, w: element.w, h: element.h, rotation: element.rotation };
     if (event.key === 'Escape') {
@@ -140,7 +173,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'd' && element.extra) {
       event.preventDefault();
-      const duplicate = { ...element.extra, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.z + 1 };
+      const duplicate = { ...element.extra, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.extra.z + 1 };
       addExtraElement(slide.id, duplicate);
       selectElement(duplicate.id);
       setAnnouncement(t('editor.selectedAnnouncement', { id: duplicate.id }));
@@ -254,13 +287,71 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   };
 
   const reset = (element: ResolvedElement) => {
-    if (element.kind === 'slot') updateSlotOverride(slide.id, aspect, element.id);
+    if (element.kind === 'slot') {
+      const prior = slide.overrides?.[aspect]?.[element.id];
+      const hasLayerState = prior?.z !== undefined || prior?.locked !== undefined || prior?.hidden !== undefined;
+      if (!hasLayerState) updateSlotOverride(slide.id, aspect, element.id);
+      else {
+        const base = measuredGeometry[element.id] ?? { x: element.frame!.inlineStart, y: element.frame!.blockStart, w: element.frame!.inlineSize, h: element.frame!.blockSize, rotation: 0 };
+        updateSlotOverride(slide.id, aspect, element.id, {
+          dx: base.x - element.frame!.inlineStart,
+          dy: base.y - element.frame!.blockStart,
+          scale: 1,
+          w: base.w,
+          h: base.h,
+          ...(prior?.z !== undefined ? { z: prior.z } : {}),
+          ...(prior?.locked !== undefined ? { locked: prior.locked } : {}),
+          ...(prior?.hidden !== undefined ? { hidden: prior.hidden } : {}),
+        });
+      }
+    }
     else if (element.extra) persistGeometry(element, { x: element.extra.x, y: element.extra.y, w: element.extra.w, h: element.extra.h, rotation: 0 });
+  };
+
+  const setLayerState = (element: ResolvedElement, changes: { z?: number; locked?: boolean; hidden?: boolean }) => {
+    if (element.kind === 'slot' && element.frame) {
+      const prior = slide.overrides?.[aspect]?.[element.id];
+      updateSlotOverride(slide.id, aspect, element.id, {
+        dx: prior?.dx ?? 0, dy: prior?.dy ?? 0, scale: prior?.scale ?? 1,
+        ...(prior?.w !== undefined ? { w: prior.w } : {}),
+        ...(prior?.h !== undefined ? { h: prior.h } : {}),
+        z: changes.z ?? element.z,
+        locked: changes.locked ?? element.locked,
+        hidden: changes.hidden ?? element.hidden,
+      });
+    } else if (element.extra) {
+      updateExtraElement(slide.id, { ...element.extra, z: changes.z === undefined ? element.extra.z : changes.z - (variant?.elements.length ?? 0), locked: changes.locked ?? element.locked, hidden: changes.hidden ?? element.hidden });
+    }
+  };
+
+  const moveLayer = (elementId: string, delta: -1 | 1) => {
+    const ordered = [...elements];
+    const current = ordered.findIndex((item) => item.id === elementId);
+    const next = current + delta;
+    if (current < 0 || next < 0 || next >= ordered.length) return;
+    const first = ordered[current]!;
+    const second = ordered[next]!;
+    setLayerState(first, { z: second.z });
+    setLayerState(second, { z: first.z });
   };
 
   return (
     <div ref={layerRef} aria-label={t('editor.manipulationOverlay')} data-testid="manipulation-layer" onTouchStart={(event) => event.stopPropagation()} onTouchMove={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()} style={{ position: 'absolute', inset: 0, width, height, zIndex: 20, pointerEvents: 'none' }}>
-      {elements.map((modelElement) => {
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 60, pointerEvents: 'auto', transform: touchLayout ? undefined : `scale(${1 / zoom})`, transformOrigin: 'top right' }}>
+        <button type="button" data-testid="layers-toggle" aria-expanded={layersOpen} aria-controls="canvas-layers-panel" onClick={() => setLayersOpen((open) => !open)} style={{ minWidth: 44, minHeight: 44, padding: '0 12px', border: '1px solid #94a3b8', borderRadius: 10, background: 'white', color: '#0f172a', fontWeight: 700 }}>{t('editor.layers')}</button>
+        {layersOpen && <section id="canvas-layers-panel" data-testid="canvas-layers-panel" aria-label={t('editor.layers')} style={{ width: 300, maxHeight: Math.min(touchLayout ? height - 64 : height * zoom - 64, 420), overflowY: 'auto', marginTop: 6, padding: 8, borderRadius: 12, background: 'white', color: '#0f172a', boxShadow: '0 6px 24px #0004' }}>
+          <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            {elements.map((item, index) => <li key={item.id} data-testid={`layer-row-${item.id}`} style={{ display: 'flex', alignItems: 'center', gap: 4, minHeight: 48, borderBottom: '1px solid #e2e8f0', opacity: item.hidden ? 0.6 : 1 }}>
+              <button type="button" onClick={() => selectElement(item.id)} aria-current={selectedId === item.id ? 'true' : undefined} style={{ flex: 1, minWidth: 0, minHeight: 44, padding: '0 6px', textAlign: 'start', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: selectedId === item.id ? 700 : 500 }}>{item.id}</button>
+              <button type="button" aria-label={t(item.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: item.id })} onClick={() => setLayerState(item, { locked: !item.locked })} style={{ minWidth: 40, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{item.locked ? '🔒' : '🔓'}</button>
+              <button type="button" aria-label={t(item.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: item.id })} onClick={() => setLayerState(item, { hidden: !item.hidden })} style={{ minWidth: 40, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{item.hidden ? '◉' : '◌'}</button>
+              <button type="button" aria-label={t('editor.layerMoveUp', { id: item.id })} disabled={index === 0} onClick={() => moveLayer(item.id, -1)} style={{ minWidth: 36, minHeight: 44, opacity: index === 0 ? 0.4 : 1 }}>↑</button>
+              <button type="button" aria-label={t('editor.layerMoveDown', { id: item.id })} disabled={index === elements.length - 1} onClick={() => moveLayer(item.id, 1)} style={{ minWidth: 36, minHeight: 44, opacity: index === elements.length - 1 ? 0.4 : 1 }}>↓</button>
+            </li>)}
+          </ol>
+        </section>}
+      </div>
+      {elements.filter((item) => !item.hidden).map((modelElement) => {
         const element = measuredGeometry[modelElement.id] && !slide.overrides?.[aspect]?.[modelElement.id]
           ? { ...modelElement, ...measuredGeometry[modelElement.id] }
           : modelElement;
@@ -286,6 +377,14 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
             style={{ position: 'absolute', zIndex: isSelected ? 25 : 20, left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.w * 100}%`, height: `${shown.h * 100}%`, transform: `rotate(${shown.rotation}deg)`, transformOrigin: 'center', border: isSelected ? '2px solid #0891b2' : '1px solid transparent', background: isSelected ? '#06b6d40d' : 'transparent', pointerEvents: 'auto', touchAction: touchLayout ? 'none' : undefined, cursor: element.locked ? 'default' : 'move', boxSizing: 'border-box' }}
           >
             {isSelected && !element.locked && <>
+              {!touchLayout && <div data-testid="element-context-toolbar" role="toolbar" aria-label={t('editor.selectionToolbar')} onPointerDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -52, insetInlineStart: 0, zIndex: 5, display: 'flex', gap: 4, padding: 4, borderRadius: 10, background: 'white', color: '#0f172a', boxShadow: '0 3px 14px #0003', pointerEvents: 'auto', transform: `scale(${1 / zoom})`, transformOrigin: 'top left' }}>
+                <button type="button" aria-label={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })} onClick={() => setLayerState(element, { locked: !element.locked })} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{element.locked ? '🔒' : '🔓'}</button>
+                <button type="button" aria-label={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })} onClick={() => setLayerState(element, { hidden: !element.hidden })} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{element.hidden ? '◉' : '◌'}</button>
+                {element.extra && <>
+                  <button type="button" aria-label={t('editor.duplicateElement')} onClick={() => { const duplicate = { ...element.extra!, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.extra!.z + 1 }; addExtraElement(slide.id, duplicate); selectElement(duplicate.id); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>＋</button>
+                  <button type="button" aria-label={t('editor.deleteElement')} onClick={() => { deleteExtraElement(slide.id, element.id); selectElement(); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#fee2e2' }}>×</button>
+                </>}
+              </div>}
               {!touchLayout && <div data-testid="element-numeric-inspector" onPointerDown={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -164, insetInlineStart: 8, zIndex: 3, display: 'flex', flexWrap: 'wrap', gap: 6, width: 460, padding: 8, borderRadius: 8, background: 'white', color: '#0f172a', boxShadow: '0 4px 18px #0003', transform: `scale(${1 / zoom})`, transformOrigin: 'top left', pointerEvents: 'auto' }}>
                 {!touchLayout && (['x', 'y', 'w', 'scale'] as const).map((field) => {
                   const labelKey = field === 'x' ? 'editor.xPosition' : field === 'y' ? 'editor.yPosition' : field === 'w' ? 'editor.elementWidth' : 'editor.elementScale';
@@ -303,7 +402,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
           </div>
         );
       })}
-      {touchLayout && elements.find((element) => element.id === selectedId && !element.locked) && (() => {
+      {touchLayout && elements.find((element) => element.id === selectedId && !element.locked && !element.hidden) && (() => {
         const element = elements.find((item) => item.id === selectedId)!;
         return <div data-testid="mobile-selection-toolbar" role="toolbar" aria-label={t('editor.manipulationOverlay')} onPointerDown={(event) => event.stopPropagation()} style={{ position: 'absolute', bottom: -64, insetInline: 8, zIndex: 40, display: 'flex', justifyContent: 'center', gap: 8, padding: 6, borderRadius: 14, background: 'white', color: '#0f172a', boxShadow: '0 3px 14px #0004', pointerEvents: 'auto' }}>
           <button type="button" aria-label={t('editor.scaleDown')} onClick={() => persistGeometry(element, scaleElementGeometry({ x: element.x, y: element.y, w: element.w, h: element.h, rotation: element.rotation }, 0.9))} style={{ minWidth: 44, minHeight: 44, borderRadius: 10, background: '#e2e8f0', fontSize: 20 }}>−</button>

@@ -48,6 +48,19 @@ describe('element model plumbing', () => {
     expect(useSelectionStore.getState().selectedElementId).toBeUndefined();
   });
 
+  it('resolves visibility, locks and z-order metadata for slots and extras', () => {
+    const layeredSlide: Slide = {
+      ...slide,
+      overrides: { square: { title: { dx: 0, dy: 0, scale: 1, z: 2, locked: true, hidden: true } } },
+      extras: [{ ...slide.extras![0]!, id: 'hidden-extra', hidden: true, z: 0 }],
+    };
+    const elements = resolveSlideElements(layeredSlide, variant, 'square');
+    expect(elements.map(({ id }) => id)).toEqual(['body', 'title', 'hidden-extra']);
+    expect(elements.find(({ id }) => id === 'title')).toMatchObject({ z: 2, locked: true, hidden: true });
+    expect(elements.find(({ id }) => id === 'hidden-extra')).toMatchObject({ z: 2, locked: true, hidden: true });
+    expect(hitTestElements(elements, 0.2, 0.2)?.id).not.toBe('hidden-extra');
+  });
+
   it('resizes with optional aspect lock, rotates extras and snaps to center guides', () => {
     const original = { x: 0.2, y: 0.2, w: 0.2, h: 0.1, rotation: 0 };
     const resized = resizeElementGeometry(original, 0.1, 0.7, true);

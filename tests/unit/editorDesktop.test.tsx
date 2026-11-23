@@ -70,6 +70,38 @@ describe('EditorDesktop component (Task P3-5)', () => {
     expect(screen.getByTestId('reset-title')).toBeInTheDocument();
   });
 
+  it('hides, locks, and reorders layout slots from the layer panel', () => {
+    render(<EditorDesktop />);
+    fireEvent.click(screen.getByTestId('layers-toggle'));
+    expect(screen.getByTestId('canvas-layers-panel')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Hide title' }));
+    expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.hidden).toBe(true);
+    expect(screen.getByTestId('main-canvas').querySelector('.slide-canvas .slide-title-h1') as HTMLElement).toHaveStyle({ visibility: 'hidden' });
+    fireEvent.click(screen.getByRole('button', { name: 'Show title' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Lock title' }));
+    expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.locked).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'Move title backward' }));
+    expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.z).toBe(1);
+  });
+
+  it('locks, hides, and reorders user-added layers', () => {
+    useProjectStore.getState().setProject({
+      ...initialProject,
+      slides: [{ ...initialProject.slides[0]!, extras: [
+        { id: 'star-a', kind: 'shape', x: 0.2, y: 0.2, w: 0.1, h: 0.1, rotation: 0, z: 0, locked: false, shape: 'ellipse' },
+        { id: 'star-b', kind: 'shape', x: 0.4, y: 0.2, w: 0.1, h: 0.1, rotation: 0, z: 1, locked: false, shape: 'rectangle' },
+      ] }],
+    });
+    render(<EditorDesktop />);
+    fireEvent.click(screen.getByTestId('layers-toggle'));
+    fireEvent.click(screen.getByRole('button', { name: 'Lock star-a' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hide star-b' }));
+    expect(useProjectStore.getState().project.slides[0]?.extras?.[0]?.locked).toBe(true);
+    expect(useProjectStore.getState().project.slides[0]?.extras?.[1]?.hidden).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'Move star-a backward' }));
+    expect(useProjectStore.getState().project.slides[0]?.extras?.map((item) => item.z)).toEqual([1, 0]);
+  });
+
   it('supports keyboard nudging and announces the change', () => {
     render(<EditorDesktop />);
     const title = screen.getByTestId('element-hit-title');
