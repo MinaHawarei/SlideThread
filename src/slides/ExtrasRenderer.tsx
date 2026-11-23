@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ExtraElement } from '../core/schema';
-import { richTextToPlainText } from '../core/schema';
 import { MediaRenderer } from './MediaRenderer';
+import { RichTextRenderer } from './RichTextRenderer';
 
 export interface ExtrasRendererProps {
   extras?: readonly ExtraElement[];
@@ -102,12 +102,6 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
     }
     case 'text': {
       const color = extra.fill || 'var(--ink, #0f172a)';
-      const textContent =
-        typeof extra.text === 'string'
-          ? extra.text
-          : extra.text
-          ? richTextToPlainText(extra.text)
-          : '';
       return (
         <div
           data-testid={`text-extra-${extra.id}`}
@@ -123,7 +117,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             alignItems: 'center',
           }}
         >
-          {textContent}
+          {extra.text ? <RichTextRenderer content={extra.text} inline={true} /> : null}
         </div>
       );
     }

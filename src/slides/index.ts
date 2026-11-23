@@ -9,4 +9,5 @@ export * from './QuoteSlide';
 export * from './ImageSlide';
 export * from './CtaSlide';
 export * from './ExtrasRenderer';
+export * from './RichTextRenderer';
 export * from './SlideRenderer';

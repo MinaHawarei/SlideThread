@@ -272,16 +272,18 @@ export const BrandSettingsSchema = z.object({
 }).strict();
 /** Accepted settings input shape; schema parsing supplies counter/signature defaults. */
 export type BrandSettings = z.input<typeof BrandSettingsSchema>;
+import { parsePlainTextToRichText, serializeRichTextToPlainText } from './richText';
+
 export type ValidatedBrandSettings = z.output<typeof BrandSettingsSchema>;
 
 /** Converts a plain string to the v2 RichText document shape. */
 export function plainTextToRichText(text: string): RichText {
-  return { type: 'doc', blocks: [{ type: 'p', runs: [{ text }] }] };
+  return parsePlainTextToRichText(text);
 }
 
 /** Joins blocks with newlines so the legacy single-field editor can keep working until R4. */
 export function richTextToPlainText(value: RichText): string {
-  return value.blocks.map((block) => block.runs.map((run) => run.text).join('')).join('\n');
+  return serializeRichTextToPlainText(value);
 }
 
 /** Returns plain text for the transitional field-based editor and renderer. */
