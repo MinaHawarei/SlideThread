@@ -85,7 +85,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 |---|---|---|---|---|
 | R5-1 | Counter system (§5.4): show/hide, 6 anchors, styles, formats, hide on first/last, template-declared styles, collision handling. | GR4 | [x] | Antigravity 2026-11-23 · feature/r5-1 · a0754eb |
 | R5-2 | Signature system (§5.4): anchors, arrangement, size, photo shape, handle/socials, free move via overrides; CTA large avatar variants. | R5-1 | [x] | Antigravity 2026-11-23 · feature/r5-2 · 08419e0 |
-| R5-3 | Photo handling (§5.5): click-to-upload everywhere, crop dialog, placeholder affordance; CTA photo regression test. | R5-2 | [ ] | |
+| R5-3 | Photo handling (§5.5): click-to-upload everywhere, crop dialog, placeholder affordance; CTA photo regression test. | R5-2 | [x] | Antigravity 2026-11-23 · feature/r5-3 |
 | R5-4 | Settings page (§5.5). | R5-3 | [ ] | |
 | R5-5 | Inline brand editing popover with per-project override, apply-to-defaults, reset. | R5-4 | [ ] | |
 | GR5 | Gate GR5 verification | R5-1…R5-5 | [ ] | |

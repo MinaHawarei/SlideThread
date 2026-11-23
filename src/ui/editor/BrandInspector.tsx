@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useRecentStore } from '../../store/recentStore';
 import { useProjectStore } from '../../store/projectStore';
-import { processBrandPhoto } from '../../core/media';
+import { useAvatarUpload } from '../common/useAvatarUpload';
 import { clearAllUserData } from '../../core/storage';
 import { SocialIcon } from '../../slides/SignatureBar';
 import type { SocialPlatform, SignatureConfig } from '../../core/schema';
@@ -59,28 +59,9 @@ export const BrandInspector: React.FC = () => {
     handleSignatureUpdate({ showSocials: next });
   };
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { fileInputRef, handleFileChange, triggerUpload } = useAvatarUpload();
   const [newPlatform, setNewPlatform] = useState<SocialPlatform>('x');
   const [newHandle, setNewHandle] = useState<string>('');
-
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const dataUrl = await processBrandPhoto(file, 400);
-      setPhotoDataUrl(dataUrl);
-    } catch {
-      // Fallback: direct FileReader
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === 'string') {
-          setPhotoDataUrl(reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleAddSocial = () => {
     if (!newHandle.trim()) return;
@@ -99,27 +80,46 @@ export const BrandInspector: React.FC = () => {
           {t('brand.avatar')}
         </label>
         <div className="flex items-center gap-4">
-          {settings.photoDataUrl ? (
-            <img
-              data-testid="brand-avatar-preview"
-              src={settings.photoDataUrl}
-              alt={settings.displayName || 'Avatar'}
-              className="w-16 h-16 rounded-full object-cover border-2 border-cyan-500 shadow-md shrink-0"
-            />
-          ) : (
-            <div
-              data-testid="brand-avatar-placeholder"
-              className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 text-xl shrink-0"
-            >
-              {settings.displayName.trim().charAt(0).toUpperCase() || 'M'}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={triggerUpload}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                triggerUpload();
+              }
+            }}
+            aria-label={settings.photoDataUrl ? t('brand.changePhoto') : t('brand.addPhoto')}
+            className="relative group cursor-pointer rounded-full shrink-0"
+          >
+            {settings.photoDataUrl ? (
+              <img
+                data-testid="brand-avatar-preview"
+                src={settings.photoDataUrl}
+                alt={settings.displayName || 'Avatar'}
+                className="w-16 h-16 rounded-full object-cover border-2 border-cyan-500 shadow-md block"
+              />
+            ) : (
+              <div
+                data-testid="brand-avatar-placeholder"
+                className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 text-xl"
+              >
+                {settings.displayName.trim().charAt(0).toUpperCase() || 'M'}
+                <span className="avatar-camera-badge" aria-hidden="true">📷</span>
+              </div>
+            )}
+
+            <div className="avatar-hover-overlay" aria-hidden="true">
+              <span className="avatar-hover-icon">📷</span>
             </div>
-          )}
+          </div>
 
           <div className="flex flex-col gap-2">
             <button
               type="button"
               data-testid="brand-upload-photo-btn"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={triggerUpload}
               className="min-h-[44px] py-2 px-4 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center gap-2 shadow-xs"
             >
               <span>📷</span>
@@ -142,7 +142,7 @@ export const BrandInspector: React.FC = () => {
               data-testid="brand-photo-input"
               type="file"
               accept="image/*"
-              onChange={handlePhotoUpload}
+              onChange={handleFileChange}
               className="hidden"
             />
           </div>
@@ -213,11 +213,10 @@ export const BrandInspector: React.FC = () => {
                       type="button"
                       data-testid={`sig-anchor-${a}`}
                       onClick={() => handleSignatureUpdate({ anchor: a })}
-                      className={`py-1.5 px-1.5 rounded-lg border text-[11px] font-semibold transition-all ${
-                        isSelected
-                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                      }`}
+                      className={`py-1.5 px-1.5 rounded-lg border text-[11px] font-semibold transition-all ${isSelected
+                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
                     >
                       {t(labelKey as Parameters<typeof t>[0])}
                     </button>
@@ -241,11 +240,10 @@ export const BrandInspector: React.FC = () => {
                       type="button"
                       data-testid={`sig-arrangement-${arr}`}
                       onClick={() => handleSignatureUpdate({ arrangement: arr })}
-                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${
-                        isSelected
-                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                      }`}
+                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${isSelected
+                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
                     >
                       {t(labelKey as Parameters<typeof t>[0])}
                     </button>
@@ -269,11 +267,10 @@ export const BrandInspector: React.FC = () => {
                       type="button"
                       data-testid={`sig-size-${sz}`}
                       onClick={() => handleSignatureUpdate({ size: sz })}
-                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold uppercase transition-all ${
-                        isSelected
-                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                      }`}
+                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold uppercase transition-all ${isSelected
+                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
                     >
                       {t(labelKey as Parameters<typeof t>[0])}
                     </button>
@@ -297,11 +294,10 @@ export const BrandInspector: React.FC = () => {
                       type="button"
                       data-testid={`sig-shape-${sh}`}
                       onClick={() => handleSignatureUpdate({ photoShape: sh })}
-                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${
-                        isSelected
-                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                      }`}
+                      className={`py-1.5 px-2 rounded-lg border text-xs font-semibold capitalize transition-all ${isSelected
+                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
                     >
                       {t(labelKey as Parameters<typeof t>[0])}
                     </button>
@@ -450,11 +446,10 @@ export const BrandInspector: React.FC = () => {
             type="button"
             data-testid="brand-lang-en"
             onClick={() => setLanguage('en')}
-            className={`min-h-[44px] py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
-              settings.language === 'en'
-                ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
-            }`}
+            className={`min-h-[44px] py-2 px-3 rounded-xl border text-xs font-bold transition-all ${settings.language === 'en'
+              ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+              : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+              }`}
           >
             English (LTR)
           </button>
@@ -462,11 +457,10 @@ export const BrandInspector: React.FC = () => {
             type="button"
             data-testid="brand-lang-ar"
             onClick={() => setLanguage('ar')}
-            className={`min-h-[44px] py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
-              settings.language === 'ar'
-                ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
-            }`}
+            className={`min-h-[44px] py-2 px-3 rounded-xl border text-xs font-bold transition-all ${settings.language === 'ar'
+              ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-xs'
+              : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+              }`}
           >
             العربية (RTL)
           </button>

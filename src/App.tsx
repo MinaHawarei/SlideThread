@@ -4,6 +4,7 @@ import { undo, redo } from './store/history';
 import { useT } from './i18n';
 import { loadFont, loadFontForScript } from './fonts/loader';
 import { FONT_REGISTRY } from './fonts/registry';
+import { GlobalPhotoCropDialog } from './ui/common/PhotoCropDialog';
 
 const StartScreen = React.lazy(() => import('./ui/start/StartScreen').then((m) => ({ default: m.StartScreen })));
 const Wizard = React.lazy(() => import('./ui/wizard/Wizard').then((m) => ({ default: m.Wizard })));
@@ -89,7 +90,7 @@ export const App: React.FC = () => {
   else if (import.meta.env.DEV && currentPath === '/template-dev' && TemplateDevPage) route = <TemplateDevPage />;
   else route = <StartScreen onStartWizard={() => navigate('/wizard')} onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;
 
-  return <>{fontsLoadedLocale === locale ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<Analytics /></>;
+  return <>{fontsLoadedLocale === locale ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<GlobalPhotoCropDialog /><Analytics /></>;
 };
 
 export default App;

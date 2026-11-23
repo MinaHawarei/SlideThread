@@ -196,6 +196,94 @@ export function calculateSquareCrop(
   return { srcX, srcY, side };
 }
 
+export interface InteractiveCropOptions {
+  panX: number;
+  panY: number;
+  zoom: number;
+  containerSize: number;
+  naturalWidth: number;
+  naturalHeight: number;
+}
+
+export interface SquareCropCoordinates {
+  srcX: number;
+  srcY: number;
+  srcSize: number;
+}
+
+/**
+ * Calculates square crop rectangle on the source image based on interactive pan, zoom,
+ * and container dimensions, ensuring the crop never exposes empty margins.
+ */
+export function calculateInteractiveCrop(
+  options: InteractiveCropOptions
+): SquareCropCoordinates {
+  const { panX, panY, zoom, containerSize, naturalWidth, naturalHeight } = options;
+  if (naturalWidth <= 0 || naturalHeight <= 0 || containerSize <= 0) {
+    return { srcX: 0, srcY: 0, srcSize: 0 };
+  }
+
+  // Cover calculation: scale image so it at least fills containerSize on both dimensions
+  const baseScale = Math.max(containerSize / naturalWidth, containerSize / naturalHeight);
+  const totalScale = Math.max(0.0001, baseScale * Math.max(1, zoom));
+
+  const displayedWidth = naturalWidth * totalScale;
+  const displayedHeight = naturalHeight * totalScale;
+
+  // Maximum pan allowed so image doesn't expose empty space
+  const maxPanX = Math.max(0, (displayedWidth - containerSize) / 2);
+  const maxPanY = Math.max(0, (displayedHeight - containerSize) / 2);
+
+  const clampedPanX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+  const clampedPanY = Math.max(-maxPanY, Math.min(maxPanY, panY));
+
+  // The top-left corner of the displayed image inside the container
+  const imgLeft = containerSize / 2 + clampedPanX - displayedWidth / 2;
+  const imgTop = containerSize / 2 + clampedPanY - displayedHeight / 2;
+
+  // Mapping container [0, 0] to image coordinate space:
+  const srcX = Math.max(0, Math.round((0 - imgLeft) / totalScale));
+  const srcY = Math.max(0, Math.round((0 - imgTop) / totalScale));
+  const srcSize = Math.max(
+    1,
+    Math.min(naturalWidth - srcX, naturalHeight - srcY, Math.round(containerSize / totalScale))
+  );
+
+  return { srcX, srcY, srcSize };
+}
+
+/**
+ * Renders the cropped square onto a targetSize x targetSize canvas and returns a JPEG data URL.
+ */
+export function renderCroppedSquare(
+  img: CanvasImageSource,
+  crop: SquareCropCoordinates,
+  targetSize = 400
+): string {
+  if (typeof document === 'undefined') {
+    return '';
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = targetSize;
+  canvas.height = targetSize;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to get 2D canvas context');
+  }
+  ctx.drawImage(
+    img,
+    crop.srcX,
+    crop.srcY,
+    crop.srcSize,
+    crop.srcSize,
+    0,
+    0,
+    targetSize,
+    targetSize
+  );
+  return canvas.toDataURL('image/jpeg', 0.9);
+}
+
 /**
  * Center-crops an image to square and downscales to targetSize (default 400x400 px),
  * returning a JPEG data URL per Spec §8.1.
