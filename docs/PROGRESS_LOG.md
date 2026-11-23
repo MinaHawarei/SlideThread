@@ -850,3 +850,20 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 342 passed / 45 files; `npm run build` pass; Playwright E2E 28 passed via temporary port-5174 config because port 5173 is occupied by an existing Vite server. UX review scores are all 4 or 5. `npm audit` reports 6 full-tree findings (3 moderate, 1 high, 2 critical) in the Vite/Vitest tooling tree; production dependency audit reports none.
 - Remaining / next step: R1-4, app shell and routing.
 - Needs from the owner: None.
+
+### R1-4 — started — 2026-11-23 12:10 — Codex
+- Branch / commit: feature/r1-4
+- What changed (files): `docs/TASKS.md` (claimed R1-4)
+- Decisions / deviations from the plan: Use native history routing and `React.lazy` to avoid a new router dependency; retain the existing Home, Gallery, and Editor UI while moving route navigation into the URL. `/settings` will receive an initial localized shell until its full settings behavior in R5-4.
+- Tests run and result: N/A (task in progress)
+- Remaining / next step: Inspect route and i18n ownership, implement lazy route chunks and localized shell navigation, then measure initial route gzip size.
+- Needs from the owner: None.
+
+
+### R1-4 — done — 2026-11-23 12:36 — Codex
+- Branch / commit: feature/r1-4 / `6a78088`
+- What changed (files): Replaced in-memory screen switching with URL/history routes; lazy-loaded Home, Gallery, Wizard, Editor, Settings, Kit, and development preview routes; added a localized Atelier Settings shell and app navigation; moved Home project import/export helpers behind dynamic imports; updated gallery navigation and language switcher; added routing and browser screenshot tests. Saved the 12-state UX pack in `docs/ux-review/R1-4/`.
+- Decisions / deviations from the plan: Kept native history APIs rather than adding a router package. Removed forced manual grouping for export libraries after build output showed the Vite dynamic-import helper caused the export chunk to preload with Home. Measured initial Home JS at 150.15 KB gzip (≤300 KB); Gallery route adds 5.02 KB gzip, and the main Editor route chunk is 20.21 KB gzip. Full Settings functionality remains in R5-4.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 344 passed / 46 files; `npm run build` pass; Playwright E2E 42 passed using a temporary port-5174 config because port 5173 is occupied by an existing Vite server. Screenshots reviewed at all required sizes, themes, and directions; rubric scores are all 4 or higher.
+- Remaining / next step: R1-5, fonts registry and lazy loader.
+- Needs from the owner: None.
