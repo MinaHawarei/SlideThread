@@ -22,7 +22,7 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 ### GR1 — done — 2026-11-23 13:03 — Codex
-- Branch / commit: feature/gr1 / COMMIT
+- Branch / commit: feature/gr1 / 3897a01
 - What changed (files): Verified schema v2/history tests, `/kit` visual matrix, app shell, and current initial-route budget; marked GR1 passed in `docs/REVISION_PLAN.md` and `docs/TASKS.md`.
 - Decisions / deviations from the plan: Current build entry chunks total 147.43 KB gzip (16.78 + 43.82 + 86.83), under the 300 KB initial-route limit; R1-4’s handoff recorded 150.15 KB. Unit suite passed all 351 tests; browser suite had one reproduced stale UX preview heading assertion failure, which does not concern R1 gate criteria.
 - Tests run and result: `npm test -- --reporter=dot` 351 passed; `npm run test:e2e -- --config=playwright.r1-5.config.ts` 54 passed, 1 unrelated/stale heading expectation failed; `npm run lint`, `npm run typecheck`, and `npm run build` passed.
