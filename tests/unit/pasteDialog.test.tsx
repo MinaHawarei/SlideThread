@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText, richTextToPlainText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { PasteSlidesDialog } from '../../src/ui/editor/PasteSlidesDialog';
@@ -11,7 +12,7 @@ describe('PasteSlidesDialog UI Component (Spec §8.3 & Plan §4)', () => {
         {
           id: 'initial_slide_1',
           type: 'cover',
-          fields: { title: 'Initial Slide' },
+          fields: plainTextFieldsToRichText({ title: 'Initial Slide' }),
         },
       ],
     });
@@ -85,9 +86,9 @@ describe('PasteSlidesDialog UI Component (Spec §8.3 & Plan §4)', () => {
     const slides = useProjectStore.getState().project.slides;
     // Initial 1 slide + 2 appended slides = 3 slides
     expect(slides.length).toBe(3);
-    expect(slides[0]?.fields.title).toBe('Initial Slide');
-    expect(slides[1]?.fields.title).toBe('New Slide 1');
-    expect(slides[2]?.fields.title).toBe('New Slide 2');
+    expect(richTextToPlainText(slides[0]!.fields.title!)).toBe('Initial Slide');
+    expect(richTextToPlainText(slides[1]!.fields.title!)).toBe('New Slide 1');
+    expect(richTextToPlainText(slides[2]!.fields.title!)).toBe('New Slide 2');
     expect(onClose).toHaveBeenCalled();
   });
 
@@ -112,8 +113,8 @@ describe('PasteSlidesDialog UI Component (Spec §8.3 & Plan §4)', () => {
     const slides = useProjectStore.getState().project.slides;
     // Exactly 2 replaced slides
     expect(slides.length).toBe(2);
-    expect(slides[0]?.fields.title).toBe('Replaced Slide 1');
-    expect(slides[1]?.fields.title).toBe('Replaced Slide 2');
+    expect(richTextToPlainText(slides[0]!.fields.title!)).toBe('Replaced Slide 1');
+    expect(richTextToPlainText(slides[1]!.fields.title!)).toBe('Replaced Slide 2');
     expect(onClose).toHaveBeenCalled();
   });
 

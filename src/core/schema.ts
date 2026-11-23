@@ -136,10 +136,12 @@ export const SlideSchema = z.object({
   fields: z.record(z.string(), RichTextSchema),
   media: MediaRefSchema.optional(),
   hideSignature: z.boolean().optional(),
-  overrides: ElementOverridesSchema,
-  extras: z.array(ExtraElementSchema),
+  overrides: ElementOverridesSchema.default({}),
+  extras: z.array(ExtraElementSchema).default([]),
 }).strict();
-export type Slide = z.infer<typeof SlideSchema>;
+/** Accepted v2 input shape; schema parsing supplies overrides/extras defaults. */
+export type Slide = z.input<typeof SlideSchema>;
+export type ValidatedSlide = z.output<typeof SlideSchema>;
 
 /** Template IDs are data-defined and may be contributed without changing app code. */
 export const TemplateIdSchema = z.string().min(1);
@@ -207,8 +209,8 @@ export const ProjectSchema = z.object({
   theme: ThemeModeSchema,
   textDir: TextDirSchema,
   slides: z.array(SlideSchema),
-  counter: CounterConfigSchema,
-  signature: SignatureConfigSchema,
+  counter: CounterConfigSchema.default(DEFAULT_COUNTER_CONFIG),
+  signature: SignatureConfigSchema.default(DEFAULT_SIGNATURE_CONFIG),
   brandOverride: z.object({
     displayName: z.string().optional(),
     handle: z.string().optional(),
@@ -226,11 +228,13 @@ export const ProjectSchema = z.object({
     defaultCounter: CounterConfigSchema.optional(),
     defaultSignature: SignatureConfigSchema.optional(),
   }).strict().optional(),
-  pattern: PatternConfigSchema,
+  pattern: PatternConfigSchema.default({ enabled: false, intensity: 1 }),
   createdAt: z.number(),
   updatedAt: z.number(),
 }).strict();
-export type Project = z.infer<typeof ProjectSchema>;
+/** Accepted v2 input shape; schema parsing supplies config defaults. */
+export type Project = z.input<typeof ProjectSchema>;
+export type ValidatedProject = z.output<typeof ProjectSchema>;
 
 export const SocialPlatformSchema = z.enum([
   'instagram',
@@ -262,7 +266,9 @@ export const BrandSettingsSchema = z.object({
   defaultPrimaryColor: z.string(),
   defaultTheme: ThemeModeSchema,
 }).strict();
-export type BrandSettings = z.infer<typeof BrandSettingsSchema>;
+/** Accepted settings input shape; schema parsing supplies counter/signature defaults. */
+export type BrandSettings = z.input<typeof BrandSettingsSchema>;
+export type ValidatedBrandSettings = z.output<typeof BrandSettingsSchema>;
 
 /** Converts a plain string to the v2 RichText document shape. */
 export function plainTextToRichText(text: string): RichText {
@@ -274,6 +280,7 @@ export function richTextToPlainText(value: RichText): string {
   return value.blocks.map((block) => block.runs.map((run) => run.text).join('')).join('\n');
 }
 
+/** Returns plain text for the transitional field-based editor and renderer. */
 export function plainTextFieldsToRichText(fields: Record<string, string>): Record<string, RichText> {
   return Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, plainTextToRichText(value)]));
 }
@@ -283,11 +290,11 @@ export function richTextFieldsToPlainText(fields: Record<string, RichText>): Rec
 }
 
 /** Validates untrusted data against the v2 Project schema. */
-export function validateProject(data: unknown): Project {
+export function validateProject(data: unknown): ValidatedProject {
   return ProjectSchema.parse(data);
 }
 
 /** Validates untrusted data against the brand settings schema, adding revision defaults when absent. */
-export function validateBrandSettings(data: unknown): BrandSettings {
+export function validateBrandSettings(data: unknown): ValidatedBrandSettings {
   return BrandSettingsSchema.parse(data);
 }

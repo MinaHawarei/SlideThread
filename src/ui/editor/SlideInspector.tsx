@@ -2,6 +2,7 @@ import React from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import type { SlideType } from '../../core/schema';
+import { richTextFieldsToPlainText } from '../../core/schema';
 
 const ALL_SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -31,7 +32,7 @@ export const SlideInspector: React.FC = () => {
     );
   }
 
-  const fields = activeSlide.fields || {};
+  const fields = richTextFieldsToPlainText(activeSlide.fields || {});
 
   const handleFieldChange = (key: string, value: string) => {
     updateSlideFields(activeSlide.id, { [key]: value });

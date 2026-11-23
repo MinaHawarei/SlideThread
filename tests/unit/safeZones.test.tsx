@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import {
@@ -66,7 +67,7 @@ describe('SlideRenderer Safe Zone Integration', () => {
   const slide: Slide = {
     id: 's_story_test',
     type: 'cover',
-    fields: { title: 'Story Test' },
+    fields: plainTextFieldsToRichText({ title: 'Story Test' }),
   };
 
   it('renders StorySafeZoneOverlay when showSafeZones is true on tall aspect slide', () => {

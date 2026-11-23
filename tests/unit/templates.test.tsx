@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { getTemplate, getAllTemplates, TEMPLATES } from '../../src/templates';
@@ -21,7 +22,6 @@ describe('Template System Registry & Network Template (Spec §7, §7.1)', () => 
     expect(getTemplate('network').id).toBe('network');
     expect(getTemplate('clean').id).toBe('clean');
     expect(getTemplate('bold').id).toBe('bold');
-    // @ts-expect-error test fallback
     expect(getTemplate('unknown').id).toBe('network');
   });
 
@@ -72,7 +72,7 @@ describe('Template System Registry & Network Template (Spec §7, §7.1)', () => 
     const slide: Slide = {
       id: 's_templ_test',
       type: 'explain',
-      fields: { title: 'Template Integration Test', body: 'Testing template background.' },
+      fields: plainTextFieldsToRichText({ title: 'Template Integration Test', body: 'Testing template background.' }),
     };
 
     render(

@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SlideRail } from '../../src/ui/editor/SlideRail';
@@ -13,7 +14,7 @@ import fs from 'fs';
 import path from 'path';
 
 const makeTestProject = (): Project => ({
-  schemaVersion: 1,
+  schemaVersion: 2,
   id: 'a11y-test-project',
   title: 'Accessibility Test Project',
   platform: 'linkedin',
@@ -28,17 +29,17 @@ const makeTestProject = (): Project => ({
     {
       id: 'slide-1',
       type: 'cover',
-      fields: { title: 'First Slide Cover', tag: 'A11Y' },
+      fields: plainTextFieldsToRichText({ title: 'First Slide Cover', tag: 'A11Y' }),
     },
     {
       id: 'slide-2',
       type: 'explain',
-      fields: { title: 'Second Slide Explain', body: 'Bullet 1\nBullet 2' },
+      fields: plainTextFieldsToRichText({ title: 'Second Slide Explain', body: 'Bullet 1\nBullet 2' }),
     },
     {
       id: 'slide-3',
       type: 'cta',
-      fields: { title: 'Third Slide CTA', action: 'Follow for more' },
+      fields: plainTextFieldsToRichText({ title: 'Third Slide CTA', action: 'Follow for more' }),
     },
   ],
   createdAt: Date.now(),

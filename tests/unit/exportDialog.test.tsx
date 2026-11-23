@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ExportDialog } from '../../src/ui/editor/ExportDialog';
@@ -13,12 +14,12 @@ describe('ExportDialog UI Component (Spec §9 & Plan §4)', () => {
         {
           id: 'slide_1',
           type: 'cover',
-          fields: { title: 'Cover Slide', sub: 'Subtitle' },
+          fields: plainTextFieldsToRichText({ title: 'Cover Slide', sub: 'Subtitle' }),
         },
         {
           id: 'slide_2',
           type: 'explain',
-          fields: { title: 'Concept One', body: '- Point 1\n- Point 2' },
+          fields: plainTextFieldsToRichText({ title: 'Concept One', body: '- Point 1\n- Point 2' }),
         },
       ],
     });

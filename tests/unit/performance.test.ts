@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { useProjectStore } from '../../src/store/projectStore';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { getManualChunk } from '../../src/config/chunks';
+import { richTextToPlainText } from '../../src/core/schema';
 
 describe('Performance Pass (Spec §12 & Task P4-6)', () => {
   it('SlideRenderer is memoized with React.memo', () => {
@@ -32,7 +33,7 @@ describe('Performance Pass (Spec §12 & Task P4-6)', () => {
 
     expect(avgPerUpdate).toBeLessThan(1.0); // Less than 1 millisecond per keystroke
     const updatedSlide = useProjectStore.getState().project.slides[0]!;
-    expect(updatedSlide.fields.title).toBe(`Keystroke update ${iterations - 1}`);
+    expect(richTextToPlainText(updatedSlide.fields.title!)).toBe(`Keystroke update ${iterations - 1}`);
   });
 
   it('configures intelligent Rollup code-splitting chunks', () => {

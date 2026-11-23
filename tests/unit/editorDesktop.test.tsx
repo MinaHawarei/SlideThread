@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText, richTextToPlainText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { EditorDesktop } from '../../src/ui/editor/EditorDesktop';
@@ -26,20 +27,20 @@ describe('EditorDesktop component (Task P3-5)', () => {
       {
         id: 'slide_1',
         type: 'cover',
-        fields: {
+        fields: plainTextFieldsToRichText({
           tag: 'TECH',
           title: 'Decoupled Systems',
           sub: 'Designing without server runtime',
           rule: 'npm install',
-        },
+        }),
       },
       {
         id: 'slide_2',
         type: 'explain',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Core Concept',
           body: '- Point 1: First point\n- Point 2: Second point',
-        },
+        }),
       },
     ],
   };
@@ -96,7 +97,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
     const slides = useProjectStore.getState().project.slides;
     expect(slides.length).toBe(3);
     expect(slides[1]!.type).toBe('cover');
-    expect(slides[1]!.fields.title).toBe('Decoupled Systems');
+    expect(richTextToPlainText(slides[1]!.fields.title!)).toBe('Decoupled Systems');
   });
 
   it('deletes a slide from the slide rail', () => {
@@ -171,7 +172,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
     const titleField = screen.getByTestId('field-title');
     fireEvent.change(titleField, { target: { value: 'Updated Cover Title' } });
 
-    expect(useProjectStore.getState().project.slides[0]!.fields.title).toBe('Updated Cover Title');
+    expect(richTextToPlainText(useProjectStore.getState().project.slides[0]!.fields.title!)).toBe('Updated Cover Title');
 
     // Switch type from cover to explain
     const typeSelect = screen.getByTestId('slide-type-select');
@@ -180,7 +181,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
     const active = useProjectStore.getState().project.slides[0]!;
     expect(active.type).toBe('explain');
     // Compatible field 'title' was preserved per Spec §10.2
-    expect(active.fields.title).toBe('Updated Cover Title');
+    expect(richTextToPlainText(active.fields.title!)).toBe('Updated Cover Title');
   });
 
   it('displays overflow warning on explain slide with long text and splits into two slides', () => {
@@ -202,9 +203,9 @@ describe('EditorDesktop component (Task P3-5)', () => {
     // Project should now have 3 slides
     const slides = useProjectStore.getState().project.slides;
     expect(slides.length).toBe(3);
-    expect(slides[1]!.fields.body).toContain('Point 1');
-    expect(slides[2]!.fields.title).toBe('Long Topic (Cont.)');
-    expect(slides[2]!.fields.body).toContain('Point 4');
+    expect(richTextToPlainText(slides[1]!.fields.body!)).toContain('Point 1');
+    expect(richTextToPlainText(slides[2]!.fields.title!)).toBe('Long Topic (Cont.)');
+    expect(richTextToPlainText(slides[2]!.fields.body!)).toContain('Point 4');
   });
 
   it('updates template, color, and theme mode from Design Inspector', () => {

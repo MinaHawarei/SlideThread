@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText, richTextToPlainText } from '../../src/core/schema';
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
@@ -15,30 +16,30 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
       longExplain: {
         id: 's_long_ar_explain',
         type: 'explain',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'دليل شامل ومفصل حول هندسة البرمجيات وتطبيقات الويب بدون خوادم خلفية لعام 2026',
           body: `- النقطة الأولى: استخدام دوال التحويل الحتمية الرياضية لضمان تطابق التصميم والشاشات على كافة المتصفحات الحديثة\n- النقطة الثانية: تخزين البيانات بالكامل محلياً داخل المتصفح عبر IndexedDB مع احترام كامل لخصوصية المستخدمين\n- النقطة الثالثة: دعم كامل ومتكامل للنصوص ثنائية الاتجاه مع الحفاظ على تشبيك الحروف العربية والخطوط الطباعية الأصيلة\n- النقطة الرابعة: تجزئة الحزم وتوليد ملفات PDF وZIP عالية الدقة دون إرسال أي بايت واحد إلى خوادم خارجية`,
-        },
+        }),
       },
       longRule: {
         id: 's_long_ar_rule',
         type: 'rule',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'قاعدة البنية المعمارية وتوزيع المسؤوليات في الأنظمة الموزعة عالية التوافر',
           cond: 'إذا كانت الحالة البرمجية للمكون قابلة للاشتقاق رياضياً وحتمياً من الخصائص الممررة أو المخزن المركزي',
           res: 'إذن قم باشتقاقها فوراً أثناء دورة التصيير وتجنب تماماً تكرارها داخل خطافات الحالة المحلية لتفادي عدم الاتساق',
           note: 'تطبيق هذه القاعدة يضمن التزامن الكامل بنسبة 100% ويمنع حدوث أي تعارض في البيانات',
           condLabel: 'إذا تحقق الشرط',
           resLabel: 'فإن النتيجة الحتمية',
-        },
+        }),
       },
       longQuote: {
         id: 's_long_ar_quote',
         type: 'quote',
-        fields: {
+        fields: plainTextFieldsToRichText({
           text: 'إن البساطة في التصميم ليست غياب التعقيد، بل هي نتيجة التحكم الكامل فيه وفهم جوهر المشكلة وحلها بأقل قدر ممكن من الفوضى البصرية.',
           author: 'مينا هواري — استشاري هندسة البرمجيات والواجهات',
-        },
+        }),
       },
     };
 
@@ -79,10 +80,10 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
       imageSlide: {
         id: 's_media_image',
         type: 'image',
-        fields: {
+        fields: plainTextFieldsToRichText({
           caption: 'لقطة توضيحية لواجهة التطبيق بعد التحديث الأخير بنمط التصميم المختار',
           imageUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzM1RDBFNiIvPjwvc3ZnPg==',
-        },
+        }),
         media: {
           assetId: 'asset_img_1',
           fit: 'cover',
@@ -92,11 +93,11 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
       explainWithSideMedia: {
         id: 's_media_explain_side',
         type: 'explain',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Three Architectural Pillars with Attached Visual',
           body: '- Pure functions\n- Local persistence\n- Offline fonts',
           imageUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzM1RDBFNiIvPjwvc3ZnPg==',
-        },
+        }),
         media: {
           assetId: 'asset_img_2',
           fit: 'contain',
@@ -106,10 +107,10 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
       explainWithReplaceText: {
         id: 's_media_explain_replace',
         type: 'explain',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Visual Representation of Component Hierarchy',
           imageUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzM1RDBFNiIvPjwvc3ZnPg==',
-        },
+        }),
         media: {
           assetId: 'asset_img_3',
           fit: 'cover',
@@ -141,7 +142,7 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
           if (slide.type === 'image') {
             const caption = container.querySelector('.image-caption-bar');
             expect(caption).toBeInTheDocument();
-            expect(caption).toHaveTextContent(slide.fields.caption!);
+            expect(caption).toHaveTextContent(richTextToPlainText(slide.fields.caption!));
           }
 
           unmount();

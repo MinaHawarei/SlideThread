@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { richTextToPlainText } from '../../src/core/schema';
 import { renderHook, act } from '@testing-library/react';
 import {
   useSettingsStore,
@@ -157,7 +158,7 @@ describe('Zustand State Stores (Spec §3, §10, §12, Task P3-2)', () => {
       });
 
       const updatedSlide = useProjectStore.getState().project.slides.find((s) => s.id === targetId);
-      expect(updatedSlide?.fields.title).toBe('Updated Title');
+      expect(richTextToPlainText(updatedSlide!.fields.title!)).toBe('Updated Title');
       expect(updatedSlide?.fields.body).toBeDefined(); // preserved other fields
     });
 
@@ -171,7 +172,7 @@ describe('Zustand State Stores (Spec §3, §10, §12, Task P3-2)', () => {
 
       const changedSlide = useProjectStore.getState().project.slides.find((s) => s.id === slideId);
       expect(changedSlide?.type).toBe('code');
-      expect(changedSlide?.fields.title).toBe('Core Principle');
+      expect(richTextToPlainText(changedSlide!.fields.title!)).toBe('Core Principle');
     });
 
     it('splitSlide splits multi-line explain slide into two slides', () => {
@@ -189,13 +190,13 @@ describe('Zustand State Stores (Spec §3, §10, §12, Task P3-2)', () => {
       expect(slides.length).toBe(4);
 
       const part1 = slides.find((s) => s.id === slideId);
-      expect(part1?.fields.body).toContain('Point 1');
-      expect(part1?.fields.body).not.toContain('Point 4');
+      expect(richTextToPlainText(part1!.fields.body!)).toContain('Point 1');
+      expect(richTextToPlainText(part1!.fields.body!)).not.toContain('Point 4');
 
       const part2 = slides[2]!;
-      expect(part2.fields.title).toContain('Long Topic');
-      expect(part2.fields.body).toContain('Point 3');
-      expect(part2.fields.body).toContain('Point 4');
+      expect(richTextToPlainText(part2.fields.title!)).toContain('Long Topic');
+      expect(richTextToPlainText(part2.fields.body!)).toContain('Point 3');
+      expect(richTextToPlainText(part2.fields.body!)).toContain('Point 4');
     });
 
     it('granular selectors provide isolated reactive hooks without full canvas invalidation', () => {

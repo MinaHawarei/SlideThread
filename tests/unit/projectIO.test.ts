@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 import {
@@ -29,7 +30,7 @@ describe('Project JSON I/O (Spec §8.2 & Plan §4)', () => {
 
   const sampleProject: Project = {
     id: 'proj_sample_123',
-    schemaVersion: 1,
+    schemaVersion: 2,
     title: 'Modern Architecture Patterns',
     formatId: 'r_4_5',
     orientation: 'portrait',
@@ -43,20 +44,20 @@ describe('Project JSON I/O (Spec §8.2 & Plan §4)', () => {
       {
         id: 'slide_1',
         type: 'cover',
-        fields: {
+        fields: plainTextFieldsToRichText({
           tag: 'ARCHITECTURE',
           title: 'Microservices vs Monoliths',
           subtitle: 'A practical comparison in 2026',
           ruleLine: 'system --diagnose',
-        },
+        }),
       },
       {
         id: 'slide_2',
         type: 'image',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'System Blueprint',
           body: 'Distributed tracing overview',
-        },
+        }),
         media: {
           assetId: 'asset_blueprint_01',
           fit: 'cover',
@@ -183,6 +184,6 @@ describe('Project JSON I/O (Spec §8.2 & Plan §4)', () => {
     expect(project.title).toBe('Legacy Project');
     expect(project.formatId).toBe('r_1_1');
     expect(project.slides).toBeDefined();
-    expect(project.schemaVersion).toBe(1);
+    expect(project.schemaVersion).toBe(2);
   });
 });

@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { StartScreen } from '../../src/ui/start/StartScreen';
@@ -18,7 +19,7 @@ describe('StartScreen component', () => {
         {
           id: 'test_slide_1',
           type: 'cover',
-          fields: { title: 'Test Title' },
+          fields: plainTextFieldsToRichText({ title: 'Test Title' }),
         },
       ],
     });
@@ -109,12 +110,12 @@ describe('StartScreen component', () => {
         {
           id: 'slide_r1',
           type: 'cover',
-          fields: { title: 'Slide Alpha' },
+          fields: plainTextFieldsToRichText({ title: 'Slide Alpha' }),
         },
         {
           id: 'slide_r2',
           type: 'explain',
-          fields: { title: 'Slide Beta' },
+          fields: plainTextFieldsToRichText({ title: 'Slide Beta' }),
         },
       ],
     };
@@ -187,7 +188,7 @@ describe('StartScreen component', () => {
         {
           id: 'imported_slide_1',
           type: 'cover',
-          fields: { title: 'Imported Cover' },
+          fields: plainTextFieldsToRichText({ title: 'Imported Cover' }),
         },
       ],
     };

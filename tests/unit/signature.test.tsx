@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { SignatureBar, SocialIcon } from '../../src/slides/SignatureBar';
@@ -198,7 +199,7 @@ describe('SlideRenderer Signature Integration', () => {
     const slide: Slide = {
       id: 's_test_cover',
       type: 'cover',
-      fields: { title: 'Test Cover' },
+      fields: plainTextFieldsToRichText({ title: 'Test Cover' }),
     };
 
     render(
@@ -221,7 +222,7 @@ describe('SlideRenderer Signature Integration', () => {
     const slide: Slide = {
       id: 's_test_cta',
       type: 'cta',
-      fields: { title: 'Call To Action', name: 'Mina' },
+      fields: plainTextFieldsToRichText({ title: 'Call To Action', name: 'Mina' }),
     };
 
     render(
@@ -242,7 +243,7 @@ describe('SlideRenderer Signature Integration', () => {
     const slide: Slide = {
       id: 's_test_hide',
       type: 'explain',
-      fields: { title: 'Hidden Signature' },
+      fields: plainTextFieldsToRichText({ title: 'Hidden Signature' }),
       hideSignature: true,
     };
 

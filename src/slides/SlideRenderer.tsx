@@ -13,7 +13,7 @@ import { MediaRenderer } from './MediaRenderer';
 import { SignatureBar } from './SignatureBar';
 import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
 import { getTemplate } from '../templates';
-import type { AspectClass } from '../core/schema';
+import { richTextFieldsToPlainText, type AspectClass, type Slide } from '../core/schema';
 import './slides.css';
 
 const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }> = {
@@ -23,7 +23,8 @@ const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }>
   tall: { width: 1080, height: 1920 },
 };
 
-export interface SlideRendererProps extends SlideProps {
+export interface SlideRendererProps extends Omit<SlideProps, 'slide'> {
+  slide: Slide;
   style?: React.CSSProperties;
 }
 
@@ -46,6 +47,10 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   } = props;
 
   const template = getTemplate(templateId);
+  const renderProps: SlideProps = {
+    ...props,
+    slide: { ...slide, fields: richTextFieldsToPlainText(slide.fields) },
+  };
   const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
 
   const shouldRenderSignature =
@@ -79,23 +84,23 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   const renderComponent = () => {
     switch (slide.type) {
       case 'cover':
-        return <CoverSlide {...props} />;
+        return <CoverSlide {...renderProps} />;
       case 'explain':
-        return <ExplainSlide {...props} />;
+        return <ExplainSlide {...renderProps} />;
       case 'rule':
-        return <RuleSlide {...props} />;
+        return <RuleSlide {...renderProps} />;
       case 'compare':
-        return <CompareSlide {...props} />;
+        return <CompareSlide {...renderProps} />;
       case 'code':
-        return <CodeSlide {...props} />;
+        return <CodeSlide {...renderProps} />;
       case 'stat':
-        return <StatSlide {...props} />;
+        return <StatSlide {...renderProps} />;
       case 'quote':
-        return <QuoteSlide {...props} />;
+        return <QuoteSlide {...renderProps} />;
       case 'image':
-        return <ImageSlide {...props} />;
+        return <ImageSlide {...renderProps} />;
       case 'cta':
-        return <CtaSlide {...props} />;
+        return <CtaSlide {...renderProps} />;
       default:
         return (
           <div className="slide-content-area" style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -148,7 +153,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
             pointerEvents: 'none',
           }}
         >
-          <MediaRenderer media={slide.media} imageUrl={slide.fields.imageUrl} />
+          <MediaRenderer media={slide.media} imageUrl={renderProps.slide.fields.imageUrl} />
         </div>
       )}
       {renderComponent()}

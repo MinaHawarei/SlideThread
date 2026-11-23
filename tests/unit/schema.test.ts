@@ -1,3 +1,4 @@
+import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect } from 'vitest';
 import {
   validateProject,
@@ -25,7 +26,7 @@ describe('Project schema validation', () => {
       {
         id: 'slide_1',
         type: 'cover',
-        fields: { title: 'Welcome', sub: 'To SlideThread' },
+        fields: plainTextFieldsToRichText({ title: 'Welcome', sub: 'To SlideThread' }),
         hideSignature: false,
       },
     ],
@@ -33,9 +34,13 @@ describe('Project schema validation', () => {
     updatedAt: 1700000000000,
   };
 
-  it('validates a correct project', () => {
+  it('validates a correct project and supplies omitted v2 defaults', () => {
     const result = validateProject(validProject);
-    expect(result).toEqual(validProject);
+    expect(result.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+    expect(result.slides[0]?.overrides).toEqual({});
+    expect(result.slides[0]?.extras).toEqual([]);
+    expect(result.counter).toMatchObject({ style: 'number' });
+    expect(result.pattern).toEqual({ enabled: false, intensity: 1 });
   });
 
   it('throws ZodError on missing required fields', () => {
@@ -54,7 +59,7 @@ describe('Project schema validation', () => {
         {
           id: 'slide_bad',
           type: 'invalid_type',
-          fields: {},
+          fields: plainTextFieldsToRichText({}),
         },
       ],
     };
@@ -77,7 +82,11 @@ describe('BrandSettings schema validation', () => {
 
   it('validates correct brand settings', () => {
     const result = validateBrandSettings(validSettings);
-    expect(result).toEqual(validSettings);
+    expect(result).toMatchObject({
+      ...validSettings,
+      defaultCounter: { show: true, anchor: 'br', style: 'number' },
+      defaultSignature: { show: true, anchor: 'bc', arrangement: 'inline' },
+    });
   });
 
   it('rejects invalid language or social platform', () => {

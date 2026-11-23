@@ -2,9 +2,10 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
 import type { Project, Slide, SlideType, MediaRef, TemplateId } from '../core/schema';
-import { CURRENT_SCHEMA_VERSION } from '../core/schema';
+import { CURRENT_SCHEMA_VERSION, DEFAULT_COUNTER_CONFIG, DEFAULT_SIGNATURE_CONFIG, plainTextFieldsToRichText, richTextFieldsToPlainText } from '../core/schema';
 import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
 import { useRecentStore } from './recentStore';
+import { migrate } from '../core/migrate';
 
 export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide {
   const id = `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -13,93 +14,93 @@ export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide 
       return {
         id,
         type: 'cover',
-        fields: {
+        fields: plainTextFieldsToRichText({
           tag: 'ARCHITECTURE',
           title: 'My Carousel Title',
           sub: 'A clear and compelling subtitle that hooks your readers.',
           rule: 'npx create-slidethread@latest',
-        },
+        }),
       };
     case 'explain':
       return {
         id,
         type: 'explain',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: `Key Concept ${index + 1}`,
           body: '- Point 1: First essential concept\n- Point 2: Second actionable takeaway\n- Point 3: Final takeaway to remember',
-        },
+        }),
       };
     case 'rule':
       return {
         id,
         type: 'rule',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Core Rule',
           cond: 'You encounter this design challenge',
           res: 'Apply this concrete proven pattern',
           note: 'Guarantees reliable behavior every time',
           condLabel: 'IF',
           resLabel: 'THEN',
-        },
+        }),
       };
     case 'compare':
       return {
         id,
         type: 'compare',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Do This, Not That',
           l1: 'Don\'t',
           t1: 'Mix state and presentation in one giant unmaintainable file',
           l2: 'Do',
           t2: 'Separate concerns into pure rendering components and stores',
-        },
+        }),
       };
     case 'code':
       return {
         id,
         type: 'code',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Implementation Snippet',
           code: 'const studio = createStudio({\n  name: "SlideThread",\n  offline: true,\n});',
           note: 'Runs completely in your browser without servers',
-        },
+        }),
       };
     case 'stat':
       return {
         id,
         type: 'stat',
-        fields: {
+        fields: plainTextFieldsToRichText({
           value: '100%',
           label: 'Client-Side Execution',
           note: 'Zero telemetry, zero database dependencies',
-        },
+        }),
       };
     case 'quote':
       return {
         id,
         type: 'quote',
-        fields: {
+        fields: plainTextFieldsToRichText({
           text: 'Simple things should be simple, complex things should be possible.',
           author: 'Alan Kay',
-        },
+        }),
       };
     case 'image':
       return {
         id,
         type: 'image',
-        fields: {
+        fields: plainTextFieldsToRichText({
           caption: 'Visual overview of system architecture',
-        },
+        }),
       };
     case 'cta':
       return {
         id,
         type: 'cta',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Liked this carousel?',
           body: 'Follow for weekly deep-dives into modern web architecture and client-side engineering.',
           action: 'Follow & Share',
-        },
+        }),
       };
   }
 }
@@ -123,6 +124,9 @@ export function createDefaultProject(init?: Partial<Project>): Project {
     theme: init?.theme || 'dark',
     textDir: init?.textDir || 'auto',
     slides: init?.slides || [coverSlide, explainSlide, ctaSlide],
+    counter: init?.counter || { ...DEFAULT_COUNTER_CONFIG, show: (init?.contentType || 'carousel') === 'carousel' },
+    signature: init?.signature || { ...DEFAULT_SIGNATURE_CONFIG },
+    pattern: init?.pattern || { enabled: (init?.templateId || 'network') === 'network', intensity: 1 },
     createdAt: init?.createdAt || now,
     updatedAt: now,
   };
@@ -309,7 +313,7 @@ export const useProjectStore = create<ProjectState>()(
               s.id === id
                 ? {
                     ...s,
-                    fields: { ...s.fields, ...fields },
+                    fields: { ...s.fields, ...plainTextFieldsToRichText(fields) },
                   }
                 : s
             ),
@@ -342,17 +346,18 @@ export const useProjectStore = create<ProjectState>()(
             slides: state.project.slides.map((s) => {
               if (s.id !== id) return s;
               // Preserve compatible fields across type change per Spec §10.2
+              const plainFields = richTextFieldsToPlainText(s.fields);
               const preservedFields: Record<string, string> = {};
-              if (s.fields.title) preservedFields.title = s.fields.title;
-              if (s.fields.body) preservedFields.body = s.fields.body;
-              if (s.fields.note) preservedFields.note = s.fields.note;
+              if (plainFields.title) preservedFields.title = plainFields.title;
+              if (plainFields.body) preservedFields.body = plainFields.body;
+              if (plainFields.note) preservedFields.note = plainFields.note;
 
               return {
                 ...s,
                 type: nextType,
                 fields: {
                   ...createDefaultSlide(nextType).fields,
-                  ...preservedFields,
+                  ...plainTextFieldsToRichText(preservedFields),
                 },
               };
             }),
@@ -381,7 +386,8 @@ export const useProjectStore = create<ProjectState>()(
         const original = slides[targetIndex]!;
         if (original.type !== 'explain') return;
 
-        const lines = (original.fields.body || '').split('\n').filter((l) => l.trim().length > 0);
+        const originalFields = richTextFieldsToPlainText(original.fields);
+        const lines = (originalFields.body || '').split('\n').filter((l) => l.trim().length > 0);
         if (lines.length < 2) return;
 
         const half = Math.ceil(lines.length / 2);
@@ -393,7 +399,7 @@ export const useProjectStore = create<ProjectState>()(
           ...original,
           fields: {
             ...original.fields,
-            body: part1Lines,
+            ...plainTextFieldsToRichText({ body: part1Lines }),
           },
         };
 
@@ -401,10 +407,10 @@ export const useProjectStore = create<ProjectState>()(
         const splitSlide: Slide = {
           id: `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
           type: 'explain',
-          fields: {
-            title: `${original.fields.title || ''} (Cont.)`,
+          fields: plainTextFieldsToRichText({
+            title: `${originalFields.title || ''} (Cont.)`,
             body: part2Lines,
-          },
+          }),
         };
 
         slides.splice(targetIndex + 1, 0, splitSlide);
@@ -421,7 +427,22 @@ export const useProjectStore = create<ProjectState>()(
     }),
     {
       name: STORAGE_KEYS.CURRENT_PROJECT,
-      version: 1,
+      version: 2,
+      migrate: (persistedState: unknown) => {
+        if (typeof persistedState !== 'object' || persistedState === null) {
+          return { project: initialProject, activeSlideId: initialProject.slides[0]?.id || '' };
+        }
+        const state = persistedState as { project?: unknown; activeSlideId?: string };
+        try {
+          return {
+            ...state,
+            project: state.project ? migrate(state.project) : initialProject,
+            activeSlideId: state.activeSlideId || initialProject.slides[0]?.id || '',
+          };
+        } catch {
+          return { project: initialProject, activeSlideId: initialProject.slides[0]?.id || '' };
+        }
+      },
       storage: createJSONStorage(() => createSafeStorage()),
     }
   )

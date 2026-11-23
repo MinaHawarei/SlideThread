@@ -1,4 +1,4 @@
-import type { Slide, SlideType } from './schema';
+import { plainTextFieldsToRichText, type Slide, type SlideType } from './schema';
 
 export interface ParsedCandidateSlide {
   id: string;
@@ -297,6 +297,6 @@ export function candidateToSlide(candidate: ParsedCandidateSlide): Slide {
   return {
     id: candidate.id || `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     type: candidate.type,
-    fields: { ...candidate.fields },
+    fields: plainTextFieldsToRichText(candidate.fields),
   };
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parsePastedText, candidateToSlide } from '../../src/core/paste';
+import { richTextToPlainText } from '../../src/core/schema';
 
 describe('Paste to Slides Parser (Spec §8.3 & Plan §4)', () => {
   it('returns empty array for empty or whitespace-only inputs', () => {
@@ -174,7 +175,7 @@ Follow for weekly software architecture deep-dives.
 
     expect(slide.id).toBeDefined();
     expect(slide.type).toBe('explain');
-    expect(slide.fields.title).toBe('Key Insight');
-    expect(slide.fields.body).toContain('- Point 1');
+    expect(richTextToPlainText(slide.fields.title!)).toBe('Key Insight');
+    expect(richTextToPlainText(slide.fields.body!)).toContain('- Point 1');
   });
 });

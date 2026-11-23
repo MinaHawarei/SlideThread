@@ -1,4 +1,4 @@
-import type { Project } from '../core/schema';
+import { plainTextFieldsToRichText, type Project } from '../core/schema';
 import { CURRENT_SCHEMA_VERSION } from '../core/schema';
 
 export function getDemoProjectEn(): Project {
@@ -20,85 +20,85 @@ export function getDemoProjectEn(): Project {
       {
         id: 'demo_en_1_cover',
         type: 'cover',
-        fields: {
+        fields: plainTextFieldsToRichText({
           tag: 'ARCHITECTURE',
           title: 'Building High-Fidelity Web Apps with Zero Server Overhead',
           sub: 'How pure client-side tools achieve 60fps rendering and seamless export in modern browsers.',
           rule: 'npx create-slidethread@latest',
-        },
+        }),
       },
       {
         id: 'demo_en_2_explain',
         type: 'explain',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Three Architectural Pillars',
           body: '- Deterministic rendering functions for predictable UI\n- IndexedDB local persistence preserving user privacy\n- Zero-telemetry offline execution without remote databases',
-        },
+        }),
       },
       {
         id: 'demo_en_3_rule',
         type: 'rule',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'State Architecture Rule',
           cond: 'State can be derived purely from existing props or stores',
           res: 'Derive it on the fly; never duplicate it into local component state',
           note: 'Guarantees 100% synchronization and eliminates stale closures',
           condLabel: 'IF',
           resLabel: 'THEN',
-        },
+        }),
       },
       {
         id: 'demo_en_4_compare',
         type: 'compare',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'State Management Approaches',
           l1: 'Heavy Client Cache',
           t1: 'Global prop drilling and monolithic context providers re-rendering all nodes',
           l2: 'Atomic Selectors',
           t2: 'Granular Zustand selectors ensuring only changed slide elements re-render',
-        },
+        }),
       },
       {
         id: 'demo_en_5_code',
         type: 'code',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Granular Selector Hook',
           code: 'export const useActiveSlide = () =>\n  useProjectStore((state) =>\n    state.project.slides.find((s) => s.id === state.activeSlideId)\n  );',
           note: 'Subscribers only re-evaluate when active slide updates',
-        },
+        }),
       },
       {
         id: 'demo_en_6_stat',
         type: 'stat',
-        fields: {
+        fields: plainTextFieldsToRichText({
           value: '0ms',
           label: 'Backend Latency',
           note: 'All rendering, image processing, and PDF assembly happen client-side',
-        },
+        }),
       },
       {
         id: 'demo_en_7_quote',
         type: 'quote',
-        fields: {
+        fields: plainTextFieldsToRichText({
           text: 'The best code is the code you never have to send over a network socket.',
           author: 'Frontend Engineering Principle',
-        },
+        }),
       },
       {
         id: 'demo_en_8_image',
         type: 'image',
-        fields: {
+        fields: plainTextFieldsToRichText({
           caption: 'Visualizing component tree hierarchy and data flow',
-        },
+        }),
       },
       {
         id: 'demo_en_9_cta',
         type: 'cta',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'Build Faster, Ship Cleaner',
           body: 'Explore the open source repo, contribute new templates, or star SlideThread on GitHub.',
           action: 'Star on GitHub',
-        },
+        }),
       },
     ],
   };
@@ -123,85 +123,85 @@ export function getDemoProjectAr(): Project {
       {
         id: 'demo_ar_1_cover',
         type: 'cover',
-        fields: {
+        fields: plainTextFieldsToRichText({
           tag: 'هندسة الواجهات',
           title: 'بناء تطبيقات الويب الحديثة بدون أي خوادم خلفية',
           sub: 'دليل شامل لتصدير شرائح عالية الجودة مباشرة من المتصفح مع دعم ثنائي الاتجاه.',
           rule: 'git clone slidethread && npm install',
-        },
+        }),
       },
       {
         id: 'demo_ar_2_explain',
         type: 'explain',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'الركائز الأساسية لهندسة الواجهات',
           body: '- دوال تحويل نقية ونظام تصميم حتمي يضمن نتائج دقيقة وموثوقة\n- تخزين محلي كامل يحفظ خصوصية بيانات المستخدم في المتصفح عبر IndexedDB\n- خطوط محلية مدمجة تدعم التشكيل والخطوط الطباعية المعقدة بدون CDN',
-        },
+        }),
       },
       {
         id: 'demo_ar_3_rule',
         type: 'rule',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'قاعدة البنية المعمارية',
           cond: 'إذا كانت الحالة البرمجية للمكون قابلة للاشتقاق رياضياً من الخصائص',
           res: 'قم باشتقاقها فوراً أثناء دورة التصيير وتجنب تكرارها في الحالة المحلية',
           note: 'تطبيق هذه القاعدة يضمن التزامن الكامل بنسبة 100% ويمنع التعارض',
           condLabel: 'إذا',
           resLabel: 'إذن',
-        },
+        }),
       },
       {
         id: 'demo_ar_4_compare',
         type: 'compare',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'إدارة الحالة البرمجية',
           l1: 'السياق المترابط المعقد',
           t1: 'تمرير الخصائص لجميع المكونات مما يتسبب في إعادة تصيير كامل الشاشة',
           l2: 'المحددات الذرية المعزولة',
           t2: 'استخدام محددات دقيقة تضمن إعادة تصيير الشريحة المعدلة فقط دون غيرها',
-        },
+        }),
       },
       {
         id: 'demo_ar_5_code',
         type: 'code',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'محدد الشريحة الفعالة',
           code: 'export const useActiveSlide = () =>\n  useProjectStore((state) =>\n    state.project.slides.find((s) => s.id === state.activeSlideId)\n  );',
           note: 'يتم استدعاء المكون فقط عند تغير الشريحة المحددة',
-        },
+        }),
       },
       {
         id: 'demo_ar_6_stat',
         type: 'stat',
-        fields: {
+        fields: plainTextFieldsToRichText({
           value: '100%',
           label: 'تنفيذ كامل في المتصفح',
           note: 'خصوصية تامة بدون قواعد بيانات أو خوادم وسيطة',
-        },
+        }),
       },
       {
         id: 'demo_ar_7_quote',
         type: 'quote',
-        fields: {
+        fields: plainTextFieldsToRichText({
           text: 'إن البساطة في التصميم ليست غياب التعقيد، بل هي نتيجة التحكم الكامل فيه وفهم المشكلة بحق.',
           author: 'مبدأ هندسة النظم البرمجية',
-        },
+        }),
       },
       {
         id: 'demo_ar_8_image',
         type: 'image',
-        fields: {
+        fields: plainTextFieldsToRichText({
           caption: 'مخطط بياني لتوزيع مكونات العرض وانسياب البيانات',
-        },
+        }),
       },
       {
         id: 'demo_ar_9_cta',
         type: 'cta',
-        fields: {
+        fields: plainTextFieldsToRichText({
           title: 'شاركنا التجربة وطوّر معنا',
           body: 'مشروع مفتوح المصدر بالكامل، ندعوك للمشاركة وإضافة قوالب جديدة على GitHub.',
           action: 'متابعة ومشاركة',
-        },
+        }),
       },
     ],
   };

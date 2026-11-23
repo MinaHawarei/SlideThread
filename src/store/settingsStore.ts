@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { BrandSettings, SocialPlatform, ThemeMode } from '../core/schema';
 import { useI18nStore } from '../i18n';
 import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
+import { DEFAULT_COUNTER_CONFIG, DEFAULT_SIGNATURE_CONFIG } from '../core/schema';
 
 export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
   displayName: 'Mina Hawarei',
@@ -11,6 +12,8 @@ export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
   showSignature: true,
   showSocials: false,
   showCounter: true,
+  defaultCounter: { ...DEFAULT_COUNTER_CONFIG },
+  defaultSignature: { ...DEFAULT_SIGNATURE_CONFIG },
   socials: [
     { platform: 'linkedin', handle: 'in/minahawarei' },
     { platform: 'github', handle: 'minahawarei' },
@@ -121,7 +124,12 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: STORAGE_KEYS.SETTINGS,
-      version: 1,
+      version: 2,
+      migrate: (persistedState: unknown) => {
+        if (typeof persistedState !== 'object' || persistedState === null) return { settings: { ...DEFAULT_BRAND_SETTINGS } };
+        const state = persistedState as { settings?: Partial<BrandSettings> };
+        return { settings: { ...DEFAULT_BRAND_SETTINGS, ...(state.settings || {}) } };
+      },
       storage: createJSONStorage(() => createSafeStorage()),
     }
   )

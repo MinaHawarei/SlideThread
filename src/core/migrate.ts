@@ -3,7 +3,7 @@ import {
   CURRENT_SCHEMA_VERSION,
   DEFAULT_COUNTER_CONFIG,
   DEFAULT_SIGNATURE_CONFIG,
-  Project,
+  ValidatedProject,
   ProjectSchema,
   RichText,
   plainTextToRichText,
@@ -52,7 +52,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function migrateV1ToV2(project: LegacyProjectV1): Project {
+function migrateV1ToV2(project: LegacyProjectV1): ValidatedProject {
   const templateIds: Record<string, string> = {
     network: 'tech-mesh',
     clean: 'clean-minimal',
@@ -100,7 +100,7 @@ function normalizeVersionZero(raw: Record<string, unknown>): Record<string, unkn
 }
 
 /** Migrates legacy and v1 project data to the current v2 model, rejecting invalid or future data. */
-export function migrate(data: unknown): Project {
+export function migrate(data: unknown): ValidatedProject {
   if (!isRecord(data)) {
     throw new MigrationError('Malformed project data: expected an object');
   }

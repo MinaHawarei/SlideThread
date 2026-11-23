@@ -27,7 +27,7 @@ import type {
   Project,
   Slide,
 } from '../../core/schema';
-import { CURRENT_SCHEMA_VERSION } from '../../core/schema';
+import { CURRENT_SCHEMA_VERSION, DEFAULT_COUNTER_CONFIG, DEFAULT_SIGNATURE_CONFIG, plainTextFieldsToRichText } from '../../core/schema';
 
 export interface WizardProps {
   initialPlatform?: PlatformId;
@@ -145,7 +145,7 @@ export const Wizard: React.FC<WizardProps> = ({
     return {
       id: 'wizard_preview_slide',
       type: 'cover',
-      fields: {
+      fields: plainTextFieldsToRichText({
         tag: platform.toUpperCase(),
         title: isArabic
           ? 'بناء محتوى بصري عالي التأثير'
@@ -154,7 +154,7 @@ export const Wizard: React.FC<WizardProps> = ({
           ? 'تصميم احترافي للمنصات الاجتماعية مع دعم ثنائي اللغة بالكامل.'
           : 'Clean typography, deterministic layouts, and zero-telemetry client execution.',
         rule: 'slidethread.app',
-      },
+      }),
     };
   }, [platform, locale]);
 
@@ -192,6 +192,9 @@ export const Wizard: React.FC<WizardProps> = ({
       theme,
       textDir: locale === 'ar' ? 'rtl' : 'ltr',
       slides: initialSlides,
+      counter: { ...DEFAULT_COUNTER_CONFIG, show: contentType === 'carousel' },
+      signature: { ...DEFAULT_SIGNATURE_CONFIG },
+      pattern: { enabled: templateId === 'network', intensity: 1 },
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -527,14 +530,14 @@ export const Wizard: React.FC<WizardProps> = ({
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-base text-slate-900 dark:text-white capitalize">
-                            {t(templateNameKey)}
+                            {t(templateNameKey as Parameters<typeof t>[0])}
                           </span>
                           <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {tmpl.id}
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {t(templateDescKey)}
+                          {t(templateDescKey as Parameters<typeof t>[0])}
                         </p>
                       </div>
                       {isSelected && (
