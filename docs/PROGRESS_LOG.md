@@ -746,3 +746,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 332 passed / 41 files (existing React `act(...)` warnings); `npm run build` pass (existing Zod Rollup annotation notices); `npm run test:e2e` 16 passed. Chromium screenshot matrix: 108 required combinations plus 9 gallery state examples; zero horizontal overflow and zero uncaught page errors.
 - Remaining / next step: Owner reviews A/B/C and selects one. Then mark D-06 resolved and R0-6 `[x]`; proceed to GR0 verification.
 - Needs from the owner: Choose A — Atelier, B — Signal, or C — Field Notes. Recommended: A — Atelier for the clearest bilingual balance and adaptable light/dark palette.
+
+
+### R0-6 — done — 2026-11-23 02:20 — Codex
+- Branch / commit: feature/r0-6 / 0d29526
+- What changed (files): `/ux-preview`, bilingual direction content, review rubric, screenshot matrix, and `tests/e2e/uxPreview.spec.ts`; tracker records D-06 owner selection A — Atelier.
+- Decisions / deviations from the plan: Owner selected A — Atelier on 2026-11-23; D-06 is resolved. The R0-6 preview and review pack were already committed and verified.
+- Tests run and result: D-06 is the only R0-6 completion dependency not resolved by implementation; the code and review checks were recorded with the task commit.
+- Remaining / next step: Verify GR0 against the audit, spike decisions, and D-06 selection.
+- Needs from the owner: None for R0-6.

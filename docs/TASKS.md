@@ -15,7 +15,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | D-03 | Choose the final app name from the 5 candidates (agent checks repo-name and domain availability first) | P5-5 | | [ ] |
 | D-04 | Run the manual device checks listed in `docs/QA_CHECKLIST.md` (iOS Safari, Android Chrome) | P5-3 | | [ ] |
 | D-05 | Production deploy and the `v0.1.0-beta` tag | P5-6 | | [ ] |
-| D-06 | Owner picks UX direction A/B/C from `/ux-preview` | GR0, R1-3 | | [ ] |
+| D-06 | Owner picks UX direction A/B/C from `/ux-preview` | GR0, R1-3 | A — Atelier (owner selected 2026-11-23) | [x] |
 | D-07 | Owner chooses the display name for the `tech-mesh` template (default shown meanwhile) | none | | [ ] |
 | D-08 | Owner decision on illustration/sticker sourcing if licensed assets are insufficient | R6-4 | | [ ] |
 | D-09 | Owner runs Arabic IME and touch checks on real devices (iOS, Android) | R9-1 | | [ ] |
@@ -32,7 +32,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R0-3 | Spike: rich text. Compare Tiptap and Lexical (fallback: minimal custom). Test Arabic composition, bidi selection, marks serialization, paste, bundle size. Devices needed for IME checks → add owner action (D-09). Write `docs/spikes/RICHTEXT.md`. | R0-2 | [x] | Codex 2026-11-23 · feature/r0-3 · 6530bac |
 | R0-4 | Spike: sortable animation. `dnd-kit` + `motion` (or alternatives): spring reorder, touch long-press, keyboard, reduced motion. `docs/spikes/SORTABLE.md`. | R0-3 | [x] | Codex 2026-11-23 · feature/r0-4 · 96ce7ab |
 | R0-5 | Spike: continuous pattern. Prefix-stable tile-based `mesh` prototype; verify boundary continuity and that appending slides does not change earlier ones, including in exported crops. `docs/spikes/PATTERN.md`. | R0-4 | [x] | Codex 2026-11-23 · feature/r0-5 · 78c0ce8 |
-| R0-6 | UX direction. Produce three distinct visual directions (A/B/C) for the app's own design language as built pages on a dev-only `/ux-preview` route (home, gallery, editor), with design tokens, type pairing, motion language, and illustration style per direction (§7). Screenshots in `docs/ux-review/R0-6/`. | R0-5 | [!] | Codex 2026-11-23 · feature/r0-6 · 0d29526 · waiting for D-06 owner choice |
+| R0-6 | UX direction. Produce three distinct visual directions (A/B/C) for the app's own design language as built pages on a dev-only `/ux-preview` route (home, gallery, editor), with design tokens, type pairing, motion language, and illustration style per direction (§7). Screenshots in `docs/ux-review/R0-6/`. | R0-5 | [x] | Codex 2026-11-23 · feature/r0-6 · 0d29526 |
 | GR0 | Gate GR0 verification | R0-1…R0-6 | [ ] | |
 
 ### Phase R1 — Foundations (GATE GR1)
