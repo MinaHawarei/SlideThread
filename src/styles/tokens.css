@@ -1,0 +1,33 @@
+:root {
+  color-scheme: light;
+  --atelier-paper: 42 39% 93%;
+  --atelier-panel: 45 100% 99%;
+  --atelier-ink: 40 10% 15%;
+  --atelier-muted: 34 7% 43%;
+  --atelier-line: 38 27% 86%;
+  --atelier-accent: 12 48% 50%;
+  --atelier-accent-ink: 40 100% 99%;
+  --atelier-soft: 34 42% 85%;
+  --atelier-success: 145 42% 37%;
+  --atelier-danger: 4 66% 45%;
+  --atelier-radius: 1rem;
+  --atelier-radius-small: 0.7rem;
+  --atelier-shadow: 0 18px 46px hsl(34 28% 18% / 0.1);
+  --atelier-ring: 12 56% 50%;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --atelier-paper: 180 10% 9%;
+  --atelier-panel: 180 9% 13%;
+  --atelier-ink: 48 30% 94%;
+  --atelier-muted: 120 7% 68%;
+  --atelier-line: 150 8% 25%;
+  --atelier-accent: 12 60% 63%;
+  --atelier-accent-ink: 180 10% 9%;
+  --atelier-soft: 22 24% 25%;
+  --atelier-success: 145 47% 54%;
+  --atelier-danger: 4 70% 65%;
+  --atelier-shadow: 0 18px 46px hsl(0 0% 0% / 0.3);
+  --atelier-ring: 12 70% 66%;
+}

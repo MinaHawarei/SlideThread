@@ -9,6 +9,23 @@ export default {
         arabic: ['"IBM Plex Sans Arabic"', '"IBM Plex Sans"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
+      colors: {
+        atelier: {
+          paper: 'hsl(var(--atelier-paper) / <alpha-value>)',
+          panel: 'hsl(var(--atelier-panel) / <alpha-value>)',
+          ink: 'hsl(var(--atelier-ink) / <alpha-value>)',
+          muted: 'hsl(var(--atelier-muted) / <alpha-value>)',
+          line: 'hsl(var(--atelier-line) / <alpha-value>)',
+          accent: 'hsl(var(--atelier-accent) / <alpha-value>)',
+        },
+      },
+      borderRadius: {
+        atelier: 'var(--atelier-radius)',
+        'atelier-small': 'var(--atelier-radius-small)',
+      },
+      boxShadow: {
+        atelier: 'var(--atelier-shadow)',
+      },
     },
   },
   plugins: [],

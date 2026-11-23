@@ -6,6 +6,7 @@ import { StartScreen } from './ui/start/StartScreen';
 import { Wizard } from './ui/wizard/Wizard';
 import { Editor } from './ui/editor';
 import { undo, redo } from './store/history';
+import { KitPage } from './ui/kit/KitPage';
 
 const UxPreview = import.meta.env.DEV
   ? React.lazy(() =>
@@ -60,6 +61,10 @@ export const App: React.FC = () => {
 
     if (currentPath === '/gallery') {
       return <GalleryPage />;
+    }
+
+    if (currentPath === '/kit') {
+      return <KitPage />;
     }
 
     if (currentScreen === 'wizard') {
