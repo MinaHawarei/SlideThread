@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useT } from '../../i18n';
-import { useProjectStore } from '../../store/projectStore';
-import { useSettingsStore } from '../../store/settingsStore';
+import { useProjectStore, useEffectiveBrand } from '../../store/projectStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
@@ -21,7 +20,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
   const duplicateSlide = useProjectStore((state) => state.duplicateSlide);
   const deleteSlide = useProjectStore((state) => state.deleteSlide);
   const reorderSlides = useProjectStore((state) => state.reorderSlides);
-  const settings = useSettingsStore((state) => state.settings);
+  const effectiveBrand = useEffectiveBrand();
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [isPasteOpen, setIsPasteOpen] = useState(false);
@@ -178,7 +177,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                       palette={palette}
                       aspectClass={aspect}
                       textDir={project.textDir === 'auto' ? (locale === 'ar' ? 'rtl' : 'ltr') : project.textDir}
-                      brand={settings}
+                      brand={effectiveBrand}
                       slideIndex={idx}
                       totalSlides={slides.length}
                       showCounter={!isPost}

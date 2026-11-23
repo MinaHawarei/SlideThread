@@ -1311,3 +1311,19 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (62 files, 531 passed), Playwright E2E tests (5 passed), and `npm run build` (clean).
 - Remaining / next step: Claim and implement R5-5 (Inline brand editing popover with per-project override, apply-to-defaults, reset).
 - Needs from the owner: None.
+
+
+### R5-5 — done — 2026-11-24 00:20 — Antigravity
+- Branch / commit: feature/r5-5
+- What changed (files): `src/store/projectStore.ts`, `src/ui/editor/BrandOverridePopover.tsx`, `src/ui/editor/CanvasManipulationLayer.tsx`, `src/ui/editor/MainCanvas.tsx`, `src/ui/editor/SlideRail.tsx`, `src/ui/editor/ExportDialog.tsx`, `src/ui/editor/EditorMobile.tsx`, `src/ui/editor/MobileThumbnailStrip.tsx`, `src/ui/editor/ChangeFormatDialog.tsx`, `src/ui/editor/BrandInspector.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/brandOverride.test.tsx`, `tests/e2e/brandOverride.spec.ts`, `tests/e2e/uxPreview.spec.ts`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan:
+  1. Implemented project-level brand override architecture per Spec §5.5: `updateBrandOverride`, `resetBrandOverride`, and `applyBrandOverrideToDefaults` actions in `useProjectStore`.
+  2. Created `useEffectiveBrand` React selector hook and `getEffectiveBrand` helper function merging global `settingsStore.settings` with `project.brandOverride`.
+  3. Integrated `useEffectiveBrand` across all consumer components: `MainCanvas`, `SlideRail`, `ExportDialog`, `EditorMobile`, `MobileThumbnailStrip`, and `ChangeFormatDialog`.
+  4. Built inline `BrandOverridePopover` on the canvas: rendered when `selectedId === 'signature'` in `CanvasManipulationLayer`, with name/handle inputs, avatar click-to-upload with crop dialog, "Apply to defaults" button (promotes override to global settings and clears project override), "Reset to defaults" button (clears project override), and close button. Responsive placement automatically adapts above/below based on signature anchor position.
+  5. Added active override banner and quick reset in `BrandInspector` sidebar when a project override is active.
+  6. Fixed `tests/e2e/uxPreview.spec.ts` heading locator to match updated Arabic atelier copy.
+  7. Added 13 unit tests in `tests/unit/brandOverride.test.tsx` and Playwright E2E tests in `tests/e2e/brandOverride.spec.ts` testing all 3 actions (per-project override, apply-to-defaults, reset).
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (63 files, 544 passed), Playwright E2E suite (92 tests passed, 100%), and `npm run build` (clean).
+- Remaining / next step: Gate GR5 verification.
+- Needs from the owner: None.

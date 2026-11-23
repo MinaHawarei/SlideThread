@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useT } from '../../i18n';
-import { useProjectStore, useActiveSlide } from '../../store/projectStore';
-import { useSettingsStore } from '../../store/settingsStore';
+import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { FORMAT_LIST, getDimensions, aspectClass as calcAspectClass, type FormatId } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
@@ -28,7 +27,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
   const activeSlide = useActiveSlide();
-  const settings = useSettingsStore((state) => state.settings);
+  const effectiveBrand = useEffectiveBrand();
 
   const [selectedFormatId, setSelectedFormatId] = useState<FormatId>((project.formatId as FormatId) || 'r_4_5');
   const [selectedOrientation, setSelectedOrientation] = useState<Orientation>(project.orientation);
@@ -231,7 +230,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                     palette={palette}
                     aspectClass={aspect}
                     textDir={project.textDir === 'auto' ? (locale === 'ar' ? 'rtl' : 'ltr') : project.textDir}
-                    brand={settings}
+                    brand={effectiveBrand}
                     slideIndex={0}
                     totalSlides={project.slides.length}
                     showCounter={project.contentType !== 'post'}

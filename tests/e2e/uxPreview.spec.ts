@@ -28,6 +28,6 @@ test.describe('R0-6 UX direction preview', () => {
     await expect(preview).toHaveClass(/theme-dark/);
     await page.getByTestId('language-switcher').click();
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-    await expect(page.getByRole('heading', { name: 'اختر إطارك الأول.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'اجعل فكرتك القادمة تستحق التوقف عندها.' })).toBeVisible();
   });
 });

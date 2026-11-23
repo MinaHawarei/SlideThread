@@ -6,6 +6,7 @@ import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { useT } from '../../i18n';
 import { RichTextEditor } from './RichTextEditor';
+import { BrandOverridePopover } from './BrandOverridePopover';
 
 interface CanvasManipulationLayerProps {
   slide: Slide;
@@ -423,36 +424,49 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
               />
             ) : (
               isSelected && !element.locked && <>
-                {!touchLayout && <div data-testid="element-context-toolbar" role="toolbar" aria-label={t('editor.selectionToolbar')} onPointerDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -52, insetInlineStart: 0, zIndex: 5, display: 'flex', gap: 4, padding: 4, borderRadius: 10, background: 'white', color: '#0f172a', boxShadow: '0 3px 14px #0003', pointerEvents: 'auto', transform: `scale(${1 / zoom})`, transformOrigin: 'top left' }}>
-                  <button type="button" aria-label={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })} onClick={() => setLayerState(element, { locked: !element.locked })} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{element.locked ? '🔒' : '🔓'}</button>
-                  <button type="button" aria-label={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })} onClick={() => setLayerState(element, { hidden: !element.hidden })} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{element.hidden ? '◉' : '◌'}</button>
-                  {isTextElement && (
-                    <button type="button" aria-label={t('editor.editText')} data-testid={`edit-text-btn-${element.id}`} onClick={(e) => { e.stopPropagation(); setEditingId(element.id); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>✎</button>
-                  )}
-                  {element.extra && <>
-                    <button type="button" aria-label={t('editor.duplicateElement')} onClick={() => { const duplicate = { ...element.extra!, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.extra!.z + 1 }; addExtraElement(slide.id, duplicate); selectElement(duplicate.id); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>＋</button>
-                    <button type="button" aria-label={t('editor.deleteElement')} onClick={() => { deleteExtraElement(slide.id, element.id); selectElement(); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#fee2e2' }}>×</button>
-                  </>}
-                </div>}
-                {!touchLayout && <div data-testid="element-numeric-inspector" onPointerDown={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -164, insetInlineStart: 8, zIndex: 3, display: 'flex', flexWrap: 'wrap', gap: 6, width: 460, padding: 8, borderRadius: 8, background: 'white', color: '#0f172a', boxShadow: '0 4px 18px #0003', transform: `scale(${1 / zoom})`, transformOrigin: 'top left', pointerEvents: 'auto' }}>
-                  {!touchLayout && (['x', 'y', 'w', 'scale'] as const).map((field) => {
-                    const labelKey = field === 'x' ? 'editor.xPosition' : field === 'y' ? 'editor.yPosition' : field === 'w' ? 'editor.elementWidth' : 'editor.elementScale';
-                    const baseWidth = element.frame?.inlineSize ?? element.w;
-                    const current = field === 'x' ? element.x * 100 : field === 'y' ? element.y * 100 : field === 'w' ? element.w * 100 : element.w / baseWidth * 100;
-                    return <label key={field} style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 12 }}><span>{t(labelKey)}</span><input aria-label={t(labelKey)} type="number" step="1" value={Math.round(current)} onChange={(event) => applyNumericGeometry(element, field, Number(event.target.value))} style={{ width: 72, minHeight: 36, border: '1px solid #94a3b8', borderRadius: 4, padding: '4px 6px', fontSize: 14 }} /></label>;
-                  })}
-                  {!touchLayout && element.kind !== 'slot' && <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 12 }}><span>{t('editor.elementRotation')}</span><input aria-label={t('editor.elementRotation')} type="number" step="1" value={Math.round(element.rotation)} onChange={(event) => applyNumericGeometry(element, 'rotation', Number(event.target.value))} style={{ width: 72, minHeight: 36, border: '1px solid #94a3b8', borderRadius: 4, padding: '4px 6px', fontSize: 14 }} /></label>}
-                </div>
-                }
-                <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', right: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize' }} />
-                {element.kind !== 'slot' && <button aria-label={t('editor.rotateElement')} data-testid={`rotate-${element.id}`} onPointerDown={(event) => begin(event, element, 'rotate')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', left: '50%', top: -50, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#7c3aed', pointerEvents: 'auto', touchAction: 'none', cursor: 'grab' }} />}
-                {!touchLayout && <button aria-label={t('editor.resetElement')} data-testid={`reset-${element.id}`} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); reset(element); }} style={{ position: 'absolute', insetInlineStart: 0, top: -208, border: 0, borderRadius: 4, padding: '3px 6px', background: '#0e7490', color: 'white', fontSize: 12, pointerEvents: 'auto', cursor: 'pointer' }}>{t('editor.resetElement')}</button>}
-              </>
+              {element.id === 'signature' ? (
+                <>
+                  <BrandOverridePopover
+                    zoom={zoom}
+                    position={shown.y < 0.3 ? 'bottom' : 'top'}
+                    onClose={() => selectElement()}
+                  />
+                  <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', right: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize' }} />
+                </>
+              ) : (
+                <>
+                  {!touchLayout && <div data-testid="element-context-toolbar" role="toolbar" aria-label={t('editor.selectionToolbar')} onPointerDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -52, insetInlineStart: 0, zIndex: 5, display: 'flex', gap: 4, padding: 4, borderRadius: 10, background: 'white', color: '#0f172a', boxShadow: '0 3px 14px #0003', pointerEvents: 'auto', transform: `scale(${1 / zoom})`, transformOrigin: 'top left' }}>
+                    <button type="button" aria-label={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })} onClick={() => setLayerState(element, { locked: !element.locked })} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{element.locked ? '🔒' : '🔓'}</button>
+                    <button type="button" aria-label={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })} onClick={() => setLayerState(element, { hidden: !element.hidden })} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{element.hidden ? '◉' : '◌'}</button>
+                    {isTextElement && (
+                      <button type="button" aria-label={t('editor.editText')} data-testid={`edit-text-btn-${element.id}`} onClick={(e) => { e.stopPropagation(); setEditingId(element.id); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>✎</button>
+                    )}
+                    {element.extra && <>
+                      <button type="button" aria-label={t('editor.duplicateElement')} onClick={() => { const duplicate = { ...element.extra!, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.extra!.z + 1 }; addExtraElement(slide.id, duplicate); selectElement(duplicate.id); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>＋</button>
+                      <button type="button" aria-label={t('editor.deleteElement')} onClick={() => { deleteExtraElement(slide.id, element.id); selectElement(); }} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: '#fee2e2' }}>×</button>
+                    </>}
+                  </div>}
+                  {!touchLayout && <div data-testid="element-numeric-inspector" onPointerDown={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -164, insetInlineStart: 8, zIndex: 3, display: 'flex', flexWrap: 'wrap', gap: 6, width: 460, padding: 8, borderRadius: 8, background: 'white', color: '#0f172a', boxShadow: '0 4px 18px #0003', transform: `scale(${1 / zoom})`, transformOrigin: 'top left', pointerEvents: 'auto' }}>
+                    {!touchLayout && (['x', 'y', 'w', 'scale'] as const).map((field) => {
+                      const labelKey = field === 'x' ? 'editor.xPosition' : field === 'y' ? 'editor.yPosition' : field === 'w' ? 'editor.elementWidth' : 'editor.elementScale';
+                      const baseWidth = element.frame?.inlineSize ?? element.w;
+                      const current = field === 'x' ? element.x * 100 : field === 'y' ? element.y * 100 : field === 'w' ? element.w * 100 : element.w / baseWidth * 100;
+                      return <label key={field} style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 12 }}><span>{t(labelKey)}</span><input aria-label={t(labelKey)} type="number" step="1" value={Math.round(current)} onChange={(event) => applyNumericGeometry(element, field, Number(event.target.value))} style={{ width: 72, minHeight: 36, border: '1px solid #94a3b8', borderRadius: 4, padding: '4px 6px', fontSize: 14 }} /></label>;
+                    })}
+                    {!touchLayout && element.kind !== 'slot' && <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 12 }}><span>{t('editor.elementRotation')}</span><input aria-label={t('editor.elementRotation')} type="number" step="1" value={Math.round(element.rotation)} onChange={(event) => applyNumericGeometry(element, 'rotation', Number(event.target.value))} style={{ width: 72, minHeight: 36, border: '1px solid #94a3b8', borderRadius: 4, padding: '4px 6px', fontSize: 14 }} /></label>}
+                  </div>
+                  }
+                  <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', right: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize' }} />
+                  {element.kind !== 'slot' && <button aria-label={t('editor.rotateElement')} data-testid={`rotate-${element.id}`} onPointerDown={(event) => begin(event, element, 'rotate')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', left: '50%', top: -50, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#7c3aed', pointerEvents: 'auto', touchAction: 'none', cursor: 'grab' }} />}
+                  {!touchLayout && <button aria-label={t('editor.resetElement')} data-testid={`reset-${element.id}`} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); reset(element); }} style={{ position: 'absolute', insetInlineStart: 0, top: -208, border: 0, borderRadius: 4, padding: '3px 6px', background: '#0e7490', color: 'white', fontSize: 12, pointerEvents: 'auto', cursor: 'pointer' }}>{t('editor.resetElement')}</button>}
+                </>
+              )}
+            </>
             )}
           </div>
         );
       })}
-      {touchLayout && elements.find((element) => element.id === selectedId && !element.locked && !element.hidden) && (() => {
+      {touchLayout && elements.find((element) => element.id === selectedId && !element.locked && !element.hidden && element.id !== 'signature') && (() => {
         const element = elements.find((item) => item.id === selectedId)!;
         return <div data-testid="mobile-selection-toolbar" role="toolbar" aria-label={t('editor.manipulationOverlay')} onPointerDown={(event) => event.stopPropagation()} style={{ position: 'absolute', bottom: -64, insetInline: 8, zIndex: 40, display: 'flex', justifyContent: 'center', gap: 8, padding: 6, borderRadius: 14, background: 'white', color: '#0f172a', boxShadow: '0 3px 14px #0004', pointerEvents: 'auto' }}>
           <button type="button" aria-label={t('editor.scaleDown')} onClick={() => persistGeometry(element, scaleElementGeometry({ x: element.x, y: element.y, w: element.w, h: element.h, rotation: element.rotation }, 0.9))} style={{ minWidth: 44, minHeight: 44, borderRadius: 10, background: '#e2e8f0', fontSize: 20 }}>−</button>
