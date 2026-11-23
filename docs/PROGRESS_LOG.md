@@ -21,6 +21,14 @@ Agent name: Antigravity
 - Remaining / next step: Adapt existing slides, project stores, inspector, seed/sample data, and tests to v2 fields and new project defaults; add migration and invalid-input tests; run lint, typecheck, unit tests, build, and E2E.
 - Needs from the owner: None.
 
+### R1-1 — done — 2026-11-23 11:44 — Codex
+- Branch / commit: feature/r1-1 / 7c9eaff
+- What changed (files): Schema v2 and strict validation in `src/core/schema.ts`; v0/v1 migration in `src/core/migrate.ts`; default-off flags; project, recents, and settings persistence migration; v2 RichText adapters for current renderer/editor; sample, demo, wizard, and paste data; migration/schema and app tests (29 files in task commit).
+- Decisions / deviations from the plan: Used schema defaults for absent v2 overrides, extras, counter, signature, pattern, and brand defaults. Legacy template IDs map to the three current IDs. Existing editor remains string-based through RichText conversion adapters until R4. Existing Zod Rollup annotation notices remain.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 334 passed / 41 files; `npm run build` pass; `npm run test:e2e` via temporary port-5174 config passed 16 tests. Default E2E command could not start because an existing Vite server occupied port 5173; left that server untouched.
+- Remaining / next step: R1-2, undo/redo infrastructure.
+- Needs from the owner: None.
+
 ### SETUP — done — 2026-11-22 17:41 — Antigravity
 - Branch / commit: chore/agent-setup
 - What changed (files): docs/TASKS.md, docs/PROGRESS_LOG.md
