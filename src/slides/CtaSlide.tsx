@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SlideProps } from './types';
 import { RichTextRenderer } from './RichTextRenderer';
+import { useAvatarUpload } from '../ui/common/useAvatarUpload';
 
 export const CtaSlide: React.FC<SlideProps> = ({
   slide,
@@ -18,6 +19,7 @@ export const CtaSlide: React.FC<SlideProps> = ({
   const displayName = name || brand?.displayName || '';
   const displayHandle = handle || brand?.handle || '';
   const initial = (displayName || title || 'S').trim().charAt(0).toUpperCase();
+  const { fileInputRef, handleFileChange, triggerUpload } = useAvatarUpload();
 
   return (
     <div className="slide-content-area" style={{ justifyContent: 'center' }}>
@@ -30,6 +32,20 @@ export const CtaSlide: React.FC<SlideProps> = ({
             className="cta-avatar-ring"
             data-testid="cta-avatar-ring"
             data-shape={photoShape}
+            role="button"
+            tabIndex={0}
+            aria-label={photoDataUrl ? 'Change photo' : 'Add photo'}
+            onClick={(e) => {
+              e.stopPropagation();
+              triggerUpload();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerUpload();
+              }
+            }}
           >
             {photoDataUrl ? (
               <img
@@ -45,8 +61,23 @@ export const CtaSlide: React.FC<SlideProps> = ({
                 data-testid="cta-avatar-placeholder"
               >
                 {initial}
+                <span className="avatar-camera-badge cta-avatar-badge" aria-hidden="true">📷</span>
               </div>
             )}
+
+            <div className="avatar-hover-overlay" aria-hidden="true">
+              <span className="avatar-hover-icon">📷</span>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              data-testid="cta-avatar-input"
+              onChange={handleFileChange}
+              className="sr-only hidden"
+              style={{ display: 'none' }}
+            />
           </div>
           {displayName && (
             <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--ink)' }}>

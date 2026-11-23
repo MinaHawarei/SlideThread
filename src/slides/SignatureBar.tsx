@@ -1,6 +1,7 @@
 import React from 'react';
 import type { BrandSettings, SocialPlatform, SignatureConfig } from '../core/schema';
 import { formatSlideCounter } from './signatureUtils';
+import { useAvatarUpload } from '../ui/common/useAvatarUpload';
 
 export interface SignatureBarProps {
   brand?: Partial<BrandSettings>;
@@ -151,6 +152,8 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
   className = '',
   style = {},
 }) => {
+  const { fileInputRef, handleFileChange, triggerUpload } = useAvatarUpload();
+
   if (brand?.showSignature === false || signatureConfig?.show === false) {
     return null;
   }
@@ -201,16 +204,51 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
       data-shape={photoShape}
     >
       <div className="sig-author-section">
-        <div className="sig-avatar-ring">
+        <div
+          className="sig-avatar-ring"
+          data-testid="sig-avatar-ring"
+          role="button"
+          tabIndex={0}
+          aria-label={photoDataUrl ? 'Change photo' : 'Add photo'}
+          onClick={(e) => {
+            e.stopPropagation();
+            triggerUpload();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              triggerUpload();
+            }
+          }}
+        >
           {photoDataUrl ? (
             <img
               src={photoDataUrl}
               alt={displayName || 'Avatar'}
               className="sig-avatar-img"
+              data-testid="sig-avatar-img"
             />
           ) : (
-            <div className="sig-avatar-placeholder">{initial}</div>
+            <div className="sig-avatar-placeholder" data-testid="sig-avatar-placeholder">
+              {initial}
+              <span className="avatar-camera-badge sig-avatar-badge" aria-hidden="true">📷</span>
+            </div>
           )}
+
+          <div className="avatar-hover-overlay" aria-hidden="true">
+            <span className="avatar-hover-icon">📷</span>
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            data-testid="signature-avatar-input"
+            onChange={handleFileChange}
+            className="sr-only hidden"
+            style={{ display: 'none' }}
+          />
         </div>
 
         <div className="sig-text-block">

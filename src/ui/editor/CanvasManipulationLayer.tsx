@@ -382,6 +382,20 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                 event.stopPropagation();
                 return;
               }
+              const target = event.target as HTMLElement;
+              const avatar =
+                target.closest('.sig-avatar-ring, .cta-avatar-ring') ||
+                (typeof document !== 'undefined' && document.elementsFromPoint
+                  ? document
+                      .elementsFromPoint(event.clientX, event.clientY)
+                      .find((el) => el.closest('.sig-avatar-ring, .cta-avatar-ring'))
+                      ?.closest<HTMLElement>('.sig-avatar-ring, .cta-avatar-ring')
+                  : null);
+              if (avatar) {
+                event.stopPropagation();
+                (avatar as HTMLElement).click();
+                return;
+              }
               begin(event, element, 'move');
             }}
             onPointerMove={(event) => move(event, element)}

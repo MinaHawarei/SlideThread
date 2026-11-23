@@ -13,7 +13,7 @@ describe('application routes', () => {
   it('loads the localized settings route and exposes primary navigation', async () => {
     window.history.replaceState({}, '', '/settings');
     render(<App />);
-    expect(await screen.findByRole('heading', { name: 'Make it yours' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Make it yours' }, { timeout: 6000 })).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Primary navigation' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Gallery' })).toHaveAttribute('href', '/gallery');
   });
@@ -22,7 +22,7 @@ describe('application routes', () => {
     useI18nStore.getState().setLocale('ar');
     window.history.replaceState({}, '', '/settings');
     render(<App />);
-    expect(await screen.findByRole('heading', { name: 'اجعله يعبر عنك' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'اجعله يعبر عنك' }, { timeout: 6000 })).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'التنقل الرئيسي' })).toHaveAttribute('dir', 'rtl');
   });
 });

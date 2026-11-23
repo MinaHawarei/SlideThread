@@ -1273,3 +1273,23 @@ Agent name: Antigravity
 
 
 
+
+### R5-3 — done — 2026-11-23 23:45 — Antigravity
+- Branch / commit: feature/r5-3 / `36f75f5`
+- What changed (files): `src/core/media.ts`, `src/store/cropStore.ts`, `src/ui/common/PhotoCropDialog.tsx`, `src/ui/common/useAvatarUpload.ts`, `src/App.tsx`, `src/slides/SignatureBar.tsx`, `src/slides/CtaSlide.tsx`, `src/slides/slides.css`, `src/ui/editor/BrandInspector.tsx`, `src/ui/editor/CanvasManipulationLayer.tsx`, `src/ui/settings/SettingsPage.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/photoHandling.test.tsx`, `tests/e2e/photoHandling.spec.ts`, `tests/unit/appRouting.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan:
+  1. Built interactive square crop dialog (`PhotoCropDialog.tsx` & `GlobalPhotoCropDialog`) with drag-to-pan, zoom slider (1x to 3x) with +/- step buttons, reset center button, accessible dialog attributes (`role="dialog"`, `aria-modal="true"`), and escape key handling.
+  2. Implemented `calculateInteractiveCrop` and `renderCroppedSquare` in `src/core/media.ts`: pure math calculation ensuring crop never exposes empty margins regardless of zoom or pan, exporting downscaled 400x400 px JPEG data URLs per Spec §8.1.
+  3. Created `useAvatarUpload` hook and `useCropStore` state managing file selection, opening the crop dialog, and saving the cropped data URL to settings.
+  4. Enabled click-to-upload everywhere across all avatars:
+     - `SignatureBar`: `.sig-avatar-ring` is interactive (`role="button"`, click/Enter/Space triggers file picker), includes hidden file input, hover camera overlay, and placeholder camera badge (`.sig-avatar-badge`).
+     - `CtaSlide`: `.cta-avatar-ring` is interactive, includes hidden file input, hover camera overlay, and placeholder camera badge (`.cta-avatar-badge`).
+     - `BrandInspector`: avatar preview/placeholder is directly clickable with hover overlay and camera badge; upload button and file input integrated with crop dialog.
+     - `SettingsPage`: profile avatar with hover overlay, camera badge, and file input integrated with crop dialog.
+     - `CanvasManipulationLayer`: delegating pointer down on avatar ring elements to trigger upload rather than block pointer events.
+  5. Added DOM isolation in `slides.css`: UI affordance overlays, badges, and file inputs are hidden in export snapshots (`[data-testid="export-slide-element"]`) ensuring 100% clean export output.
+  6. Added 15 comprehensive unit tests (`tests/unit/photoHandling.test.tsx`) testing crop math, zooming, clamping, canvas downscaling, placeholder affordances, and CTA photo regression across all slide types and all 4 aspect classes (`square`, `portrait`, `tall`, `landscape`).
+  7. Added 2 Playwright E2E tests (`tests/e2e/photoHandling.spec.ts`) testing avatar click, file picker, crop dialog interaction, canvas signature update, BrandInspector update, CTA slide update, and Settings page avatar update.
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (61 files, 523 passed), `npx playwright test tests/e2e/photoHandling.spec.ts` (2 passed), and `npm run build` (clean).
+- Remaining / next step: Claim and implement R5-4 (Settings page (§5.5)).
+- Needs from the owner: None.
