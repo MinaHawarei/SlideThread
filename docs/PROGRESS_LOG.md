@@ -1087,3 +1087,20 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (418 passed / 55 files), `npm run build`, and `git diff --check` passed. Manipulation E2E and screenshot matrix passed. Full E2E: 67 passed / 3 failed; existing failures are stale `/spike` heading checks in `benchmark.spec.ts` and `exportSpike.spec.ts`, and the stale Arabic heading in `uxPreview.spec.ts`. Build emits existing Zod annotation notices.
 - Remaining / next step: R3-3, keyboard and accessibility for canvas editing.
 - Needs from the owner: None.
+
+### R3-3 — started — 2026-11-23 16:15 — Codex
+- Branch / commit: feature/r3-3
+- What changed (files): `docs/TASKS.md` (claimed R3-3).
+- Decisions / deviations from the plan: Bind keyboard movement and numeric fields to the same normalized model geometry used by pointer edits. Keep accessibility announcements bilingual and transient; preserve project history for committed edits.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Add focusable element controls, keyboard nudge/scale shortcuts, geometry inspector, live region, and accessibility tests.
+- Needs from the owner: None.
+
+
+### R3-3 — done — 2026-11-23 16:44 — Codex
+- Branch / commit: feature/r3-3 / `fd28751`
+- What changed (files): Added keyboard selection, nudging/scaling, numeric geometry fields, live announcements, and extra duplicate/delete actions in the canvas manipulation layer; expanded bilingual UI strings and project actions; added unit and browser coverage; saved 12 viewport/theme/direction screenshots and self-review at `docs/ux-review/R3-3/`.
+- Decisions / deviations from the plan: Enter announces the selected text slot pending rich-text editing in R4-2; keyboard deletion and duplication apply to extras only. Initial template slot geometry is measured from rendered DOM; applying overrides to slide rendering/export remains R3-6. No dependency added.
+- Tests run and result: `npm run lint`, `npm run typecheck`, full `npm test -- --reporter=dot` (421 passed / 55 files), and `npm run build` passed. Targeted manipulation and accessibility Playwright tests passed (4/4). Full E2E passed 71/72; the remaining failure is the existing stale R0-6 Arabic heading assertion in `uxPreview.spec.ts`. Build emits existing Zod Rollup annotation notices.
+- Remaining / next step: R3-4, touch editing with drag, pinch, rotate, large handles, and bottom toolbar.
+- Needs from the owner: None.
