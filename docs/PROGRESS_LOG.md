@@ -737,3 +737,12 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress)
 - Remaining / next step: Build the dev-only three-direction `/ux-preview`; provide Home, Gallery, and Editor pages; capture required screen matrix; write rubric review.
 - Needs from the owner: Choose direction A/B/C after the complete review pack is ready.
+
+
+### R0-6 — blocked — 2026-11-23 02:18 — Codex
+- Branch / commit: feature/r0-6 / 0d29526
+- What changed (files): `/ux-preview` dev-only preview, bilingual direction copy, Gallery empty/loading/error examples, `tests/e2e/uxPreview.spec.ts`, 117 screenshots and rubric review in `docs/ux-review/R0-6/`
+- Decisions / deviations from the plan: No new dependencies or external assets. Direction preview is built; owner selection is required by the Done when column and D-06 before R0-6 can be marked complete. Verified production route does not render the preview.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 332 passed / 41 files (existing React `act(...)` warnings); `npm run build` pass (existing Zod Rollup annotation notices); `npm run test:e2e` 16 passed. Chromium screenshot matrix: 108 required combinations plus 9 gallery state examples; zero horizontal overflow and zero uncaught page errors.
+- Remaining / next step: Owner reviews A/B/C and selects one. Then mark D-06 resolved and R0-6 `[x]`; proceed to GR0 verification.
+- Needs from the owner: Choose A — Atelier, B — Signal, or C — Field Notes. Recommended: A — Atelier for the clearest bilingual balance and adaptable light/dark palette.
