@@ -77,6 +77,14 @@ Agent name: Antigravity
 - Remaining / next step: R2-4, vetted SVG/CSS sanitizers and malicious-input tests.
 - Needs from the owner: None.
 
+### R2-4 — started — 2026-11-23 13:38 — Codex
+- Branch / commit: feature/r2-4
+- What changed (files): `docs/TASKS.md` (claimed R2-4).
+- Decisions / deviations from the plan: Use DOMPurify’s SVG allowlist sanitizer plus CSS-tree’s parsed AST with explicit selector/property/value validation. DOMPurify is already in the dependency tree; make it direct, add css-tree as the CSS parser.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Install vetted parser, implement strict sanitize/validate helpers, and test malicious SVG/CSS inputs.
+- Needs from the owner: None.
+
 ### R1-1 — checkpoint — 2026-11-23 11:42 — Codex
 - Branch / commit: feature/r1-1 / 1ba9d3c
 - What changed (files): `src/core/schema.ts` defines v2 RichText, overrides/extras, counter/signature, project and brand schemas; `src/core/migrate.ts` handles v0/v1 to v2 and future-version rejection; `src/config/features.ts` adds default-off flags; `docs/DECISIONS.md` records deterministic migration defaults; tracker remains `[~]`.
