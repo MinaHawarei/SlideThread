@@ -764,3 +764,12 @@ Agent name: Antigravity
 - Tests run and result: N/A (gate check in progress)
 - Remaining / next step: Verify audit existence/completion, all R0 spike decisions and UX review pack, and the owner selection; then mark the GR0 status checkbox only if the checks pass.
 - Needs from the owner: None.
+
+
+### GR0 — done — 2026-11-23 11:14 — Codex
+- Branch / commit: feature/gr0 / pending verification commit hash (recorded in following metadata entry)
+- What changed (files): `docs/TASKS.md` (GR0 complete), `docs/REVISION_PLAN.md` (GR0 checkbox), `docs/PROGRESS_LOG.md`
+- Decisions / deviations from the plan: All four spike documents contain decisions; R0-6 owner selection is A — Atelier and D-06 is done; `docs/REVISION_AUDIT.md` exists and R0-1 is complete. D-09 real-device checks remain tracked for R9-1 and do not block this gate.
+- Tests run and result: GR0 evidence script passed 11/11 checks, covering R0-1 audit, R0-2…R0-5 spike decisions/evidence, R0-6 pack and owner selection, and the gate text.
+- Remaining / next step: R1-1, schema v2, migration, and feature flags.
+- Needs from the owner: None for GR0.
