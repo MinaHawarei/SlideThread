@@ -29,6 +29,22 @@ Agent name: Antigravity
 - Remaining / next step: R2-1, template schema and category registry.
 - Needs from the owner: None.
 
+### R2-1 — started — 2026-11-23 13:04 — Codex
+- Branch / commit: feature/r2-1
+- What changed (files): `docs/TASKS.md` (claimed R2-1).
+- Decisions / deviations from the plan: Introduce the schema as a pure validated data layer alongside the legacy runtime template types; preserve existing starter behavior until R2-5 connects runtime resolution.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: N/A — completed as `c6b89e8`; proceed to R2-2.
+- Needs from the owner: None.
+
+### R2-1 — done — 2026-11-23 13:12 — Codex
+- Branch / commit: feature/r2-1 / c6b89e8
+- What changed (files): Added strict template data validation and a matching external JSON Schema, bilingual `categories.json` and typed registry, inheritance resolution with cycle/unknown-parent/duplicate-id checks, fixed and color-flexible palette resolution, and unit tests.
+- Decisions / deviations from the plan: Font and category references are checked against local registries. Fixed palettes must provide every palette token for the selected mode; flexible palettes derive from the project primary color then apply template mode overrides. Legacy component templates remain separate until the R2-5 runtime task.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 355 passed / 48 files; `npm run build` pass (existing Zod Rollup annotation notices); `git diff --check` and JSON syntax checks pass.
+- Remaining / next step: R2-2, layout archetypes.
+- Needs from the owner: None.
+
 ### R1-1 — checkpoint — 2026-11-23 11:42 — Codex
 - Branch / commit: feature/r1-1 / 1ba9d3c
 - What changed (files): `src/core/schema.ts` defines v2 RichText, overrides/extras, counter/signature, project and brand schemas; `src/core/migrate.ts` handles v0/v1 to v2 and future-version rejection; `src/config/features.ts` adds default-off flags; `docs/DECISIONS.md` records deterministic migration defaults; tracker remains `[~]`.
