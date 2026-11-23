@@ -13,6 +13,14 @@ Agent name: Antigravity
 - Remaining / next step: Complete compatibility adapters/defaults, strengthen migration/schema tests, then run required full checks.
 - Needs from the owner: None.
 
+### R1-1 — checkpoint — 2026-11-23 11:42 — Codex
+- Branch / commit: feature/r1-1 / 1ba9d3c
+- What changed (files): `src/core/schema.ts` defines v2 RichText, overrides/extras, counter/signature, project and brand schemas; `src/core/migrate.ts` handles v0/v1 to v2 and future-version rejection; `src/config/features.ts` adds default-off flags; `docs/DECISIONS.md` records deterministic migration defaults; tracker remains `[~]`.
+- Decisions / deviations from the plan: Schema requires RichText at runtime. App adaptation must preserve the existing plain-string editor experience until R4; weakening runtime validation to accept strings would violate the v2 contract.
+- Tests run and result: Initial typecheck reports 327 errors because existing app and test code uses v1 fields/types. Two migration typing issues were fixed; rerun and complete integration still required. No tests added yet.
+- Remaining / next step: Adapt existing slides, project stores, inspector, seed/sample data, and tests to v2 fields and new project defaults; add migration and invalid-input tests; run lint, typecheck, unit tests, build, and E2E.
+- Needs from the owner: None.
+
 ### SETUP — done — 2026-11-22 17:41 — Antigravity
 - Branch / commit: chore/agent-setup
 - What changed (files): docs/TASKS.md, docs/PROGRESS_LOG.md
