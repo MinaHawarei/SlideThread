@@ -1203,3 +1203,13 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (58 files, 449 passed), `npm run build`, and `npx playwright test tests/e2e/fitRules.spec.ts` (2 passed).
 - Remaining / next step: Claim and implement R4-4 (Lists/bullets as rich-text nodes with template styling; paste-to-slides outputs rich text).
 - Needs from the owner: None.
+
+
+### R4-4 — done — 2026-11-23 19:40 — Antigravity
+- Branch / commit: feature/r4-4 / `e2a433f`
+- What changed (files): `package.json`, `package-lock.json`, `src/core/richText.ts`, `src/core/paste.ts`, `src/slides/RichTextRenderer.tsx`, `src/slides/ExplainSlide.tsx`, `src/slides/SlideRenderer.tsx`, `src/slides/types.ts`, `src/slides/slides.css`, `src/ui/editor/RichTextEditor.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/paste.test.ts`, `tests/unit/richText.test.tsx`, `tests/unit/richTextEditor.test.tsx`.
+- Decisions / deviations from the plan: Implemented `@tiptap/extension-bullet-list`, `@tiptap/extension-ordered-list`, and `@tiptap/extension-list-item` in Tiptap editor; wired bidirectional conversion between `bulletList`/`orderedList`/`listItem` and `RichText`'s `type: 'li'` (with `ordered: boolean`); added bullet and numbered list buttons to the floating toolbar; enhanced `parsePlainTextToRichText` to handle single-line bullets/numbers and inline markdown bold `**text**`; updated `RichTextRenderer` to render list items with template bullet nodes (`.explain-bullet-item`, `.explain-bullet-node`, `.explain-number-node`) which dynamically receive theme styling from all templates (Clean, Bold, Network, Heritage); updated `ExplainSlide` to render `richFields.body` using `RichTextRenderer`; updated `parsePastedText` and `candidateToSlide` in `paste.ts` to output `richFields` with rich text list blocks preserving list semantics and marks.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (58 files, 453 passed), `npm run build`, and `npx playwright test tests/e2e/pasteDialog.spec.ts tests/e2e/richTextEditor.spec.ts tests/e2e/fitRules.spec.ts` (5 passed).
+- Remaining / next step: Claim and implement R4-5 (Export fidelity for mixed fonts/sizes/colors in Arabic and English).
+- Needs from the owner: None.
+
