@@ -1022,3 +1022,11 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress).
 - Remaining / next step: Inspect current schema, registries, CI and licensing policy; write guide/policy/PR template/CODEOWNERS, then execute the documented dry-run contribution.
 - Needs from the owner: None.
+
+### R2-8 — done — 2026-11-23 15:27 — Codex
+- Branch / commit: feature/r2-8 / `9fc6c21`
+- What changed (files): Updated `CONTRIBUTING.md` and README template instructions; added `docs/TEMPLATE_GUIDE.md` with worked examples for theme, layout, decoration, and scoped CSS levels; added `docs/CONTENT_POLICY.md`, `.github/PULL_REQUEST_TEMPLATE.md`, and `.github/CODEOWNERS`.
+- Decisions / deviations from the plan: Reused the existing root `CONTRIBUTING.md`. Documented current implementation limits: new templates appear in the lab/index pipeline but production Gallery integration is R2-9; local SVG placement and contributed CSS preview/application are not yet exposed. Recorded the `style.css` path vs inline `customCss` schema conflict in `docs/DECISIONS.md` and documented the current representation without claiming runtime support.
+- Tests run and result: Followed the guide's theme-only example: scaffolded `creator-notes`, generated a 21,242-byte preview, passed `npm run template:validate` with 96 stress-render combinations, regenerated the index, and verified the dev route rendered the contributed ID without browser errors. After removing the temporary template, preview and index `--check` commands passed. `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (409 passed / 53 files), `npm run build`, and `git diff --check` passed. Build keeps the existing Zod Rollup annotation notices. Full app E2E was not rerun because this task changes contributor documentation only.
+- Remaining / next step: R2-9, gallery data layer.
+- Needs from the owner: None.
