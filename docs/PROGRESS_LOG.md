@@ -1131,3 +1131,12 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress).
 - Remaining / next step: Inspect selection and editor UI, add contextual controls and layer list with bilingual labels, selection, lock, hide, reorder, tests, and screenshot review.
 - Needs from the owner: None.
+
+
+### R3-5 — done — 2026-11-23 18:31 — Antigravity
+- Branch / commit: feature/r3-5 / `30a2637`
+- What changed (files): Added layers panel (lock, hide, reorder) and contextual selection toolbar in `CanvasManipulationLayer.tsx`, updated `elementModel.ts` and `schema.ts` to support lock/hide/z metadata for overrides and extras; added bilingual i18n keys; added unit tests in `elementModel.test.ts` and `editorDesktop.test.tsx`; added e2e tests in `layerControls.spec.ts`; generated 12-state UX review screenshots and `REVIEW.md` in `docs/ux-review/R3-5/`.
+- Decisions / deviations from the plan: Slot elements store optional lock, hide, and reorder (z) overrides; extras store them directly in their element model. Hidden elements are omitted from canvas rendering and hit testing; locked elements are visible but unselectable via canvas clicks.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (55 files, 424 passed), `npm run build`, and `npx playwright test tests/e2e/layerControls.spec.ts` (2 passed).
+- Remaining / next step: R3-6, Export integration for overrides and extras (§5.10).
+- Needs from the owner: None.

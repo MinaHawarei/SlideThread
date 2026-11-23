@@ -66,7 +66,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R3-2 | Manipulation: select/move/resize/rotate, snapping and guides, reset controls (library from R0-2). | R3-1 | [x] | Codex 2026-11-23 · feature/r3-2 · 625e390 |
 | R3-3 | Keyboard and accessibility for canvas editing, numeric inspector, live-region announcements (§5.2). | R3-2 | [x] | Codex 2026-11-23 · feature/r3-3 · fd28751 |
 | R3-4 | Touch editing: drag, pinch, rotate, ≥ 44 px handles, bottom toolbar. | R3-3 | [x] | Codex 2026-11-23 · feature/r3-4 · ab13d5c |
-| R3-5 | Contextual selection toolbar and layers panel (lock, hide, reorder). | R3-4 | [~] | Codex 2026-11-23 · feature/r3-5 |
+| R3-5 | Contextual selection toolbar and layers panel (lock, hide, reorder). | R3-4 | [x] | Antigravity 2026-11-23 · feature/r3-5 · 30a2637 |
 | R3-6 | Export integration for overrides and extras (§5.10). | R3-5 | [ ] | |
 | GR3 | Gate GR3 verification | R3-1…R3-6 | [ ] | |
 
