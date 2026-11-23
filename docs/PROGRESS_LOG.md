@@ -815,3 +815,12 @@ Agent name: Antigravity
 - Tests run and result: N/A (docs-only task; application code untouched).
 - Remaining / next step: Commit chore/owner-decisions, branch next task (R1-1) from chore/owner-decisions, and continue.
 - Needs from the owner: None.
+
+
+### R1-2 — started — 2026-11-23 11:45 — Codex
+- Branch / commit: feature/r1-2
+- What changed (files): `docs/TASKS.md` (claimed R1-2)
+- Decisions / deviations from the plan: Implement a bounded snapshot history shared by project and brand settings; coalesce repeated edits by stable key and time window. Add document-level Ctrl/Cmd+Z and Shift+Z shortcuts.
+- Tests run and result: N/A (task in progress)
+- Remaining / next step: Add pure history tests, integrate project/settings store mutations and shortcuts, then run required checks.
+- Needs from the owner: None.
