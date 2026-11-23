@@ -1140,3 +1140,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (55 files, 424 passed), `npm run build`, and `npx playwright test tests/e2e/layerControls.spec.ts` (2 passed).
 - Remaining / next step: R3-6, Export integration for overrides and extras (§5.10).
 - Needs from the owner: None.
+
+
+### R3-6 — started — 2026-11-23 18:36 — Antigravity
+- Branch / commit: feature/r3-6
+- What changed (files): `docs/TASKS.md` (claimed R3-6).
+- Decisions / deviations from the plan: Apply layout slot overrides (position, scale, visibility, z-index) directly in `SlideRenderer` and render the extras layer from the model so both preview and offscreen export capture render identically without editor chrome.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Implement overrides and extras rendering in `SlideRenderer`, add unit and e2e export tests verifying overrides and extras survive export with golden compare, and verify test suite.
+- Needs from the owner: None.
