@@ -12,6 +12,26 @@
   }
 }
 
+.app-language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 2.5rem;
+  padding-inline: .8rem;
+  border: 1px solid hsl(var(--atelier-line));
+  border-radius: .75rem;
+  background: hsl(var(--atelier-panel));
+  color: hsl(var(--atelier-ink));
+  font: inherit;
+  font-size: .875rem;
+  font-weight: 600;
+  transition: background-color 180ms ease-out, border-color 180ms ease-out;
+}
+.app-language-switcher:hover { background: hsl(var(--atelier-soft)); }
+@media (prefers-reduced-motion: reduce) {
+  .app-language-switcher { transition-duration: .01ms; }
+}
+
 /* Reduced motion preference per Spec §10.1 */
 @media (prefers-reduced-motion: reduce) {
   *,

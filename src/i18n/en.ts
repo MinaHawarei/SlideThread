@@ -397,6 +397,21 @@ export const en = {
   'kit.dismiss': 'Dismiss notice',
   'kit.footer': 'Designed for calm focus, clear choices, and comfortable use on every screen.',
 
+  // App shell and settings route
+  'app.loading': 'Opening your studio…',
+  'nav.primary': 'Primary navigation',
+  'nav.home': 'Home',
+  'nav.gallery': 'Gallery',
+  'nav.settings': 'Settings',
+  'settings.eyebrow': 'Your studio',
+  'settings.title': 'Make it yours',
+  'settings.description': 'Set the details that make every project feel like your own.',
+  'settings.profileTitle': 'Profile and preferences',
+  'settings.profileDescription': 'Your name, handle, photo, social links, and design defaults will live here.',
+  'settings.language': 'Interface language',
+  'settings.languageSaved': 'Saved on this device',
+  'settings.availableSoon': 'More studio settings are being prepared.',
+
   // Common UI
   'common.close': 'Close',
   'common.save': 'Save',

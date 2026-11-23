@@ -4,6 +4,8 @@ import { generatePalette } from '../core/palette';
 import { SlideRenderer } from '../slides/SlideRenderer';
 import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../slides/sampleSlides';
 import { getAllTemplates } from '../templates';
+import { useT } from '../i18n';
+import { LanguageSwitcher } from '../ui/common/LanguageSwitcher';
 
 const SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -27,6 +29,7 @@ const ASPECT_DIMENSIONS: Record<AspectClass, { width: number; height: number; fo
 };
 
 export const GalleryPage: React.FC = () => {
+  const { t, dir } = useT();
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedAspect, setSelectedAspect] = useState<string>('all');
   const [theme, setTheme] = useState<ThemeMode>('dark');
@@ -42,7 +45,7 @@ export const GalleryPage: React.FC = () => {
   const aspectsToRender = selectedAspect === 'all' ? ASPECT_CLASSES : [selectedAspect as AspectClass];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0b0f19', color: '#f3f4f6', padding: '24px', fontFamily: 'system-ui, sans-serif' }}>
+    <div dir={dir} style={{ minHeight: '100vh', background: '#0b0f19', color: '#f3f4f6', padding: '24px', fontFamily: 'system-ui, sans-serif' }}>
       {/* Top Header & Controls */}
       <div style={{ maxWidth: '1600px', margin: '0 auto', marginBottom: '32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid #1f293d', paddingBottom: '20px' }}>
@@ -56,7 +59,7 @@ export const GalleryPage: React.FC = () => {
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
             <a
-              href="/spike"
+              href="/"
               style={{
                 padding: '8px 16px',
                 borderRadius: '8px',
@@ -68,8 +71,10 @@ export const GalleryPage: React.FC = () => {
                 border: '1px solid #334155',
               }}
             >
-              ← Back to Spike
+              ← {t('nav.home')}
             </a>
+            <a href="/settings" style={{ color: '#94a3b8', textDecoration: 'none', padding: '8px 12px' }}>{t('nav.settings')}</a>
+            <LanguageSwitcher />
           </div>
         </div>
 

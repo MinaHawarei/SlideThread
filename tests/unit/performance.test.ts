@@ -37,9 +37,11 @@ describe('Performance Pass (Spec §12 & Task P4-6)', () => {
   });
 
   it('configures intelligent Rollup code-splitting chunks', () => {
-    expect(getManualChunk('node_modules/jspdf/dist/jspdf.es.js')).toBe('vendor-export');
-    expect(getManualChunk('node_modules/jszip/dist/jszip.js')).toBe('vendor-export');
-    expect(getManualChunk('node_modules/html-to-image/es/index.js')).toBe('vendor-export');
+    // Export libraries stay with their lazy routes. Grouping them manually
+    // pulls Vite's dynamic-import loader and the full export bundle into Home.
+    expect(getManualChunk('node_modules/jspdf/dist/jspdf.es.js')).toBeUndefined();
+    expect(getManualChunk('node_modules/jszip/dist/jszip.js')).toBeUndefined();
+    expect(getManualChunk('node_modules/html-to-image/es/index.js')).toBeUndefined();
     expect(getManualChunk('node_modules/react/index.js')).toBe('vendor-react');
     expect(getManualChunk('node_modules/react-dom/index.js')).toBe('vendor-react');
     expect(getManualChunk('node_modules/zustand/esm/index.mjs')).toBe('vendor-core');

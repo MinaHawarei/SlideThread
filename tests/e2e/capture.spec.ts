@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Spike page captures slide using html-to-image and modern-screenshot', async ({ page }) => {
   await page.goto('/spike');
-  await expect(page.locator('h1')).toHaveText(/Phase 0 Export Spike/);
+  await expect(page.locator('h1')).toHaveText(/Phase 0 Export Spike/, { timeout: 15000 });
 
   // Test html-to-image
   const btnHtmlToImage = page.locator('[data-testid="btn-capture-html-to-image"]');

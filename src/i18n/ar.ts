@@ -399,6 +399,21 @@ export const ar: Record<TranslationKey, string> = {
   'kit.dismiss': 'إخفاء التنبيه',
   'kit.footer': 'مصمم للتركيز الهادئ والخيارات الواضحة والاستخدام المريح على كل الشاشات.',
 
+  // App shell and settings route
+  'app.loading': 'جارٍ فتح الاستوديو…',
+  'nav.primary': 'التنقل الرئيسي',
+  'nav.home': 'الرئيسية',
+  'nav.gallery': 'المعرض',
+  'nav.settings': 'الإعدادات',
+  'settings.eyebrow': 'استوديوك',
+  'settings.title': 'اجعله يعبر عنك',
+  'settings.description': 'أضف التفاصيل التي تجعل كل مشروع يحمل طابعك.',
+  'settings.profileTitle': 'الملف الشخصي والتفضيلات',
+  'settings.profileDescription': 'ستجد هنا اسمك ومعرّفك وصورتك وروابطك الاجتماعية وإعدادات التصميم الافتراضية.',
+  'settings.language': 'لغة الواجهة',
+  'settings.languageSaved': 'محفوظة على هذا الجهاز',
+  'settings.availableSoon': 'نعمل على تجهيز المزيد من إعدادات الاستوديو.',
+
   // Common UI
   'common.close': 'إغلاق',
   'common.save': 'حفظ',

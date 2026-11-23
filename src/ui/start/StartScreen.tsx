@@ -8,7 +8,6 @@ import { useRecentStore } from '../../store/recentStore';
 import { getDemoProjectEn, getDemoProjectAr } from '../../store/seedProjects';
 import type { FormatId } from '../../core/formats';
 import type { Project } from '../../core/schema';
-import { importProjectFromJSON, handleExportProject } from '../../core/projectIO';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 
 export interface StartScreenProps {
@@ -131,6 +130,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
     e.stopPropagation();
     const proj = getProject(id);
     if (!proj) return;
+    const { handleExportProject } = await import('../../core/projectIO');
     await handleExportProject(proj, (sizeMB, proceed) => {
       setSizeWarning({
         isOpen: true,
@@ -151,6 +151,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
     setImportError(null);
     try {
       const text = await file.text();
+      const { importProjectFromJSON } = await import('../../core/projectIO');
       const imported = await importProjectFromJSON(text);
       saveProject(imported);
       setProject(imported);
@@ -168,7 +169,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
     }
   };
 
-  const handleDevNavigate = (path: string) => {
+  const handleNavigate = (path: string) => {
     if (onNavigate) {
       onNavigate(path);
     } else {
@@ -201,17 +202,21 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => handleDevNavigate('/gallery')}
+              onClick={() => handleNavigate('/gallery')}
               className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-300/50 dark:border-slate-700/50 transition-colors"
             >
-              Gallery
+              {t('nav.gallery')}
             </button>
             <button
-              onClick={() => handleDevNavigate('/spike')}
+              onClick={() => handleNavigate('/settings')}
               className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-300/50 dark:border-slate-700/50 transition-colors"
             >
-              Spike
+              {t('nav.settings')}
             </button>
+            {import.meta.env.DEV && <button
+              onClick={() => handleNavigate('/spike')}
+              className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-300/50 dark:border-slate-700/50 transition-colors"
+            >Spike</button>}
             <LanguageSwitcher />
           </div>
         </div>

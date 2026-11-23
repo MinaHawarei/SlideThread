@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Spike page renders all 4 test slide sizes with required fidelity elements', async ({ page }) => {
   await page.goto('/spike');
-  await expect(page.locator('h1')).toHaveText(/Phase 0 Export Spike/);
+  await expect(page.locator('h1')).toHaveText(/Phase 0 Export Spike/, { timeout: 15000 });
 
   // Check that all 4 formats are rendered
   const expectedFormats = [

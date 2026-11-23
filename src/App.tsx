@@ -1,26 +1,38 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { SpikePage } from './spike/SpikePage';
-import { GalleryPage } from './gallery/GalleryPage';
-import { StartScreen } from './ui/start/StartScreen';
-import { Wizard } from './ui/wizard/Wizard';
-import { Editor } from './ui/editor';
 import { undo, redo } from './store/history';
-import { KitPage } from './ui/kit/KitPage';
+import { useT } from './i18n';
 
+const StartScreen = React.lazy(() => import('./ui/start/StartScreen').then((m) => ({ default: m.StartScreen })));
+const Wizard = React.lazy(() => import('./ui/wizard/Wizard').then((m) => ({ default: m.Wizard })));
+const Editor = React.lazy(() => import('./ui/editor').then((m) => ({ default: m.Editor })));
+const GalleryPage = React.lazy(() => import('./gallery/GalleryPage').then((m) => ({ default: m.GalleryPage })));
+const KitPage = React.lazy(() => import('./ui/kit/KitPage').then((m) => ({ default: m.KitPage })));
+const SettingsPage = React.lazy(() => import('./ui/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+const SpikePage = React.lazy(() => import('./spike/SpikePage').then((m) => ({ default: m.SpikePage })));
 const UxPreview = import.meta.env.DEV
-  ? React.lazy(() =>
-      import('./ux-preview/UxPreview').then((module) => ({ default: module.UxPreview }))
-    )
+  ? React.lazy(() => import('./ux-preview/UxPreview').then((m) => ({ default: m.UxPreview })))
   : null;
 
-export type AppScreen = 'start' | 'wizard' | 'editor';
+function LoadingScreen() {
+  const { t } = useT();
+  return <div className="route-loading" role="status">{t('app.loading')}</div>;
+}
 
 export const App: React.FC = () => {
-  const [currentPath, setCurrentPath] = useState(
-    typeof window !== 'undefined' ? window.location.pathname : '/'
-  );
-  const [currentScreen, setCurrentScreen] = useState<AppScreen>('start');
+  const [currentPath, setCurrentPath] = useState(() => typeof window !== 'undefined' ? window.location.pathname : '/');
+  const { locale, dir } = useT();
+
+  const navigate = (path: string) => {
+    if (window.location.pathname !== path) window.history.pushState({}, '', path);
+    setCurrentPath(path);
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = dir;
+    document.documentElement.classList.toggle('rtl', dir === 'rtl');
+  }, [locale, dir]);
 
   useEffect(() => {
     const handlePopState = () => setCurrentPath(window.location.pathname);
@@ -30,14 +42,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const handleHistoryShortcut = (event: KeyboardEvent) => {
-      if (
-        event.isComposing ||
-        event.altKey ||
-        !(event.metaKey || event.ctrlKey) ||
-        event.key.toLowerCase() !== 'z'
-      ) {
-        return;
-      }
+      if (event.isComposing || event.altKey || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'z') return;
       event.preventDefault();
       if (event.shiftKey) redo();
       else undo();
@@ -46,58 +51,17 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleHistoryShortcut);
   }, []);
 
-  const renderScreen = () => {
-    if (currentPath === '/spike') {
-      return <SpikePage />;
-    }
+  let route: React.ReactNode;
+  if (currentPath === '/gallery') route = <GalleryPage />;
+  else if (currentPath === '/editor') route = <Editor onHome={() => navigate('/')} />;
+  else if (currentPath === '/wizard') route = <Wizard onComplete={() => navigate('/editor')} onCancel={() => navigate('/')} />;
+  else if (currentPath === '/settings') route = <SettingsPage />;
+  else if (currentPath === '/kit') route = <KitPage />;
+  else if (import.meta.env.DEV && currentPath === '/spike') route = <SpikePage />;
+  else if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) route = <UxPreview />;
+  else route = <StartScreen onStartWizard={() => navigate('/wizard')} onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;
 
-    if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) {
-      return (
-        <Suspense fallback={null}>
-          <UxPreview />
-        </Suspense>
-      );
-    }
-
-    if (currentPath === '/gallery') {
-      return <GalleryPage />;
-    }
-
-    if (currentPath === '/kit') {
-      return <KitPage />;
-    }
-
-    if (currentScreen === 'wizard') {
-      return (
-        <Wizard
-          onComplete={() => setCurrentScreen('editor')}
-          onCancel={() => setCurrentScreen('start')}
-        />
-      );
-    }
-
-    if (currentScreen === 'editor') {
-      return <Editor onHome={() => setCurrentScreen('start')} />;
-    }
-
-    return (
-      <StartScreen
-        onStartWizard={() => setCurrentScreen('wizard')}
-        onOpenProject={() => setCurrentScreen('editor')}
-        onNavigate={(path) => {
-          window.history.pushState({}, '', path);
-          setCurrentPath(path);
-        }}
-      />
-    );
-  };
-
-  return (
-    <>
-      {renderScreen()}
-      <Analytics />
-    </>
-  );
+  return <><Suspense fallback={<LoadingScreen />}>{route}</Suspense><Analytics /></>;
 };
 
 export default App;

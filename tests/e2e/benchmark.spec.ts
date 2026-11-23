@@ -4,6 +4,7 @@ test.describe('P0-6 Export Evaluation Matrix', () => {
   test('Evaluates capture fidelity, timing, and sequential multi-slide export', async ({ page }) => {
     test.setTimeout(60000); // Allow sufficient time for matrix capture
     await page.goto('/spike');
+    await expect(page.locator('h1')).toHaveText(/Phase 0 Export Spike/, { timeout: 15000 });
 
     // Benchmark both libraries across formats
     const formats = [

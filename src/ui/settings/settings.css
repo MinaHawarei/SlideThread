@@ -1,0 +1,35 @@
+.settings-shell {
+  min-height: 100vh;
+  color: hsl(var(--atelier-ink));
+  background: hsl(var(--atelier-paper));
+  font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', sans-serif;
+}
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  border-bottom: 1px solid hsl(var(--atelier-line));
+  background: hsl(var(--atelier-panel));
+}
+.settings-brand { display: flex; align-items: center; gap: .65rem; color: inherit; font-weight: 700; text-decoration: none; }
+.settings-mark { display: grid; width: 2rem; aspect-ratio: 1; place-items: center; border-radius: .65rem; background: hsl(var(--atelier-accent)); color: white; }
+.settings-header nav { display: flex; gap: .5rem; }
+.settings-header nav a { padding: .55rem .8rem; border-radius: .75rem; color: hsl(var(--atelier-muted)); text-decoration: none; }
+.settings-header nav a[aria-current='page'] { color: hsl(var(--atelier-ink)); background: hsl(var(--atelier-paper)); }
+.settings-main { width: min(100% - 2rem, 48rem); margin-inline: auto; padding-block: clamp(3rem, 10vh, 6rem); }
+.settings-eyebrow { color: hsl(var(--atelier-accent)); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.settings-main h1 { margin-block: .5rem; font-family: Georgia, serif; font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 500; }
+.settings-description, .settings-card p, .settings-note { color: hsl(var(--atelier-muted)); line-height: 1.6; }
+.settings-card { position: relative; margin-block-start: 2rem; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid hsl(var(--atelier-line)); border-radius: 1.25rem; background: hsl(var(--atelier-panel)); box-shadow: var(--atelier-shadow); }
+.settings-card h2 { margin: 0; font-size: 1.15rem; }
+.settings-card-mark { position: absolute; inset-block-start: 1.25rem; inset-inline-end: 1.25rem; color: hsl(var(--atelier-accent)); }
+.settings-language-row { display: flex; justify-content: space-between; gap: 1rem; margin-block-start: 1.5rem; padding-block-start: 1rem; border-block-start: 1px solid hsl(var(--atelier-line)); }
+.settings-language-row strong { font-weight: 500; }
+.settings-note { font-size: .875rem; }
+.route-loading { display: grid; min-height: 100vh; place-items: center; color: hsl(var(--atelier-muted)); background: hsl(var(--atelier-paper)); font-family: 'IBM Plex Sans', sans-serif; }
+@media (max-width: 600px) {
+  .settings-header { flex-wrap: wrap; }
+  .settings-header nav { order: 3; width: 100%; }
+}
