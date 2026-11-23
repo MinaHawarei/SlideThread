@@ -729,3 +729,11 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test` 332 passed / 41 files (existing React `act(...)` warnings); `npm run build` pass (existing Zod Rollup annotation notices); full `npm run test:e2e` 15 passed, including new prefix export/seam test.
 - Remaining / next step: R0-6, UX direction preview.
 - Needs from the owner: Pick UX direction A/B/C from `/ux-preview` (D-06) after the review pack is ready; GR0 remains gated by this decision.
+
+### R0-6 — started — 2026-11-23 01:58 — Codex
+- Branch / commit: feature/r0-6
+- What changed (files): `docs/TASKS.md` (claimed R0-6)
+- Decisions / deviations from the plan: The D-06 owner choice blocks GR0 and R1-3, not building the three review directions. REVISION_PLAN §2.9 reinterprets Spec §10 neutral chrome as characterful app chrome that stays independent from template identities. No new dependency is needed; use existing local fonts and CSS motion.
+- Tests run and result: N/A (task in progress)
+- Remaining / next step: Build the dev-only three-direction `/ux-preview`; provide Home, Gallery, and Editor pages; capture required screen matrix; write rubric review.
+- Needs from the owner: Choose direction A/B/C after the complete review pack is ready.

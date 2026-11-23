@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { SpikePage } from './spike/SpikePage';
 import { GalleryPage } from './gallery/GalleryPage';
 import { StartScreen } from './ui/start/StartScreen';
 import { Wizard } from './ui/wizard/Wizard';
 import { Editor } from './ui/editor';
+
+const UxPreview = import.meta.env.DEV
+  ? React.lazy(() => import('./ux-preview/UxPreview').then((module) => ({ default: module.UxPreview })))
+  : null;
 
 export type AppScreen = 'start' | 'wizard' | 'editor';
 
@@ -23,6 +27,10 @@ export const App: React.FC = () => {
   const renderScreen = () => {
     if (currentPath === '/spike') {
       return <SpikePage />;
+    }
+
+    if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) {
+      return <Suspense fallback={null}><UxPreview /></Suspense>;
     }
 
     if (currentPath === '/gallery') {
