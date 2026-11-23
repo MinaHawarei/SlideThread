@@ -10,6 +10,7 @@ export interface FitOptions {
   maxScale?: number;
   step?: number;
   baseFontSize?: number;
+  disabled?: boolean;
 }
 
 export interface MeasurerResult {
@@ -37,6 +38,13 @@ export function calculateFitScale(
   const minScale = options?.minScale ?? DEFAULT_MIN_SCALE;
   const maxScale = options?.maxScale ?? DEFAULT_MAX_SCALE;
   const step = options?.step ?? DEFAULT_FIT_STEP;
+
+  // If auto-fit is disabled (e.g. manual font size mark set per §5.3), keep scale 1.0 and report overflow
+  if (options?.disabled) {
+    const initial = measurer(1.0);
+    const isOverflow = initial.width > availableWidth + 0.5 || initial.height > availableHeight + 0.5;
+    return { scale: 1.0, isOverflow };
+  }
 
   // First measure at maxScale (1.0)
   const initial = measurer(maxScale);
@@ -89,7 +97,8 @@ export function fitElement(
     };
   };
 
-  const result = calculateFitScale(availableWidth, availableHeight, measurer, options);
+  const isManual = options?.disabled || content.getAttribute('data-manual-size') === 'true';
+  const result = calculateFitScale(availableWidth, availableHeight, measurer, { ...options, disabled: isManual });
 
   // Apply final fitted size and dataset attributes
   content.style.fontSize = `${baseFontSize * result.scale}px`;

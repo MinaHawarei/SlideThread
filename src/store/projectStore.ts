@@ -474,8 +474,60 @@ export const useProjectStore = create<ProjectState>()(
           if (targetIndex === -1) return;
 
           const original = slides[targetIndex]!;
-          if (original.type !== 'explain') return;
+          const bodyDoc = original.fields.body;
 
+          // If body has multiple rich text blocks, split blocks directly to preserve all formatting marks
+          if (bodyDoc && Array.isArray(bodyDoc.blocks) && bodyDoc.blocks.length >= 2) {
+            const half = Math.ceil(bodyDoc.blocks.length / 2);
+            const part1Blocks = bodyDoc.blocks.slice(0, half);
+            const part2Blocks = bodyDoc.blocks.slice(half);
+
+            slides[targetIndex] = {
+              ...original,
+              fields: {
+                ...original.fields,
+                body: { type: 'doc', blocks: part1Blocks },
+              },
+            };
+
+            const titleDoc = original.fields.title;
+            const continuationTitle: RichText = titleDoc
+              ? {
+                  type: 'doc',
+                  blocks: titleDoc.blocks.map((b, idx) =>
+                    idx === titleDoc.blocks.length - 1
+                      ? {
+                          ...b,
+                          runs: [...b.runs, { text: ' (Cont.)' }],
+                        }
+                      : b
+                  ),
+                }
+              : plainTextToRichText('Continued');
+
+            const splitSlide: Slide = {
+              id: `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+              type: original.type,
+              fields: {
+                ...original.fields,
+                title: continuationTitle,
+                body: { type: 'doc', blocks: part2Blocks },
+              },
+            };
+
+            slides.splice(targetIndex + 1, 0, splitSlide);
+            set((state) => ({
+              project: {
+                ...state.project,
+                slides,
+                updatedAt: Date.now(),
+              },
+              activeSlideId: splitSlide.id,
+            }));
+            return;
+          }
+
+          // Fallback for single block or plain string with newlines
           const originalFields = richTextFieldsToPlainText(original.fields);
           const lines = (originalFields.body || '').split('\n').filter((l) => l.trim().length > 0);
           if (lines.length < 2) return;
@@ -484,23 +536,22 @@ export const useProjectStore = create<ProjectState>()(
           const part1Lines = lines.slice(0, half).join('\n');
           const part2Lines = lines.slice(half).join('\n');
 
-          // Update original slide
           slides[targetIndex] = {
             ...original,
             fields: {
               ...original.fields,
-              ...plainTextFieldsToRichText({ body: part1Lines }),
+              body: plainTextToRichText(part1Lines),
             },
           };
 
-          // Insert new part 2 slide
           const splitSlide: Slide = {
             id: `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-            type: 'explain',
-            fields: plainTextFieldsToRichText({
-              title: `${originalFields.title || ''} (Cont.)`,
-              body: part2Lines,
-            }),
+            type: original.type,
+            fields: {
+              ...original.fields,
+              title: plainTextToRichText(`${originalFields.title || ''} (Cont.)`),
+              body: plainTextToRichText(part2Lines),
+            },
           };
 
           slides.splice(targetIndex + 1, 0, splitSlide);

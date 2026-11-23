@@ -189,4 +189,19 @@ describe('useFitText React Hook', () => {
     expect(result.current.scale).toBe(1.0);
     expect(result.current.isOverflow).toBe(false);
   });
+
+  it('disables auto-fit when manual font size is active and only measures overflow (R4-3, §5.3)', () => {
+    // When content overflows, but disabled is true, it should keep scale 1.0 and set isOverflow: true
+    const measurer = vi.fn((scale: number) => ({
+      width: Math.round(1000 * scale),
+      height: 300,
+    }));
+
+    const result = calculateFitScale(800, 400, measurer, { disabled: true });
+    expect(result.scale).toBe(1.0);
+    expect(result.isOverflow).toBe(true);
+    // Should measure only once at scale 1.0 without downscaling steps
+    expect(measurer).toHaveBeenCalledTimes(1);
+    expect(measurer).toHaveBeenCalledWith(1.0);
+  });
 });

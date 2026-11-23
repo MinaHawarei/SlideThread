@@ -3,6 +3,7 @@ import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import type { SlideType } from '../../core/schema';
 import { richTextFieldsToPlainText } from '../../core/schema';
+import { hasManualTextSize } from '../../core/richText';
 
 const ALL_SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -43,11 +44,16 @@ export const SlideInspector: React.FC = () => {
     setSlideType(activeSlide.id, nextType);
   };
 
-  // Check for overflow warning on explain slides (Spec §5.3)
+  // Check for overflow warning on slides (Spec §5.3)
   const isExplain = activeSlide.type === 'explain';
+  const rawBody = activeSlide.fields.body;
+  const hasManual = hasManualTextSize(rawBody) || hasManualTextSize(activeSlide.fields.title);
   const bodyText = fields.body || '';
   const bodyLines = bodyText.split('\n').filter((l) => l.trim().length > 0);
-  const isOverflowing = isExplain && (bodyLines.length >= 4 || bodyText.length > 240);
+  const hasMultipleBlocks = Boolean(rawBody && rawBody.blocks && rawBody.blocks.length >= 2);
+  const isOverflowing =
+    (bodyLines.length >= 4 || bodyText.length > 240 || (hasManual && bodyText.length > 120)) &&
+    (isExplain || hasMultipleBlocks);
 
   return (
     <div data-testid="slide-inspector" className="p-4 space-y-6">

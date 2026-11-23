@@ -127,6 +127,19 @@ export function resolveFontFamily(font?: string): string | undefined {
 }
 
 /**
+ * Checks if any run in the RichText document has a manually specified font size mark.
+ * Per Spec §5.3, if manual size is set on a text run, auto-fit is disabled for that
+ * element and only the overflow warning applies.
+ */
+export function hasManualTextSize(doc?: RichText | string): boolean {
+  if (!doc || typeof doc === 'string') return false;
+  if (!doc.blocks || !Array.isArray(doc.blocks)) return false;
+  return doc.blocks.some((block) =>
+    block.runs.some((run) => typeof run.marks?.size === 'number')
+  );
+}
+
+/**
  * Converts a RichText document into Tiptap JSON document representation.
  */
 export function richTextToTiptapJSON(doc: RichText): JSONContent {

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { RichText, RichTextBlock, RichTextRun } from '../core/schema';
-import { parsePlainTextToRichText, isArabicText, resolveFontFamily, detectRunDirection } from '../core/richText';
+import { parsePlainTextToRichText, isArabicText, resolveFontFamily, detectRunDirection, hasManualTextSize } from '../core/richText';
 
 export interface RichTextRendererProps {
   content: RichText | string;
@@ -23,10 +23,12 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
     return null;
   }
 
+  const hasManual = hasManualTextSize(doc);
+
   // If single block and single run and inline requested:
   if (inline && doc.blocks.length === 1 && doc.blocks[0]!.type === 'p') {
     return (
-      <span className={`rich-text-inline ${className}`.trim()} style={{ ...style }} dir={dir}>
+      <span className={`rich-text-inline ${className}`.trim()} style={{ ...style }} dir={dir} data-manual-size={hasManual ? 'true' : undefined}>
         {doc.blocks[0]!.runs.map((run, i) => (
           <RunRenderer key={i} run={run} />
         ))}
@@ -79,6 +81,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
   return (
     <div
       className={`rich-text-document ${className}`.trim()}
+      data-manual-size={hasManual ? 'true' : undefined}
       style={{
         display: 'flex',
         flexDirection: 'column',
