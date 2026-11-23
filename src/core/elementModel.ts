@@ -59,6 +59,11 @@ export function rotateElementGeometry(geometry: ElementGeometry, degrees: number
   return { ...geometry, rotation: ((degrees % 360) + 360) % 360 };
 }
 
+export function scaleElementGeometry(geometry: ElementGeometry, factor: number): ElementGeometry {
+  const safeFactor = Math.max(0.1, Math.min(10, factor));
+  return { ...geometry, w: Math.max(0.02, geometry.w * safeFactor), h: Math.max(0.02, geometry.h * safeFactor) };
+}
+
 function resolveFrame(frame: LayoutFrame, override?: ElementOverride): ResolvedElement {
   return {
     id: frame.id,

@@ -1,6 +1,6 @@
 import { plainTextFieldsToRichText, richTextToPlainText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { EditorDesktop } from '../../src/ui/editor/EditorDesktop';
 import { useProjectStore } from '../../src/store/projectStore';
 import { useSettingsStore } from '../../src/store/settingsStore';
@@ -68,6 +68,39 @@ describe('EditorDesktop component (Task P3-5)', () => {
     render(<EditorDesktop />);
     fireEvent.click(screen.getByTestId('element-hit-title'));
     expect(screen.getByTestId('reset-title')).toBeInTheDocument();
+  });
+
+  it('supports keyboard nudging and announces the change', () => {
+    render(<EditorDesktop />);
+    const title = screen.getByTestId('element-hit-title');
+    expect(title).toHaveAttribute('tabindex', '0');
+    act(() => title.focus());
+    act(() => fireEvent.keyDown(title, { key: 'ArrowRight' }));
+    expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.dx).toBeCloseTo(1 / 1080);
+    expect(screen.getByTestId('canvas-live-announcement')).toHaveTextContent('title moved');
+  });
+
+  it('exposes numeric geometry fields for the selected element', () => {
+    render(<EditorDesktop />);
+    fireEvent.click(screen.getByTestId('element-hit-title'));
+    act(() => fireEvent.change(screen.getByRole('spinbutton', { name: 'X position (%)' }), { target: { value: '20' } }));
+    expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.dx).toBeCloseTo(0.12);
+  });
+
+  it('duplicates and deletes an extra with the keyboard', () => {
+    useProjectStore.getState().setProject({
+      ...initialProject,
+      slides: [{ ...initialProject.slides[0]!, extras: [{ id: 'star', kind: 'shape', x: 0.2, y: 0.2, w: 0.1, h: 0.1, rotation: 0, z: 2, locked: false, shape: 'ellipse' }] }],
+    });
+    render(<EditorDesktop />);
+    const star = screen.getByTestId('element-hit-star');
+    act(() => star.focus());
+    act(() => fireEvent.keyDown(star, { key: 'd', ctrlKey: true }));
+    const extrasAfterDuplicate = useProjectStore.getState().project.slides[0]!.extras!;
+    expect(extrasAfterDuplicate).toHaveLength(2);
+    const copy = screen.getByTestId(`element-hit-${extrasAfterDuplicate[1]!.id}`);
+    act(() => fireEvent.keyDown(copy, { key: 'Delete' }));
+    expect(useProjectStore.getState().project.slides[0]!.extras).toHaveLength(1);
   });
 
   it('allows editing project title in the top bar', () => {

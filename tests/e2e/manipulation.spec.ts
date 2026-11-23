@@ -27,7 +27,7 @@ test('canvas selects, moves, and resets a layout slot through normalized overrid
   await expect.poll(() => title.evaluate((node) => (node as HTMLElement).style.left)).not.toBe(before);
   await expect(page.locator('[data-testid="snap-guide"]')).toHaveCount(0);
   await page.getByTestId('reset-title').click();
-  await expect(title).toHaveAttribute('style', /left: 8%/);
+  await expect.poll(async () => Number.parseFloat(await title.evaluate((node) => (node as HTMLElement).style.left))).toBeCloseTo(Number.parseFloat(before), 3);
 });
 
 test('manipulation overlay review matrix', async ({ page }) => {

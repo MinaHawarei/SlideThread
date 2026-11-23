@@ -166,6 +166,8 @@ export interface ProjectState {
   updateSlideMedia: (id: string, media?: MediaRef) => void;
   updateSlotOverride: (slideId: string, aspect: AspectClass, elementId: string, override?: ElementOverride) => void;
   updateExtraElement: (slideId: string, extra: ExtraElement) => void;
+  addExtraElement: (slideId: string, extra: ExtraElement) => void;
+  deleteExtraElement: (slideId: string, extraId: string) => void;
   setSlideType: (id: string, nextType: SlideType) => void;
   toggleHideSignature: (id: string) => void;
   splitSlide: (id: string) => void;
@@ -393,6 +395,26 @@ export const useProjectStore = create<ProjectState>()(
                 ...slide,
                 extras: (slide.extras ?? []).map((item) => item.id === extra.id ? extra : item),
               }),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        addExtraElement: (slideId, extra) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((slide) => slide.id === slideId ? { ...slide, extras: [...(slide.extras ?? []), extra] } : slide),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        deleteExtraElement: (slideId, extraId) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((slide) => slide.id === slideId ? { ...slide, extras: (slide.extras ?? []).filter((extra) => extra.id !== extraId) } : slide),
               updatedAt: Date.now(),
             },
           }));
