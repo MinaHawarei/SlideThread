@@ -1149,3 +1149,12 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress).
 - Remaining / next step: Implement overrides and extras rendering in `SlideRenderer`, add unit and e2e export tests verifying overrides and extras survive export with golden compare, and verify test suite.
 - Needs from the owner: None.
+
+
+### R3-6 — done — 2026-11-23 18:50 — Antigravity
+- Branch / commit: feature/r3-6 / `93ec142`
+- What changed (files): Applied layout slot overrides (position offset, scale, z-index, visibility) directly inside `SlideRenderer.tsx` using `SLOT_SELECTORS`; created `src/slides/ExtrasRenderer.tsx` to render user-added extras (shapes, text, media, icons) from the model; updated `CanvasManipulationLayer.tsx` to use shared selectors and synchronized visibility; added unit tests in `slides.test.tsx`; added export fidelity E2E test and 12-state review matrix in `tests/e2e/exportFidelity.spec.ts`; saved screenshots and `REVIEW.md` in `docs/ux-review/R3-6/`.
+- Decisions / deviations from the plan: Slot element overrides and user extras render directly from the data model inside `SlideRenderer` so the offscreen staging container in `ExportDialog` automatically captures full-fidelity exports matching the on-screen preview without any editor overlays or manipulation chrome.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (55 files, 427 passed), `npm run build`, and `npx playwright test tests/e2e/exportFidelity.spec.ts tests/e2e/layerControls.spec.ts tests/e2e/manipulation.spec.ts` (8 passed).
+- Remaining / next step: GR3 verification (Gate GR3).
+- Needs from the owner: None.
