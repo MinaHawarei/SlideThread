@@ -1113,3 +1113,12 @@ Agent name: Antigravity
 - Tests run and result: N/A (task in progress).
 - Remaining / next step: Inspect current mobile canvas and manipulation layer, then implement touch drag/pinch/two-finger rotation, 44 px targets, and toolbar; run required suites and screenshot matrix.
 - Needs from the owner: None.
+
+
+### R3-4 — done — 2026-11-23 17:10 — Codex
+- Branch / commit: feature/r3-4 / `ab13d5c`
+- What changed (files): Added the manipulation layer to the scaled mobile slide, touch pointer tracking for pinch scaling and extra rotation, 44 px resize/rotate handles, a bilingual mobile scale/reset toolbar below the slide, and suppression of slide-swipe handling during manipulation. Added viewport and target-size E2E coverage plus a 12-state review pack in `docs/ux-review/R3-4/`.
+- Decisions / deviations from the plan: Used native Pointer Events from R0-2; no dependency added. The existing D-09 QA checklist already has exact owner steps for real Android/iOS touch and performance checks. Browser automation verified responsive widths and target dimensions; physical device gestures remain owner-only. Pinch scales slots/extras; rotation from pinch applies to extras only.
+- Tests run and result: `npm run lint`, `npm run typecheck`, full `npm test -- --reporter=dot` (421 passed / 55 files), and `npm run build` passed. Touch-target tests at 360×800 and 390×844 passed; screenshot review matrix passed at 360×800, 768×1024, and 1440×900 in light/dark and LTR/RTL. Full E2E: 73 passed / 1 failed; the existing R0-6 UX preview test expects an outdated Arabic heading (`اختر إطارك الأول.`). Build emits existing Zod Rollup annotation notices.
+- Remaining / next step: R3-5, contextual selection toolbar and layers panel (lock, hide, reorder).
+- Needs from the owner: Perform the D-09 physical iOS Safari and Android Chrome manipulation checks before release.
