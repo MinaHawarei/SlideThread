@@ -198,6 +198,8 @@ export const en = {
   'editor.elementWidth': 'Width (%)',
   'editor.elementScale': 'Scale (%)',
   'editor.elementRotation': 'Rotation (°)',
+  'editor.scaleDown': 'Scale down',
+  'editor.scaleUp': 'Scale up',
   'editor.selectedAnnouncement': '{id} selected',
   'editor.movedAnnouncement': '{id} moved',
   'editor.deletedAnnouncement': '{id} deleted',

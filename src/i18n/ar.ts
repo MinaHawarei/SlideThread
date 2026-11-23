@@ -200,6 +200,8 @@ export const ar: Record<TranslationKey, string> = {
   'editor.elementWidth': 'العرض (%)',
   'editor.elementScale': 'المقياس (%)',
   'editor.elementRotation': 'الدوران (°)',
+  'editor.scaleDown': 'تصغير',
+  'editor.scaleUp': 'تكبير',
   'editor.selectedAnnouncement': 'تم تحديد {id}',
   'editor.movedAnnouncement': 'تم تحريك {id}',
   'editor.deletedAnnouncement': 'تم حذف {id}',

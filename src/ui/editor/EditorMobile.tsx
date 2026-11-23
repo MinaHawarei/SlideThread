@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { useSettingsStore } from '../../store/settingsStore';
+import { useSelectionStore } from '../../store/selectionStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
@@ -14,6 +15,7 @@ import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { handleExportProject } from '../../core/projectIO';
 import { SizeWarningModal } from '../common/SizeWarningModal';
+import { CanvasManipulationLayer } from './CanvasManipulationLayer';
 
 export type MobileTab = 'slides' | 'edit' | 'design' | 'export';
 
@@ -32,6 +34,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
   const setActiveSlideId = useProjectStore((state) => state.setActiveSlideId);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
   const settings = useSettingsStore((state) => state.settings);
+  const selectedElementId = useSelectionStore((state) => state.selectedElementId);
 
   const activeSlide = useActiveSlide();
   const slides = project.slides;
@@ -245,17 +248,19 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         data-testid="mobile-canvas"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        style={selectedElementId ? { paddingBottom: 88 } : undefined}
         className="flex-1 flex flex-col items-center justify-center p-3 relative overflow-hidden bg-slate-100 dark:bg-slate-950"
       >
         {/* Scaled Slide Box */}
         {currentSlide && (
           <div
             data-testid="mobile-scaled-slide-container"
+            className="relative"
             style={{
               width: `${scaledWidth}px`,
               height: `${scaledHeight}px`,
               position: 'relative',
-              overflow: 'hidden',
+              overflow: 'visible',
               borderRadius: '12px',
               boxShadow: '0 12px 28px -6px rgba(0, 0, 0, 0.35)',
               background: palette.bg,
@@ -289,11 +294,12 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 dimensions={dims}
               />
             </div>
+            <CanvasManipulationLayer slide={currentSlide} aspect={aspect} width={scaledWidth} height={scaledHeight} zoom={scale} />
           </div>
         )}
 
         {/* Floating Bottom Canvas Nav Pill (Previous / Counter / Next) */}
-        <div className="absolute bottom-3 inset-x-0 flex justify-center pointer-events-none">
+        {!selectedElementId && <div className="absolute bottom-3 inset-x-0 flex justify-center pointer-events-none">
           <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded-full shadow-lg border border-slate-200 dark:border-slate-800 flex items-center gap-1.5 pointer-events-auto">
             <button
               type="button"
@@ -324,7 +330,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               ›
             </button>
           </div>
-        </div>
+        </div>}
       </main>
 
       {/* Bottom Tab Bar (Slides | Edit | Design | Export) */}

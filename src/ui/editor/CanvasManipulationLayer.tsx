@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
 import { resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotateElementGeometry, scaleElementGeometry, type ElementGeometry, type ResolvedElement } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
@@ -14,7 +14,7 @@ interface CanvasManipulationLayerProps {
   zoom: number;
 }
 
-type Gesture = { pointerId: number; startX: number; startY: number; startAngle: number; initial: ElementGeometry; mode: 'move' | 'resize' | 'rotate' };
+type Gesture = { pointerIds: number[]; startX: number; startY: number; startAngle: number; startDistance: number; initial: ElementGeometry; mode: 'move' | 'resize' | 'rotate' | 'pinch' };
 
 export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = ({ slide, aspect, width, height, zoom }) => {
   const { t } = useT();
@@ -29,9 +29,23 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const deleteExtraElement = useProjectStore((state) => state.deleteExtraElement);
   const [preview, setPreview] = useState<{ id: string; geometry: ElementGeometry; guides: Array<{ axis: 'x' | 'y'; at: number }> }>();
   const [announcement, setAnnouncement] = useState('');
+  const [touchLayout, setTouchLayout] = useState(false);
   const gesture = useRef<Gesture>();
+  const activePointers = useRef(new Map<number, { x: number; y: number }>());
   const layerRef = useRef<HTMLDivElement>(null);
   const [measuredGeometry, setMeasuredGeometry] = useState<Record<string, ElementGeometry>>({});
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') {
+      setTouchLayout(window.innerWidth <= 639);
+      return;
+    }
+    const query = window.matchMedia('(max-width: 639px)');
+    const update = () => setTouchLayout(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
 
   useLayoutEffect(() => {
     const stage = layerRef.current?.parentElement;
@@ -150,29 +164,47 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     event.preventDefault();
     event.stopPropagation();
     selectElement(element.id);
-    event.currentTarget.setPointerCapture(event.pointerId);
+    try { event.currentTarget.setPointerCapture(event.pointerId); } catch { /* Synthetic pointer events do not have an active pointer to capture. */ }
     const rect = event.currentTarget.closest('[data-testid="manipulation-layer"]')?.getBoundingClientRect();
     const startAngle = rect && rect.width && rect.height
       ? Math.atan2((event.clientY - rect.top) / rect.height - element.y - element.h / 2, (event.clientX - rect.left) / rect.width - element.x - element.w / 2)
       : 0;
-    gesture.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      startAngle,
-      initial: { x: element.x, y: element.y, w: element.w, h: element.h, rotation: element.rotation },
-      mode,
-    };
+    activePointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const active = gesture.current;
+    const initial = { x: element.x, y: element.y, w: element.w, h: element.h, rotation: element.rotation };
+    if (event.pointerType === 'touch' && active && active.pointerIds.length === 1 && active.mode === 'move') {
+      const first = activePointers.current.get(active.pointerIds[0]!);
+      if (first) {
+        const dx = event.clientX - first.x;
+        const dy = event.clientY - first.y;
+        gesture.current = { pointerIds: [...active.pointerIds, event.pointerId], startX: (first.x + event.clientX) / 2, startY: (first.y + event.clientY) / 2, startAngle: Math.atan2(dy, dx), startDistance: Math.hypot(dx, dy), initial: active.initial, mode: 'pinch' };
+        try { event.currentTarget.setPointerCapture(event.pointerId); } catch { /* Synthetic pointer events do not have an active pointer to capture. */ }
+        return;
+      }
+    }
+    gesture.current = { pointerIds: [event.pointerId], startX: event.clientX, startY: event.clientY, startAngle, startDistance: 0, initial, mode };
   };
 
   const move = (event: React.PointerEvent<HTMLElement>, element: ResolvedElement) => {
     const active = gesture.current;
-    if (!active || active.pointerId !== event.pointerId) return;
+    if (!active || !active.pointerIds.includes(event.pointerId)) return;
+    activePointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     const rect = event.currentTarget.closest('[data-testid="manipulation-layer"]')?.getBoundingClientRect();
     if (!rect || !rect.width || !rect.height) return;
-    const dx = (event.clientX - active.startX) / rect.width;
-    const dy = (event.clientY - active.startY) / rect.height;
+    const points = active.pointerIds.map((id) => activePointers.current.get(id)).filter((point): point is { x: number; y: number } => Boolean(point));
+    let dx = (event.clientX - active.startX) / rect.width;
+    let dy = (event.clientY - active.startY) / rect.height;
     let geometry = active.initial;
+    if (active.mode === 'pinch' && points.length === 2) {
+      const deltaX = points[1]!.x - points[0]!.x;
+      const deltaY = points[1]!.y - points[0]!.y;
+      const distance = Math.hypot(deltaX, deltaY);
+      const scale = active.startDistance ? distance / active.startDistance : 1;
+      dx = ((points[0]!.x + points[1]!.x) / 2 - active.startX) / rect.width;
+      dy = ((points[0]!.y + points[1]!.y) / 2 - active.startY) / rect.height;
+      const moved = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy, w: Math.max(0.02, active.initial.w * scale), h: Math.max(0.02, active.initial.h * scale) };
+      geometry = element.kind === 'slot' ? moved : rotateElementGeometry(moved, active.initial.rotation + (Math.atan2(deltaY, deltaX) - active.startAngle) * 180 / Math.PI);
+    }
     if (active.mode === 'move') geometry = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy };
     if (active.mode === 'resize') geometry = resizeElementGeometry(active.initial, dx, dy, element.kind === 'image' || element.kind === 'sticker');
     if (active.mode === 'rotate') {
@@ -185,12 +217,23 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
 
   const end = (event: React.PointerEvent<HTMLElement>, element: ResolvedElement) => {
     const active = gesture.current;
-    if (!active || active.pointerId !== event.pointerId) return;
+    if (!active || !active.pointerIds.includes(event.pointerId)) return;
+    activePointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     const rect = event.currentTarget.closest('[data-testid="manipulation-layer"]')?.getBoundingClientRect();
     if (rect && rect.width && rect.height) {
-      const dx = (event.clientX - active.startX) / rect.width;
-      const dy = (event.clientY - active.startY) / rect.height;
+      const points = active.pointerIds.map((id) => activePointers.current.get(id)).filter((point): point is { x: number; y: number } => Boolean(point));
+      let dx = (event.clientX - active.startX) / rect.width;
+      let dy = (event.clientY - active.startY) / rect.height;
       let geometry = active.initial;
+      if (active.mode === 'pinch' && points.length === 2) {
+        const deltaX = points[1]!.x - points[0]!.x;
+        const deltaY = points[1]!.y - points[0]!.y;
+        const scale = active.startDistance ? Math.hypot(deltaX, deltaY) / active.startDistance : 1;
+        dx = ((points[0]!.x + points[1]!.x) / 2 - active.startX) / rect.width;
+        dy = ((points[0]!.y + points[1]!.y) / 2 - active.startY) / rect.height;
+        const moved = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy, w: Math.max(0.02, active.initial.w * scale), h: Math.max(0.02, active.initial.h * scale) };
+        geometry = element.kind === 'slot' ? moved : rotateElementGeometry(moved, active.initial.rotation + (Math.atan2(deltaY, deltaX) - active.startAngle) * 180 / Math.PI);
+      }
       if (active.mode === 'move') geometry = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy };
       if (active.mode === 'resize') geometry = resizeElementGeometry(active.initial, dx, dy, element.kind === 'image' || element.kind === 'sticker');
       if (active.mode === 'rotate') {
@@ -200,7 +243,13 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       if (active.mode === 'move') geometry = snapElementGeometry(geometry, 6 / Math.max(width, height)).geometry;
       persistGeometry(element, geometry);
     }
-    gesture.current = undefined;
+    activePointers.current.delete(event.pointerId);
+    if (active.pointerIds.length > 1 && active.pointerIds.some((id) => id !== event.pointerId)) {
+      const remaining = active.pointerIds.find((id) => id !== event.pointerId)!;
+      const point = activePointers.current.get(remaining);
+      if (point) gesture.current = { pointerIds: [remaining], startX: point.x, startY: point.y, startAngle: active.startAngle, startDistance: 0, initial: preview?.geometry ?? active.initial, mode: 'move' };
+      else gesture.current = undefined;
+    } else gesture.current = undefined;
     setPreview(undefined);
   };
 
@@ -210,7 +259,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   };
 
   return (
-    <div ref={layerRef} aria-label={t('editor.manipulationOverlay')} data-testid="manipulation-layer" style={{ position: 'absolute', inset: 0, width, height, zIndex: 20, pointerEvents: 'none' }}>
+    <div ref={layerRef} aria-label={t('editor.manipulationOverlay')} data-testid="manipulation-layer" onTouchStart={(event) => event.stopPropagation()} onTouchMove={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()} style={{ position: 'absolute', inset: 0, width, height, zIndex: 20, pointerEvents: 'none' }}>
       {elements.map((modelElement) => {
         const element = measuredGeometry[modelElement.id] && !slide.overrides?.[aspect]?.[modelElement.id]
           ? { ...modelElement, ...measuredGeometry[modelElement.id] }
@@ -234,25 +283,34 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
             onPointerUp={(event) => end(event, element)}
             onPointerCancel={(event) => end(event, element)}
             onClick={() => selectElement(element.id)}
-            style={{ position: 'absolute', zIndex: isSelected ? 25 : 20, left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.w * 100}%`, height: `${shown.h * 100}%`, transform: `rotate(${shown.rotation}deg)`, transformOrigin: 'center', border: isSelected ? '2px solid #0891b2' : '1px solid transparent', background: isSelected ? '#06b6d40d' : 'transparent', pointerEvents: 'auto', cursor: element.locked ? 'default' : 'move', boxSizing: 'border-box' }}
+            style={{ position: 'absolute', zIndex: isSelected ? 25 : 20, left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.w * 100}%`, height: `${shown.h * 100}%`, transform: `rotate(${shown.rotation}deg)`, transformOrigin: 'center', border: isSelected ? '2px solid #0891b2' : '1px solid transparent', background: isSelected ? '#06b6d40d' : 'transparent', pointerEvents: 'auto', touchAction: touchLayout ? 'none' : undefined, cursor: element.locked ? 'default' : 'move', boxSizing: 'border-box' }}
           >
             {isSelected && !element.locked && <>
-              <div data-testid="element-numeric-inspector" onPointerDown={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -164, insetInlineStart: 8, zIndex: 3, display: 'flex', flexWrap: 'wrap', gap: 6, width: 460, padding: 8, borderRadius: 8, background: 'white', color: '#0f172a', boxShadow: '0 4px 18px #0003', transform: `scale(${1 / zoom})`, transformOrigin: 'top left', pointerEvents: 'auto' }}>
-                {(['x', 'y', 'w', 'scale'] as const).map((field) => {
+              {!touchLayout && <div data-testid="element-numeric-inspector" onPointerDown={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()} style={{ position: 'absolute', top: -164, insetInlineStart: 8, zIndex: 3, display: 'flex', flexWrap: 'wrap', gap: 6, width: 460, padding: 8, borderRadius: 8, background: 'white', color: '#0f172a', boxShadow: '0 4px 18px #0003', transform: `scale(${1 / zoom})`, transformOrigin: 'top left', pointerEvents: 'auto' }}>
+                {!touchLayout && (['x', 'y', 'w', 'scale'] as const).map((field) => {
                   const labelKey = field === 'x' ? 'editor.xPosition' : field === 'y' ? 'editor.yPosition' : field === 'w' ? 'editor.elementWidth' : 'editor.elementScale';
                   const baseWidth = element.frame?.inlineSize ?? element.w;
                   const current = field === 'x' ? element.x * 100 : field === 'y' ? element.y * 100 : field === 'w' ? element.w * 100 : element.w / baseWidth * 100;
                   return <label key={field} style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 12 }}><span>{t(labelKey)}</span><input aria-label={t(labelKey)} type="number" step="1" value={Math.round(current)} onChange={(event) => applyNumericGeometry(element, field, Number(event.target.value))} style={{ width: 72, minHeight: 36, border: '1px solid #94a3b8', borderRadius: 4, padding: '4px 6px', fontSize: 14 }} /></label>;
                 })}
-                {element.kind !== 'slot' && <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 12 }}><span>{t('editor.elementRotation')}</span><input aria-label={t('editor.elementRotation')} type="number" step="1" value={Math.round(element.rotation)} onChange={(event) => applyNumericGeometry(element, 'rotation', Number(event.target.value))} style={{ width: 72, minHeight: 36, border: '1px solid #94a3b8', borderRadius: 4, padding: '4px 6px', fontSize: 14 }} /></label>}
+                {!touchLayout && element.kind !== 'slot' && <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 12 }}><span>{t('editor.elementRotation')}</span><input aria-label={t('editor.elementRotation')} type="number" step="1" value={Math.round(element.rotation)} onChange={(event) => applyNumericGeometry(element, 'rotation', Number(event.target.value))} style={{ width: 72, minHeight: 36, border: '1px solid #94a3b8', borderRadius: 4, padding: '4px 6px', fontSize: 14 }} /></label>}
               </div>
-              <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', insetInlineEnd: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize' }} />
+              }
+              <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', right: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize' }} />
               {element.kind !== 'slot' && <button aria-label={t('editor.rotateElement')} data-testid={`rotate-${element.id}`} onPointerDown={(event) => begin(event, element, 'rotate')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', left: '50%', top: -50, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#7c3aed', pointerEvents: 'auto', touchAction: 'none', cursor: 'grab' }} />}
-              <button aria-label={t('editor.resetElement')} data-testid={`reset-${element.id}`} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); reset(element); }} style={{ position: 'absolute', insetInlineStart: 0, top: -208, border: 0, borderRadius: 4, padding: '3px 6px', background: '#0e7490', color: 'white', fontSize: 12, pointerEvents: 'auto', cursor: 'pointer' }}>{t('editor.resetElement')}</button>
+              {!touchLayout && <button aria-label={t('editor.resetElement')} data-testid={`reset-${element.id}`} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); reset(element); }} style={{ position: 'absolute', insetInlineStart: 0, top: -208, border: 0, borderRadius: 4, padding: '3px 6px', background: '#0e7490', color: 'white', fontSize: 12, pointerEvents: 'auto', cursor: 'pointer' }}>{t('editor.resetElement')}</button>}
             </>}
           </div>
         );
       })}
+      {touchLayout && elements.find((element) => element.id === selectedId && !element.locked) && (() => {
+        const element = elements.find((item) => item.id === selectedId)!;
+        return <div data-testid="mobile-selection-toolbar" role="toolbar" aria-label={t('editor.manipulationOverlay')} onPointerDown={(event) => event.stopPropagation()} style={{ position: 'absolute', bottom: -64, insetInline: 8, zIndex: 40, display: 'flex', justifyContent: 'center', gap: 8, padding: 6, borderRadius: 14, background: 'white', color: '#0f172a', boxShadow: '0 3px 14px #0004', pointerEvents: 'auto' }}>
+          <button type="button" aria-label={t('editor.scaleDown')} onClick={() => persistGeometry(element, scaleElementGeometry({ x: element.x, y: element.y, w: element.w, h: element.h, rotation: element.rotation }, 0.9))} style={{ minWidth: 44, minHeight: 44, borderRadius: 10, background: '#e2e8f0', fontSize: 20 }}>−</button>
+          <button type="button" aria-label={t('editor.scaleUp')} onClick={() => persistGeometry(element, scaleElementGeometry({ x: element.x, y: element.y, w: element.w, h: element.h, rotation: element.rotation }, 1.1))} style={{ minWidth: 44, minHeight: 44, borderRadius: 10, background: '#e2e8f0', fontSize: 20 }}>+</button>
+          <button type="button" aria-label={t('editor.resetElement')} onClick={() => reset(element)} style={{ minHeight: 44, borderRadius: 10, padding: '0 14px', background: '#0e7490', color: 'white', fontWeight: 600 }}>{t('editor.resetElement')}</button>
+        </div>;
+      })()}
       {preview?.guides.map((guide, index) => <div key={`${guide.axis}-${index}`} data-testid="snap-guide" style={{ position: 'absolute', ...(guide.axis === 'x' ? { insetBlock: 0, left: `${guide.at * 100}%`, width: 1 } : { insetInline: 0, top: `${guide.at * 100}%`, height: 1 }), background: '#0ea5e9', pointerEvents: 'none' }} />)}
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only" data-testid="canvas-live-announcement">{announcement}</div>
     </div>

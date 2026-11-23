@@ -1,0 +1,66 @@
+import { test, expect, type Page } from '@playwright/test';
+
+async function createEditor(page: Page) {
+  await page.goto('/');
+  await page.getByTestId('start-wizard-btn').click();
+  await page.getByTestId('platform-linkedin').click();
+  await page.getByTestId('wizard-next-btn').click();
+  await page.getByTestId('type-carousel').click();
+  await page.getByTestId('wizard-next-btn').click();
+  await page.getByTestId('format-r_4_5').click();
+  await page.getByTestId('wizard-next-btn').click();
+  await page.getByTestId('template-tech-mesh').click();
+  await page.getByTestId('wizard-create-btn').click();
+}
+
+test('mobile canvas exposes touch targets at both required widths', async ({ page }) => {
+  await createEditor(page);
+  for (const [width, height] of [[360, 800], [390, 844]] as const) {
+    await page.setViewportSize({ width, height });
+    const title = page.getByTestId('element-hit-title');
+    await title.click();
+    const toolbar = page.getByTestId('mobile-selection-toolbar');
+    await expect(toolbar).toBeVisible();
+    const buttons = toolbar.getByRole('button');
+    await expect(buttons).toHaveCount(3);
+    for (let i = 0; i < 3; i += 1) {
+      const box = await buttons.nth(i).boundingBox();
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+      expect(box?.width).toBeGreaterThanOrEqual(44);
+    }
+    const resizeHandle = page.getByTestId('resize-title');
+    const handleBox = await resizeHandle.boundingBox();
+    expect(handleBox?.height).toBeGreaterThanOrEqual(44);
+    expect(handleBox?.width).toBeGreaterThanOrEqual(44);
+
+    const before = await title.evaluate((node) => Number.parseFloat((node as HTMLElement).style.width));
+    await toolbar.getByRole('button', { name: 'Scale down' }).click();
+    await expect.poll(async () => Number.parseFloat(await title.evaluate((node) => (node as HTMLElement).style.width))).toBeLessThan(before);
+  }
+});
+
+test('touch manipulation review matrix', async ({ page }) => {
+  test.setTimeout(120000);
+  await createEditor(page);
+  for (const [width, height] of [[360, 800], [768, 1024], [1440, 900]] as const) {
+    await page.setViewportSize({ width, height });
+    await expect(page.getByTestId(width < 768 ? 'mobile-bottom-tabs' : 'tab-design')).toBeVisible();
+    for (const theme of ['light', 'dark']) {
+      if (width < 640) await page.getByTestId('mobile-tab-design').click();
+      else await page.getByTestId('tab-design').click();
+      await page.getByTestId(`design-theme-${theme}`).click();
+      if (width < 640) {
+        await page.getByTestId('mobile-sheet-close-btn').click();
+        await page.getByTestId('mobile-tab-slides').click();
+      }
+      if (width < 768) await page.getByTestId('element-hit-title').click();
+      else await page.getByTestId('element-hit-title').focus();
+      for (const direction of ['ltr', 'rtl']) {
+        if (await page.locator('html').getAttribute('dir') !== direction) await page.getByTestId('language-switcher').click();
+        await expect(page.locator('html')).toHaveAttribute('dir', direction);
+        await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
+        await page.screenshot({ path: `docs/ux-review/R3-4/editor-${width}x${height}-${theme}-${direction}.png` });
+      }
+    }
+  }
+});
