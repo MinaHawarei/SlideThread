@@ -1104,3 +1104,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, full `npm test -- --reporter=dot` (421 passed / 55 files), and `npm run build` passed. Targeted manipulation and accessibility Playwright tests passed (4/4). Full E2E passed 71/72; the remaining failure is the existing stale R0-6 Arabic heading assertion in `uxPreview.spec.ts`. Build emits existing Zod Rollup annotation notices.
 - Remaining / next step: R3-4, touch editing with drag, pinch, rotate, large handles, and bottom toolbar.
 - Needs from the owner: None.
+
+
+### R3-4 — started — 2026-11-23 16:44 — Codex
+- Branch / commit: feature/r3-4
+- What changed (files): `docs/TASKS.md` (claimed R3-4).
+- Decisions / deviations from the plan: Continue the native Pointer Events implementation from R3-2; provide touch-sized handles and a mobile bottom toolbar while keeping all editor chrome out of export.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Inspect current mobile canvas and manipulation layer, then implement touch drag/pinch/two-finger rotation, 44 px targets, and toolbar; run required suites and screenshot matrix.
+- Needs from the owner: None.
