@@ -1030,3 +1030,20 @@ Agent name: Antigravity
 - Tests run and result: Followed the guide's theme-only example: scaffolded `creator-notes`, generated a 21,242-byte preview, passed `npm run template:validate` with 96 stress-render combinations, regenerated the index, and verified the dev route rendered the contributed ID without browser errors. After removing the temporary template, preview and index `--check` commands passed. `npm run lint`, `npm run typecheck`, `npm test -- --reporter=dot` (409 passed / 53 files), `npm run build`, and `git diff --check` passed. Build keeps the existing Zod Rollup annotation notices. Full app E2E was not rerun because this task changes contributor documentation only.
 - Remaining / next step: R2-9, gallery data layer.
 - Needs from the owner: None.
+
+
+### R2-9 — started — 2026-11-23 15:28 — Codex
+- Branch / commit: feature/r2-9
+- What changed (files): `docs/TASKS.md` (claimed R2-9).
+- Decisions / deviations from the plan: Use `src/templates/registry/index.json` as the generated data source; keep starter cards' existing presentation and localStorage favorites while moving category/mode/format/language filtering into a tested data layer.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Inspect the Gallery page, locales, generated index and existing favorites/tests; implement filter/search logic with ordinary category handling and planned-empty hiding.
+- Needs from the owner: None.
+
+### R2-9 — done — 2026-11-23 15:48 — Codex
+- Branch / commit: feature/r2-9 / `53d5ad5`
+- What changed (files): Added a gallery data layer backed by the generated template index and category registry; added bilingual template cards/search/categories, format/language/mode filters, empty state, and localStorage favorites with cross-tab sync. Added pure filter/favorite/category tests and a browser test; updated the guide to describe the new gallery data integration.
+- Decisions / deviations from the plan: Categories are shown whenever populated regardless of `status`; planned Coptic and Islamic categories remain available as ordinary categories and are hidden only while empty. Existing visual slide renderer remains based on registered adapters; this task supplies generated card/filter data and does not create a renderer for arbitrary manifests.
+- Tests run and result: `npm run lint`, `npm run typecheck`, full `npm test -- --reporter=dot` (413 passed / 54 files), `npm run build`, `git diff --check`, `npm run template:validate` (80 stress combinations), `npm run template:index -- --check`, and `npm run template:preview -- --check` passed. Gallery E2E: 3 passed, including search/category/favorite persistence. GR2 mesh checks: 3 unit tests and the exported-crop seam E2E passed. The first full-unit run concurrent with build/stress validation had one unrelated existing StartScreen project-import timing failure; isolated test and subsequent full suite both passed. Build emits existing Zod Rollup annotation notices.
+- Remaining / next step: GR2 gate verification; then R3-1, element model plumbing.
+- Needs from the owner: None.
