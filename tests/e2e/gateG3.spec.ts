@@ -35,7 +35,7 @@ test.describe('Gate G3 Verification Flow', () => {
     await page.locator('[data-testid="wizard-next-btn"]').click();
 
     // Step 4: Select Template (Network) -> Finish / Create
-    await page.locator('[data-testid="template-network"]').click();
+    await page.locator('[data-testid="template-tech-mesh"]').click();
     await page.locator('[data-testid="wizard-create-btn"]').click();
 
     // 3. Desktop Editor loads
@@ -68,7 +68,7 @@ test.describe('Gate G3 Verification Flow', () => {
     await expect(page.locator('[data-testid="change-format-dialog"]')).not.toBeVisible();
 
     // 7. Test Template Switching (switch to Clean template)
-    await page.locator('[data-testid="design-template-clean"]').click();
+    await page.locator('[data-testid="design-template-clean-minimal"]').click();
 
     // 8. Test Color Switching (choose emerald green preset #10B981)
     await page.locator('[data-testid="design-preset-10B981"]').click();

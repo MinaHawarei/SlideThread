@@ -285,6 +285,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 showSafeZones={showSafeZones}
                 isStory={isStory}
                 templateId={project.templateId}
+                themeMode={project.theme}
                 dimensions={dims}
               />
             </div>

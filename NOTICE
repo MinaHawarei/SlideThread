@@ -370,3 +370,9 @@ License: MIT
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE
+
+
+ORIGINAL TEMPLATE PREVIEW ASSETS
+================================
+
+The five WebP previews under `src/templates/starters/` were captured from the original SlideThread template renderers using in-repository sample content. They are original project assets licensed under MIT. See `ASSET_LICENSES.md` for each file and its source renderer.

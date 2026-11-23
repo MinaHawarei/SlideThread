@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "id": "soft-gradient",
+  "name": { "en": "Soft Gradient", "ar": "تدرّج ناعم" },
+  "description": { "en": "Rounded color fields for friendly explainers.", "ar": "مساحات لونية مستديرة للشرح الودود." },
+  "author": { "name": "SlideThread" },
+  "license": "MIT",
+  "categories": ["lifestyle", "education"],
+  "tags": ["soft", "gradient", "friendly"],
+  "colorFlexible": true,
+  "theme": {
+    "fonts": { "display": "ibm-plex-sans", "body": "ibm-plex-sans-arabic", "mono": "jetbrains-mono" },
+    "typeScale": { "h1": 108, "h2": 72, "body": 42, "small": 28, "mono": 32 },
+    "radius": { "card": 36, "chip": 9999 }
+  },
+  "layouts": { "cover": "cover-centered", "explain": "explain-centered", "rule": "rule-editorial", "compare": "compare-centered", "code": "code-centered", "stat": "stat-centered", "quote": "quote-centered", "image": "image-editorial", "cta": "cta-centered" },
+  "decor": { "background": { "id": "blobs", "params": { "count": 7 }, "intensity": 0.5 }, "overlay": [{ "id": "waves", "params": { "cycles": 1 }, "intensity": 0.18 }] },
+  "formats": "all"
+}

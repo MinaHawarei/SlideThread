@@ -215,8 +215,8 @@ describe('EditorDesktop component (Task P3-5)', () => {
     fireEvent.click(screen.getByTestId('tab-design'));
 
     // Switch template to bold
-    fireEvent.click(screen.getByTestId('design-template-bold'));
-    expect(useProjectStore.getState().project.templateId).toBe('bold');
+    fireEvent.click(screen.getByTestId('design-template-bold-marketing'));
+    expect(useProjectStore.getState().project.templateId).toBe('bold-marketing');
 
     // Pick preset color
     fireEvent.click(screen.getByTestId('design-preset-F43F5E'));

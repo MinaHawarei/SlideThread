@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
-import { getAllTemplates } from '../../templates';
+import { getAllTemplates, getTemplate } from '../../templates';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import type { TemplateId, ThemeMode, TextDir } from '../../core/schema';
 
@@ -49,7 +49,7 @@ export const DesignInspector: React.FC = () => {
         </label>
         <div className="grid grid-cols-3 gap-2">
           {allTemplates.map((tmpl) => {
-            const isSelected = project.templateId === tmpl.id;
+            const isSelected = getTemplate(project.templateId).id === tmpl.id;
             const nameKey = `wizard.template.${tmpl.id}` as const;
 
             return (

@@ -3,11 +3,11 @@ import { render } from '@testing-library/react';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../../src/slides/sampleSlides';
 import { generatePalette, getContrastRatio } from '../../src/core/palette';
-import { getAllTemplates } from '../../src/templates';
+import { getAllTemplates, getTemplate } from '../../src/templates';
 import type { AspectClass, SlideType, TemplateId } from '../../src/core/schema';
 
 describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
-  const templates: TemplateId[] = ['network', 'clean', 'bold'];
+  const templates: TemplateId[] = getAllTemplates().map((template) => template.id);
   const aspectClasses: AspectClass[] = ['landscape', 'square', 'portrait', 'tall'];
   const slideTypes: SlideType[] = [
     'cover',
@@ -21,9 +21,9 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
     'cta',
   ];
 
-  it('all 3 templates are defined in the template registry', () => {
+  it('all 5 starter templates are defined in the template registry', () => {
     const all = getAllTemplates();
-    expect(all.map((t) => t.id)).toEqual(['network', 'clean', 'bold']);
+    expect(all.map((t) => t.id)).toEqual(['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric']);
   });
 
   it('verifies contrast compliance for Dark and Light palettes across all templates', () => {
@@ -61,6 +61,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
                     palette={palette}
                     aspectClass="square"
                     templateId={tmpl}
+                    themeMode={theme}
                     brand={SAMPLE_BRAND_EN}
                     textDir="ltr"
                     slideIndex={1}
@@ -70,7 +71,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
 
                 const canvas = container.querySelector('.slide-canvas');
                 expect(canvas).toBeInTheDocument();
-                expect(canvas).toHaveClass(`template-${tmpl}`);
+                expect(canvas).toHaveClass(`template-${getTemplate(tmpl).className}`);
                 expect(canvas).toHaveAttribute('data-template-id', tmpl);
                 unmount();
               }
@@ -83,6 +84,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
                     palette={palette}
                     aspectClass="portrait"
                     templateId={tmpl}
+                    themeMode={theme}
                     brand={SAMPLE_BRAND_AR}
                     textDir="rtl"
                     slideIndex={1}
@@ -92,7 +94,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
 
                 const canvas = container.querySelector('.slide-canvas');
                 expect(canvas).toBeInTheDocument();
-                expect(canvas).toHaveClass(`template-${tmpl}`);
+                expect(canvas).toHaveClass(`template-${getTemplate(tmpl).className}`);
                 expect(canvas).toHaveAttribute('data-template-id', tmpl);
                 unmount();
               }
@@ -113,6 +115,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
             palette={palette}
             aspectClass={aspect}
             templateId={tmpl}
+            themeMode="dark"
             brand={SAMPLE_BRAND_EN}
             slideIndex={2}
             totalSlides={8}
@@ -121,7 +124,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
 
         const canvas = container.querySelector(`.aspect-${aspect}`);
         expect(canvas).toBeInTheDocument();
-        expect(canvas).toHaveClass(`template-${tmpl}`);
+        expect(canvas).toHaveClass(`template-${getTemplate(tmpl).className}`);
         unmount();
       }
     }

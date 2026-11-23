@@ -8,8 +8,8 @@ import type { SlideType } from '../../src/core/schema';
 
 describe('Bold Template (Spec §7.1, Task P2-2)', () => {
   it('boldTemplate matches specification for large type, color blocks, thick borders, high contrast', () => {
-    expect(boldTemplate.id).toBe('bold');
-    expect(boldTemplate.nameKey).toBe('template.bold');
+    expect(boldTemplate.id).toBe('bold-marketing');
+    expect(boldTemplate.nameKey).toBe('wizard.template.bold-marketing');
     expect(boldTemplate.radius.card).toBe(0);
     expect(boldTemplate.radius.chip).toBe(0);
     expect(boldTemplate.typeScale.h1).toBe(124);

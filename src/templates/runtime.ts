@@ -2,8 +2,7 @@ import type { ThemeMode, SlideType, AspectClass } from '../core/schema';
 import type { Palette } from '../core/palette';
 import { generateDecoration, DECORATION_GENERATORS, type DecorationContext, type DecorationId, type SvgFragment } from './decorations/generators';
 import { getLayoutArchetype, type LayoutArchetype } from './layouts/registry';
-import { sanitizeTemplateCss } from './security/sanitizers';
-import { resolveTemplate, resolveTemplatePalette, TemplateSchema, type TemplateData, type ValidatedTemplateData } from './schema';
+import { resolveTemplate, resolveTemplatePalette, TemplateSchema, type ValidatedTemplateData } from './schema';
 
 export interface TemplateRuntimeTokens {
   palette: Palette;
@@ -15,7 +14,7 @@ export interface TemplateRuntimeTokens {
 const DEFAULT_TYPE_SCALE = { h1: 112, h2: 76, body: 44, small: 30, mono: 34 };
 const DEFAULT_RADIUS = { card: 24, chip: 9999 };
 
-export type TemplateDataLoader = () => Promise<TemplateData | { default: TemplateData }>;
+export type TemplateDataLoader = () => Promise<unknown>;
 export type TemplateDataLoaders = Readonly<Record<string, TemplateDataLoader>>;
 
 export interface TemplateRuntimeRequest {
@@ -91,7 +90,7 @@ export function createTemplateRuntime(loaders: TemplateDataLoaders) {
 
     const pending = (async () => {
       const loaded = await loader();
-      const source = 'default' in loaded ? loaded.default : loaded;
+      const source = typeof loaded === 'object' && loaded !== null && 'default' in loaded ? loaded.default : loaded;
       const parsed = TemplateSchema.parse(source);
       const allTemplates = [parsed];
       if (parsed.extends) allTemplates.unshift(await load(parsed.extends, [...ancestors, id]));
@@ -124,7 +123,7 @@ export function createTemplateRuntime(loaders: TemplateDataLoaders) {
         intensity: decor.intensity,
       }, (request.decorationsEnabled ?? true) && decor.enabled));
     const customCss = template.customCss && request.customCssText
-      ? sanitizeTemplateCss(request.customCssText, template.id)
+      ? (await import('./security/sanitizers')).sanitizeTemplateCss(request.customCssText, template.id)
       : undefined;
 
     return {

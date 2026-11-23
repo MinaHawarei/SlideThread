@@ -19,7 +19,7 @@ const base: TemplateData = {
 
 describe('template schema and resolution', () => {
   it('validates the bilingual category registry and schema-shaped templates', () => {
-    expect(CATEGORY_REGISTRY.map(({ id }) => id)).toEqual(['coding', 'marketing', 'education', 'lifestyle', 'arabic-heritage', 'coptic', 'islamic']);
+    expect(CATEGORY_REGISTRY.map(({ id }) => id)).toEqual(['coding', 'marketing', 'education', 'lifestyle', 'personal-brand', 'general', 'arabic-heritage', 'coptic', 'islamic']);
     expect(TemplateSchema.parse(base).name.ar).toBe('أساس');
     expect(TemplateSchema.safeParse({ ...base, name: { en: 'Missing Arabic' } }).success).toBe(false);
     expect(TemplateSchema.safeParse({ ...base, categories: ['unlisted'] }).success).toBe(false);

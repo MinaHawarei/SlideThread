@@ -2,8 +2,10 @@ import type { TemplateDef } from './types';
 import { NetworkBackground } from './NetworkBackground';
 
 export const networkTemplate: TemplateDef = {
-  id: 'network',
-  nameKey: 'template.network',
+  id: 'tech-mesh',
+  className: 'network',
+  nameKey: 'wizard.template.tech-mesh',
+  previewUrl: new URL('./starters/tech-mesh/preview.webp', import.meta.url).href,
   fonts: {
     display: 'IBM Plex Sans, sans-serif',
     body: 'IBM Plex Sans, IBM Plex Sans Arabic, sans-serif',

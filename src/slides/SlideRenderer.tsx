@@ -41,12 +41,17 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     showSafeZones = false,
     isStory = false,
     templateId = 'network',
+    themeMode = 'dark',
     dimensions,
     className = '',
     style = {},
   } = props;
 
   const template = getTemplate(templateId);
+  const templatePalette = {
+    ...(template.paletteByMode?.[themeMode] ?? palette),
+    ...template.paletteOverridesByMode?.[themeMode],
+  } as typeof palette;
   const renderProps: SlideProps = {
     ...props,
     slide: { ...slide, fields: richTextFieldsToPlainText(slide.fields) },
@@ -59,17 +64,17 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     Boolean(brand && brand.showSignature !== false);
 
   const paletteStyle: React.CSSProperties = {
-    '--bg': palette.bg,
-    '--bg2': palette.bg2,
-    '--ink': palette.ink,
-    '--mute': palette.mute,
-    '--acc': palette.acc,
-    '--acc2': palette.acc2,
-    '--line': palette.line,
-    '--card': palette.card,
-    '--ok': palette.ok,
-    '--bad': palette.bad,
-    '--on-acc': palette.onAcc,
+    '--bg': templatePalette.bg,
+    '--bg2': templatePalette.bg2,
+    '--ink': templatePalette.ink,
+    '--mute': templatePalette.mute,
+    '--acc': templatePalette.acc,
+    '--acc2': templatePalette.acc2,
+    '--line': templatePalette.line,
+    '--card': templatePalette.card,
+    '--ok': templatePalette.ok,
+    '--bad': templatePalette.bad,
+    '--on-acc': templatePalette.onAcc,
     '--card-radius': `${template.radius.card}px`,
     '--chip-radius': `${template.radius.chip}px`,
     '--ts-h1': `${template.typeScale.h1}px`,
@@ -77,6 +82,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     '--ts-body': `${template.typeScale.body}px`,
     '--ts-small': `${template.typeScale.small}px`,
     '--ts-mono': `${template.typeScale.mono}px`,
+    '--template-progress': `${(((slideIndex ?? 0) + 1) / Math.max(totalSlides ?? 1, 1)) * 100}%`,
     direction: textDir && textDir !== 'auto' ? textDir : undefined,
     ...style,
   } as React.CSSProperties;
@@ -112,7 +118,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
 
   return (
     <div
-      className={`slide-canvas aspect-${aspectClass} template-${templateId} ${className}`.trim()}
+      className={`slide-canvas aspect-${aspectClass} template-${template.className} ${className}`.trim()}
       style={paletteStyle}
       data-slide-id={slide.id}
       data-slide-type={slide.type}
@@ -135,7 +141,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
           count={totalSlides ?? 1}
           width={slideDims.width}
           height={slideDims.height}
-          tokens={palette}
+          tokens={templatePalette}
         />
       </div>
 

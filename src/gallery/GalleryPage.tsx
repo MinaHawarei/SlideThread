@@ -3,7 +3,7 @@ import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateId } from '../
 import { generatePalette } from '../core/palette';
 import { SlideRenderer } from '../slides/SlideRenderer';
 import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../slides/sampleSlides';
-import { getAllTemplates } from '../templates';
+import { getAllTemplates, getTemplate } from '../templates';
 import { useT } from '../i18n';
 import { LanguageSwitcher } from '../ui/common/LanguageSwitcher';
 
@@ -35,11 +35,12 @@ export const GalleryPage: React.FC = () => {
   const [theme, setTheme] = useState<ThemeMode>('dark');
   const [lang, setLang] = useState<'en' | 'ar'>('en');
   const [textDir, setTextDir] = useState<TextDir>('auto');
-  const [templateId, setTemplateId] = useState<TemplateId>('network');
+  const [templateId, setTemplateId] = useState<TemplateId>('tech-mesh');
   const [showSafeZones, setShowSafeZones] = useState<boolean>(false);
   const [previewScale, setPreviewScale] = useState<number>(0.22);
 
   const palette = generatePalette(theme === 'dark' ? '#35D0E6' : '#0B7FA6', theme);
+  const selectedTemplate = getTemplate(templateId);
 
   const typesToRender = selectedType === 'all' ? SLIDE_TYPES : [selectedType as SlideType];
   const aspectsToRender = selectedAspect === 'all' ? ASPECT_CLASSES : [selectedAspect as AspectClass];
@@ -134,6 +135,11 @@ export const GalleryPage: React.FC = () => {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div data-testid="template-preview-card" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 10px', border: '1px solid #334155', borderRadius: '10px', background: '#111827' }}>
+            <img src={selectedTemplate.previewUrl} alt="" width="36" height="45" style={{ objectFit: 'cover', borderRadius: '5px' }} />
+            <span style={{ fontSize: '13px', fontWeight: 700 }}>{t(selectedTemplate.nameKey as Parameters<typeof t>[0])}</span>
           </div>
 
           {/* Theme Mode Toggle */}
@@ -284,6 +290,7 @@ export const GalleryPage: React.FC = () => {
                             showCounter={true}
                             showSafeZones={showSafeZones}
                             templateId={templateId}
+                            themeMode={theme}
                             dimensions={dims}
                           />
                         </div>

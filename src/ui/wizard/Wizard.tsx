@@ -14,7 +14,7 @@ import {
   getDimensions,
   aspectClass as calcAspectClass,
 } from '../../core/formats';
-import { getAllTemplates } from '../../templates';
+import { getAllTemplates, getTemplate } from '../../templates';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
 import { Footer } from '../common/Footer';
@@ -70,7 +70,7 @@ export const Wizard: React.FC<WizardProps> = ({
     initialFormatId === 'r_16_9' ? 'landscape' : 'portrait'
   );
   const [templateId, setTemplateId] = useState<TemplateId>(
-    (settings.defaultTemplateId as TemplateId) || initialTemplateId
+    getTemplate((settings.defaultTemplateId as TemplateId) || initialTemplateId).id
   );
 
   // Platform selection handler with matrix reconciliation
@@ -643,6 +643,7 @@ export const Wizard: React.FC<WizardProps> = ({
                     showSafeZones={contentType === 'story' || formatId === 'r_9_16'}
                     isStory={contentType === 'story' || formatId === 'r_9_16'}
                     templateId={templateId}
+                    themeMode={theme}
                     dimensions={dims}
                   />
                 </div>

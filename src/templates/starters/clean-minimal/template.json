@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "id": "clean-minimal",
+  "name": { "en": "Clean Minimal", "ar": "بسيط ونظيف" },
+  "description": { "en": "Quiet space for personal ideas.", "ar": "مساحة هادئة للأفكار الشخصية." },
+  "author": { "name": "SlideThread" },
+  "license": "MIT",
+  "categories": ["personal-brand", "general"],
+  "tags": ["minimal", "editorial", "whitespace"],
+  "colorFlexible": true,
+  "counter": { "styles": ["bar"], "defaultStyle": "bar" },
+  "theme": {
+    "fonts": { "display": "ibm-plex-sans", "body": "ibm-plex-sans-arabic", "mono": "jetbrains-mono" },
+    "typeScale": { "h1": 96, "h2": 64, "body": 38, "small": 26, "mono": 30 },
+    "radius": { "card": 12, "chip": 6 }
+  },
+  "layouts": { "cover": "cover-centered", "explain": "explain-editorial", "rule": "rule-editorial", "compare": "compare-centered", "code": "code-centered", "stat": "stat-editorial", "quote": "quote-editorial", "image": "image-centered", "cta": "cta-centered" },
+  "formats": "all"
+}

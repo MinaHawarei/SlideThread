@@ -17,9 +17,11 @@ describe('Design Controls & Format Relayout (Spec §7, §4.3, Task P3-7)', () =>
     render(<DesignInspector />);
 
     expect(screen.getByTestId('design-inspector')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-network')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-clean')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-bold')).toBeInTheDocument();
+    expect(screen.getByTestId('design-template-tech-mesh')).toBeInTheDocument();
+    expect(screen.getByTestId('design-template-clean-minimal')).toBeInTheDocument();
+    expect(screen.getByTestId('design-template-bold-marketing')).toBeInTheDocument();
+    expect(screen.getByTestId('design-template-soft-gradient')).toBeInTheDocument();
+    expect(screen.getByTestId('design-template-heritage-geometric')).toBeInTheDocument();
 
     expect(screen.getByTestId('design-color-picker')).toBeInTheDocument();
     expect(screen.getByTestId('design-preset-35D0E6')).toBeInTheDocument();
@@ -40,16 +42,16 @@ describe('Design Controls & Format Relayout (Spec §7, §4.3, Task P3-7)', () =>
     const initialSlides = JSON.stringify(useProjectStore.getState().project.slides);
 
     // Switch to Clean
-    fireEvent.click(screen.getByTestId('design-template-clean'));
-    expect(useProjectStore.getState().project.templateId).toBe('clean');
+    fireEvent.click(screen.getByTestId('design-template-clean-minimal'));
+    expect(useProjectStore.getState().project.templateId).toBe('clean-minimal');
 
     // Switch to Bold
-    fireEvent.click(screen.getByTestId('design-template-bold'));
-    expect(useProjectStore.getState().project.templateId).toBe('bold');
+    fireEvent.click(screen.getByTestId('design-template-bold-marketing'));
+    expect(useProjectStore.getState().project.templateId).toBe('bold-marketing');
 
     // Switch back to Network
-    fireEvent.click(screen.getByTestId('design-template-network'));
-    expect(useProjectStore.getState().project.templateId).toBe('network');
+    fireEvent.click(screen.getByTestId('design-template-tech-mesh'));
+    expect(useProjectStore.getState().project.templateId).toBe('tech-mesh');
 
     // Slides content unchanged
     expect(JSON.stringify(useProjectStore.getState().project.slides)).toBe(initialSlides);

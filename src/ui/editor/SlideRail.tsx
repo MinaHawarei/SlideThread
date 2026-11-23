@@ -185,6 +185,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                       showSafeZones={false}
                       isStory={project.contentType === 'story'}
                       templateId={project.templateId}
+                      themeMode={project.theme}
                       dimensions={dims}
                     />
                   </div>

@@ -39,9 +39,11 @@ describe('Wizard component (Task P3-4)', () => {
     // Step 3 -> Step 4
     fireEvent.click(screen.getByTestId('wizard-next-btn'));
     expect(screen.getByTestId('wizard-step-indicator')).toHaveTextContent(/Step 4 of 4/i);
-    expect(screen.getByTestId('template-network')).toBeInTheDocument();
-    expect(screen.getByTestId('template-clean')).toBeInTheDocument();
-    expect(screen.getByTestId('template-bold')).toBeInTheDocument();
+    expect(screen.getByTestId('template-tech-mesh')).toBeInTheDocument();
+    expect(screen.getByTestId('template-clean-minimal')).toBeInTheDocument();
+    expect(screen.getByTestId('template-bold-marketing')).toBeInTheDocument();
+    expect(screen.getByTestId('template-soft-gradient')).toBeInTheDocument();
+    expect(screen.getByTestId('template-heritage-geometric')).toBeInTheDocument();
 
     // Step 4 -> Step 3 via Back button
     fireEvent.click(screen.getByTestId('wizard-back-btn'));
@@ -121,7 +123,7 @@ describe('Wizard component (Task P3-4)', () => {
     fireEvent.click(screen.getByTestId('wizard-next-btn'));
 
     // Step 4: Pick Clean template
-    fireEvent.click(screen.getByTestId('template-clean'));
+    fireEvent.click(screen.getByTestId('template-clean-minimal'));
 
     // Click Create Carousel
     fireEvent.click(screen.getByTestId('wizard-create-btn'));
@@ -129,7 +131,7 @@ describe('Wizard component (Task P3-4)', () => {
     expect(handleComplete).toHaveBeenCalledTimes(1);
     const created = handleComplete.mock.calls[0]![0] as Project;
     expect(created.contentType).toBe('carousel');
-    expect(created.templateId).toBe('clean');
+    expect(created.templateId).toBe('clean-minimal');
     expect(created.slides.length).toBe(2);
     expect(created.slides[0]!.type).toBe('cover');
     expect(created.slides[1]!.type).toBe('explain');

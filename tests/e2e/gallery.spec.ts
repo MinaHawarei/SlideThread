@@ -54,7 +54,7 @@ test.describe('Component Gallery Route (/gallery)', () => {
     expect(consoleErrors).toEqual([]);
   });
 
-  test('captures and verifies template matrix across network, clean, and bold templates (Spec §7.1, Task P2-3)', async ({ page }) => {
+  test('verifies the five starter template previews (Spec §7.1, Task R2-6)', async ({ page }) => {
     const consoleErrors: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
@@ -63,8 +63,10 @@ test.describe('Component Gallery Route (/gallery)', () => {
     });
 
     await page.goto('/gallery');
+    await page.getByTestId('type-select').selectOption('cover');
+    await page.getByTestId('aspect-select').selectOption('portrait');
 
-    const templates = ['network', 'clean', 'bold'] as const;
+    const templates = ['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric'] as const;
 
     for (const tmpl of templates) {
       // Select template
@@ -74,31 +76,36 @@ test.describe('Component Gallery Route (/gallery)', () => {
       // Verify canvas elements received template class and data attribute
       const canvases = page.locator('.slide-canvas');
       const firstCanvas = canvases.first();
-      await expect(firstCanvas).toHaveClass(new RegExp(`template-${tmpl}`));
+      const className = tmpl === 'tech-mesh' ? 'network' : tmpl === 'clean-minimal' ? 'clean' : tmpl === 'bold-marketing' ? 'bold' : tmpl === 'soft-gradient' ? 'soft' : 'heritage';
+      await expect(firstCanvas).toHaveClass(new RegExp(`template-${className}`));
       await expect(firstCanvas).toHaveAttribute('data-template-id', tmpl);
+      const preview = page.locator('[data-testid="template-preview-card"] img');
+      await expect.poll(() => preview.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
 
       // Verify specific template markers
-      if (tmpl === 'network') {
+      if (tmpl === 'tech-mesh') {
         await expect(page.getByTestId('network-bg-svg').first()).toBeVisible();
+      } else if (tmpl === 'soft-gradient') {
+        await expect(page.getByTestId('soft-gradient-bg').first()).toBeVisible();
+      } else if (tmpl === 'heritage-geometric') {
+        await expect(page.getByTestId('heritage-geometric-bg').first()).toBeVisible();
       } else {
         await expect(page.getByTestId('network-bg-svg')).toHaveCount(0);
       }
 
-      // Capture full-page snapshot for this template
-      await page.screenshot({ path: `tests/e2e/snapshots/gallery-tmpl-${tmpl}.png`, fullPage: true });
     }
 
     // Verify Light Theme Snapshot
     const themeBtn = page.getByTestId('toggle-theme');
     await themeBtn.click();
     await expect(page.getByTestId('toggle-theme')).toContainText('Light');
-    await page.screenshot({ path: 'tests/e2e/snapshots/gallery-light-theme.png', fullPage: true });
+    await expect(page.locator('[data-testid="template-preview-card"] img')).toBeVisible();
 
     // Verify Arabic RTL Snapshot
     const langBtn = page.getByTestId('toggle-lang');
     await langBtn.click();
     await expect(page.getByTestId('toggle-lang')).toContainText('العربية');
-    await page.screenshot({ path: 'tests/e2e/snapshots/gallery-arabic-rtl.png', fullPage: true });
+    await expect(page.locator('[data-testid="template-preview-card"] img')).toBeVisible();
 
     expect(consoleErrors).toEqual([]);
   });

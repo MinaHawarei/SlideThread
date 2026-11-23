@@ -9,24 +9,26 @@ import type { Slide } from '../../src/core/schema';
 
 describe('Template System Registry & Network Template (Spec §7, §7.1)', () => {
   it('registers Network, Clean, and Bold templates', () => {
-    expect(TEMPLATES.network).toBeDefined();
-    expect(TEMPLATES.clean).toBeDefined();
-    expect(TEMPLATES.bold).toBeDefined();
+    expect(TEMPLATES['tech-mesh']).toBeDefined();
+    expect(TEMPLATES['clean-minimal']).toBeDefined();
+    expect(TEMPLATES['bold-marketing']).toBeDefined();
+    expect(TEMPLATES['soft-gradient']).toBeDefined();
+    expect(TEMPLATES['heritage-geometric']).toBeDefined();
 
     const all = getAllTemplates();
-    expect(all.length).toBe(3);
-    expect(all.map((t) => t.id)).toEqual(['network', 'clean', 'bold']);
+    expect(all.map((t) => t.id)).toEqual(['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric']);
   });
 
   it('getTemplate returns requested template or falls back to network', () => {
-    expect(getTemplate('network').id).toBe('network');
-    expect(getTemplate('clean').id).toBe('clean');
-    expect(getTemplate('bold').id).toBe('bold');
-    expect(getTemplate('unknown').id).toBe('network');
+    expect(getTemplate('network').id).toBe('tech-mesh');
+    expect(getTemplate('clean').id).toBe('clean-minimal');
+    expect(getTemplate('bold').id).toBe('bold-marketing');
+    expect(getTemplate('soft-gradient').id).toBe('soft-gradient');
+    expect(getTemplate('unknown').id).toBe('tech-mesh');
   });
 
   it('Network template has required typography and token configurations', () => {
-    const network = getTemplate('network');
+    const network = getTemplate('tech-mesh');
     expect(network.fonts.display).toContain('IBM Plex Sans');
     expect(network.fonts.mono).toContain('JetBrains Mono');
     expect(network.typeScale.h1).toBe(112);

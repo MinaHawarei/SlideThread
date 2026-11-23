@@ -8,8 +8,8 @@ import type { SlideType } from '../../src/core/schema';
 
 describe('Clean Template (Spec §7.1, Task P2-1)', () => {
   it('cleanTemplate matches specification for minimal, whitespace-led design', () => {
-    expect(cleanTemplate.id).toBe('clean');
-    expect(cleanTemplate.nameKey).toBe('template.clean');
+    expect(cleanTemplate.id).toBe('clean-minimal');
+    expect(cleanTemplate.nameKey).toBe('wizard.template.clean-minimal');
     expect(cleanTemplate.radius.card).toBe(12);
     expect(cleanTemplate.radius.chip).toBe(6);
     expect(cleanTemplate.typeScale.h1).toBe(96);

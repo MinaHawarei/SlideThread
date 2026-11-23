@@ -1,8 +1,10 @@
 import type { TemplateDef } from './types';
 
 export const cleanTemplate: TemplateDef = {
-  id: 'clean',
-  nameKey: 'template.clean',
+  id: 'clean-minimal',
+  className: 'clean',
+  nameKey: 'wizard.template.clean-minimal',
+  previewUrl: new URL('./starters/clean-minimal/preview.webp', import.meta.url).href,
   fonts: {
     display: 'IBM Plex Sans, sans-serif',
     body: 'IBM Plex Sans, IBM Plex Sans Arabic, sans-serif',

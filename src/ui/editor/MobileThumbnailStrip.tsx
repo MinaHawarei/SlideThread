@@ -146,6 +146,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                     showSafeZones={false}
                     isStory={project.contentType === 'story'}
                     templateId={project.templateId}
+                    themeMode={project.theme}
                     dimensions={dims}
                   />
                 </div>

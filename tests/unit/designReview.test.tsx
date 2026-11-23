@@ -4,10 +4,12 @@ import { render } from '@testing-library/react';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { generatePalette } from '../../src/core/palette';
 import { SAMPLE_BRAND_AR, SAMPLE_BRAND_EN } from '../../src/slides/sampleSlides';
-import type { Slide, TemplateId } from '../../src/core/schema';
+import type { AspectClass, Slide, TemplateId } from '../../src/core/schema';
+import { getTemplate } from '../../src/templates';
 
 describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1, Task P2-4)', () => {
-  const templates: TemplateId[] = ['network', 'clean', 'bold'];
+  const templates: TemplateId[] = ['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric'];
+  const aspects: AspectClass[] = ['landscape', 'square', 'portrait', 'tall'];
   const darkPalette = generatePalette('#35D0E6', 'dark');
   const lightPalette = generatePalette('#0B7FA6', 'light');
 
@@ -46,30 +48,36 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
     for (const tmpl of templates) {
       it(`renders long Arabic explain, rule, and quote in ${tmpl} template without errors`, () => {
         for (const slide of Object.values(longArabicSlides)) {
-          const { container, unmount } = render(
-            <SlideRenderer
-              slide={slide}
-              palette={darkPalette}
-              aspectClass="portrait"
-              templateId={tmpl}
-              brand={SAMPLE_BRAND_AR}
-              textDir="rtl"
-              slideIndex={3}
-              totalSlides={10}
-            />
-          );
+          for (const aspectClass of aspects) {
+            for (const themeMode of ['dark', 'light'] as const) {
+              const palette = themeMode === 'dark' ? darkPalette : lightPalette;
+              const { container, unmount } = render(
+                <SlideRenderer
+                  slide={slide}
+                  palette={palette}
+                  aspectClass={aspectClass}
+                  templateId={tmpl}
+                  themeMode={themeMode}
+                  brand={SAMPLE_BRAND_AR}
+                  textDir="rtl"
+                  slideIndex={3}
+                  totalSlides={10}
+                />
+              );
 
-          const canvas = container.querySelector('.slide-canvas');
-          expect(canvas).toBeInTheDocument();
-          expect(canvas).toHaveClass(`template-${tmpl}`);
+              const canvas = container.querySelector('.slide-canvas');
+              expect(canvas).toBeInTheDocument();
+              expect(canvas).toHaveClass(`template-${getTemplate(tmpl).className}`);
 
-          // Slide counter retains LTR direction
-          const counter = container.querySelector('.sig-counter-badge');
-          if (counter) {
-            expect(counter).toHaveTextContent('04/10');
+              // Slide counter retains LTR direction.
+              const counter = container.querySelector('.sig-counter-badge');
+              if (counter) {
+                expect(counter).toHaveTextContent('04/10');
+              }
+
+              unmount();
+            }
           }
-
-          unmount();
         }
       });
     }
@@ -136,7 +144,7 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
 
           const canvas = container.querySelector('.slide-canvas');
           expect(canvas).toBeInTheDocument();
-          expect(canvas).toHaveClass(`template-${tmpl}`);
+          expect(canvas).toHaveClass(`template-${getTemplate(tmpl).className}`);
 
           // Check caption bar on image slide
           if (slide.type === 'image') {

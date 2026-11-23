@@ -171,6 +171,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
               showSafeZones={effectiveSafeZones}
               isStory={isStory}
               templateId={project.templateId}
+              themeMode={project.theme}
               dimensions={dims}
             />
           </div>
