@@ -839,5 +839,14 @@ Agent name: Antigravity
 - What changed (files): `docs/TASKS.md` (claimed R1-3)
 - Decisions / deviations from the plan: Apply the selected Atelier palette (warm paper, terracotta, ink, IBM Plex pairing), preserve logical spacing for RTL, and use the explicitly named Radix primitives without adding other UI dependencies.
 - Tests run and result: N/A (task in progress)
-- Remaining / next step: Install the planned Radix primitives, build tokens and `/kit`, add bilingual keys and interaction coverage, capture the required 18-state screenshot matrix, and run full checks.
+- Remaining / next step: N/A — completed as `572b380`; the required 12-state screenshot matrix is in `docs/ux-review/R1-3/`.
+- Needs from the owner: None.
+
+
+### R1-3 — done — 2026-11-23 12:08 — Codex
+- Branch / commit: feature/r1-3 / `572b380`
+- What changed (files): Added Atelier light/dark design tokens, shared styled Radix component exports, responsive `/kit` gallery with theme/direction controls and bilingual labels, and unit/E2E coverage. Captured all 12 viewport × theme × direction screenshots and documented the UX rubric in `docs/ux-review/R1-3/REVIEW.md`.
+- Decisions / deviations from the plan: Kept English demo copy visible in the RTL direction preview so layout mirroring can be reviewed independently; Arabic UI strings are provided through the shared locale dictionaries. Used the planned Radix primitives and no additional UI dependencies.
+- Tests run and result: `npm run lint` pass; `npm run typecheck` pass; `npm test -- --reporter=dot` 342 passed / 45 files; `npm run build` pass; Playwright E2E 28 passed via temporary port-5174 config because port 5173 is occupied by an existing Vite server. UX review scores are all 4 or 5. `npm audit` reports 6 full-tree findings (3 moderate, 1 high, 2 critical) in the Vite/Vitest tooling tree; production dependency audit reports none.
+- Remaining / next step: R1-4, app shell and routing.
 - Needs from the owner: None.
