@@ -1122,3 +1122,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, full `npm test -- --reporter=dot` (421 passed / 55 files), and `npm run build` passed. Touch-target tests at 360×800 and 390×844 passed; screenshot review matrix passed at 360×800, 768×1024, and 1440×900 in light/dark and LTR/RTL. Full E2E: 73 passed / 1 failed; the existing R0-6 UX preview test expects an outdated Arabic heading (`اختر إطارك الأول.`). Build emits existing Zod Rollup annotation notices.
 - Remaining / next step: R3-5, contextual selection toolbar and layers panel (lock, hide, reorder).
 - Needs from the owner: Perform the D-09 physical iOS Safari and Android Chrome manipulation checks before release.
+
+
+### R3-5 — started — 2026-11-23 17:11 — Codex
+- Branch / commit: feature/r3-5
+- What changed (files): `docs/TASKS.md` (claimed R3-5).
+- Decisions / deviations from the plan: Keep layer order stored in `slide.extras[].z`; template slots remain in their established base order. Lock and visibility state apply to extras, while template slots stay selectable and visible.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Inspect selection and editor UI, add contextual controls and layer list with bilingual labels, selection, lock, hide, reorder, tests, and screenshot review.
+- Needs from the owner: None.
