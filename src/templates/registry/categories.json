@@ -1,0 +1,9 @@
+[
+  { "id": "coding", "name": { "en": "Coding", "ar": "البرمجة" }, "description": { "en": "Templates for software and technical ideas.", "ar": "قوالب للأفكار البرمجية والتقنية." }, "icon": "code", "status": "active" },
+  { "id": "marketing", "name": { "en": "Marketing", "ar": "التسويق" }, "description": { "en": "Templates for launches, campaigns, and brands.", "ar": "قوالب للإطلاقات والحملات والعلامات التجارية." }, "icon": "megaphone", "status": "active" },
+  { "id": "education", "name": { "en": "Education", "ar": "التعليم" }, "description": { "en": "Templates for lessons and explainers.", "ar": "قوالب للدروس والشرح." }, "icon": "book", "status": "active" },
+  { "id": "lifestyle", "name": { "en": "Lifestyle", "ar": "أسلوب الحياة" }, "description": { "en": "Templates for personal and lifestyle stories.", "ar": "قوالب للقصص الشخصية واليومية." }, "icon": "sparkles", "status": "active" },
+  { "id": "arabic-heritage", "name": { "en": "Arabic & Heritage", "ar": "العربية والتراث" }, "description": { "en": "Arabic-first templates inspired by heritage patterns.", "ar": "قوالب عربية مستوحاة من أنماط التراث." }, "icon": "landmark", "status": "active" },
+  { "id": "coptic", "name": { "en": "Coptic", "ar": "قبطي" }, "description": { "en": "Color, shape, and pattern themes.", "ar": "سمات للألوان والأشكال والأنماط." }, "icon": "shapes", "status": "planned" },
+  { "id": "islamic", "name": { "en": "Islamic", "ar": "إسلامي" }, "description": { "en": "Color, shape, and pattern themes.", "ar": "سمات للألوان والأشكال والأنماط." }, "icon": "shapes", "status": "planned" }
+]
