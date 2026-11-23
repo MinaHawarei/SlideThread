@@ -10,6 +10,9 @@ const Wizard = React.lazy(() => import('./ui/wizard/Wizard').then((m) => ({ defa
 const Editor = React.lazy(() => import('./ui/editor').then((m) => ({ default: m.Editor })));
 const GalleryPage = React.lazy(() => import('./gallery/GalleryPage').then((m) => ({ default: m.GalleryPage })));
 const KitPage = React.lazy(() => import('./ui/kit/KitPage').then((m) => ({ default: m.KitPage })));
+const LayoutPreviewPage = import.meta.env.DEV
+  ? React.lazy(() => import('./templates/layouts/LayoutPreviewPage').then((m) => ({ default: m.LayoutPreviewPage })))
+  : null;
 const SettingsPage = React.lazy(() => import('./ui/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 const SpikePage = React.lazy(() => import('./spike/SpikePage').then((m) => ({ default: m.SpikePage })));
 const UxPreview = import.meta.env.DEV
@@ -77,6 +80,7 @@ export const App: React.FC = () => {
   else if (currentPath === '/wizard') route = <Wizard onComplete={() => navigate('/editor')} onCancel={() => navigate('/')} />;
   else if (currentPath === '/settings') route = <SettingsPage />;
   else if (currentPath === '/kit') route = <KitPage />;
+  else if (import.meta.env.DEV && currentPath === '/layout-preview' && LayoutPreviewPage) route = <LayoutPreviewPage />;
   else if (import.meta.env.DEV && currentPath === '/spike') route = <SpikePage />;
   else if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) route = <UxPreview />;
   else route = <StartScreen onStartWizard={() => navigate('/wizard')} onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;

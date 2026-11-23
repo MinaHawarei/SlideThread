@@ -413,6 +413,12 @@ export const en = {
   'settings.availableSoon': 'More studio settings are being prepared.',
 
   // Common UI
+  'layoutGallery.title': 'Layout archetypes',
+  'layoutGallery.description': 'Explore two stable element arrangements for each slide type across four aspect classes.',
+  'layoutGallery.count': '{count} archetypes · 9 slide types · 4 aspect classes',
+  'layoutGallery.dark': 'Dark theme',
+  'layoutGallery.light': 'Light theme',
+  'layoutGallery.direction': 'Toggle direction',
   'common.close': 'Close',
   'common.save': 'Save',
   'common.saved': 'Autosaved',

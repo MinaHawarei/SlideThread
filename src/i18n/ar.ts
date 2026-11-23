@@ -415,6 +415,12 @@ export const ar: Record<TranslationKey, string> = {
   'settings.availableSoon': 'نعمل على تجهيز المزيد من إعدادات الاستوديو.',
 
   // Common UI
+  'layoutGallery.title': 'تخطيطات الشرائح',
+  'layoutGallery.description': 'استكشف ترتيبين ثابتين للعناصر لكل نوع شريحة عبر أربع نسب أبعاد.',
+  'layoutGallery.count': '{count} تخطيطاً · ٩ أنواع شرائح · ٤ نسب أبعاد',
+  'layoutGallery.dark': 'المظهر الداكن',
+  'layoutGallery.light': 'المظهر الفاتح',
+  'layoutGallery.direction': 'تبديل الاتجاه',
   'common.close': 'إغلاق',
   'common.save': 'حفظ',
   'common.saved': 'تم الحفظ تلقائياً',
