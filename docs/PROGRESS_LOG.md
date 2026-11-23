@@ -1194,3 +1194,12 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (57 files, 446 passed), `npm run build`, and `npx playwright test tests/e2e/richTextEditor.spec.ts tests/e2e/touchManipulation.spec.ts` (5 passed). 12-state review screenshots and `REVIEW.md` generated in `docs/ux-review/R4-2/`.
 - Remaining / next step: Claim and implement R4-3 (Fit rules update: manual size disables auto-fit; overflow warning; split-slide action for rich text).
 - Needs from the owner: None.
+
+
+### R4-3 — done — 2026-11-23 19:28 — Antigravity
+- Branch / commit: feature/r4-3 / `f0af2c1`
+- What changed (files): `src/core/richText.ts`, `src/core/textFit.ts`, `src/slides/RichTextRenderer.tsx`, `src/store/projectStore.ts`, `src/ui/editor/SlideInspector.tsx`, `tests/unit/textFit.test.ts`, `tests/unit/splitSlide.test.ts`, `tests/e2e/fitRules.spec.ts`.
+- Decisions / deviations from the plan: Implemented `hasManualTextSize` in `richText.ts`; updated `textFit.ts` to disable auto-fit scaling when a manual font size mark is set while still measuring overflow (`scale: 1.0, isOverflow: true`); marked rendered RichText elements with `data-manual-size="true"`; updated `SlideInspector` overflow detection to trigger on manual size overflow as well as long block/line counts; updated `splitSlide` in `projectStore.ts` to split RichText blocks directly without string round-tripping, preserving all block styles, list items, and run formatting marks, while appending continuation suffix `(Cont.)` to continuation slide title.
+- Tests run and result: `npm run lint`, `npm run typecheck`, `npm test` (58 files, 449 passed), `npm run build`, and `npx playwright test tests/e2e/fitRules.spec.ts` (2 passed).
+- Remaining / next step: Claim and implement R4-4 (Lists/bullets as rich-text nodes with template styling; paste-to-slides outputs rich text).
+- Needs from the owner: None.
