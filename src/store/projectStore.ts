@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
+import { useMemo } from 'react';
 import type {
   Project,
   Slide,
@@ -13,6 +14,7 @@ import type {
   RichText,
   CounterConfig,
   SignatureConfig,
+  BrandSettings,
 } from '../core/schema';
 import {
   CURRENT_SCHEMA_VERSION,
@@ -24,6 +26,7 @@ import {
 } from '../core/schema';
 import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
 import { useRecentStore } from './recentStore';
+import { useSettingsStore } from './settingsStore';
 import { migrate } from '../core/migrate';
 import { recordHistoryChange, registerHistoryChannel } from './history';
 import { getTemplate } from '../templates';
@@ -171,6 +174,9 @@ export interface ProjectState {
   ) => void;
   updateCounterConfig: (counter: Partial<CounterConfig>) => void;
   updateSignatureConfig: (signature: Partial<SignatureConfig>) => void;
+  updateBrandOverride: (override: Partial<BrandSettings> | undefined) => void;
+  resetBrandOverride: () => void;
+  applyBrandOverrideToDefaults: () => void;
   setActiveSlideId: (id: string) => void;
 
   // Slide CRUD
@@ -273,6 +279,52 @@ export const useProjectStore = create<ProjectState>()(
               updatedAt: Date.now(),
             },
           }));
+        },
+
+        updateBrandOverride: (override) => {
+          set((state) => {
+            if (override === undefined) {
+              const nextProject = { ...state.project };
+              delete nextProject.brandOverride;
+              return {
+                project: {
+                  ...nextProject,
+                  updatedAt: Date.now(),
+                },
+              };
+            }
+            return {
+              project: {
+                ...state.project,
+                brandOverride: {
+                  ...(state.project.brandOverride || {}),
+                  ...override,
+                },
+                updatedAt: Date.now(),
+              },
+            };
+          });
+        },
+
+        resetBrandOverride: () => {
+          set((state) => {
+            const nextProject = { ...state.project };
+            delete nextProject.brandOverride;
+            return {
+              project: {
+                ...nextProject,
+                updatedAt: Date.now(),
+              },
+            };
+          });
+        },
+
+        applyBrandOverrideToDefaults: () => {
+          const override = get().project.brandOverride;
+          if (override) {
+            useSettingsStore.getState().updateSettings(override);
+          }
+          get().resetBrandOverride();
         },
 
         setActiveSlideId: (activeSlideId: string) => {
@@ -705,4 +757,19 @@ export function useProjectMeta() {
       textDir: state.project.textDir,
     }))
   );
+}
+
+export function useEffectiveBrand(): BrandSettings {
+  const settings = useSettingsStore((state) => state.settings);
+  const brandOverride = useProjectStore((state) => state.project.brandOverride);
+  return useMemo(() => {
+    if (!brandOverride) return settings;
+    return { ...settings, ...brandOverride };
+  }, [settings, brandOverride]);
+}
+
+export function getEffectiveBrand(project: Project = useProjectStore.getState().project): BrandSettings {
+  const settings = useSettingsStore.getState().settings;
+  if (!project.brandOverride) return settings;
+  return { ...settings, ...project.brandOverride };
 }

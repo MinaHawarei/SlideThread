@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useT } from '../../i18n';
-import { useProjectStore, useActiveSlide } from '../../store/projectStore';
-import { useSettingsStore } from '../../store/settingsStore';
+import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
@@ -33,7 +32,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
   const activeSlideId = useProjectStore((state) => state.activeSlideId);
   const setActiveSlideId = useProjectStore((state) => state.setActiveSlideId);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
-  const settings = useSettingsStore((state) => state.settings);
+  const effectiveBrand = useEffectiveBrand();
   const selectedElementId = useSelectionStore((state) => state.selectedElementId);
 
   const activeSlide = useActiveSlide();
@@ -283,7 +282,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 palette={palette}
                 aspectClass={aspect}
                 textDir={project.textDir === 'auto' ? (locale === 'ar' ? 'rtl' : 'ltr') : project.textDir}
-                brand={settings}
+                brand={effectiveBrand}
                 slideIndex={validIndex}
                 totalSlides={slides.length}
                 showCounter={project.contentType !== 'post'}

@@ -87,7 +87,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R5-2 | Signature system (§5.4): anchors, arrangement, size, photo shape, handle/socials, free move via overrides; CTA large avatar variants. | R5-1 | [x] | Antigravity 2026-11-23 · feature/r5-2 · 08419e0 |
 | R5-3 | Photo handling (§5.5): click-to-upload everywhere, crop dialog, placeholder affordance; CTA photo regression test. | R5-2 | [x] | Antigravity 2026-11-23 · feature/r5-3 · 36f75f5 |
 | R5-4 | Settings page (§5.5). | R5-3 | [x] | Antigravity 2026-11-23 · feature/r5-4 · aab6a45 |
-| R5-5 | Inline brand editing popover with per-project override, apply-to-defaults, reset. | R5-4 | [ ] | |
+| R5-5 | Inline brand editing popover with per-project override, apply-to-defaults, reset. | R5-4 | [x] | Antigravity 2026-11-24 · feature/r5-5 |
 | GR5 | Gate GR5 verification | R5-1…R5-5 | [ ] | |
 
 ### Phase R6 — Assets and stickers (GATE GR6)

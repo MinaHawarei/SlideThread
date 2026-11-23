@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useT } from '../../i18n';
-import { useProjectStore, useActiveSlide } from '../../store/projectStore';
-import { useSettingsStore } from '../../store/settingsStore';
+import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
@@ -20,7 +19,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
   const project = useProjectStore((state) => state.project);
   const activeSlideId = useProjectStore((state) => state.activeSlideId);
   const setActiveSlideId = useProjectStore((state) => state.setActiveSlideId);
-  const settings = useSettingsStore((state) => state.settings);
+  const effectiveBrand = useEffectiveBrand();
 
   const activeSlide = useActiveSlide();
   const [zoomLevel, setZoomLevel] = useState<number>(0.48);
@@ -165,7 +164,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
               palette={palette}
               aspectClass={aspect}
               textDir={project.textDir === 'auto' ? (locale === 'ar' ? 'rtl' : 'ltr') : project.textDir}
-              brand={settings}
+              brand={effectiveBrand}
               slideIndex={validIndex}
               totalSlides={slides.length}
               showCounter={project.contentType !== 'post'}

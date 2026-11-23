@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useT } from '../../i18n';
-import { useProjectStore, useActiveSlide } from '../../store/projectStore';
-import { useSettingsStore } from '../../store/settingsStore';
+import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
@@ -30,7 +29,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
   const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const activeSlide = useActiveSlide();
-  const settings = useSettingsStore((state) => state.settings);
+  const effectiveBrand = useEffectiveBrand();
 
   const slides = project.slides;
   const isSingleSlide = slides.length <= 1 || project.contentType === 'post';
@@ -456,7 +455,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               palette={palette}
               aspectClass={aspect}
               textDir={project.textDir === 'auto' ? (locale === 'ar' ? 'rtl' : 'ltr') : project.textDir}
-              brand={settings}
+              brand={effectiveBrand}
               slideIndex={renderIndex}
               totalSlides={slides.length}
               showCounter={project.contentType !== 'post'}

@@ -37,6 +37,7 @@ export const BrandInspector: React.FC = () => {
 
   const project = useProjectStore((state) => state.project);
   const updateSignatureConfig = useProjectStore((state) => state.updateSignatureConfig);
+  const resetBrandOverride = useProjectStore((state) => state.resetBrandOverride);
 
   const sigConfig: SignatureConfig = project.signature ?? settings.defaultSignature ?? {
     ...DEFAULT_SIGNATURE_CONFIG,
@@ -74,6 +75,27 @@ export const BrandInspector: React.FC = () => {
 
   return (
     <div data-testid="brand-inspector" className="p-4 space-y-6 select-none">
+      {/* Brand Override Active Banner */}
+      {project.brandOverride && Object.keys(project.brandOverride).length > 0 && (
+        <div
+          data-testid="brand-override-active-banner"
+          className="p-3 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800 rounded-xl flex items-center justify-between text-xs"
+        >
+          <div className="flex items-center gap-2 text-cyan-800 dark:text-cyan-300 font-medium">
+            <span>✨</span>
+            <span>{t('brand.isOverridden')}</span>
+          </div>
+          <button
+            type="button"
+            data-testid="brand-override-reset-sidebar-btn"
+            onClick={resetBrandOverride}
+            className="text-[11px] font-bold text-cyan-700 dark:text-cyan-400 hover:underline cursor-pointer"
+          >
+            {t('brand.resetToDefaults')}
+          </button>
+        </div>
+      )}
+
       {/* Avatar Photo (Square Crop 400x400 Downscaled) */}
       <div className="space-y-2">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
