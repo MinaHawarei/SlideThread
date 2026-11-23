@@ -773,3 +773,21 @@ Agent name: Antigravity
 - Tests run and result: GR0 evidence script passed 11/11 checks, covering R0-1 audit, R0-2…R0-5 spike decisions/evidence, R0-6 pack and owner selection, and the gate text.
 - Remaining / next step: R1-1, schema v2, migration, and feature flags.
 - Needs from the owner: None for GR0.
+
+
+### owner-decisions — done — 2026-11-23 11:21 — Antigravity
+- Branch / commit: chore/owner-decisions
+- What changed (files): `docs/TASKS.md`, `docs/REVISION_PLAN.md`, `docs/MASTER_PROMPT_REVISION.md`, `docs/PROGRESS_LOG.md`
+- Decisions / deviations from the plan: Applied owner decisions per instruction:
+  - D-01, D-02, D-04, D-05, D-09: marked owner-only and non-blocking (Blocks = none).
+  - D-03: Final app name confirmed as SlideThread (Blocks = none, Done = [x]). P5-5 updated to verify consistent application without candidate list.
+  - D-06: Selected A — Atelier (Blocks = none, Done = [x]).
+  - D-07: Template `tech-mesh` display name set to Weave / نسيج (Blocks = none, Done = [x]).
+  - D-08: Agent decides asset licensing; gaps to BACKLOG.md, choice to DECISIONS.md (Blocks = none).
+  - D-10: Owner reviews UX after project completion; no longer blocks GR8 or R9 (Blocks = none).
+  - D-11: Coptic and Islamic treated as ordinary categories containing only colors/shapes/patterns; no reviewer needed (Blocks = none, Done = [x]).
+  - In `docs/REVISION_PLAN.md`: updated REQ-02, §3.2, §5.1, §5.8, R2-8, R2-9, GR8, §9, §10 to reflect automatic hiding of zero-template categories, removal of community-reviewer rules, and decoupling D-10 from GR8/R9.
+  - In `docs/MASTER_PROMPT_REVISION.md`: updated decision gate step 4, step 12, added real blocker definition to Discipline, clarified owner build/deploy responsibility, added OWNER_REVIEW.md creation step after R9-6, and marked P5-6 as owner-only.
+- Tests run and result: N/A (docs-only task; application code untouched).
+- Remaining / next step: Commit chore/owner-decisions, branch next task (R1-1) from chore/owner-decisions, and continue.
+- Needs from the owner: None.

@@ -10,17 +10,17 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ## Decisions and owner actions
 | ID | Item | Blocks | Answer | Done |
 |---|---|---|---|---|
-| D-01 | Connect the repo to Vercel and confirm the preview URL works | G0 | | [ ] |
-| D-02 | Provide `FEEDBACK_URL` (external form), `GITHUB_URL`, and owner social links for `site.ts` (placeholders are used until then) | P3-9 | Placeholders in site.ts (Mina Hawarei, @minahawarei, mailto: fallback per Spec §10.4) | [x] |
-| D-03 | Choose the final app name from the 5 candidates (agent checks repo-name and domain availability first) | P5-5 | | [ ] |
-| D-04 | Run the manual device checks listed in `docs/QA_CHECKLIST.md` (iOS Safari, Android Chrome) | P5-3 | | [ ] |
-| D-05 | Production deploy and the `v0.1.0-beta` tag | P5-6 | | [ ] |
-| D-06 | Owner picks UX direction A/B/C from `/ux-preview` | GR0, R1-3 | A — Atelier (owner selected 2026-11-23) | [x] |
-| D-07 | Owner chooses the display name for the `tech-mesh` template (default shown meanwhile) | none | | [ ] |
-| D-08 | Owner decision on illustration/sticker sourcing if licensed assets are insufficient | R6-4 | | [ ] |
-| D-09 | Owner runs Arabic IME and touch checks on real devices (iOS, Android) | R9-1 | | [ ] |
-| D-10 | Owner reviews the UX pack and approves (or lists changes) | GR8, R9 | | [ ] |
-| D-11 | Owner nominates reviewers for Coptic / Islamic categories before any template there is accepted | none (categories stay hidden) | | [ ] |
+| D-01 | Connect the repo to Vercel and confirm the preview URL works (owner-only) | none | Non-blocking. Owner connects repo and verifies preview. | [ ] |
+| D-02 | Provide `FEEDBACK_URL` (external form), `GITHUB_URL`, and owner social links for `site.ts` (owner-only) | none | Placeholders in site.ts (Mina Hawarei, @minahawarei, mailto: fallback per Spec §10.4); owner fills production links. | [x] |
+| D-03 | Choose final app name | none | SlideThread | [x] |
+| D-04 | Run manual device checks listed in `docs/QA_CHECKLIST.md` (iOS Safari, Android Chrome) (owner-only) | none | Non-blocking. Owner performs physical device testing per checklist. | [ ] |
+| D-05 | Production deploy and `v0.1.0-beta` tag (owner-only) | none | Non-blocking. Owner tags release and deploys to production. | [ ] |
+| D-06 | Owner picks UX direction A/B/C from `/ux-preview` | none | A — Atelier (agent recommendation). Owner reviews the design at the end and may request changes. | [x] |
+| D-07 | Owner chooses display name for `tech-mesh` template | none | Weave (ar: نسيج). Set it as the display name of template id `tech-mesh` (id unchanged) in en/ar. | [x] |
+| D-08 | Owner decision on illustration/sticker sourcing if licensed assets are insufficient | none | Agent decides: ship only clearly licensed assets, document gaps in docs/BACKLOG.md, record choice in docs/DECISIONS.md. Non-blocking. | [ ] |
+| D-09 | Owner runs Arabic IME and touch checks on real devices (iOS, Android) (owner-only) | none | Non-blocking. Owner runs physical device checks per docs/QA_CHECKLIST.md and docs/OWNER_REVIEW.md. | [ ] |
+| D-10 | Owner reviews UX pack and approves (or lists changes) | none | Non-blocking. Owner reviews design after agent finishes everything; does not block GR8 or R9. | [ ] |
+| D-11 | Owner nominates reviewers for Coptic / Islamic categories before any template there is accepted | none | Not needed. Coptic and Islamic are ordinary categories. Templates in them contain only colors, shapes, and patterns; no text. | [x] |
 
 ## Revision phases
 
@@ -202,6 +202,6 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P5-2 | Repo hygiene: LICENSE (MIT), NOTICE, issue templates, CONTRIBUTING.md, GitHub Actions CI | GR9 | [x] | Codex 2026-11-23 · feature/p5-2 · 1b6473e |
 | P5-3 | QA pass: execute docs/QA_CHECKLIST.md on matrix, fix blockers, list known issues | GR9 | [ ] | |
 | P5-4 | Lighthouse + accessibility: mobile Accessibility ≥ 90, fix findings | GR9 | [ ] | |
-| P5-5 | Name and domain: present 5 name candidates, apply chosen name via APP_NAME | GR9 | [ ] | |
-| P5-6 | Release: tag v0.1.0-beta, production deploy on Vercel, verify analytics and feedback | GR9 | [ ] | |
+| P5-5 | Verify name (SlideThread) is applied consistently (APP_NAME, README, page title, OG tags) | GR9 | [ ] | |
+| P5-6 | Release: tag v0.1.0-beta, production deploy on Vercel, verify analytics and feedback (owner-only) | GR9 | [ ] | |
 | G5 | Gate G5 verification (release) | P5-1…P5-6 | [ ] | |
