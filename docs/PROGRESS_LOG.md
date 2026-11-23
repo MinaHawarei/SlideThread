@@ -13,6 +13,22 @@ Agent name: Antigravity
 - Remaining / next step: Complete compatibility adapters/defaults, strengthen migration/schema tests, then run required full checks.
 - Needs from the owner: None.
 
+### GR1 — started — 2026-11-23 13:01 — Codex
+- Branch / commit: feature/gr1
+- What changed (files): `docs/TASKS.md` (claimed GR1).
+- Decisions / deviations from the plan: Verify every R1 gate statement: schema/history tests, kit and shell, initial route budget.
+- Tests run and result: Full unit suite and Playwright suite just ran for R1-5; targeted checks for the route budget and prior R1 acceptance are next.
+- Remaining / next step: Confirm full gate evidence, then mark GR1 and proceed to R2-1.
+- Needs from the owner: None.
+
+### GR1 — done — 2026-11-23 13:03 — Codex
+- Branch / commit: feature/gr1 / COMMIT
+- What changed (files): Verified schema v2/history tests, `/kit` visual matrix, app shell, and current initial-route budget; marked GR1 passed in `docs/REVISION_PLAN.md` and `docs/TASKS.md`.
+- Decisions / deviations from the plan: Current build entry chunks total 147.43 KB gzip (16.78 + 43.82 + 86.83), under the 300 KB initial-route limit; R1-4’s handoff recorded 150.15 KB. Unit suite passed all 351 tests; browser suite had one reproduced stale UX preview heading assertion failure, which does not concern R1 gate criteria.
+- Tests run and result: `npm test -- --reporter=dot` 351 passed; `npm run test:e2e -- --config=playwright.r1-5.config.ts` 54 passed, 1 unrelated/stale heading expectation failed; `npm run lint`, `npm run typecheck`, and `npm run build` passed.
+- Remaining / next step: R2-1, template schema and category registry.
+- Needs from the owner: None.
+
 ### R1-1 — checkpoint — 2026-11-23 11:42 — Codex
 - Branch / commit: feature/r1-1 / 1ba9d3c
 - What changed (files): `src/core/schema.ts` defines v2 RichText, overrides/extras, counter/signature, project and brand schemas; `src/core/migrate.ts` handles v0/v1 to v2 and future-version rejection; `src/config/features.ts` adds default-off flags; `docs/DECISIONS.md` records deterministic migration defaults; tracker remains `[~]`.

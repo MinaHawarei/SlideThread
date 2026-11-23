@@ -43,7 +43,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R1-3 | Design tokens and component kit for the chosen direction (Radix primitives + Tailwind, shadcn-style): buttons, inputs, dialogs, popovers, tabs, sliders, tooltips, toasts, color picker, menus; dark/light; RTL via logical properties; a `/kit` gallery route. | R1-2, G0 | [x] | `572b380` — 2026-11-23 |
 | R1-4 | App shell and routing (Home, Gallery, Editor, Settings), code splitting, i18n extension. | R1-3, G0 | [x] | Codex 2026-11-23 · feature/r1-4 · 6a78088 |
 | R1-5 | Fonts registry and lazy loader (§5.9). | R1-4, G0 | [x] | Codex 2026-11-23 · feature/r1-5 · 18fb7b5 |
-| GR1 | Gate GR1 verification | R1-1…R1-5 | [ ] | |
+| GR1 | Gate GR1 verification | R1-1…R1-5 | [x] | Codex 2026-11-23 · feature/gr1 · COMMIT |
 
 ### Phase R2 — Template platform (GATE GR2)
 | ID | Task | Depends on | Done | Notes |
