@@ -2,6 +2,12 @@
 
 Records rationale, alternatives, sizes, and platform verifications per `Spec.md` and `IMPLEMENTATION_PLAN.md`.
 
+## 2026-11-23 — Schema v2 migration defaults (R1-1)
+- Plain string fields migrate to one unmarked paragraph/run; existing content remains editable in the legacy field editor until R4 provides rich text editing.
+- Legacy template IDs map `network` → `tech-mesh`, `clean` → `clean-minimal`, and `bold` → `bold-marketing`.
+- New v2 defaults use the standard bottom-right number counter and bottom-center inline signature. Counter display is enabled only for carousels; the `network` template maps to an enabled mesh pattern at intensity 1, while other legacy templates default to no pattern.
+- These are deterministic compatibility defaults because the plan defines the v2 shape but does not define per-project migration values.
+
 ---
 
 ## 2026-11-22 — Project scaffolding & tooling (P0-1)

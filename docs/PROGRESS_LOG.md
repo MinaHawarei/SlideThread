@@ -5,6 +5,14 @@ Append-only handoff log between agents. Never put secrets, tokens, or personal d
 Docs folder path: docs/
 Agent name: Antigravity
 
+### R1-1 — started — 2026-11-23 11:35 — Codex
+- Branch / commit: feature/r1-1 / 8995eaa
+- What changed (files): `docs/TASKS.md` (claimed R1-1), `src/core/schema.ts`, `src/core/migrate.ts`, `src/config/features.ts`
+- Decisions / deviations from the plan: Resuming R1-1 on its existing branch; migration defaults recorded in `docs/DECISIONS.md`. Integrating the v2 persisted shape with the v1 editor is part of making migration safe.
+- Tests run and result: Initial `npx tsc --noEmit` found 327 errors from app and test code that assumes v1 string fields; implementation in progress.
+- Remaining / next step: Complete compatibility adapters/defaults, strengthen migration/schema tests, then run required full checks.
+- Needs from the owner: None.
+
 ### SETUP — done — 2026-11-22 17:41 — Antigravity
 - Branch / commit: chore/agent-setup
 - What changed (files): docs/TASKS.md, docs/PROGRESS_LOG.md
