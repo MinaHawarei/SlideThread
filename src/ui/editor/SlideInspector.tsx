@@ -4,6 +4,7 @@ import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import type { SlideType } from '../../core/schema';
 import { richTextFieldsToPlainText } from '../../core/schema';
 import { hasManualTextSize } from '../../core/richText';
+import { ShapesPicker } from './ShapesPicker';
 
 const ALL_SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -535,6 +536,9 @@ export const SlideInspector: React.FC = () => {
           </>
         )}
       </div>
+
+      {/* Shapes, Lines & Arrows Pack (R6-2) */}
+      <ShapesPicker />
 
       {/* Slide-Level Signature Visibility Override */}
       <div className="pt-4 border-t border-slate-200 dark:border-slate-800">

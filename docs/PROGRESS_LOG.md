@@ -1357,3 +1357,28 @@ Agent name: Antigravity
 - Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (64 test files, 566 passed, 100%), and `npm run build` (clean).
 - Remaining / next step: Claim and implement R6-2 (Shapes, lines, arrows pack (original, recolorable)).
 - Needs from the owner: None.
+
+
+### R6-2 — done — 2026-11-24 00:35 — Antigravity
+- Branch / commit: feature/r6-2
+- What changed (files):
+  - `assets/packs/shapes/pack.json`: Expanded to 16 canonical original vector shapes with bilingual metadata.
+  - `assets/packs/shapes/*.svg`: Added 8 new vector shapes (`line-dashed.svg`, `line-double-arrow.svg`, `line-zigzag.svg`, `arrow-loop.svg`, `arrow-pointer-block.svg`, `highlight-circle.svg`, `badge-sparkle.svg`, `cross-x.svg`).
+  - `src/assets/shapesRegistry.ts`: Created synchronous registry and SVG cache for instant zero-latency canvas rendering and export capture.
+  - `src/assets/index.ts`: Exported shapes registry helpers (`SHAPES_PACK`, `SHAPES_ITEMS`, `getShapeSvg`, `getShapeItem`).
+  - `src/slides/ExtrasRenderer.tsx`: Integrated vector shape rendering via `getShapeSvg(extra.assetId)` and dynamic recoloring mapped to `extra.fill` via `currentColor`.
+  - `src/slides/slides.css`: Added CSS rules for `.shape-asset-svg`.
+  - `src/ui/editor/ShapesPicker.tsx`: Built visual picker for shapes in the inspector panel with shape insertion, active selection detection, preset palette colors, custom hex color picker, and delete action.
+  - `src/ui/editor/SlideInspector.tsx` & `src/ui/editor/index.ts`: Mounted `ShapesPicker` into slide editor sidebar.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Added bilingual translation keys for shapes picker UI (`assets.shapesTitle`, `assets.shapesDesc`, `assets.addShape`, `assets.selectedShape`, `assets.shapeColor`, `assets.deleteShape`).
+  - `tests/unit/shapesPack.test.tsx`: 9 unit tests covering synchronous registry, SVG rendering, recoloring, and inspector picker interactions.
+  - `tests/unit/assetPack.test.ts`: Updated canonical pack item count expectations for 16 items.
+  - `tests/e2e/shapesPack.spec.ts`: End-to-end Playwright test verifying adding a vector shape from the inspector, recoloring it, canvas rendering, and PNG export generation.
+  - `docs/TASKS.md`: Marked R6-2 `[x]`.
+- Decisions / deviations from the plan:
+  1. Built-in starter shapes use synchronous eager SVG loading in `shapesRegistry.ts` so that canvas manipulation and screenshot export libraries (`html-to-image` / `modern-screenshot`) capture shapes immediately without asynchronous DOM layout shifts or network delay.
+  2. All vector shapes are designed with `stroke="currentColor"` or `fill="currentColor"` so that `style={{ color: fill }}` in `ExtrasRenderer.tsx` dynamically and accurately recolors shapes across all templates and themes.
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (65 test files, 575 passed, 100%), Playwright E2E (`tests/e2e/shapesPack.spec.ts` passed), and `npm run build` (clean).
+- Remaining / next step: Claim and implement R6-3 (Icons pack from a verified open-source set, lazy and tree-shaken).
+- Needs from the owner: None.
+

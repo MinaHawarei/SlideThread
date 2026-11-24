@@ -94,7 +94,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
 | R6-1 | Asset pack format, lazy loader, validator, license registry (`ASSET_LICENSES.md`, `NOTICE`). | GR5 | [x] | Antigravity 2026-11-24 · feature/r6-1 |
-| R6-2 | Shapes, lines, arrows pack (original, recolorable). | R6-1 | [ ] | |
+| R6-2 | Shapes, lines, arrows pack (original, recolorable). | R6-1 | [x] | Antigravity 2026-11-24 · feature/r6-2 |
 | R6-3 | Icons pack from a verified open-source set, lazy and tree-shaken. | R6-2 | [ ] | |
 | R6-4 | Emoji and stickers/illustrations packs (§5.6 rules). | R6-3 | [ ] | |
 | R6-5 | Assets panel UI: categories, bilingual search, click/drag to add, recents. | R6-4 | [ ] | |

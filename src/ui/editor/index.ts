@@ -13,3 +13,4 @@ export * from './ChangeFormatDialog';
 export * from './PasteSlidesDialog';
 export * from './ExportDialog';
 export * from './RichTextEditor';
+export * from './ShapesPicker';
