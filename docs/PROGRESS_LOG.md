@@ -1488,3 +1488,42 @@ Agent name: Antigravity
 - Remaining / next step: Implement schema updates, template assets, validator logic, tests, and documentation.
 - Needs from the owner: None.
 
+
+### R6-7 — done — 2026-11-24 11:15 — Antigravity
+- Branch / commit: feature/r6-7 / bfd383d
+- What changed (files):
+  - `src/templates/schema.ts` & `src/templates/template.schema.json`: Added `assets: z.record(z.string().min(1), z.string().min(1)).optional()` to template schema definition.
+  - `scripts/template-cli.mjs`: Added validation for template declared assets (`assets` property), verifying pack references (`pack:<packId>/<itemId>`) exist in registered asset packs, and local relative paths exist within the template directory and are valid sanitized SVGs.
+  - `src/templates/starters/bold-marketing/template.json`: Added sample declared assets referencing `"badge": "pack:stickers/sticker-new-badge"` and `"cornerAccent": "assets/flourish-corner.svg"`.
+  - `src/templates/starters/bold-marketing/assets/flourish-corner.svg`: Created local sample SVG asset for `bold-marketing`.
+  - `tests/unit/templateAssets.test.ts`: Created unit tests verifying template asset parsing, pack asset resolution via registered asset packs, and local template SVG resolution and sanitization.
+  - `docs/TASKS.md`: Marked R6-7 `[x]`.
+- Decisions / deviations from the plan:
+  - Preserved full backward compatibility for existing templates without `assets` mapping while ensuring strict validation when declared.
+- Tests run and result:
+  - `npm run template:validate` (passed all 5 templates across 80 combinations).
+  - `npm run lint` (0 warnings).
+  - `npm run typecheck` (0 errors).
+  - `npm test` (70 test files, 611 unit tests passed, 100%).
+  - `npm run build` (clean Vite production build).
+- Remaining / next step: Complete Gate GR6 verification.
+- Needs from the owner: None.
+
+
+### GR6 — done — 2026-11-24 11:20 — Antigravity
+- Branch / commit: feature/gr6
+- What changed (files): `docs/TASKS.md`, `docs/REVISION_PLAN.md`, `docs/PROGRESS_LOG.md`.
+- Decisions / deviations from the plan:
+  - Verified all requirements of Phase R6 (Assets and stickers):
+    1. Asset pack format & validator: Packs (`shapes`, `icons`, `emoji`, `stickers`) adhere to `AssetPack` schema, lazy loading, bilingual metadata, and license allowlist (CC0, MIT, ISC, Apache-2.0, CC-BY).
+    2. Unlicensed / GPL packs strictly rejected by validator tests (`tests/unit/assetPack.test.ts`).
+    3. Shapes (16 original items), icons (20 Lucide items), emoji (8 Twemoji items), stickers (6 original items) usable in editor and DOM / export capture.
+    4. Assets panel provides bilingual search (EN/AR), category filtering, recent assets memory, click-to-add, and HTML5 drag-and-drop to canvas.
+    5. User uploads: images downscaled to max 2400 px, SVGs strictly sanitized (malicious tags/scripts rejected), stored in IndexedDB, round-trip export support in project JSON, crop masks (`circle`, `rounded`, `square`), and replace asset support.
+    6. Template asset references (`pack:<packId>/<itemId>` and local relative SVGs) validated in template validator and sample template `bold-marketing`.
+    7. Third-party licenses documented and verified in `ASSET_LICENSES.md` and `NOTICE`.
+- Tests run and result: Full unit test suite (70 test files, 611 tests passed), Playwright E2E suites passing, clean lint, clean typecheck, and clean build.
+- Remaining / next step: Claim and begin Phase R7 (Slide management), starting with R7-1.
+- Needs from the owner: None.
+
+

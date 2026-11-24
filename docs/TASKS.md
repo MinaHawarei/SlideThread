@@ -99,8 +99,8 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R6-4 | Emoji and stickers/illustrations packs (§5.6 rules). | R6-3 | [x] | Antigravity 2026-11-24 · feature/r6-4 |
 | R6-5 | Assets panel UI: categories, bilingual search, click/drag to add, recents. | R6-4 | [x] | Antigravity 2026-11-24 · feature/r6-5 |
 | R6-6 | Uploads: images and sanitized SVG, downscale, IndexedDB, replace, basic crop/mask (circle, rounded). | R6-5 | [x] | Antigravity 2026-11-24 · feature/r6-6 |
-| R6-7 | Templates can reference pack assets and local SVGs; validators updated. | R6-6 | [/] | Antigravity 2026-11-24 · feature/r6-7 |
-| GR6 | Gate GR6 verification | R6-1…R6-7 | [ ] | |
+| R6-7 | Templates can reference pack assets and local SVGs; validators updated. | R6-6 | [x] | Antigravity 2026-11-24 · feature/r6-7 · bfd383d |
+| GR6 | Gate GR6 verification | R6-1…R6-7 | [x] | Antigravity 2026-11-24 · feature/gr6 · gate passed |
 
 ### Phase R7 — Slide management (GATE GR7)
 | ID | Task | Depends on | Done | Notes |
