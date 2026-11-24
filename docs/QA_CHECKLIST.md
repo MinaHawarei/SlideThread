@@ -45,8 +45,37 @@ Track manual and automated verification across devices and browsers per `MASTER_
 3. **Arabic & English bidi:** Long Arabic text, mixed bidi, no clipped letters, correct joining.
 4. **Orientation switch:** Switch 16:9 landscape to portrait and verify layout adaptation.
 5. **Palettes & Contrast:** Ensure contrast passes across dark/light and custom hex inputs.
-6. **Persistence & Migration:** Reload page; verify settings and slides are preserved.
-7. **Export formats:** Verify PNG, ZIP, PDF generation.
+6. **Persistence & Migration:** Reload page; verify settings and slides are preserved (Schema v2 upgrade path).
+7. **Export formats:** Verify PNG, ZIP, PDF generation across all formats and locales.
+8. **Direct Canvas Manipulation:** Selection, multi-select, drag, resize with aspect locking, rotation, layer reordering, snapping, delete/duplicate.
+9. **In-place Rich Text:** Bold, italic, underline, size, color, alignments, inline link tokens, Arabic IME composition stability.
+10. **Atelier Visual Language:** Direction A warm slate palette, amber accents, editorial typography, clear hierarchy, responsive bottom-sheet on mobile.
+
+---
+
+## 4. Automated Verification Suites
+
+The following automated suites verify core functionality before any release:
+
+- **Unit & Integration Suite (`npm test`):**
+  - Schema v2 validation & migrations: `schemaMigration.test.ts`
+  - Direct manipulation & overrides: `canvasManipulation.test.tsx`
+  - Rich text serialization & sanitize: `richText.test.ts`
+  - Starter templates & continuous patterns: `starterTemplates.test.ts`, `continuousPatterns.test.ts`
+  - Onboarding, keyboard shortcuts & empty states: `onboarding.test.tsx`
+  - Motion, reduced-motion & feedback: `motion.test.tsx`
+  - Desktop & Mobile Atelier chrome: `editorDesktop.test.tsx`, `editorMobile.test.tsx`
+  - Security, CSS AST & SVG sanitizers: `templateSanitizers.test.ts`, `uploads.test.ts`
+  - Accessibility keyboard focus & ARIA: `accessibility.test.tsx`
+- **E2E Export Regression Suite (`tests/e2e/exportRegression.spec.ts`):**
+  - Golden PNG exports across 4:5, 1:1, 9:16, 16:9, light/dark themes, and en/ar locales.
+  - Pixel drift verified < 0.05% relative to committed goldens.
+- **E2E Accessibility Audit (`tests/e2e/accessibilityAudit.spec.ts`):**
+  - Automated Axe WCAG 2.1 AA scans across Gallery, Desktop Editor, and Mobile Editor.
+  - Zero critical or serious accessibility violations.
+- **Bundle & Performance Audits (`npm run build`):**
+  - Chunk splitting: Lazy editor chunk is ≤ 600 kB gzip (currently ~53 kB).
+  - Production zero-dependency CSP compliance.
 
 ## Manipulation real-device check — needs manual check by owner (D-09)
 

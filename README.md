@@ -1,12 +1,12 @@
 # SlideThread
 
-> **Modern, client-side studio for multi-slide social carousels, posts, and stories.**  
-> Crafted with React, TypeScript, Tailwind CSS, OKLCH color science, and strict zero-backend privacy.
+> **The browser-first studio for high-impact social carousels, posts, and stories.**  
+> Crafted with React 18, TypeScript, Direction A (Atelier) design tokens, and client-side privacy.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6_Strict-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-4.5_Rolled-646CFF?logo=vite)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E_Verified-45ba4b?logo=playwright)](https://playwright.dev/)
 
@@ -14,223 +14,66 @@
 
 ## 🌟 Overview
 
-**SlideThread** is a high-fidelity web application designed for technical creators, educators, designers, and founders to create beautiful social slide decks, carousels, and stories for LinkedIn, Instagram, Facebook, and X.
+**SlideThread** is a client-side visual design studio created for founders, creators, developers, and educators to design publication-grade social slide decks, multi-slide carousels, and stories for LinkedIn, Instagram, Facebook, and X.
 
-Unlike heavy design software or cloud-based slide apps, SlideThread is:
-- **100% Client-Side:** Zero backend, zero database, zero external tracking. Your drafts, photos, and assets never leave your device.
-- **Bi-directional & Multi-Lingual:** Native support for English (LTR) and Arabic (RTL) with automated typographic alignment and script-aware fonts (`IBM Plex Sans` and `IBM Plex Sans Arabic`).
-- **Typographic & Layout Integrity:** Uses logical CSS properties, dynamic auto-fitting text calculations, and isolation layers to guarantee pixel-perfect exports.
-- **Offline First:** Automatic local state persistence via versioned `localStorage` and IndexedDB for full-resolution media assets.
-
----
-
-## ✨ Features
-
-- **9 Structured Slide Types:**
-  - `cover`: High-impact title, tag, subtitle, and author signature.
-  - `explain`: Paragraph text with optional highlight pills and bullet cards.
-  - `rule`: Structured "IF / THEN" logic cards for principles and takeaways.
-  - `compare`: Side-by-side "Bad vs. OK" or "Don't vs. Do" comparisons.
-  - `code`: Syntactically styled code snippet block with monospaced JetBrains Mono.
-  - `stat`: Bold metric counter with context label and explanatory note.
-  - `quote`: Blockquote presentation with attribution and accent borders.
-  - `image`: Media-focused showcase with caption and placement modes.
-  - `cta`: Final slide call-to-action with social handles and engagement triggers.
-
-- **3 Distinct Design Templates:**
-  - **Network (Default):** Technical, modern aesthetic with subtle dot-matrix grids and crisp accents.
-  - **Clean:** Minimalist, editorial typography with generous whitespace and understated rules.
-  - **Bold:** High-contrast graphic presentation with strong borders and striking header blocks.
-
-- **4 Aspect Ratios & Formats:**
-  - `1:1 Square (1080×1080)`: Universal feed posts and carousels.
-  - `4:5 Portrait (1080×1350)`: Optimized for Instagram and LinkedIn mobile feeds.
-  - `16:9 Landscape (1920×1080)`: Desktop presentations, web embeds, and Twitter landscape.
-  - `9:16 Story (1080×1920)`: Vertical stories and reels with visual safe-zone indicators for platform UI overlays.
-
-- **OKLCH Color Science Engine:**
-  - Automated generation of accessible, perceptually uniform color palettes from a single primary brand hex color.
-  - Built-in WCAG contrast validation ensuring AA and AAA legibility across ink, background, muted, and accent tokens.
-
-- **Local Media Management:**
-  - Client-side downscaling (max 2400px long side) with PNG transparency preservation.
-  - IndexedDB binary caching with instant blob URL generation.
-  - Flexible positioning: `background`, `top`, `side`, and `replace-text`.
-
-- **Paste-to-Slides (Instant Carousel Creation):**
-  - Smart heuristic parser transforming raw markdown, notes, or bullet lists into pre-configured slides separated by `---` or double blank lines.
-  - Heuristic detection for code blocks, quotes, statistics, comparisons, and rule sets.
-  - Live preview modal with slide-type override selectors and append/replace modes.
-
-- **Multi-Format Export Pipeline:**
-  - **PNG:** High-resolution raster capture of active slide.
-  - **ZIP Archive:** Sequential, numbered PNG images (`project-name-01.png`, etc.) zipped on the client using JSZip.
-  - **PDF Document:** Multi-page PDF matching exact slide dimensions using jsPDF.
-  - **Web Share API:** Direct native mobile sharing sheet integration.
-
-- **Dual Responsive Workspaces:**
-  - **Desktop:** Professional 3-column layout (thumbnail rail, live interactive canvas, and inspector tabs).
-  - **Mobile:** Touch-first studio with horizontal thumbnail strip, swipe gesture canvas, and slide-up inspector sheets.
-
----
-
-## 🏗️ Architecture & Repository Structure
-
-SlideThread is structured cleanly into modular layers:
-
-```
-src/
-├── config/              # Application, site metadata, and chunk splitting rules
-│   ├── chunks.ts        # Rollup manual vendor chunk configurations
-│   └── site.ts          # Brand metadata, owner profile, and social links
-├── core/                # Core business logic and pure data utilities
-│   ├── assetStore.ts    # IndexedDB asset store with idb-keyval
-│   ├── formats.ts       # Social formats, aspect ratios, and dimensions
-│   ├── media.ts         # Image scaling, validation, and object URL management
-│   ├── palette.ts       # OKLCH color calculations and WCAG contrast checks
-│   ├── paste.ts         # Heuristic markdown and text-to-slides parser
-│   ├── persistence.ts   # Versioned localStorage autosave and schema migrations
-│   ├── projectIO.ts     # JSON project export, import, and size validation
-│   ├── templates.ts     # Template registry (Network, Clean, Bold)
-│   ├── textFit.ts       # Text measurement and dynamic auto-scale engine
-│   └── types.ts         # Strict TypeScript schemas and interfaces
-├── export/              # Client-side capture and document packaging
-│   ├── capture.ts       # Headless DOM-to-image rasterization
-│   ├── pdf.ts           # Client-side jsPDF multi-page raster generator
-│   ├── pipeline.ts      # Unified export orchestrator and download trigger
-│   └── zip.ts           # JSZip packaging and blob generation
-├── i18n/                # Localization dictionaries (English & Arabic)
-│   ├── ar.ts            # Arabic translations
-│   ├── en.ts            # English translations
-│   └── useT.ts          # Reactive translation hook with auto-RTL direction
-├── slides/              # Slide component renderers and isolated CSS
-│   ├── CompareSlide.tsx
-│   ├── CoverSlide.tsx
-│   ├── ExplainSlide.tsx
-│   ├── ImageSlide.tsx
-│   ├── RuleSlide.tsx
-│   ├── SlideRenderer.tsx # Memoized polymorphic slide container
-│   ├── slides.css       # Isolated logical CSS rules with variable scoping
-│   └── ...
-├── store/               # Zustand global state slices
-│   ├── projectStore.ts  # Current project, slides, undo/redo, autosave
-│   └── settingsStore.ts # Global user settings (author profile, brand kit)
-└── ui/                  # User interface views and controls
-    ├── common/          # Reusable UI widgets, color pickers, modals
-    ├── editor/          # Desktop and mobile editors, rails, inspectors, dialogs
-    ├── start/           # Start screen, format picker, wizard
-    └── wizard/          # Step-by-step onboarding creation flow
-```
+- **100% Client-Side Privacy:** Zero backend, zero database, zero external tracking. All drafts, photos, and assets remain securely in browser storage (`localStorage` + IndexedDB).
+- **Native Bilingual Support:** Comprehensive English (LTR) and Arabic (RTL) typography, microcopy, layout mirroring, and touch swipe gesture directionality.
+- **Direction A (Atelier) Aesthetic:** Warm stone surfaces, serif headings, vibrant amber accents, and paper-lift shadow elevation.
+- **Data-Driven Template Platform:** Extensible JSON templates, 5 canonical starter templates, seamless multi-slide continuous patterns, and archetype layouts.
+- **Direct Canvas Manipulation:** Move, resize, and rotate elements with intelligent snap guides, safe zones, and one-click "Reset Layout" safety.
+- **Rich Text & Typography:** In-place rich-text formatting with custom font size, weight, color highlights, and bullet lists.
+- **Asset Ecosystem:** Curated canonical packs for shapes, presentation icons, reaction emojis, stickers, and sanitized SVG uploads.
+- **Multi-Format Export Pipeline:** Generate crisp multi-page PDFs, high-resolution PNG sets, or ZIP archives right in the browser.
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js >= 18.0.0
-- npm >= 9.0.0
+- Node.js ≥ 18.0.0
+- npm ≥ 9.0.0
 
-### Installation
+### Installation & Development
 ```bash
 # Clone the repository
-git clone https://github.com/minahawarei/SlideThread.git
-
-# Navigate into the project directory
-cd SlideThread
+git clone https://github.com/mina/slidethread.git
+cd slidethread
 
 # Install dependencies
 npm install
-```
 
-### Running the Development Server
-```bash
+# Start development server
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [http://localhost:5174](http://localhost:5174) in your browser.
 
 ---
 
-## 📜 Available NPM Scripts
+## 🛠️ Scripts & Commands
 
 | Command | Purpose |
-|---|---|
-| `npm run dev` | Starts Vite local development server with hot-module replacement |
-| `npm run build` | Runs TypeScript type checking (`tsc --noEmit`) and compiles production assets into `dist/` |
-| `npm run preview` | Serves the production build locally for testing |
-| `npm run lint` | Lints all TypeScript and React files with ESLint |
-| `npm run typecheck` | Validates TypeScript types across the entire project |
-| `npm test` | Runs the Vitest unit and component test suite |
-| `npm run test:e2e` | Executes Playwright end-to-end and fidelity tests across Chromium |
-| `npm run template:new -- <slug>` | Scaffolds a data-only template in `src/templates/starters/<slug>/` |
-| `npm run template:dev -- <id>` | Starts the hot-reloading template lab with English/Arabic, theme, and aspect controls |
-| `npm run template:validate` | Checks JSON Schema, runtime schema, security, WCAG contrast, assets, licenses, previews, and stress renders |
-| `npm run template:preview` | Regenerates committed WebP previews; pass `-- --check` in CI to compare with tolerant pixel drift |
-| `npm run template:index` | Regenerates the template gallery data index; pass `-- --check` to verify it is current |
+|---------|---------|
+| `npm run dev` | Starts Vite development server with HMR. |
+| `npm run build` | Builds strict production bundle into `dist/`. |
+| `npm test` | Runs full Vitest unit & integration test suite (77 files, 650+ tests). |
+| `npm run test:e2e` | Runs Playwright end-to-end browser tests across viewports. |
+| `npm run lint` | Runs ESLint 9 with strict flat config. |
+| `npm run typecheck` | Validates TypeScript types across the codebase. |
 
 ---
 
-## 🛠️ Extending SlideThread
+## 📄 Documentation
 
-### Adding a New Slide Format
-To add a new social platform format or custom aspect ratio:
-1. Open `src/core/formats.ts`.
-2. Add your format configuration to `FORMATS` array:
-   ```typescript
-   {
-     id: 'r_4_3',
-     labelKey: 'format.landscape43',
-     aspect: '4:3',
-     width: 1440,
-     height: 1080,
-     descriptionKey: 'format.landscape43Desc',
-     platforms: ['custom'],
-     orientation: 'landscape',
-   }
-   ```
-3. Add corresponding localization keys in `src/i18n/en.ts` and `src/i18n/ar.ts`.
-
-### Adding a New Design Template
-Add templates through the data-only workflow rather than editing app registries:
-
-```bash
-npm run template:new -- creator-notes
-npm run template:dev -- creator-notes
-npm run template:preview -- creator-notes
-npm run template:validate
-npm run template:index
-```
-
-See the [Template Guide](docs/TEMPLATE_GUIDE.md) for worked examples at all four contribution levels and the [Content Policy](docs/CONTENT_POLICY.md) for licensing and safety requirements.
+- [Consolidated Specification v2](docs/Spec.md) (Archived v1 in [docs/history/Spec.v1.md](docs/history/Spec.v1.md))
+- [Template Contribution Guide](docs/TEMPLATE_GUIDE.md)
+- [QA Matrix & Manual Checklist](docs/QA_CHECKLIST.md)
+- [Owner Review Pack](docs/owner-review/OWNER_REVIEW_PACK.md)
+- [Performance & Bundle Audit](docs/PERFORMANCE_AUDIT.md)
+- [Accessibility Audit (WCAG AA)](docs/ACCESSIBILITY_AUDIT.md)
+- [Security Review & CSP](docs/SECURITY_AUDIT.md)
 
 ---
 
-## 🧪 QA & Verification Matrix
-
-SlideThread is continuously tested across desktop and mobile form factors:
-- **Unit & Component Testing:** 40 test suites covering >325 tests (Vitest + React Testing Library).
-- **Export & Fidelity Tests:** Automated Playwright suites verifying pixel-perfect raster capture, multi-slide ZIP generation, and `%PDF-` document integrity.
-- **Accessibility:** High-contrast color verification (WCAG AA/AAA), keyboard focus rings, and full screen-reader ARIA labeling.
-
----
-
-## 🤝 Contributing
-
-Contributions, bug reports, and suggestions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup and review steps, and use the [pull request template](.github/PULL_REQUEST_TEMPLATE.md). For templates, follow the [Template Guide](docs/TEMPLATE_GUIDE.md) and [Content Policy](docs/CONTENT_POLICY.md).
-
----
-
-## 📄 License & Attribution
-
-- **Source Code:** Distributed under the [MIT License](LICENSE).
-- **Fonts:** 
-  - [IBM Plex Sans](https://github.com/IBM/plex) (Open Font License)
-  - [IBM Plex Sans Arabic](https://github.com/IBM/plex) (Open Font License)
-  - [JetBrains Mono](https://www.jetbrains.com/lp/mono/) (Open Font License)
-
----
-
-## ⭐ Star the Repo
-
-If SlideThread helped you create better carousels and presentations, consider giving us a star on GitHub! It helps more creators discover this free, privacy-first tool.
-
-👉 **[Star SlideThread on GitHub](https://github.com/minahawarei/SlideThread)**
+## 📜 License & Provenance
+SlideThread is open source under the [MIT License](LICENSE).  
+Bundled open-source fonts are licensed under the SIL Open Font License (OFL).
