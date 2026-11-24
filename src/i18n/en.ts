@@ -275,6 +275,8 @@ export const en = {
   'editor.deleteSlide': 'Delete Slide',
   'editor.moveUp': 'Move Earlier',
   'editor.moveDown': 'Move Later',
+  'editor.dragHandle': 'Drag to reorder slide {number}',
+  'editor.reordered': 'Slide {number} moved to position {position} of {total}',
   'editor.prevSlide': 'Previous Slide',
   'editor.nextSlide': 'Next Slide',
   'editor.export': 'Export',
