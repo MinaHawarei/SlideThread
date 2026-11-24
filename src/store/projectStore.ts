@@ -188,6 +188,7 @@ export interface ProjectState {
   updateSlideFields: (id: string, fields: Record<string, string | RichText>) => void;
   updateSlideMedia: (id: string, media?: MediaRef) => void;
   updateSlotOverride: (slideId: string, aspect: AspectClass, elementId: string, override?: ElementOverride) => void;
+  resetAspectOverrides: (aspect: AspectClass, slideId?: string) => void;
   updateExtraElement: (slideId: string, extra: ExtraElement) => void;
   addExtraElement: (slideId: string, extra: ExtraElement) => void;
   deleteExtraElement: (slideId: string, extraId: string) => void;
@@ -507,6 +508,21 @@ export const useProjectStore = create<ProjectState>()(
                 if (override) aspectOverrides[elementId] = override;
                 else delete aspectOverrides[elementId];
                 overrides[aspect] = aspectOverrides;
+                return { ...slide, overrides };
+              }),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        resetAspectOverrides: (aspect: AspectClass, slideId?: string) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((slide) => {
+                if (slideId && slide.id !== slideId) return slide;
+                const overrides = { ...(slide.overrides ?? {}) };
+                delete overrides[aspect];
                 return { ...slide, overrides };
               }),
               updatedAt: Date.now(),

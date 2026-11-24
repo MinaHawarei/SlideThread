@@ -267,6 +267,10 @@ export const en = {
   'design.changeFormat.landscape': 'Landscape (Horizontal)',
   'design.changeFormat.portrait': 'Portrait (Vertical)',
   'design.changeFormat.preview': 'Preview Relayout',
+  'design.changeFormat.overridesNotice': 'Each format aspect ratio maintains its own layout adjustments. Custom adjustments made in other formats remain preserved.',
+  'design.changeFormat.hasOverrides': 'This format has custom layout adjustments.',
+  'design.changeFormat.resetLayout': 'Reset layout for this format',
+  'design.changeFormat.resetLayoutDesc': 'Restore the template default layout for this aspect ratio.',
   'design.safeZones': 'Story Safe Zones (14%)',
 
   // Editor Actions

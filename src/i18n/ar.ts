@@ -269,6 +269,10 @@ export const ar: Record<TranslationKey, string> = {
   'design.changeFormat.landscape': 'أفقي (عريض)',
   'design.changeFormat.portrait': 'عمودي (رأسي)',
   'design.changeFormat.preview': 'معاينة التوزيع',
+  'design.changeFormat.overridesNotice': 'تحتفظ كل نسبة أبعاد بتعديلاتها الخاصة. التعديلات المخصصة في القياسات الأخرى تبقى محفوظة دون تغيير.',
+  'design.changeFormat.hasOverrides': 'يحتوي هذا القياس على تعديلات تخطيط مخصصة.',
+  'design.changeFormat.resetLayout': 'إعادة ضبط التخطيط لهذا القياس',
+  'design.changeFormat.resetLayoutDesc': 'استعادة التوزيع الافتراضي للقالب لنسبة الأبعاد هذه.',
   'design.safeZones': 'المناطق الآمنة للقصص (14%)',
 
   // Editor Actions
