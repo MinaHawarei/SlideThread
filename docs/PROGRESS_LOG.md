@@ -1475,3 +1475,16 @@ Agent name: Antigravity
 - Remaining / next step: Claim and implement R6-7 (Templates can reference pack assets and local SVGs; validators updated).
 - Needs from the owner: None.
 
+
+### R6-7 — started — 2026-11-24 01:10 — Antigravity
+- Branch / commit: feature/r6-7
+- What changed (files): `docs/TASKS.md` (claimed R6-7).
+- Decisions / deviations from the plan:
+  - Extend `TemplateSchema` and `template.schema.json` with an optional `assets` map (`record<string, string>`) allowing templates to declare pack asset references (e.g. `pack:shapes/badge-sparkle` or `pack:icons/rocket`) and local relative SVGs (e.g. `assets/corner-flourish.svg`).
+  - Update `scripts/template-cli.mjs` validator and unit tests to validate declared template asset references and enforce SVG safety for local files.
+  - Equip `bold-marketing` template with a pack asset reference and a local decorative SVG.
+  - Add unit tests verifying validation and resolving of both asset types.
+- Tests run and result: N/A (task in progress).
+- Remaining / next step: Implement schema updates, template assets, validator logic, tests, and documentation.
+- Needs from the owner: None.
+

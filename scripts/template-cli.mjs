@@ -101,6 +101,35 @@ async function validateAll({ requirePreviews = true } = {}) {
         if (failures.length) throw new Error(`${parsed.id} ${mode} palette contrast: ${failures.join(', ')}`);
       }
       if (parsed.customCss) sanitizeTemplateCss(parsed.customCss, parsed.id);
+
+      // Validate declared template assets (pack references and local relative SVGs)
+      if (parsed.assets) {
+        for (const [key, assetRef] of Object.entries(parsed.assets)) {
+          if (assetRef.startsWith('pack:')) {
+            // Pack reference format: pack:<packId>/<itemId>
+            const packMatch = assetRef.match(/^pack:([a-z0-9-]+)\/([a-z0-9-]+)$/);
+            if (!packMatch) {
+              throw new Error(`${parsed.id}: asset "${key}" has invalid pack reference "${assetRef}". Expected format "pack:<packId>/<itemId>"`);
+            }
+          } else {
+            // Local asset file: must exist under the template's folder or assets/
+            const localPath = path.resolve(folder, assetRef);
+            if (!localPath.startsWith(folder)) {
+              throw new Error(`${parsed.id}: asset "${key}" path "${assetRef}" escapes template directory`);
+            }
+            try {
+              const fileStat = await stat(localPath);
+              if (!fileStat.isFile()) throw new Error('Not a file');
+              if (localPath.endsWith('.svg')) {
+                sanitizeSvg(await readFile(localPath, 'utf8'));
+              }
+            } catch (err) {
+              throw new Error(`${parsed.id}: declared asset "${key}" not found at "${assetRef}" (${err.message})`);
+            }
+          }
+        }
+      }
+
       const assetsDir = path.join(folder, 'assets');
       let assetBytes = 0;
       try {
