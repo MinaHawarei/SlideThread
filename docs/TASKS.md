@@ -203,5 +203,5 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | P5-3 | QA pass: execute docs/QA_CHECKLIST.md on matrix, fix blockers, list known issues | GR9 | [x] | Antigravity 2026-11-24 · feature/p5-3 · 929319f |
 | P5-4 | Lighthouse + accessibility: mobile Accessibility ≥ 90, fix findings | GR9 | [x] | Antigravity 2026-11-24 · feature/p5-4 · mobile a11y ≥ 95 verified |
 | P5-5 | Verify name (SlideThread) is applied consistently (APP_NAME, README, page title, OG tags) | GR9 | [x] | Antigravity 2026-11-24 · feature/p5-5 · consistent brand applied |
-| P5-6 | Release: tag v0.1.0-beta, production deploy on Vercel, verify analytics and feedback (owner-only) | GR9 | [ ] | |
-| G5 | Gate G5 verification (release) | P5-1…P5-6 | [ ] | |
+| P5-6 | Release: tag v0.1.0-beta, production deploy on Vercel, verify analytics and feedback (owner-only) | GR9 | [ ] | Ready for owner: clean build, release notes in docs/RELEASE_NOTES.md, deploy instructions documented |
+| G5 | Gate G5 verification (release) | P5-1…P5-6 | [ ] | All automated & engineering release gates passed; pending owner production deployment (P5-6) |
