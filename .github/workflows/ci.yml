@@ -45,3 +45,6 @@ jobs:
 
       - name: Build production bundle
         run: npm run build
+
+      - name: End-to-end smoke test
+        run: npm run test:e2e -- tests/e2e/smoke.spec.ts

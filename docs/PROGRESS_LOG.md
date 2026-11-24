@@ -1942,3 +1942,25 @@ Agent name: Antigravity
   - Production CSP configured in `vercel.json`.
 - Remaining / next step: Handoff to owner for final deployment and tag creation per `docs/MASTER_PROMPT_REVISION.md` §13.
 - Needs from the owner: Deploy to Vercel and tag `v0.1.0-beta`.
+
+### BUGFIX-CHUNK-CYCLE — done — 2026-11-24 14:22 — Antigravity
+- Branch / commit: fix/prod-chunk-cycle
+- What changed (files):
+  - `vite.config.ts`: Removed artificial `manualChunks` heuristic that caused circular dependencies between `vendor-core` (Zustand/react-sync-external-store) and `vendor-react` (React/ReactDOM).
+  - `src/config/chunks.ts`: Removed obsolete chunk helper.
+  - `tests/unit/performance.test.ts`: Updated performance test to assert clean natural chunking without circular vendor splits.
+  - `tests/e2e/smoke.spec.ts`: Added permanent production preview smoke test that verifies `/` (Home page) renders and `/editor` route loads with zero uncaught console errors or page errors.
+  - `playwright.config.ts`: Configured `webServer` to serve the production build via `vite preview --port ${PORT}`.
+  - `.github/workflows/ci.yml`: Wired end-to-end smoke test into the automated CI pipeline after bundle build.
+- Decisions / deviations from the plan:
+  - Removing the manual vendor chunk heuristic lets Vite and Rollup partition packages naturally based on route-level dynamic imports, eliminating circular chunk initialization while keeping route bundle sizes well within the budgets defined in `REVISION_PLAN.md` §2 item 10.
+- Tests run and result:
+  - Reproduction confirmed: Initial preview failed with `Page error: Cannot read properties of undefined (reading 'useState')` due to `Circular chunk: vendor-core -> vendor-react -> vendor-core`.
+  - Fix verified:
+    - 0 circular chunk warnings during build.
+    - Bundle sizes: Initial route chunk is **75.86 kB gzip** (budget: ≤ 300 kB); Editor lazy chunk is **204.92 kB gzip** (budget: ≤ 600 kB); export libraries strictly lazy-loaded on demand.
+    - Playwright smoke test (`tests/e2e/smoke.spec.ts`) against `vite preview`: Passed in 1.9s with 0 page errors and 0 console errors.
+    - Vitest unit tests: 77 files, 652 passed (100%).
+    - Lint & Typecheck: Clean, 0 errors/warnings.
+- Remaining / next step: Completed bug fix per instructions.
+- Needs from the owner: None.
