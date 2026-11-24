@@ -1642,3 +1642,24 @@ Agent name: Antigravity
   - Clean production build.
 - Remaining / next step: Advance to Task R8-4 (Mobile editor: bottom sheets, tab bar, gestures, safe-area handling).
 - Needs from the owner: None.
+
+
+### R8-4 — done — 2026-11-24 12:37 — Antigravity
+- Branch / commit: feature/r8-4 · 000b77f
+- What changed (files):
+  - `src/ui/editor/EditorMobile.tsx`: Redesigned mobile editor chrome with Direction A (Atelier) design tokens (warm stone-100/950, serif header title, warm amber active tabs, refined paper-lift slide container shadow, thumb-friendly 44px+ touch targets). Added safe-area padding handling (`pb-[env(safe-area-inset-bottom,0px)]` and `pt-[env(safe-area-inset-top,0px)]`).
+  - `src/ui/editor/MobileBottomSheet.tsx`: Redesigned drawer modal with rounded-3xl corners, warm stone surfaces, grab handle, and `pb-[env(safe-area-inset-bottom,0px)]`.
+  - `src/ui/editor/MobileThumbnailStrip.tsx`: Restyled strip with stone surfaces, amber active thumb indicators, amber add-slide buttons, and spring reorder animations.
+  - `docs/ux-review/R8-4/REVIEW.md`: Self-review rubric scored 1–5 across all 9 areas in §7.3 (all 5/5).
+  - `docs/ux-review/R8-4/screenshots/`: 12 Playwright screenshots across 360×800, 768×1024, 1440×900 in light/dark and en/ar.
+  - `tests/e2e/editorMobileScreenshots.spec.ts`: Playwright capture script.
+- Decisions / deviations from the plan:
+  - Maintained 100% backward compatibility for touch swipe gesture tests and slide inspector interactions.
+- Tests run and result:
+  - Unit tests: all 75 test files passing (645 passed, 100%).
+  - Playwright E2E: 12 screenshot captures passed.
+  - ESLint 0 errors, 0 warnings.
+  - TypeScript 0 errors.
+  - Clean production build.
+- Remaining / next step: Advance to Task R8-5 (Motion and micro-interactions (§7.2): springs, drag ghosts, snap-guide flash, toasts, skeletons, export progress, gallery→editor transition).
+- Needs from the owner: None.

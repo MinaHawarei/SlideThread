@@ -116,7 +116,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R8-1 | Home: hero with an interactive swipeable demo carousel, quick-start tiles by platform, examples, recent projects. | GR7 | [x] | Antigravity 2026-11-24 · feature/r8-1 · fc3d781 |
 | R8-2 | Gallery UI: masonry grid, category chips with icons, search, filters, hover preview, "preview with my brand", favorites, loading/empty states. | R8-1 | [x] | Antigravity 2026-11-24 · feature/r8-2 · 1b00f19 |
 | R8-3 | Editor chrome (desktop): top bar, left tool rail (Templates, Elements, Text, Uploads, Brand, Layout), canvas with zoom/fit/pan, floating toolbars, animated slide strip. | R8-2 | [x] | Antigravity 2026-11-24 · feature/r8-3 · b30bb28 |
-| R8-4 | Mobile editor: bottom sheets, tab bar, gestures, safe-area handling. | R8-3 | [ ] | |
+| R8-4 | Mobile editor: bottom sheets, tab bar, gestures, safe-area handling. | R8-3 | [x] | Antigravity 2026-11-24 · feature/r8-4 · 000b77f |
 | R8-5 | Motion and micro-interactions (§7.2): springs, drag ghosts, snap-guide flash, toasts, skeletons, export progress, gallery→editor transition. | R8-4 | [ ] | |
 | R8-6 | Onboarding (3–4 skippable steps), empty states with original SVG illustrations, shortcuts overlay, friendly bilingual microcopy. | R8-5 | [ ] | |
 | R8-7 | Visual polish pass: spacing, type, icon consistency, dark/light and RTL/LTR parity, footer restyle. Prepare the owner review pack (screenshots + short video or GIF). | R8-6 | [ ] | |
