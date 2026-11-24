@@ -2,7 +2,7 @@ import React from 'react';
 import type { ExtraElement } from '../core/schema';
 import { MediaRenderer } from './MediaRenderer';
 import { RichTextRenderer } from './RichTextRenderer';
-import { getShapeSvg, getIconSvg } from '../assets';
+import { getShapeSvg, getIconSvg, getEmojiSvg, getStickerSvg } from '../assets';
 
 export interface ExtrasRendererProps {
   extras?: readonly ExtraElement[];
@@ -59,10 +59,16 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
     case 'shape': {
       const fill = extra.fill || 'var(--acc, #0891b2)';
 
-      // Check if this extra references a vector asset from the shapes or icons pack
+      // Check if this extra references a vector asset from shapes, icons, emoji, or stickers pack
       if (extra.assetId) {
-        const svgContent = getShapeSvg(extra.assetId) || getIconSvg(extra.assetId);
+        const svgContent =
+          getShapeSvg(extra.assetId) ||
+          getIconSvg(extra.assetId) ||
+          getEmojiSvg(extra.assetId) ||
+          getStickerSvg(extra.assetId);
+
         if (svgContent) {
+          const isRecolorable = !getEmojiSvg(extra.assetId) && !getStickerSvg(extra.assetId);
           return (
             <div
               data-testid={`shape-asset-${extra.id}`}
@@ -70,7 +76,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
               style={{
                 width: '100%',
                 height: '100%',
-                color: fill,
+                color: isRecolorable ? fill : undefined,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

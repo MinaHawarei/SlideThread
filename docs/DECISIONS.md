@@ -2,6 +2,14 @@
 
 Records rationale, alternatives, sizes, and platform verifications per `Spec.md` and `IMPLEMENTATION_PLAN.md`.
 
+## 2026-11-24 — Emoji and presentation stickers licensing and provenance (D-08, R6-4)
+- **Decision:** Include two curated asset packs for emoji and stickers meeting strict §5.6 licensing rules:
+  1. `assets/packs/emoji/`: Curated vector emoji derived from Twemoji under CC-BY-4.0 with explicit attribution recorded in `ASSET_LICENSES.md` and `NOTICE`.
+  2. `assets/packs/stickers/`: Original high-impact presentation callouts, pro-tip badges, and status stamps authored under MIT for SlideThread.
+- **Why:** Section 5.6 mandates clear permissive licensing (CC0, MIT, ISC, Apache-2.0, or CC-BY with attribution) and expressly forbids unverified scraping. For stickers/illustrations, rather than taking on unverified commercial illustration collections, shipping original MIT vector badges and CC-BY-4.0 Twemoji emojis ensures 100% legal clarity and zero copyright risk.
+- **Backlog & Future Expansion:** Gaps for extended character illustrations are recorded in `docs/BACKLOG.md` for the owner (D-08).
+- **Bundle & Performance:** Eager synchronous loading for starter packs guarantees zero layout shift and instantaneous capture during PNG/PDF exports.
+
 ## 2026-11-23 — Template CLI validation dependencies (R2-7)
 - **Decision:** Add `ajv` + `ajv-formats` for the template CLI to execute the repository's Draft 2020-12 JSON Schema, and `sharp` 0.35.5 to encode WebP previews and perform tolerant pixel comparisons. Keep all three in `devDependencies`; none is imported by the shipped browser app, so app gzip impact is 0 KB.
 - **Why:** The manifest's published JSON Schema must run in CI independently of the Zod runtime schema. Ajv uses a separate class for Draft 2020-12 and format validators are provided by `ajv-formats`. `sharp` avoids relying on system-installed image tools and supports the required WebP output and pixel-level comparison.

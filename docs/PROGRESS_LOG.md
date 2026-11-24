@@ -1407,3 +1407,30 @@ Agent name: Antigravity
 - Remaining / next step: Claim and implement R6-4 (Emoji and stickers/illustrations packs (§5.6 rules)).
 - Needs from the owner: None.
 
+
+### R6-4 — done — 2026-11-24 00:50 — Antigravity
+- Branch / commit: feature/r6-4
+- What changed (files):
+  - `assets/packs/emoji/pack.json`: Pack specification for curated reaction emojis derived from Twemoji (CC-BY-4.0) with bilingual metadata (`name`, `description`, `tags` in en/ar).
+  - `assets/packs/emoji/*.svg`: Added 8 vector emojis (`fire`, `sparkles`, `eyes`, `bullseye`, `hundred`, `thumbs-up`, `clapping-hands`, `thinking-face`).
+  - `assets/packs/stickers/pack.json`: Pack specification for original presentation badges and stickers (MIT license) with bilingual metadata.
+  - `assets/packs/stickers/*.svg`: Added 6 original high-impact presentation callout stickers (`sticker-pro-tip`, `sticker-verified`, `sticker-dont-miss`, `sticker-key-takeaway`, `sticker-new-badge`, `sticker-swipe-left`).
+  - `src/assets/emojiRegistry.ts` & `src/assets/stickersRegistry.ts`: Synchronous eager-loaded registries and SVG caches for zero-latency DOM render & export capture.
+  - `src/assets/index.ts`: Exported emoji and stickers registries and metadata.
+  - `src/slides/ExtrasRenderer.tsx`: Integrated rendering for emoji and stickers; preserves multi-color vector rendering for emoji and stickers without forced mono recoloring.
+  - `src/ui/editor/EmojiStickersPicker.tsx`: Built dual-tab inspector picker for reaction emoji and stickers/badges with item preview, selection state, and delete action.
+  - `src/ui/editor/SlideInspector.tsx` & `src/ui/editor/index.ts`: Mounted `EmojiStickersPicker` in editor sidebar.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Bilingual translation strings (`assets.emojiStickersTitle`, `assets.emojiStickersDesc`, `assets.tabEmoji`, `assets.tabStickers`, `assets.selectedSticker`, `assets.deleteAsset`).
+  - `ASSET_LICENSES.md`: Registered `assets/packs/emoji/` (CC-BY-4.0) and `assets/packs/stickers/` (MIT).
+  - `NOTICE`: Appended CC-BY-4.0 attribution notice for Twemoji graphics.
+  - `docs/DECISIONS.md`: Recorded decision D-08 rationale and licensing compliance.
+  - `docs/BACKLOG.md`: Created backlog documenting clear provenance, scope, and non-blocking illustration expansion options.
+  - `tests/unit/emojiStickersPack.test.tsx`: 10 comprehensive unit tests covering metadata compliance, license validation, SVG sanitization, lazy loader discovery, and inspector picker interactions.
+  - `tests/e2e/emojiStickersPack.spec.ts`: End-to-end Playwright test verifying adding an emoji and a sticker, canvas rendering, and PNG export generation.
+  - `docs/TASKS.md`: Marked R6-4 `[x]`.
+- Decisions / deviations from the plan:
+  - Addressed D-08 per §5.6 rules: ship only clearly licensed assets (CC-BY-4.0 Twemoji emojis with attribution and MIT original presentation badges), document non-blocking gaps in `docs/BACKLOG.md`, and record the decision in `docs/DECISIONS.md`.
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (67 test files, 595 passed, 100%), Playwright E2E (`tests/e2e/emojiStickersPack.spec.ts` passed), and `npm run build` (clean).
+- Remaining / next step: Claim and implement R6-5 (Assets panel UI: categories, bilingual search, click/drag to add, recents).
+- Needs from the owner: None.
+
