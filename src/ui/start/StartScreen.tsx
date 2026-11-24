@@ -7,8 +7,9 @@ import { useProjectStore } from '../../store/projectStore';
 import { useRecentStore } from '../../store/recentStore';
 import { getDemoProjectEn, getDemoProjectAr } from '../../store/seedProjects';
 import type { FormatId } from '../../core/formats';
-import type { Project } from '../../core/schema';
+import type { Project, PlatformId } from '../../core/schema';
 import { SizeWarningModal } from '../common/SizeWarningModal';
+import { HeroCarousel } from './HeroCarousel';
 
 export interface StartScreenProps {
   onStartWizard?: () => void;
@@ -43,7 +44,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   }>({
     isOpen: false,
     sizeMB: '0',
-    proceed: () => {},
+    proceed: () => { },
   });
 
   // Resume active project
@@ -57,6 +58,22 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   const handleStartWizard = () => {
     if (onStartWizard) {
       onStartWizard();
+    }
+  };
+
+  // Quick start by platform tile
+  const handleQuickPlatform = (platform: PlatformId, formatId: FormatId, contentType: 'carousel' | 'post' | 'story') => {
+    const newProj = createProject({
+      title: `${platform.charAt(0).toUpperCase() + platform.slice(1)} ${contentType.charAt(0).toUpperCase() + contentType.slice(1)}`,
+      formatId,
+      orientation: formatId === 'r_16_9' ? 'landscape' : 'portrait',
+      platform,
+      contentType,
+    });
+
+    saveProject(newProj);
+    if (onOpenProject) {
+      onOpenProject(newProj);
     }
   };
 
@@ -182,19 +199,25 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   const recentList = (recents || []).slice(0, 10);
 
   return (
-    <div data-testid="start-screen" className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+    <div
+      data-testid="start-screen"
+      className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col justify-between selection:bg-amber-500 selection:text-white"
+    >
       {/* Top Header */}
-      <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur sticky top-0 z-30 px-6 py-4">
+      <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
               S
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-cyan-500 to-indigo-600 bg-clip-text text-transparent">
+              <h1
+                data-testid="start-app-title"
+                className="text-xl font-bold tracking-tight text-stone-900 dark:text-white font-serif"
+              >
                 {APP_NAME}
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+              <p className="text-xs text-stone-500 dark:text-stone-400 hidden sm:block">
                 {t('app.tagline')}
               </p>
             </div>
@@ -203,20 +226,24 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={() => handleNavigate('/gallery')}
-              className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-300/50 dark:border-slate-700/50 transition-colors"
+              className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors"
             >
               {t('nav.gallery')}
             </button>
             <button
               onClick={() => handleNavigate('/settings')}
-              className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-300/50 dark:border-slate-700/50 transition-colors"
+              className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors"
             >
               {t('nav.settings')}
             </button>
-            {import.meta.env.DEV && <button
-              onClick={() => handleNavigate('/spike')}
-              className="text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-300/50 dark:border-slate-700/50 transition-colors"
-            >Spike</button>}
+            {import.meta.env.DEV && (
+              <button
+                onClick={() => handleNavigate('/spike')}
+                className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors"
+              >
+                Spike
+              </button>
+            )}
             <LanguageSwitcher />
           </div>
         </div>
@@ -228,28 +255,165 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         {hasActiveProject && (
           <section
             data-testid="resume-banner"
-            className="p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-transparent border border-cyan-500/30 dark:border-cyan-500/20 flex flex-wrap items-center justify-between gap-4"
+            className="p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/30 dark:border-amber-500/20 flex flex-wrap items-center justify-between gap-4"
           >
             <div className="space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
                 In Progress
               </span>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              <h2 className="text-lg font-bold text-stone-900 dark:text-white">
                 {t('start.continueWorking', { title: currentProject.title || 'Untitled' })}
               </h2>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-stone-600 dark:text-stone-400">
                 {t('start.slidesCount', { count: currentProject.slides.length })} • {currentProject.formatId} • {currentProject.templateId}
               </p>
             </div>
             <button
               data-testid="resume-project-btn"
               onClick={handleResumeCurrent}
-              className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm shadow-sm transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none"
+              className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-medium text-sm shadow-sm transition-all focus:ring-2 focus:ring-amber-400 focus:outline-none"
             >
               {t('start.resumeProject')}
             </button>
           </section>
         )}
+
+        {/* Hero Section with Interactive Swipeable Demo Carousel (R8-1) */}
+        <section
+          data-testid="hero-section"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2 pb-6"
+        >
+          <div className="lg:col-span-7 space-y-5">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+              PostForge Atelier
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-stone-900 dark:text-stone-50 leading-tight">
+              {t('start.heroTitle')}
+            </h2>
+            <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed max-w-xl">
+              {t('start.heroSubtitle')}
+            </p>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button
+                data-testid="hero-start-btn"
+                onClick={handleStartWizard}
+                className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-sm shadow-md transition-all flex items-center gap-2"
+              >
+                <span>✨</span>
+                <span>{t('start.heroStartCreating')}</span>
+              </button>
+              <button
+                data-testid="hero-gallery-btn"
+                onClick={() => handleNavigate('/gallery')}
+                className="px-6 py-3 rounded-xl border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 font-semibold text-sm transition-colors"
+              >
+                {t('start.heroExploreTemplates')}
+              </button>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 flex justify-center">
+            <HeroCarousel onOpenProject={onOpenProject} />
+          </div>
+        </section>
+
+        {/* Quick Start by Platform Tiles (R8-1) */}
+        <section data-testid="quick-start-platforms" className="space-y-4">
+          <div className="space-y-1">
+            <h3 className="text-xl font-bold font-serif text-stone-900 dark:text-white">
+              {t('start.quickStartTitle')}
+            </h3>
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              {t('start.quickStartSubtitle')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 1. LinkedIn Carousel */}
+            <button
+              type="button"
+              data-testid="quick-platform-linkedin"
+              onClick={() => handleQuickPlatform('linkedin', 'r_4_5', 'carousel')}
+              className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 dark:hover:border-amber-500/50 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between group focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center text-xl font-bold">
+                  💼
+                </div>
+                <h4 className="font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  {t('start.platform.linkedinCarousel')}
+                </h4>
+                <p className="text-xs text-stone-500 dark:text-stone-400 leading-snug">
+                  {t('start.platform.linkedinDesc')}
+                </p>
+              </div>
+              <span className="text-[11px] font-mono text-stone-400 mt-4 block">4:5 • 1080×1350</span>
+            </button>
+
+            {/* 2. Instagram Carousel */}
+            <button
+              type="button"
+              data-testid="quick-platform-instagram"
+              onClick={() => handleQuickPlatform('instagram', 'r_4_5', 'carousel')}
+              className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 dark:hover:border-amber-500/50 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between group focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-600 flex items-center justify-center text-xl font-bold">
+                  📸
+                </div>
+                <h4 className="font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  {t('start.platform.instagramCarousel')}
+                </h4>
+                <p className="text-xs text-stone-500 dark:text-stone-400 leading-snug">
+                  {t('start.platform.instagramDesc')}
+                </p>
+              </div>
+              <span className="text-[11px] font-mono text-stone-400 mt-4 block">4:5 / 1:1 Sequence</span>
+            </button>
+
+            {/* 3. Story */}
+            <button
+              type="button"
+              data-testid="quick-platform-story"
+              onClick={() => handleQuickPlatform('instagram', 'r_9_16', 'story')}
+              className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 dark:hover:border-amber-500/50 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between group focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-xl font-bold">
+                  📱
+                </div>
+                <h4 className="font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  {t('start.platform.storyTitle')}
+                </h4>
+                <p className="text-xs text-stone-500 dark:text-stone-400 leading-snug">
+                  {t('start.platform.storyDesc')}
+                </p>
+              </div>
+              <span className="text-[11px] font-mono text-stone-400 mt-4 block">9:16 • 1080×1920</span>
+            </button>
+
+            {/* 4. Single Post */}
+            <button
+              type="button"
+              data-testid="quick-platform-post"
+              onClick={() => handleQuickPlatform('custom', 'r_1_1', 'post')}
+              className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 dark:hover:border-amber-500/50 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between group focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl font-bold">
+                  ⚡
+                </div>
+                <h4 className="font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  {t('start.platform.postTitle')}
+                </h4>
+                <p className="text-xs text-stone-500 dark:text-stone-400 leading-snug">
+                  {t('start.platform.postDesc')}
+                </p>
+              </div>
+              <span className="text-[11px] font-mono text-stone-400 mt-4 block">1:1 • 1080×1080</span>
+            </button>
+          </div>
+        </section>
 
         {/* Import Error Message */}
         {importError && (
@@ -275,21 +439,21 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             <div
               data-testid="start-wizard-card"
               onClick={handleStartWizard}
-              className="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-cyan-500/50 dark:hover:border-cyan-500/50 transition-all cursor-pointer flex flex-col justify-between"
+              className="group p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-md hover:border-amber-500/50 dark:hover:border-amber-500/50 transition-all cursor-pointer flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold text-xl group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold text-xl group-hover:scale-105 transition-transform">
                     ✨
                   </div>
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300">
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
                     Recommended
                   </span>
                 </div>
-                <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                <h3 className="text-xl font-bold tracking-tight text-stone-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   {t('start.guidedTitle')}
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
                   {t('start.guidedDesc')}
                 </p>
               </div>
@@ -301,7 +465,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                     e.stopPropagation();
                     handleStartWizard();
                   }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-all shadow-sm flex items-center justify-center gap-2 group-hover:gap-3"
+                  className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-medium text-sm transition-all shadow-sm flex items-center justify-center gap-2 group-hover:gap-3"
                 >
                   <span>{t('start.guidedTitle')}</span>
                   <span aria-hidden="true">&rarr;</span>
@@ -313,7 +477,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             <div
               data-testid="start-direct-card"
               onClick={() => setIsDirectModalOpen(true)}
-              className="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-indigo-500/50 dark:hover:border-indigo-500/50 transition-all cursor-pointer flex flex-col justify-between"
+              className="group p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-md hover:border-indigo-500/50 dark:hover:border-indigo-500/50 transition-all cursor-pointer flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -324,10 +488,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                     Instant
                   </span>
                 </div>
-                <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                <h3 className="text-xl font-bold tracking-tight text-stone-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                   {t('start.directTitle')}
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
                   {t('start.directDesc')}
                 </p>
               </div>
@@ -351,7 +515,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             <div
               data-testid="start-import-card"
               onClick={handleTriggerImport}
-              className="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-violet-500/50 dark:hover:border-violet-500/50 transition-all cursor-pointer flex flex-col justify-between"
+              className="group p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-md hover:border-violet-500/50 dark:hover:border-violet-500/50 transition-all cursor-pointer flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -362,10 +526,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                     JSON
                   </span>
                 </div>
-                <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                <h3 className="text-xl font-bold tracking-tight text-stone-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
                   {t('start.importTitle')}
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
                   {t('start.importDesc')}
                 </p>
               </div>
@@ -377,7 +541,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                     e.stopPropagation();
                     handleTriggerImport();
                   }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-medium text-sm transition-all shadow-sm flex items-center justify-center gap-2 group-hover:gap-3"
+                  className="w-full py-2.5 px-4 rounded-xl bg-stone-800 hover:bg-stone-700 dark:bg-stone-800 dark:hover:bg-stone-700 text-white font-medium text-sm transition-all shadow-sm flex items-center justify-center gap-2 group-hover:gap-3"
                 >
                   <span>{t('start.importTitle')}</span>
                   <span aria-hidden="true">&rarr;</span>
@@ -399,10 +563,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         {/* Demo Projects Section (Spec §11) */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold font-serif text-stone-900 dark:text-white">
               {t('start.demoTitle')}
             </h2>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
+            <span className="text-xs text-stone-500 dark:text-stone-400">
               Spec §11 Seed Examples
             </span>
           </div>
@@ -411,28 +575,28 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             {/* English Demo */}
             <div
               data-testid="demo-en-card"
-              className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4"
+              className="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between space-y-4"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 uppercase tracking-wider">
                     English
                   </span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-stone-500 dark:text-stone-400">
                     9 Slides • 4:5 Portrait
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-stone-900 dark:text-white">
                   Modern Frontend Architecture
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
-                  {t('start.demoEn')} — Demonstrates all 9 slide types (Cover, Explain, Rule, Compare, Code, Stat, Quote, Image, CTA) in Network template.
+                <p className="text-xs text-stone-600 dark:text-stone-400">
+                  {t('start.demoEn')} — Demonstrates all 9 slide types (Cover, Explain, Rule, Compare, Code, Stat, Quote, Image, CTA) in Weave template.
                 </p>
               </div>
               <button
                 data-testid="demo-en-btn"
                 onClick={() => handleOpenDemo('en')}
-                className="w-full py-2 px-4 rounded-xl border border-cyan-500/50 hover:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-medium text-xs transition-colors"
+                className="w-full py-2 px-4 rounded-xl border border-amber-500/50 hover:bg-amber-500/10 text-amber-700 dark:text-amber-400 font-medium text-xs transition-colors"
               >
                 {t('start.openProject')}
               </button>
@@ -441,22 +605,22 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             {/* Arabic Demo */}
             <div
               data-testid="demo-ar-card"
-              className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4"
+              className="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between space-y-4"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 uppercase tracking-wider">
                     العربية
                   </span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-stone-500 dark:text-stone-400">
                     ٩ شرائح • 4:5 طولي
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white font-arabic">
+                <h3 className="text-lg font-bold text-stone-900 dark:text-white font-arabic">
                   أنظمة التصميم والواجهات الحديثة
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
-                  {t('start.demoAr')} — نموذج كامل باللغة العربية يوضح النصوص ثنائية الاتجاه، المقارنات، الكود المضمن، والإحصائيات في قالب الشبكة.
+                <p className="text-xs text-stone-600 dark:text-stone-400">
+                  {t('start.demoAr')} — نموذج كامل باللغة العربية يوضح النصوص ثنائية الاتجاه، المقارنات، الكود المضمن، والإحصائيات في قالب نسيج.
                 </p>
               </div>
               <button
@@ -473,11 +637,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         {/* Recent Projects Section (Spec §8.2) */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold font-serif text-stone-900 dark:text-white">
               {t('start.recentTitle')}
             </h2>
             {recentList.length > 0 && (
-              <span className="text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-xs text-stone-500 dark:text-stone-400">
                 {recentList.length} / 10
               </span>
             )}
@@ -486,9 +650,9 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           {recentList.length === 0 ? (
             <div
               data-testid="recent-empty"
-              className="p-10 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 text-center space-y-2"
+              className="p-10 rounded-2xl border-2 border-dashed border-stone-200 dark:border-stone-800 text-center space-y-2"
             >
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('start.recentEmpty')}
               </p>
             </div>
@@ -499,30 +663,30 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                   key={item.id}
                   data-testid={`recent-item-${item.id}`}
                   onClick={() => handleOpenRecent(item.id)}
-                  className="group p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer flex flex-col justify-between space-y-3"
+                  className="group p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow hover:border-stone-300 dark:hover:border-stone-700 transition-all cursor-pointer flex flex-col justify-between space-y-3"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">
                         {item.platform} • {item.contentType}
                       </span>
-                      <span className="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      <span className="text-[11px] px-2 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                         {item.formatId}
                       </span>
                     </div>
-                    <h4 className="font-semibold text-slate-900 dark:text-white truncate group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                    <h4 className="font-semibold text-stone-900 dark:text-white truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                       {item.title || 'Untitled'}
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-stone-500 dark:text-stone-400">
                       {t('start.slidesCount', { count: item.slideCount })}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+                  <div className="pt-2 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between gap-2">
                     <button
                       data-testid={`recent-open-${item.id}`}
                       onClick={() => handleOpenRecent(item.id)}
-                      className="text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:underline"
+                      className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:underline"
                     >
                       {t('start.openProject')}
                     </button>
@@ -530,7 +694,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                       <button
                         data-testid={`recent-export-${item.id}`}
                         onClick={(e) => handleExportRecent(item.id, e)}
-                        className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                        className="text-xs text-stone-500 hover:text-stone-900 dark:hover:text-white"
                         title={t('io.exportJson')}
                       >
                         {t('io.exportJson')}
@@ -538,7 +702,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                       <button
                         data-testid={`recent-dup-${item.id}`}
                         onClick={(e) => handleDuplicateRecent(item.id, e)}
-                        className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                        className="text-xs text-stone-500 hover:text-stone-900 dark:hover:text-white"
                         title={t('start.duplicateProject')}
                       >
                         {t('start.duplicateProject')}
@@ -560,130 +724,87 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         </section>
       </main>
 
-      {/* Direct Dimensions Picker Modal */}
+      {/* Footer */}
+      <Footer />
+
+      {/* Direct Dimensions Modal */}
       {isDirectModalOpen && (
         <div
           data-testid="direct-dimensions-modal"
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          aria-label={t('start.directModalTitle')}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
         >
-          <div className="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+          <div className="w-full max-w-lg p-6 bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-2xl space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-stone-900 dark:text-white">
                   {t('start.directModalTitle')}
                 </h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
                   {t('start.directModalDesc')}
                 </p>
               </div>
               <button
                 data-testid="close-direct-modal"
                 onClick={() => setIsDirectModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-colors"
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-sm p-1 rounded"
               >
                 ✕
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* 4:5 Portrait */}
+            <div className="grid grid-cols-2 gap-3">
               <button
                 data-testid="direct-format-r_4_5"
                 onClick={() => handleSelectFormat('r_4_5')}
-                className="p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-cyan-500 dark:hover:border-cyan-500 text-left transition-all flex items-center gap-4 group"
+                className="p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500 dark:hover:border-amber-500 hover:bg-amber-50/20 dark:hover:bg-amber-950/20 text-left transition-all group"
               >
-                <div className="w-12 h-15 rounded-lg border-2 border-dashed border-cyan-500/50 flex items-center justify-center text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400">
-                  4:5
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-                    Portrait (4:5)
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    1080 × 1350 px
-                  </p>
-                  <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-medium">
-                    Instagram &amp; LinkedIn Carousel
-                  </span>
-                </div>
+                <span className="block font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600">
+                  4:5 Portrait
+                </span>
+                <span className="text-xs text-stone-500">1080 × 1350 px</span>
               </button>
 
-              {/* 1:1 Square */}
               <button
                 data-testid="direct-format-r_1_1"
                 onClick={() => handleSelectFormat('r_1_1')}
-                className="p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 text-left transition-all flex items-center gap-4 group"
+                className="p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500 dark:hover:border-amber-500 hover:bg-amber-50/20 dark:hover:bg-amber-950/20 text-left transition-all group"
               >
-                <div className="w-12 h-12 rounded-lg border-2 border-dashed border-indigo-500/50 flex items-center justify-center text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                  1:1
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    Square (1:1)
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    1080 × 1080 px
-                  </p>
-                  <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">
-                    Universal Post &amp; Carousel
-                  </span>
-                </div>
+                <span className="block font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600">
+                  1:1 Square
+                </span>
+                <span className="text-xs text-stone-500">1080 × 1080 px</span>
               </button>
 
-              {/* 16:9 Landscape */}
               <button
                 data-testid="direct-format-r_16_9"
                 onClick={() => handleSelectFormat('r_16_9')}
-                className="p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-violet-500 dark:hover:border-violet-500 text-left transition-all flex items-center gap-4 group"
+                className="p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500 dark:hover:border-amber-500 hover:bg-amber-50/20 dark:hover:bg-amber-950/20 text-left transition-all group"
               >
-                <div className="w-14 h-9 rounded-lg border-2 border-dashed border-violet-500/50 flex items-center justify-center text-xs font-mono font-bold text-violet-600 dark:text-violet-400">
-                  16:9
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
-                    Landscape (16:9)
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    1920 × 1080 px
-                  </p>
-                  <span className="text-[10px] text-violet-600 dark:text-violet-400 font-medium">
-                    Presentations &amp; Wide Posts
-                  </span>
-                </div>
+                <span className="block font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600">
+                  16:9 Landscape
+                </span>
+                <span className="text-xs text-stone-500">1920 × 1080 px</span>
               </button>
 
-              {/* 9:16 Vertical Story */}
               <button
                 data-testid="direct-format-r_9_16"
                 onClick={() => handleSelectFormat('r_9_16')}
-                className="p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-pink-500 dark:hover:border-pink-500 text-left transition-all flex items-center gap-4 group"
+                className="p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500 dark:hover:border-amber-500 hover:bg-amber-50/20 dark:hover:bg-amber-950/20 text-left transition-all group"
               >
-                <div className="w-9 h-16 rounded-lg border-2 border-dashed border-pink-500/50 flex items-center justify-center text-xs font-mono font-bold text-pink-600 dark:text-pink-400">
-                  9:16
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
-                    Story / Reel (9:16)
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    1080 × 1920 px
-                  </p>
-                  <span className="text-[10px] text-pink-600 dark:text-pink-400 font-medium">
-                    Stories &amp; Reels Cover
-                  </span>
-                </div>
+                <span className="block font-bold text-sm text-stone-900 dark:text-white group-hover:text-amber-600">
+                  9:16 Story
+                </span>
+                <span className="text-xs text-stone-500">1080 × 1920 px</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Footer (Spec §10.3) */}
-      <Footer />
-
-      {/* Project Size Warning Modal */}
+      {/* Size warning modal */}
       <SizeWarningModal
         isOpen={sizeWarning.isOpen}
         sizeMB={sizeWarning.sizeMB}

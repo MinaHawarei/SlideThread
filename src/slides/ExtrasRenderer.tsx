@@ -174,8 +174,8 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             media={extra.media}
             imageUrl={
               extra.assetId?.startsWith('http') ||
-              extra.assetId?.startsWith('data:') ||
-              extra.assetId?.startsWith('blob:')
+                extra.assetId?.startsWith('data:') ||
+                extra.assetId?.startsWith('blob:')
                 ? extra.assetId
                 : undefined
             }
