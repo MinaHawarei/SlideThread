@@ -17,7 +17,7 @@ Templates are untrusted data. The CI validator checks the JSON Schema and Zod sc
 
    ```json
    {
-     "schema": 1,
+     "schema": 2,
      "id": "creator-notes",
      "name": { "en": "Creator Notes", "ar": "ملاحظات المبدع" },
      "description": {
