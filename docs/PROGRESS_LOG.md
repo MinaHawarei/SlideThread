@@ -1617,3 +1617,28 @@ Agent name: Antigravity
 
 
 
+
+
+### R8-3 — done — 2026-11-24 12:30 — Antigravity
+- Branch / commit: feature/r8-3 · b30bb28
+- What changed (files):
+  - `src/ui/editor/EditorDesktop.tsx`: Redesigned desktop editor chrome with Direction A (Atelier) aesthetic (stone-50/900 palette, serif/sans typographic harmony, amber accents). Added Left Tool Rail (`data-testid="left-tool-rail"`) with 7 tools (Templates, Elements, Text, Uploads, Brand, Layout, Slides), top bar with project name, platform & content badges, format ratio switcher button (`data-testid="editor-change-format-btn"`), Undo (`data-testid="editor-undo-btn"`) and Redo (`data-testid="editor-redo-btn"`) quick history actions, Export JSON, and primary Export action.
+  - `src/ui/editor/MainCanvas.tsx`: Added Fit to Screen (`data-testid="canvas-fit-btn"`), 100% Size (`data-testid="canvas-100-btn"`), zoom label (`data-testid="canvas-zoom-label"`), stage panning with pointer dragging on background, and warm paper lift effect.
+  - `src/ui/editor/Inspector.tsx`: Added controlled `activeTab` / `onTabChange` support with warm stone and amber indicator styling.
+  - `src/ui/editor/SlideRail.tsx`: Updated slide strip thumbnails and actions with amber accents and warm stone styling.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Added bilingual translation keys for undo, redo, and change format.
+  - `tests/unit/editorDesktop.test.tsx`: 22 unit tests passing for desktop editor tools, zoom, undo/redo, format switching, and export.
+  - `docs/ux-review/R8-3/REVIEW.md`: Self-review rubric scored 1–5 across all 9 areas in §7.3 (all 5/5).
+  - `docs/ux-review/R8-3/screenshots/`: 12 Playwright screenshots across 360×800, 768×1024, 1440×900 in light/dark and en/ar.
+  - `tests/e2e/editorDesktopScreenshots.spec.ts`: Playwright capture script.
+- Decisions / deviations from the plan:
+  - Integrated `undo()` / `redo()` from `src/core/history.ts` into top bar quick history buttons.
+  - Maintained complete backward compatibility for canvas selectors and test IDs.
+- Tests run and result:
+  - Unit tests: all 75 test files passing (645 passed, 100%).
+  - Playwright E2E: editor tests and 12 screenshot captures passed.
+  - ESLint 0 errors, 0 warnings.
+  - TypeScript 0 errors.
+  - Clean production build.
+- Remaining / next step: Advance to Task R8-4 (Mobile editor: bottom sheets, tab bar, gestures, safe-area handling).
+- Needs from the owner: None.
