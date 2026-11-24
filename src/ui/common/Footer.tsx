@@ -29,7 +29,6 @@ export const Footer: React.FC<FooterProps> = ({
       >
         {/* Left: Brand mark & Creator */}
         <div className="flex items-center gap-2">
-          <LogoMark size={16} />
           <span className="font-serif font-bold text-stone-700 dark:text-stone-300">{APP_NAME}</span>
           <span className="text-stone-400">•</span>
           <span>{t('footer.createdBy')}</span>
@@ -44,10 +43,20 @@ export const Footer: React.FC<FooterProps> = ({
           </a>
         </div>
 
-        {/* Center: Version */}
-        <div className="flex items-center justify-center">
-          <span data-testid="footer-version" className="text-stone-400 dark:text-stone-500 font-mono text-[10px] bg-stone-200/50 dark:bg-stone-800/50 px-2 py-0.5 rounded-md">
-            v{APP_VERSION}
+        {/* Center: Logo & Version Pair */}
+        <div
+          data-testid="footer-brand-version"
+          className="flex items-center justify-center gap-2 whitespace-nowrap text-stone-600 dark:text-stone-300"
+          dir="ltr"
+        >
+          <span aria-hidden="true" className="inline-flex items-center shrink-0">
+            <LogoMark size={14} />
+          </span>
+          <span aria-hidden="true" className="text-stone-300 dark:text-stone-600 font-light select-none text-xs leading-none">
+            |
+          </span>
+          <span data-testid="footer-version" className="font-mono text-[11px] font-medium text-stone-600 dark:text-stone-400">
+            V {APP_VERSION}
           </span>
         </div>
 
@@ -83,10 +92,9 @@ export const Footer: React.FC<FooterProps> = ({
       className={`w-full border-t border-stone-200/80 dark:border-stone-800 bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur-sm py-8 px-4 sm:px-8 text-xs text-stone-500 dark:text-stone-400 ${className}`}
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Left Side: Brand mark with name & Creator credit */}
+        {/* Left Side: Brand name & Creator credit */}
         <div className="flex flex-col sm:flex-row items-center md:items-start gap-3 text-center md:text-left">
           <div className="flex items-center gap-2">
-            <LogoMark size={22} />
             <span className="font-serif font-bold text-sm tracking-tight text-stone-900 dark:text-stone-100">
               {APP_NAME}
             </span>
@@ -160,14 +168,26 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
         </div>
 
-        {/* Center: Version in the middle + Privacy Note */}
-        <div className="flex flex-col items-center justify-center gap-1.5 text-center">
-          <span
-            data-testid="footer-version"
-            className="font-mono text-[11px] font-semibold text-stone-600 dark:text-stone-300 bg-stone-200/70 dark:bg-stone-800/70 px-3 py-1 rounded-full border border-stone-300/40 dark:border-stone-700/40 shadow-2xs"
+        {/* Center: Logo & Version Pair + Privacy Note */}
+        <div className="flex flex-col items-center justify-center gap-2 text-center order-first md:order-none">
+          <div
+            data-testid="footer-brand-version"
+            className="flex items-center justify-center gap-2 whitespace-nowrap text-stone-600 dark:text-stone-300"
+            dir="ltr"
           >
-            v{APP_VERSION}
-          </span>
+            <span aria-hidden="true" className="inline-flex items-center shrink-0">
+              <LogoMark size={16} />
+            </span>
+            <span aria-hidden="true" className="text-stone-300 dark:text-stone-600 font-light select-none text-xs leading-none">
+              |
+            </span>
+            <span
+              data-testid="footer-version"
+              className="font-mono text-xs font-medium text-stone-600 dark:text-stone-400"
+            >
+              V {APP_VERSION}
+            </span>
+          </div>
           <div data-testid="footer-privacy-note" className="text-center text-[11px] text-stone-500 dark:text-stone-400 max-w-sm">
             <span>{t('app.privacy')}</span>
           </div>

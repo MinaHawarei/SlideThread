@@ -15,7 +15,8 @@ describe('Footer Component (Spec §10.3, §10.4, Task P3-9)', () => {
     expect(screen.getByTestId('app-footer')).toBeInTheDocument();
     expect(screen.getByTestId('footer-owner-link')).toHaveTextContent(OWNER.name);
     expect(screen.queryByText(`(${OWNER.handle})`)).not.toBeInTheDocument();
-    expect(screen.getByTestId('footer-version')).toHaveTextContent('v1.0.0');
+    expect(screen.getByTestId('footer-version')).toHaveTextContent(/^V 1\.0\.0$/);
+    expect(screen.getByTestId('footer-brand-version')).toBeInTheDocument();
 
     // Owner social profile link
     expect(screen.getByTestId('footer-owner-link')).toHaveAttribute(
