@@ -1434,3 +1434,23 @@ Agent name: Antigravity
 - Remaining / next step: Claim and implement R6-5 (Assets panel UI: categories, bilingual search, click/drag to add, recents).
 - Needs from the owner: None.
 
+
+### R6-5 — done — 2026-11-24 00:58 — Antigravity
+- Branch / commit: feature/r6-5
+- What changed (files):
+  - `src/store/recentAssetsStore.ts`: Created persisted store (`useRecentAssetsStore`, `app:recent_assets:v1`) tracking up to 16 recently used assets with deduplication and clear action.
+  - `src/ui/editor/AssetsPanel.tsx`: Full-featured assets panel with bilingual search (English/Arabic names and tags), category pills (`all`, `shapes`, `icons`, `emoji`, `stickers`, `recents`), unified asset item grid, click-to-add, and HTML5 drag dataTransfer setup.
+  - `src/ui/editor/Inspector.tsx`: Added 4th tab `Assets` alongside `Slide`, `Design`, and `Brand`.
+  - `src/ui/editor/EditorMobile.tsx`: Added mobile `Assets` bottom-sheet tab with tab bar icon.
+  - `src/ui/editor/MainCanvas.tsx`: Added drag-and-drop support (`onDrop` & `onDragOver` on slide viewport) to place dragged assets at cursor coordinate and record to recents.
+  - `src/ui/editor/index.ts`: Exported `AssetsPanel`.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Bilingual translations for Assets tab and categories (`editor.tabAssets`, `assets.searchPlaceholder`, `assets.catAll`, `assets.catShapes`, `assets.catIcons`, `assets.catEmoji`, `assets.catStickers`, `assets.catRecents`, `assets.recentsTitle`, `assets.clearRecents`, `assets.noResults`, `assets.dragTip`).
+  - `tests/unit/assetsPanel.test.tsx`: 6 unit tests verifying panel rendering, category filtering, bilingual search query, click-to-add with recents recording, and dragStart dataTransfer payload.
+  - `tests/e2e/assetsPanel.spec.ts`: End-to-end Playwright test covering tab navigation, filtering, search, adding asset to canvas, recents display, and export download.
+  - `docs/TASKS.md`: Marked R6-5 `[x]`.
+- Decisions / deviations from the plan:
+  - Integrated `Assets` directly as a first-class inspector tab in both desktop and mobile bottom-sheet editors, enabling unified browsing across shapes, icons, emojis, stickers, and recents while keeping dedicated pickers in SlideInspector as quick inline tools.
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (68 test files, 601 passed, 100%), Playwright E2E (`tests/e2e/assetsPanel.spec.ts` passed), and `npm run build` (clean).
+- Remaining / next step: Claim and implement R6-6 (Uploads: images and sanitized SVG, downscale, IndexedDB, replace, basic crop/mask (circle, rounded)).
+- Needs from the owner: None.
+

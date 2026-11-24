@@ -5,6 +5,9 @@ import { getDimensions, aspectClass as calcAspectClass } from '../../core/format
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
 import { CanvasManipulationLayer } from './CanvasManipulationLayer';
+import { useSelectionStore } from '../../store/selectionStore';
+import { useRecentAssetsStore } from '../../store/recentAssetsStore';
+import type { ExtraElement } from '../../core/schema';
 
 export interface MainCanvasProps {
   className?: string;
@@ -20,6 +23,9 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
   const activeSlideId = useProjectStore((state) => state.activeSlideId);
   const setActiveSlideId = useProjectStore((state) => state.setActiveSlideId);
   const effectiveBrand = useEffectiveBrand();
+  const addExtraElement = useProjectStore((state) => state.addExtraElement);
+  const selectElement = useSelectionStore((state) => state.selectElement);
+  const addRecent = useRecentAssetsStore((state) => state.addRecent);
 
   const activeSlide = useActiveSlide();
   const [zoomLevel, setZoomLevel] = useState<number>(0.48);
@@ -71,6 +77,65 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
 
   const scaledWidth = dims.width * zoomLevel;
   const scaledHeight = dims.height * zoomLevel;
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (!currentSlide) return;
+
+    try {
+      const dataStr = e.dataTransfer.getData('application/json');
+      if (!dataStr) return;
+
+      const data = JSON.parse(dataStr);
+      if (data.type !== 'slidethread-asset' || !data.assetId || !data.packId) return;
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clientX = e.clientX - rect.left;
+      const clientY = e.clientY - rect.top;
+
+      const normX = Math.max(0.05, Math.min(0.85, clientX / rect.width));
+      const normY = Math.max(0.05, Math.min(0.85, clientY / rect.height));
+
+      let baseWidth = 0.2;
+      let baseHeight = 0.2;
+
+      if (data.packId === 'emoji') {
+        baseWidth = 0.12;
+        baseHeight = 0.12;
+      } else if (data.packId === 'stickers') {
+        baseWidth = 0.28;
+        baseHeight = 0.1;
+      } else if (data.packId === 'icons') {
+        baseWidth = 0.15;
+        baseHeight = 0.15;
+      }
+
+      const newExtra: ExtraElement = {
+        id: `${data.packId}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        kind: 'shape',
+        assetId: data.assetId,
+        x: Math.max(0.02, normX - baseWidth / 2),
+        y: Math.max(0.02, normY - baseHeight / 2),
+        w: baseWidth,
+        h: baseHeight,
+        rotation: 0,
+        z: (currentSlide.extras?.length ?? 0) + 1,
+        locked: false,
+        fill: data.packId === 'shapes' || data.packId === 'icons' ? (project.primaryColor || '#0891b2') : undefined,
+      };
+
+      addExtraElement(currentSlide.id, newExtra);
+      selectElement(newExtra.id);
+      addRecent(data.packId, data.assetId);
+    } catch {
+      // Ignored
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  };
 
   return (
     <main
@@ -137,6 +202,8 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
       <div className="flex-1 flex items-center justify-center p-6 overflow-auto">
         <div
           data-testid="scaled-slide-container"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
           style={{
             width: `${scaledWidth}px`,
             height: `${scaledHeight}px`,

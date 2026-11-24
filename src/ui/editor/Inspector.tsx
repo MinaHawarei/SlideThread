@@ -3,8 +3,9 @@ import { useT } from '../../i18n';
 import { SlideInspector } from './SlideInspector';
 import { DesignInspector } from './DesignInspector';
 import { BrandInspector } from './BrandInspector';
+import { AssetsPanel } from './AssetsPanel';
 
-export type InspectorTab = 'slide' | 'design' | 'brand';
+export type InspectorTab = 'slide' | 'assets' | 'design' | 'brand';
 
 export interface InspectorProps {
   className?: string;
@@ -24,12 +25,12 @@ export const Inspector: React.FC<InspectorProps> = ({
       aria-label="Slide properties inspector"
       className={`w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col h-full shrink-0 ${className}`}
     >
-      {/* Three Tabs: Slide / Design / Brand per Spec §10.2 */}
+      {/* Four Tabs: Slide / Assets / Design / Brand */}
       <div
         data-testid="inspector-tabs"
         role="tablist"
         aria-label="Inspector tabs"
-        className="grid grid-cols-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-1"
+        className="grid grid-cols-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-1"
       >
         <button
           type="button"
@@ -46,6 +47,23 @@ export const Inspector: React.FC<InspectorProps> = ({
           }`}
         >
           {t('editor.tabSlide')}
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          id="tab-assets"
+          aria-controls="panel-assets"
+          aria-selected={activeTab === 'assets'}
+          data-testid="tab-assets"
+          onClick={() => setActiveTab('assets')}
+          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${
+            activeTab === 'assets'
+              ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
+              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+          }`}
+        >
+          {t('editor.tabAssets')}
         </button>
 
         <button
@@ -90,6 +108,11 @@ export const Inspector: React.FC<InspectorProps> = ({
             <SlideInspector />
           </div>
         )}
+        {activeTab === 'assets' && (
+          <div role="tabpanel" id="panel-assets" aria-labelledby="tab-assets">
+            <AssetsPanel />
+          </div>
+        )}
         {activeTab === 'design' && (
           <div role="tabpanel" id="panel-design" aria-labelledby="tab-design">
             <DesignInspector />
@@ -104,3 +127,4 @@ export const Inspector: React.FC<InspectorProps> = ({
     </aside>
   );
 };
+
