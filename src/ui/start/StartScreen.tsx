@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { useT } from '../../i18n';
-import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { Footer } from '../common/Footer';
 import { APP_NAME } from '../../config/site';
 import { useProjectStore } from '../../store/projectStore';
@@ -246,9 +245,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                 Spike
               </button>
             )}
-            <div className="sr-only">
-              <LanguageSwitcher />
-            </div>
           </div>
 
           {/* Mobile Side Drawer Navigation */}

@@ -10,6 +10,7 @@ import { useProjectStore } from '../store/projectStore';
 import { useRecentStore } from '../store/recentStore';
 import { Footer } from '../ui/common/Footer';
 import { LogoMark } from '../ui/brand/LogoMark';
+import { MobileNavDrawer } from '../ui/common/MobileNavDrawer';
 import { FORMAT_REGISTRY, type FormatId } from '../core/formats';
 
 const SLIDE_TYPES: SlideType[] = [
@@ -215,6 +216,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
               <span>✨</span>
               <span>{t('ux.gallery.use')}</span>
             </button>
+            <MobileNavDrawer currentPath="/preview" onNavigate={navigateTo} />
           </div>
         </div>
       </header>

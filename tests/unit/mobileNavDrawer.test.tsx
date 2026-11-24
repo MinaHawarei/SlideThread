@@ -36,6 +36,9 @@ describe('MobileNavDrawer component (R6)', () => {
     expect(screen.getByTestId('mobile-drawer-gallery')).toBeInTheDocument();
     expect(screen.getByTestId('mobile-drawer-settings')).toBeInTheDocument();
 
+    // Language switch is removed from drawer
+    expect(screen.queryByTestId('language-switcher')).not.toBeInTheDocument();
+
     // Clicking a link navigates and closes drawer
     fireEvent.click(screen.getByTestId('mobile-drawer-gallery'));
     expect(onNavigate).toHaveBeenCalledWith('/gallery');
@@ -78,5 +81,20 @@ describe('MobileNavDrawer component (R6)', () => {
     const drawer = screen.getByTestId('mobile-nav-drawer');
     expect(drawer).toHaveAttribute('dir', 'rtl');
     expect(drawer).toHaveClass('right-0');
+  });
+
+  it('closes automatically on viewport resize to desktop (>= 768px)', () => {
+    render(<MobileNavDrawer currentPath="/" />);
+
+    fireEvent.click(screen.getByTestId('mobile-nav-toggle'));
+    expect(screen.getByTestId('mobile-nav-drawer')).toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    // Simulate resize to desktop breakpoint (768px)
+    window.innerWidth = 768;
+    fireEvent(window, new Event('resize'));
+
+    expect(screen.queryByTestId('mobile-nav-drawer')).not.toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('');
   });
 });

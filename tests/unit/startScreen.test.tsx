@@ -1,6 +1,6 @@
 import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { StartScreen } from '../../src/ui/start/StartScreen';
 import { useProjectStore } from '../../src/store/projectStore';
 import { useRecentStore } from '../../src/store/recentStore';
@@ -245,14 +245,15 @@ describe('StartScreen component', () => {
     expect(screen.getByTestId('import-error-msg')).toHaveTextContent(/not valid JSON/i);
   });
 
-  it('updates language when language switcher is toggled', () => {
+  it('updates language when locale changes', () => {
     render(<StartScreen />);
 
     expect(screen.getByTestId('start-wizard-btn')).toHaveTextContent('Start with Wizard');
 
-    // Switch to Arabic
-    const langBtn = screen.getByTestId('language-switcher');
-    fireEvent.click(langBtn);
+    // Switch to Arabic via store
+    act(() => {
+      useI18nStore.getState().setLocale('ar');
+    });
 
     expect(screen.getByTestId('start-wizard-btn')).toHaveTextContent('البدء مع المعالج');
   });
