@@ -630,6 +630,9 @@ export const en = {
   'common.language': 'Language',
   'common.en': 'English',
   'common.ar': 'العربية',
+  'editor.undo': 'Undo',
+  'editor.redo': 'Redo',
+  'editor.changeFormat': 'Change Format / Ratio',
 } as const;
 
 export type TranslationKey = keyof typeof en;

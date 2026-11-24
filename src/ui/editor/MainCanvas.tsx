@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
@@ -29,7 +29,48 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
 
   const activeSlide = useActiveSlide();
   const [zoomLevel, setZoomLevel] = useState<number>(0.48);
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [showSafeZones, setShowSafeZones] = useState<boolean>(false);
+  const isPanningRef = useRef(false);
+  const startPanRef = useRef({ x: 0, y: 0 });
+
+  const handleFit = () => {
+    setZoomLevel(0.48);
+    setPan({ x: 0, y: 0 });
+  };
+
+  const handle100 = () => {
+    setZoomLevel(1.0);
+    setPan({ x: 0, y: 0 });
+  };
+
+  const handleStagePointerDown = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('[data-testid="scaled-slide-container"]')) return;
+    isPanningRef.current = true;
+    startPanRef.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // Ignored
+    }
+  };
+
+  const handleStagePointerMove = (e: React.PointerEvent) => {
+    if (!isPanningRef.current) return;
+    setPan({
+      x: e.clientX - startPanRef.current.x,
+      y: e.clientY - startPanRef.current.y,
+    });
+  };
+
+  const handleStagePointerUp = (e: React.PointerEvent) => {
+    isPanningRef.current = false;
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {
+      // Ignored
+    }
+  };
 
   const slides = project.slides;
   const currentIndex = slides.findIndex((s) => s.id === activeSlideId);
@@ -141,12 +182,12 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
     <main
       data-testid="main-canvas"
       aria-label="Slide preview canvas"
-      className={`flex-1 flex flex-col justify-between overflow-hidden bg-slate-100 dark:bg-slate-950 relative ${className}`}
+      className={`flex-1 flex flex-col justify-between overflow-hidden bg-stone-100/70 dark:bg-stone-950 relative ${className}`}
     >
       {/* Canvas Top Bar: Quick status & controls */}
-      <div className="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50 backdrop-blur z-10">
+      <div className="p-3 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 bg-white/70 dark:bg-stone-900/70 backdrop-blur z-10">
         <div className="flex items-center gap-3">
-          <span className="font-semibold text-slate-700 dark:text-slate-200">
+          <span className="font-semibold text-stone-700 dark:text-stone-200">
             {dims.width} × {dims.height} px
           </span>
           <span>•</span>
@@ -166,40 +207,67 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
               className={`px-2.5 py-1 rounded text-xs font-semibold border transition-colors ${
                 effectiveSafeZones
                   ? 'bg-red-500/10 border-red-500 text-red-600 dark:text-red-400'
-                  : 'border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800'
+                  : 'border-stone-300 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800'
               }`}
             >
               {effectiveSafeZones ? '🛡️ Safe Zones ON' : 'Safe Zones'}
             </button>
           )}
 
-          {/* Zoom Level Selector */}
+          {/* Zoom Level & Fit Controls */}
           <div className="flex items-center gap-1.5">
             <button
               type="button"
-              onClick={() => setZoomLevel((z) => Math.max(0.3, z - 0.05))}
-              className="w-6 h-6 rounded bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold focus-visible:ring-1 focus-visible:ring-cyan-500"
+              onClick={() => setZoomLevel((z) => Math.max(0.2, Math.round((z - 0.05) * 100) / 100))}
+              className="w-6 h-6 rounded bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 flex items-center justify-center font-bold text-stone-700 dark:text-stone-300 focus-visible:ring-1 focus-visible:ring-amber-500"
               aria-label="Zoom out"
               title="Zoom out"
             >
               -
             </button>
-            <span className="w-10 text-center font-mono">{Math.round(zoomLevel * 100)}%</span>
+            <span data-testid="canvas-zoom-label" className="w-10 text-center font-mono text-stone-700 dark:text-stone-300">
+              {Math.round(zoomLevel * 100)}%
+            </span>
             <button
               type="button"
-              onClick={() => setZoomLevel((z) => Math.min(0.8, z + 0.05))}
-              className="w-6 h-6 rounded bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold focus-visible:ring-1 focus-visible:ring-cyan-500"
+              onClick={() => setZoomLevel((z) => Math.min(1.5, Math.round((z + 0.05) * 100) / 100))}
+              className="w-6 h-6 rounded bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 flex items-center justify-center font-bold text-stone-700 dark:text-stone-300 focus-visible:ring-1 focus-visible:ring-amber-500"
               aria-label="Zoom in"
               title="Zoom in"
             >
               +
             </button>
+
+            <button
+              type="button"
+              data-testid="canvas-fit-btn"
+              onClick={handleFit}
+              className="px-2 py-0.5 rounded bg-stone-200/80 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 font-semibold text-[11px] text-stone-700 dark:text-stone-300 transition-colors"
+              title="Fit to Screen"
+            >
+              Fit
+            </button>
+
+            <button
+              type="button"
+              data-testid="canvas-100-btn"
+              onClick={handle100}
+              className="px-2 py-0.5 rounded bg-stone-200/80 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 font-semibold text-[11px] text-stone-700 dark:text-stone-300 transition-colors"
+              title="100% Size"
+            >
+              100%
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Centered Scaled Stage */}
-      <div className="flex-1 flex items-center justify-center p-6 overflow-auto">
+      {/* Centered Scaled Stage with Pan & Paper Lift */}
+      <div
+        className="flex-1 flex items-center justify-center p-6 overflow-auto cursor-grab active:cursor-grabbing select-none"
+        onPointerDown={handleStagePointerDown}
+        onPointerMove={handleStagePointerMove}
+        onPointerUp={handleStagePointerUp}
+      >
         <div
           data-testid="scaled-slide-container"
           onDrop={handleDrop}
@@ -210,9 +278,10 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
             position: 'relative',
             overflow: 'hidden',
             borderRadius: '16px',
-            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.4)',
+            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.25)',
             background: palette.bg,
-            transition: 'width 0.2s, height 0.2s',
+            transform: `translate(${pan.x}px, ${pan.y}px)`,
+            transition: isPanningRef.current ? 'none' : 'width 0.2s, height 0.2s, transform 0.2s',
           }}
         >
           <div
@@ -249,19 +318,19 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
       </div>
 
       {/* Canvas Bottom Navigation Bar */}
-      <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between z-10">
+      <div className="p-3 border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex items-center justify-between z-10">
         <button
           type="button"
           data-testid="canvas-prev-btn"
           disabled={validIndex <= 0}
           onClick={() => setActiveSlideId(slides[validIndex - 1]!.id)}
           aria-label={t('editor.prevSlide')}
-          className="py-1.5 px-3 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500"
+          className="py-1.5 px-3 rounded-lg border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-300 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:ring-2 focus-visible:ring-amber-500"
         >
           ← {locale === 'ar' ? 'التالي' : 'Previous'}
         </button>
 
-        <span data-testid="canvas-counter-label" className="text-xs font-bold text-slate-600 dark:text-slate-400">
+        <span data-testid="canvas-counter-label" className="text-xs font-bold text-stone-600 dark:text-stone-400">
           {t('editor.slideCounter', { current: validIndex + 1, total: slides.length })}
         </span>
 
@@ -271,7 +340,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
           disabled={validIndex >= slides.length - 1}
           onClick={() => setActiveSlideId(slides[validIndex + 1]!.id)}
           aria-label={t('editor.nextSlide')}
-          className="py-1.5 px-3 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500"
+          className="py-1.5 px-3 rounded-lg border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-300 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:ring-2 focus-visible:ring-amber-500"
         >
           {locale === 'ar' ? 'السابق' : 'Next'} →
         </button>
