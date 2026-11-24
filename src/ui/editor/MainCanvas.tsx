@@ -214,11 +214,10 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
               data-testid="canvas-safe-zones-btn"
               onClick={() => setShowSafeZones(!showSafeZones)}
               aria-label={t('design.safeZones')}
-              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-colors ${
-                effectiveSafeZones
-                  ? 'bg-red-500/10 border-red-500 text-red-600 dark:text-red-400'
-                  : 'border-stone-300 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800'
-              }`}
+              className={`px-2.5 py-1 rounded text-xs font-semibold border transition-colors ${effectiveSafeZones
+                ? 'bg-red-500/10 border-red-500 text-red-600 dark:text-red-400'
+                : 'border-stone-300 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800'
+                }`}
             >
               {effectiveSafeZones ? '🛡️ Safe Zones ON' : 'Safe Zones'}
             </button>

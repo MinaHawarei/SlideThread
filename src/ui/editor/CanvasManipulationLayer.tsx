@@ -4,7 +4,7 @@ import { resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotat
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
-import { useT } from '../../i18n';
+import { useT, type TranslationKey } from '../../i18n';
 import { RichTextEditor } from './RichTextEditor';
 import { BrandOverridePopover } from './BrandOverridePopover';
 
@@ -31,7 +31,7 @@ type Gesture = {
 interface NumericInspectorProps {
   element: ResolvedElement;
   zoom: number;
-  t: (key: any, params?: any) => string;
+  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
   onCommit: (field: 'x' | 'y' | 'w' | 'scale' | 'rotation', value: number) => void;
   style?: React.CSSProperties;
 }
