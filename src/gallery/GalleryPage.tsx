@@ -6,6 +6,9 @@ import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../slides/sampl
 import { getAllTemplates, getTemplate } from '../templates';
 import { useT } from '../i18n';
 import { LanguageSwitcher } from '../ui/common/LanguageSwitcher';
+import { useSettingsStore } from '../store/settingsStore';
+import { useProjectStore } from '../store/projectStore';
+import { useRecentStore } from '../store/recentStore';
 import {
   filterGalleryTemplates,
   getTemplatePreviewUrl,
@@ -38,8 +41,25 @@ const ASPECT_DIMENSIONS: Record<AspectClass, { width: number; height: number; fo
   tall: { width: 1080, height: 1920, formatId: 'r_9_16' },
 };
 
+const CATEGORY_ICONS: Record<string, string> = {
+  all: '🌐',
+  coding: '💻',
+  marketing: '📣',
+  education: '📚',
+  lifestyle: '✨',
+  'personal-brand': '👤',
+  general: '▦',
+  'arabic-heritage': '🏛️',
+  coptic: '☦️',
+  islamic: '🕌',
+};
+
 export const GalleryPage: React.FC = () => {
   const { t, dir, locale } = useT();
+  const brandSettings = useSettingsStore((state) => state.settings);
+  const createProject = useProjectStore((state) => state.createProject);
+  const saveProject = useRecentStore((state) => state.saveProject);
+
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedAspect, setSelectedAspect] = useState<string>('all');
   const [theme, setTheme] = useState<ThemeMode>('dark');
@@ -52,324 +72,700 @@ export const GalleryPage: React.FC = () => {
   const [categoryId, setCategoryId] = useState('all');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState<string[]>(() => readTemplateFavorites());
+  const [previewWithBrand, setPreviewWithBrand] = useState(false);
+  const [simulatedState, setSimulatedState] = useState<'templates' | 'empty' | 'loading' | 'error'>('templates');
 
   useEffect(() => {
     const syncFavorites = (event: StorageEvent) => {
-      if (event.key === TEMPLATE_FAVORITES_KEY || event.key === null) setFavoriteIds(readTemplateFavorites());
+      if (event.key === TEMPLATE_FAVORITES_KEY || event.key === null) {
+        setFavoriteIds(readTemplateFavorites());
+      }
     };
     window.addEventListener('storage', syncFavorites);
     return () => window.removeEventListener('storage', syncFavorites);
   }, []);
 
-  const palette = generatePalette(theme === 'dark' ? '#35D0E6' : '#0B7FA6', theme);
+  const effectivePrimaryColor = previewWithBrand && brandSettings.defaultPrimaryColor
+    ? brandSettings.defaultPrimaryColor
+    : (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
+
+  const palette = generatePalette(effectivePrimaryColor, theme);
   const selectedTemplate = getTemplate(templateId);
   const availableCategories = getAvailableCategories(TEMPLATE_CATEGORIES, TEMPLATE_GALLERY_INDEX.templates);
-  const visibleTemplates = useMemo(() => filterGalleryTemplates(TEMPLATE_GALLERY_INDEX.templates, {
-    query,
-    categoryId: categoryId === 'all' ? undefined : categoryId,
-    language: lang,
-    mode: theme,
-    formatId: selectedAspect === 'all' ? undefined : ASPECT_DIMENSIONS[selectedAspect as AspectClass].formatId,
-    favoritesOnly,
-    favoriteIds,
-  }), [query, categoryId, lang, theme, selectedAspect, favoritesOnly, favoriteIds]);
+
+  const visibleTemplates = useMemo(() => {
+    return filterGalleryTemplates(TEMPLATE_GALLERY_INDEX.templates, {
+      query,
+      categoryId: categoryId === 'all' ? undefined : categoryId,
+      language: lang,
+      mode: theme,
+      formatId: selectedAspect === 'all' ? undefined : ASPECT_DIMENSIONS[selectedAspect as AspectClass].formatId,
+      favoritesOnly,
+      favoriteIds,
+    });
+  }, [query, categoryId, lang, theme, selectedAspect, favoritesOnly, favoriteIds]);
 
   const updateFavorite = (id: string) => setFavoriteIds(toggleTemplateFavorite(id));
+
+  const handleUseTemplate = (tmplId: string) => {
+    const newProj = createProject({
+      title: 'Untitled Presentation',
+      templateId: tmplId,
+      primaryColor: effectivePrimaryColor,
+      theme,
+      textDir: lang === 'ar' ? 'rtl' : 'ltr',
+    });
+    saveProject(newProj);
+    window.history.pushState({}, '', '/editor');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
+  const clearFilters = () => {
+    setQuery('');
+    setCategoryId('all');
+    setFavoritesOnly(false);
+    setSelectedAspect('all');
+    setSimulatedState('templates');
+  };
 
   const typesToRender = selectedType === 'all' ? SLIDE_TYPES : [selectedType as SlideType];
   const aspectsToRender = selectedAspect === 'all' ? ASPECT_CLASSES : [selectedAspect as AspectClass];
 
   return (
-    <div dir={dir} style={{ minHeight: '100vh', background: '#0b0f19', color: '#f3f4f6', padding: '24px', fontFamily: 'system-ui, sans-serif' }}>
-      {/* Top Header & Controls */}
-      <div style={{ maxWidth: '1600px', margin: '0 auto', marginBottom: '32px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid #1f293d', paddingBottom: '20px' }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: 800, margin: 0, color: '#38bdf8' }}>
-              SlideThread Component Gallery
-            </h1>
-            <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: '14px' }}>
-              Dev gallery rendering all 9 slide types × 4 aspect classes × dark/light themes × bilingual RTL/LTR
-            </p>
+    <div
+      dir={dir}
+      data-testid="gallery-page"
+      className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col font-sans transition-colors duration-200"
+    >
+      {/* Top Header & Navigation */}
+      <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+              S
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight text-stone-900 dark:text-white font-serif">
+                SlideThread Component Gallery
+              </h1>
+              <p className="text-xs text-stone-500 dark:text-stone-400 hidden sm:block">
+                {t('ux.gallery.eyebrow')} · Atelier Design Studio
+              </p>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
+
+          <div className="flex items-center gap-3">
             <a
               href="/"
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                background: '#1e293b',
-                color: '#94a3b8',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: 600,
-                border: '1px solid #334155',
-              }}
+              className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors"
             >
               ← {t('nav.home')}
             </a>
-            <a href="/settings" style={{ color: '#94a3b8', textDecoration: 'none', padding: '8px 12px' }}>{t('nav.settings')}</a>
+            <a
+              href="/settings"
+              className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors"
+            >
+              {t('nav.settings')}
+            </a>
             <LanguageSwitcher />
           </div>
         </div>
+      </header>
 
-        {/* Filter Toolbar */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '20px', alignItems: 'center' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', fontSize: 13 }}>
-            {t('gallery.search')}
-            <input data-testid="gallery-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('gallery.searchPlaceholder')} style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '7px 10px', borderRadius: 6 }} />
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', fontSize: 13 }}>
-            {t('gallery.category')}
-            <select data-testid="gallery-category" value={categoryId} onChange={(event) => setCategoryId(event.target.value)} style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '7px 10px', borderRadius: 6 }}>
-              <option value="all">{t('gallery.allCategories')}</option>
-              {availableCategories.map((category) => <option key={category.id} value={category.id}>{category.name[locale]}</option>)}
-            </select>
-          </label>
-          <button type="button" data-testid="favorites-filter" aria-pressed={favoritesOnly} onClick={() => setFavoritesOnly((value) => !value)} style={{ background: favoritesOnly ? '#7c3aed' : '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '7px 12px', borderRadius: 6, cursor: 'pointer' }}>{favoritesOnly ? '★' : '☆'} {t('gallery.favorites')}</button>
-          <span data-testid="gallery-template-count" style={{ color: '#94a3b8', fontSize: 13 }}>{t('gallery.templateCount', { count: visibleTemplates.length })}</span>
-        </div>
+      {/* Hero Intro & "Preview With Brand" */}
+      <main className="max-w-7xl mx-auto w-full px-6 py-8 flex-1 space-y-10">
+        <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-4 border-b border-stone-200 dark:border-stone-800">
+          <div className="space-y-2 max-w-2xl">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+              {t('ux.gallery.eyebrow')}
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 dark:text-stone-50 leading-tight">
+              {t('ux.gallery.title')}
+            </h2>
+            <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
+              {t('ux.gallery.body')}
+            </p>
+          </div>
 
-        <section aria-label={t('gallery.templateChoices')} data-testid="gallery-template-choices" style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 16 }}>
-          {visibleTemplates.map((item) => {
-            const active = templateId === item.id;
-            return (
-              <article key={item.id} data-testid="gallery-template-card" data-template-id={item.id} style={{ width: 190, border: `1px solid ${active ? '#38bdf8' : '#334155'}`, borderRadius: 10, overflow: 'hidden', background: '#111827' }}>
-                <button type="button" aria-pressed={active} onClick={() => setTemplateId(item.id)} style={{ display: 'block', width: '100%', padding: 0, border: 0, background: 'transparent', color: '#f8fafc', textAlign: 'start', cursor: 'pointer' }}>
-                  <img src={getTemplatePreviewUrl(item.id)} alt="" width="190" height="150" style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
-                  <span style={{ display: 'block', padding: '9px 10px 2px', fontWeight: 700 }}>{item.name[locale]}</span>
-                  <span style={{ display: 'block', padding: '2px 10px 10px', color: '#94a3b8', fontSize: 12 }}>{item.categories.map((id) => availableCategories.find((category) => category.id === id)?.name[locale]).filter(Boolean).join(' · ')}</span>
-                </button>
-                <button type="button" data-testid={`favorite-${item.id}`} aria-label={`${favoriteIds.includes(item.id) ? t('gallery.removeFavorite') : t('gallery.addFavorite')} ${item.name[locale]}`} aria-pressed={favoriteIds.includes(item.id)} onClick={() => updateFavorite(item.id)} style={{ width: '100%', border: 0, borderTop: '1px solid #334155', background: 'transparent', color: '#fbbf24', padding: 7, cursor: 'pointer' }}>{favoriteIds.includes(item.id) ? '★' : '☆'} {favoriteIds.includes(item.id) ? t('gallery.removeFavorite') : t('gallery.addFavorite')}</button>
-              </article>
-            );
-          })}
-          {visibleTemplates.length === 0 && <p data-testid="gallery-empty-state" style={{ color: '#cbd5e1' }}>{t('gallery.noTemplates')}</p>}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              data-testid="preview-brand-toggle"
+              aria-pressed={previewWithBrand}
+              onClick={() => setPreviewWithBrand(!previewWithBrand)}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 shadow-xs ${
+                previewWithBrand
+                  ? 'bg-amber-600 text-white border-amber-600 shadow-md ring-2 ring-amber-400/30'
+                  : 'bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 border-stone-300 dark:border-stone-700 hover:border-amber-500'
+              }`}
+            >
+              <span>{previewWithBrand ? '✦' : '✧'}</span>
+              <span>{t('ux.gallery.brand')}</span>
+              {previewWithBrand && (
+                <span className="w-2.5 h-2.5 rounded-full" style={{ background: brandSettings.defaultPrimaryColor }} />
+              )}
+            </button>
+          </div>
         </section>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '20px', alignItems: 'center' }}>
-          {/* Slide Type Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Type:</label>
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              data-testid="type-select"
-              style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '6px 12px', borderRadius: '6px', fontSize: '14px' }}
-            >
-              <option value="all">All 9 Types</option>
-              {SLIDE_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
+        {/* Search & Category Filter Chips */}
+        <section className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Search Input */}
+            <div className="relative flex-1 min-w-[260px] max-w-md">
+              <span className="absolute inset-y-0 start-3 flex items-center text-stone-400 pointer-events-none text-sm">
+                🔍
+              </span>
+              <input
+                data-testid="gallery-search"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t('gallery.searchPlaceholder')}
+                className="w-full ps-9 pe-4 py-2 text-xs rounded-xl bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+              />
+            </div>
+
+            {/* Hidden/Select element for category compatibility with e2e tests */}
+            <div className="flex items-center gap-3">
+              <label className="text-xs font-semibold text-stone-500 dark:text-stone-400 flex items-center gap-2">
+                <span>{t('gallery.category')}:</span>
+                <select
+                  data-testid="gallery-category"
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="all">{t('gallery.allCategories')}</option>
+                  {availableCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name[locale]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {/* Favorites filter toggle button */}
+              <button
+                type="button"
+                data-testid="favorites-filter"
+                aria-pressed={favoritesOnly}
+                onClick={() => setFavoritesOnly(!favoritesOnly)}
+                className={`text-xs px-3 py-1.5 rounded-lg border font-semibold flex items-center gap-1.5 transition-all ${
+                  favoritesOnly
+                    ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+                    : 'bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 border-stone-300 dark:border-stone-700 hover:border-amber-500'
+                }`}
+              >
+                <span>{favoritesOnly ? '★' : '☆'}</span>
+                <span>{t('gallery.favorites')}</span>
+              </button>
+
+              <span data-testid="gallery-template-count" className="text-xs text-stone-500 dark:text-stone-400 font-mono">
+                {t('gallery.templateCount', { count: visibleTemplates.length })}
+              </span>
+            </div>
           </div>
 
-          {/* Aspect Class Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Aspect:</label>
-            <select
-              value={selectedAspect}
-              onChange={(e) => setSelectedAspect(e.target.value)}
-              data-testid="aspect-select"
-              style={{ background: '#1e293b', color: '#f8fafc', border: '1px solid #334155', padding: '6px 12px', borderRadius: '6px', fontSize: '14px' }}
-            >
-              <option value="all">All 4 Aspects</option>
-              {ASPECT_CLASSES.map((a) => (
-                <option key={a} value={a}>{a}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Template Select */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Template:</label>
-            <select
-              value={templateId}
-              onChange={(e) => setTemplateId(e.target.value as TemplateId)}
-              data-testid="template-select"
-              style={{
-                background: '#1e293b',
-                color: '#f8fafc',
-                border: '1px solid #334155',
-                borderRadius: '6px',
-                padding: '6px 10px',
-                fontSize: '13px',
-              }}
-            >
-              {getAllTemplates().map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.id.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div data-testid="template-preview-card" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 10px', border: '1px solid #334155', borderRadius: '10px', background: '#111827' }}>
-            <img src={selectedTemplate.previewUrl} alt="" width="36" height="45" style={{ objectFit: 'cover', borderRadius: '5px' }} />
-            <span style={{ fontSize: '13px', fontWeight: 700 }}>{t(selectedTemplate.nameKey as Parameters<typeof t>[0])}</span>
-          </div>
-
-          {/* Theme Mode Toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Theme:</label>
+          {/* Interactive Category Chips */}
+          <div className="flex flex-wrap gap-2 pt-1" role="toolbar" aria-label={t('gallery.category')}>
             <button
               type="button"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              data-testid="toggle-theme"
-              style={{
-                background: theme === 'dark' ? '#0284c7' : '#f59e0b',
-                color: '#ffffff',
-                border: 'none',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
+              onClick={() => setCategoryId('all')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+                categoryId === 'all'
+                  ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 shadow-sm'
+                  : 'bg-stone-200/60 dark:bg-stone-800/80 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-700'
+              }`}
             >
-              {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+              <span>{CATEGORY_ICONS.all}</span>
+              <span>{t('gallery.allCategories')}</span>
             </button>
-          </div>
 
-          {/* Safe Zones Toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {availableCategories.map((category) => {
+              const icon = CATEGORY_ICONS[category.id] || '▦';
+              const isActive = categoryId === category.id;
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setCategoryId(category.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+                    isActive
+                      ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 shadow-sm'
+                      : 'bg-stone-200/60 dark:bg-stone-800/80 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-700'
+                  }`}
+                >
+                  <span>{icon}</span>
+                  <span>{category.name[locale]}</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* State Preview Switches (dev / demo modes) */}
+        <div className="flex items-center gap-2 text-xs text-stone-500">
+          <span className="font-semibold uppercase tracking-wider text-[10px]">{t('ux.gallery.stateLabel')}:</span>
+          {(['templates', 'empty', 'loading', 'error'] as const).map((st) => (
             <button
+              key={st}
               type="button"
-              onClick={() => setShowSafeZones(!showSafeZones)}
-              style={{
-                background: showSafeZones ? '#dc2626' : '#1e293b',
-                color: showSafeZones ? '#ffffff' : '#f87171',
-                border: '1px solid #ef4444',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-              data-testid="toggle-safe-zones"
+              onClick={() => setSimulatedState(st)}
+              className={`px-2.5 py-1 rounded-md transition-all font-mono text-[11px] ${
+                simulatedState === st
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-300'
+              }`}
             >
-              {showSafeZones ? '🛡️ Safe Zones: ON' : '🛡️ Safe Zones: OFF'}
+              {t(`ux.gallery.state.${st}` as never)}
             </button>
-          </div>
-
-          {/* Language Toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>Content:</label>
-            <button
-              type="button"
-              onClick={() => {
-                const nextLang = lang === 'en' ? 'ar' : 'en';
-                setLang(nextLang);
-                setTextDir(nextLang === 'ar' ? 'rtl' : 'ltr');
-              }}
-              data-testid="toggle-lang"
-              style={{
-                background: '#1e293b',
-                color: '#38bdf8',
-                border: '1px solid #0284c7',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              {lang === 'en' ? 'English (LTR)' : 'العربية (RTL)'}
-            </button>
-          </div>
-
-          {/* Scale Slider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
-            <label style={{ fontSize: '13px', color: '#94a3b8' }}>Zoom: {Math.round(previewScale * 100)}%</label>
-            <input
-              type="range"
-              min="0.15"
-              max="0.4"
-              step="0.01"
-              value={previewScale}
-              onChange={(e) => setPreviewScale(parseFloat(e.target.value))}
-              style={{ width: '100px' }}
-            />
-          </div>
+          ))}
         </div>
-      </div>
 
-      {/* Grid of Slide Previews */}
-      <div style={{ maxWidth: '1600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '48px' }}>
-        {typesToRender.map((type) => {
-          const sampleKey = `${type}_${lang}`;
-          const slide = SAMPLE_SLIDES[sampleKey] || SAMPLE_SLIDES[`${type}_en`];
-          if (!slide) return null;
-
-          return (
-            <div key={type} style={{ background: '#111827', borderRadius: '16px', padding: '24px', border: '1px solid #1f2937' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2 style={{ fontSize: '20px', fontWeight: 700, margin: 0, textTransform: 'capitalize', color: '#e2e8f0' }}>
-                  {type} Slide
-                </h2>
-                <span style={{ fontSize: '13px', color: '#64748b' }}>
-                  4 layout variants
-                </span>
+        {/* Template Grid / State Views */}
+        {simulatedState === 'loading' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="gallery-skeleton">
+            {[1, 2, 3].map((n) => (
+              <div
+                key={n}
+                className="rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 space-y-4 animate-pulse"
+              >
+                <div className="w-full h-48 bg-stone-200 dark:bg-stone-800 rounded-xl" />
+                <div className="h-4 bg-stone-200 dark:bg-stone-800 rounded w-2/3" />
+                <div className="h-3 bg-stone-200 dark:bg-stone-800 rounded w-1/2" />
               </div>
+            ))}
+          </div>
+        )}
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'flex-start' }}>
-                {aspectsToRender.map((aspect) => {
-                  const dims = ASPECT_DIMENSIONS[aspect];
-                  const scaledWidth = dims.width * previewScale;
-                  const scaledHeight = dims.height * previewScale;
+        {simulatedState === 'error' && (
+          <div
+            data-testid="gallery-error-state"
+            className="rounded-3xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/20 p-10 text-center space-y-4 max-w-lg mx-auto"
+          >
+            <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 text-2xl flex items-center justify-center mx-auto">
+              !
+            </div>
+            <h3 className="text-lg font-bold text-stone-900 dark:text-white">
+              {t('ux.gallery.errorTitle')}
+            </h3>
+            <p className="text-xs text-stone-600 dark:text-stone-400">
+              {t('ux.gallery.errorBody')}
+            </p>
+            <button
+              type="button"
+              onClick={() => setSimulatedState('templates')}
+              className="px-4 py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-semibold shadow-sm hover:opacity-90"
+            >
+              {t('ux.gallery.retry')}
+            </button>
+          </div>
+        )}
+
+        {simulatedState === 'empty' && (
+          <div
+            data-testid="gallery-empty-state"
+            className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-12 text-center space-y-4 max-w-md mx-auto shadow-sm"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-3xl mx-auto">
+              📂
+            </div>
+            <h3 className="text-lg font-serif font-bold text-stone-900 dark:text-white">
+              {t('ux.gallery.emptyTitle')}
+            </h3>
+            <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
+              {t('ux.gallery.emptyBody')}
+            </p>
+            <button
+              type="button"
+              data-testid="clear-filters-btn"
+              onClick={clearFilters}
+              className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-sm transition-all"
+            >
+              {t('ux.gallery.clearFilters')}
+            </button>
+          </div>
+        )}
+
+        {simulatedState === 'templates' && (
+          <section
+            aria-label={t('gallery.templateChoices')}
+            data-testid="gallery-template-choices"
+            className="space-y-6"
+          >
+            {visibleTemplates.length === 0 ? (
+              <div
+                data-testid="gallery-empty-state"
+                className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-12 text-center space-y-4 max-w-md mx-auto shadow-sm"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-3xl mx-auto">
+                  📂
+                </div>
+                <h3 className="text-lg font-serif font-bold text-stone-900 dark:text-white">
+                  {t('ux.gallery.emptyTitle')}
+                </h3>
+                <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
+                  {t('gallery.noTemplates')}
+                </p>
+                <button
+                  type="button"
+                  data-testid="clear-filters-btn"
+                  onClick={clearFilters}
+                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-sm transition-all"
+                >
+                  {t('ux.gallery.clearFilters')}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {visibleTemplates.map((item) => {
+                  const isSelected = templateId === item.id;
+                  const isFav = favoriteIds.includes(item.id);
+                  const previewUrl = getTemplatePreviewUrl(item.id);
+                  const categoryLabels = item.categories
+                    .map((id) => availableCategories.find((cat) => cat.id === id)?.name[locale])
+                    .filter(Boolean)
+                    .join(' · ');
 
                   return (
-                    <div key={aspect} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>
-                        {aspect} ({dims.width}×{dims.height})
-                      </span>
-                      <div
-                        style={{
-                          width: `${scaledWidth}px`,
-                          height: `${scaledHeight}px`,
-                          position: 'relative',
-                          overflow: 'hidden',
-                          borderRadius: '12px',
-                          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)',
-                          border: '1px solid #334155',
-                          background: palette.bg,
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: `${dims.width}px`,
-                            height: `${dims.height}px`,
-                            transform: `scale(${previewScale})`,
-                            transformOrigin: 'top left',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                          }}
-                        >
-                          <SlideRenderer
-                            slide={slide}
-                            palette={palette}
-                            aspectClass={aspect}
-                            textDir={textDir}
-                            brand={lang === 'ar' ? SAMPLE_BRAND_AR : SAMPLE_BRAND_EN}
-                            slideIndex={2}
-                            totalSlides={7}
-                            showCounter={true}
-                            showSafeZones={showSafeZones}
-                            templateId={templateId}
-                            themeMode={theme}
-                            dimensions={dims}
-                          />
+                    <article
+                      key={item.id}
+                      data-testid="gallery-template-card"
+                      data-template-id={item.id}
+                      className={`group relative rounded-2xl overflow-hidden border bg-white dark:bg-stone-900 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between ${
+                        isSelected
+                          ? 'border-amber-500 dark:border-amber-500 ring-2 ring-amber-500/30'
+                          : 'border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700'
+                      }`}
+                    >
+                      {/* Preview Image with Hover Action Overlay */}
+                      <div className="relative aspect-[4/3] bg-stone-100 dark:bg-stone-800 overflow-hidden cursor-pointer" onClick={() => setTemplateId(item.id as TemplateId)}>
+                        <img
+                          src={previewUrl}
+                          alt={item.name[locale]}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+
+                        {/* Top Badges */}
+                        <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none">
+                          <span className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono font-bold">
+                            5 slides
+                          </span>
+
+                          {item.colorFlexible && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-600/90 text-white text-[10px] font-bold">
+                              {previewWithBrand ? 'Brand applied' : 'Color Flexible'}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Hover Quick Actions */}
+                        <div className="absolute inset-0 bg-stone-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-auto">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleUseTemplate(item.id);
+                            }}
+                            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-lg transition-transform hover:scale-105"
+                          >
+                            {t('ux.gallery.use')} ↗
+                          </button>
                         </div>
                       </div>
-                    </div>
+
+                      {/* Card Metadata & Actions */}
+                      <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <h3 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                                {item.name[locale]}
+                              </h3>
+                              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                                {categoryLabels}
+                              </p>
+                            </div>
+
+                            <button
+                              type="button"
+                              data-testid={`favorite-${item.id}`}
+                              aria-label={`${isFav ? t('gallery.removeFavorite') : t('gallery.addFavorite')} ${item.name[locale]}`}
+                              aria-pressed={isFav}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                updateFavorite(item.id);
+                              }}
+                              className={`p-2 rounded-lg text-sm transition-colors ${
+                                isFav
+                                  ? 'text-amber-500 hover:text-amber-600 bg-amber-500/10'
+                                  : 'text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800'
+                              }`}
+                            >
+                              {isFav ? '★' : '☆'}
+                            </button>
+                          </div>
+
+                          {item.description?.[locale] && (
+                            <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 line-clamp-2">
+                              {item.description[locale]}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Bottom Actions Row */}
+                        <div className="pt-2 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between">
+                          <button
+                            type="button"
+                            onClick={() => setTemplateId(item.id as TemplateId)}
+                            className="text-xs font-semibold text-stone-600 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400"
+                          >
+                            {isSelected ? '✓ Active preview' : 'Preview archetypes ↓'}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleUseTemplate(item.id)}
+                            className="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-amber-600 hover:text-white dark:bg-stone-800 dark:hover:bg-amber-600 text-stone-800 dark:text-stone-200 text-xs font-bold transition-all"
+                          >
+                            {t('ux.gallery.use')}
+                          </button>
+                        </div>
+                      </div>
+                    </article>
                   );
                 })}
               </div>
+            )}
+          </section>
+        )}
+
+        {/* Slide Archetypes & Aspect Class Inspector (Dev Component Explorer) */}
+        <section className="pt-8 border-t border-stone-200 dark:border-stone-800 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-serif font-bold text-stone-900 dark:text-white">
+                Template Archetype Inspector
+              </h2>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                Inspect all 9 slide archetypes across 4 aspect ratios with live rendering.
+              </p>
             </div>
-          );
-        })}
-      </div>
+
+            {/* Inspector Controls */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Type select */}
+              <label className="text-xs font-semibold text-stone-600 dark:text-stone-300 flex items-center gap-1.5">
+                <span>Type:</span>
+                <select
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  data-testid="type-select"
+                  className="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 text-xs rounded-lg px-2 py-1"
+                >
+                  <option value="all">All 9 Types</option>
+                  {SLIDE_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {/* Aspect select */}
+              <label className="text-xs font-semibold text-stone-600 dark:text-stone-300 flex items-center gap-1.5">
+                <span>Aspect:</span>
+                <select
+                  value={selectedAspect}
+                  onChange={(e) => setSelectedAspect(e.target.value)}
+                  data-testid="aspect-select"
+                  className="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 text-xs rounded-lg px-2 py-1"
+                >
+                  <option value="all">All 4 Aspects</option>
+                  {ASPECT_CLASSES.map((aspect) => (
+                    <option key={aspect} value={aspect}>
+                      {aspect}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {/* Template select */}
+              <label className="text-xs font-semibold text-stone-600 dark:text-stone-300 flex items-center gap-1.5">
+                <span>Template:</span>
+                <select
+                  value={templateId}
+                  onChange={(e) => setTemplateId(e.target.value as TemplateId)}
+                  data-testid="template-select"
+                  className="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 text-xs rounded-lg px-2 py-1"
+                >
+                  {getAllTemplates().map((tmpl) => (
+                    <option key={tmpl.id} value={tmpl.id}>
+                      {tmpl.id.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <div
+                data-testid="template-preview-card"
+                className="flex items-center gap-2 px-2.5 py-1 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-xs font-semibold"
+              >
+                <img
+                  src={selectedTemplate.previewUrl}
+                  alt=""
+                  width="28"
+                  height="35"
+                  className="rounded object-cover"
+                />
+                <span>{t(selectedTemplate.nameKey as Parameters<typeof t>[0])}</span>
+              </div>
+
+              {/* Theme toggle */}
+              <button
+                type="button"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                data-testid="toggle-theme"
+                className="px-3 py-1 rounded-lg bg-amber-600 text-white text-xs font-semibold hover:bg-amber-500 transition-colors"
+              >
+                {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+              </button>
+
+              {/* Safe zones toggle */}
+              <button
+                type="button"
+                onClick={() => setShowSafeZones(!showSafeZones)}
+                data-testid="toggle-safe-zones"
+                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-colors ${
+                  showSafeZones
+                    ? 'bg-red-600 text-white border-red-600'
+                    : 'bg-white dark:bg-stone-900 text-red-600 border-red-300 dark:border-red-900'
+                }`}
+              >
+                {showSafeZones ? '🛡️ Safe Zones: ON' : '🛡️ Safe Zones: OFF'}
+              </button>
+
+              {/* Language toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  const nextLang = lang === 'en' ? 'ar' : 'en';
+                  setLang(nextLang);
+                  setTextDir(nextLang === 'ar' ? 'rtl' : 'ltr');
+                }}
+                data-testid="toggle-lang"
+                className="px-3 py-1 rounded-lg bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-amber-600 dark:text-amber-400 text-xs font-semibold hover:border-amber-500 transition-colors"
+              >
+                {lang === 'en' ? 'English (LTR)' : 'العربية (RTL)'}
+              </button>
+
+              {/* Zoom scale slider */}
+              <div className="flex items-center gap-1.5 text-xs text-stone-500 ms-auto">
+                <span>Zoom: {Math.round(previewScale * 100)}%</span>
+                <input
+                  type="range"
+                  min="0.15"
+                  max="0.4"
+                  step="0.01"
+                  value={previewScale}
+                  onChange={(e) => setPreviewScale(parseFloat(e.target.value))}
+                  className="w-20 accent-amber-600"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Grid of Slide Previews */}
+          <div className="space-y-8">
+            {typesToRender.map((type) => {
+              const sampleKey = `${type}_${lang}`;
+              const slide = SAMPLE_SLIDES[sampleKey] || SAMPLE_SLIDES[`${type}_en`];
+              if (!slide) return null;
+
+              const activeBrand = previewWithBrand
+                ? {
+                    ...brandSettings,
+                    displayName: brandSettings.displayName || 'Mina Hawarei',
+                    handle: brandSettings.handle || '@minahawarei',
+                  }
+                : (lang === 'ar' ? SAMPLE_BRAND_AR : SAMPLE_BRAND_EN);
+
+              return (
+                <div
+                  key={type}
+                  className="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-serif font-bold text-stone-900 dark:text-stone-100 capitalize">
+                      {type} Slide
+                    </h2>
+                    <span className="text-xs text-stone-500">
+                      4 layout variants
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-6 items-start">
+                    {aspectsToRender.map((aspect) => {
+                      const dims = ASPECT_DIMENSIONS[aspect];
+                      const scaledWidth = dims.width * previewScale;
+                      const scaledHeight = dims.height * previewScale;
+
+                      return (
+                        <div key={aspect} className="flex flex-col items-center gap-2">
+                          <span className="text-[11px] font-mono font-semibold uppercase text-stone-500">
+                            {aspect} ({dims.width}×{dims.height})
+                          </span>
+                          <div
+                            style={{
+                              width: `${scaledWidth}px`,
+                              height: `${scaledHeight}px`,
+                              position: 'relative',
+                              overflow: 'hidden',
+                              borderRadius: '12px',
+                              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
+                              border: '1px solid #334155',
+                              background: palette.bg,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: `${dims.width}px`,
+                                height: `${dims.height}px`,
+                                transform: `scale(${previewScale})`,
+                                transformOrigin: 'top left',
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                              }}
+                            >
+                              <SlideRenderer
+                                slide={slide}
+                                palette={palette}
+                                aspectClass={aspect}
+                                textDir={textDir}
+                                brand={activeBrand}
+                                slideIndex={2}
+                                totalSlides={7}
+                                showCounter={true}
+                                showSafeZones={showSafeZones}
+                                templateId={templateId}
+                                themeMode={theme}
+                                dimensions={dims}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
