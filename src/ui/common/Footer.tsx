@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({
     return (
       <footer
         data-testid="app-footer"
-        className={`w-full py-2 px-4 text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/60 dark:border-slate-800/60 ${className}`}
+        className={`w-full py-2.5 px-4 text-[11px] text-stone-500 dark:text-stone-400 flex flex-wrap items-center justify-between gap-2 border-t border-stone-200/80 dark:border-stone-800/80 bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-sm ${className}`}
       >
         <div className="flex items-center gap-1.5">
           <span>{t('footer.createdBy')}</span>
@@ -32,11 +32,11 @@ export const Footer: React.FC<FooterProps> = ({
             href={OWNER.socials.github || GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-slate-700 dark:text-slate-300 hover:text-cyan-600 transition-colors"
+            className="font-medium text-stone-700 dark:text-stone-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
           >
             {OWNER.name}
           </a>
-          <span className="text-slate-400">({OWNER.handle})</span>
+          <span className="text-stone-400">({OWNER.handle})</span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -46,7 +46,7 @@ export const Footer: React.FC<FooterProps> = ({
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-cyan-600 flex items-center gap-1 transition-colors"
+            className="hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 transition-colors"
           >
             ★ {t('app.starGithub')}
           </a>
@@ -55,7 +55,7 @@ export const Footer: React.FC<FooterProps> = ({
             href={feedbackHref}
             target={isExternalFeedback ? '_blank' : undefined}
             rel={isExternalFeedback ? 'noopener noreferrer' : undefined}
-            className="text-cyan-600 dark:text-cyan-400 hover:underline"
+            className="text-amber-600 dark:text-amber-400 hover:underline"
           >
             {t('app.feedback')}
           </a>
@@ -67,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer
       data-testid="app-footer"
-      className={`w-full border-t border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm py-6 px-4 sm:px-8 text-xs text-slate-500 dark:text-slate-400 ${className}`}
+      className={`w-full border-t border-stone-200/80 dark:border-stone-800 bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur-sm py-6 px-4 sm:px-8 text-xs text-stone-500 dark:text-stone-400 ${className}`}
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Left: Owner Info & Social Links */}
@@ -78,13 +78,13 @@ export const Footer: React.FC<FooterProps> = ({
             href={OWNER.socials.linkedin || OWNER.socials.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="min-h-[44px] inline-flex items-center font-bold text-slate-800 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+            className="min-h-[44px] inline-flex items-center font-serif font-bold text-stone-800 dark:text-stone-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
           >
             {OWNER.name}
           </a>
-          <span className="text-slate-400">({OWNER.handle})</span>
+          <span className="text-stone-400">({OWNER.handle})</span>
 
-          <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
+          <span className="hidden sm:inline text-stone-300 dark:text-stone-700">•</span>
 
           {/* Social Links List */}
           <div className="flex items-center gap-1">
@@ -95,7 +95,7 @@ export const Footer: React.FC<FooterProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
-                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl hover:text-stone-900 dark:hover:text-white hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors"
                 title="GitHub"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -111,7 +111,7 @@ export const Footer: React.FC<FooterProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
-                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg hover:text-cyan-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl hover:text-amber-600 dark:hover:text-amber-400 hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors"
                 title="LinkedIn"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@ export const Footer: React.FC<FooterProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl hover:text-rose-500 hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors"
                 title="Instagram"
               >
                 <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24">
@@ -141,7 +141,7 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* Center: Privacy Note */}
-        <div data-testid="footer-privacy-note" className="text-center text-[11px] text-slate-500 dark:text-slate-400 max-w-md">
+        <div data-testid="footer-privacy-note" className="text-center text-[11px] text-stone-500 dark:text-stone-400 max-w-md">
           <span>{t('app.privacy')}</span>
         </div>
 
@@ -152,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="min-h-[44px] py-2 px-3.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
+            className="min-h-[44px] py-2 px-3.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 font-semibold transition-colors flex items-center gap-1.5 shadow-2xs"
           >
             <span className="text-amber-500">★</span>
             <span>{t('app.starGithub')}</span>
@@ -163,7 +163,7 @@ export const Footer: React.FC<FooterProps> = ({
             href={feedbackHref}
             target={isExternalFeedback ? '_blank' : undefined}
             rel={isExternalFeedback ? 'noopener noreferrer' : undefined}
-            className="min-h-[44px] py-2 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            className="min-h-[44px] py-2 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
             <span>💬</span>
             <span>{t('app.feedback')}</span>

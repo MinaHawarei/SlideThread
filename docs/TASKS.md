@@ -119,8 +119,8 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R8-4 | Mobile editor: bottom sheets, tab bar, gestures, safe-area handling. | R8-3 | [x] | Antigravity 2026-11-24 · feature/r8-4 · 000b77f |
 | R8-5 | Motion and micro-interactions (§7.2): springs, drag ghosts, snap-guide flash, toasts, skeletons, export progress, gallery→editor transition. | R8-4 | [x] | Antigravity 2026-11-24 · feature/r8-5 · d165e9a |
 | R8-6 | Onboarding (3–4 skippable steps), empty states with original SVG illustrations, shortcuts overlay, friendly bilingual microcopy. | R8-5 | [x] | Antigravity 2026-11-24 · feature/r8-6 · a2675bf |
-| R8-7 | Visual polish pass: spacing, type, icon consistency, dark/light and RTL/LTR parity, footer restyle. Prepare the owner review pack (screenshots + short video or GIF). | R8-6 | [ ] | |
-| GR8 | Gate GR8 verification | R8-1…R8-7 | [ ] | |
+| R8-7 | Visual polish pass: spacing, type, icon consistency, dark/light and RTL/LTR parity, footer restyle. Prepare the owner review pack (screenshots + short video or GIF). | R8-6 | [x] | Antigravity 2026-11-24 · feature/r8-7 · 8948035 |
+| GR8 | Gate GR8 verification | R8-1…R8-7 | [x] | Antigravity 2026-11-24 · feature/r8-7 · Owner review pack in docs/owner-review/OWNER_REVIEW_PACK.md |
 
 ### Phase R9 — Hardening and release prep (GATE GR9)
 | ID | Task | Depends on | Done | Notes |

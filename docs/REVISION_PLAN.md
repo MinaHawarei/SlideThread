@@ -435,4 +435,4 @@ Home, Gallery, Wizard, Editor (desktop and mobile), Settings, Export dialog, Pas
 11. Spec v2 consolidated; export regression suite green; budgets and accessibility targets met or justified.
 
 ## Status
-- [x] GR0  - [x] GR1  - [x] GR2  - [x] GR3  - [x] GR4  - [x] GR5  - [x] GR6  - [x] GR7  - [ ] GR8  - [ ] GR9
+- [x] GR0  - [x] GR1  - [x] GR2  - [x] GR3  - [x] GR4  - [x] GR5  - [x] GR6  - [x] GR7  - [x] GR8  - [ ] GR9
