@@ -653,6 +653,15 @@ export const en = {
   'shortcuts.pan': 'Pan Canvas',
   'shortcuts.nudge': 'Nudge Element',
   'shortcuts.bigNudge': 'Nudge 10px',
+  'start.inProgress': 'In Progress',
+  'start.seedExamples': 'Seed Examples',
+  'rail.tmpl': 'Tmpl',
+  'rail.shapes': 'Shapes',
+  'rail.text': 'Text',
+  'rail.upload': 'Upload',
+  'rail.brand': 'Brand',
+  'rail.layout': 'Layout',
+  'rail.slidesCount': 'Slides ({count})',
 } as const;
 
 export type TranslationKey = keyof typeof en;

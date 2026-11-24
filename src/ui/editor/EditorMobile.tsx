@@ -11,7 +11,6 @@ import { SlideInspector } from './SlideInspector';
 import { DesignInspector } from './DesignInspector';
 import { BrandInspector } from './BrandInspector';
 import { AssetsPanel } from './AssetsPanel';
-import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { handleExportProject } from '../../core/projectIO';
 import { SizeWarningModal } from '../common/SizeWarningModal';
@@ -214,7 +213,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           />
         </div>
 
-        {/* Right: Quick Story Safe-Zones & Language */}
+        {/* Right: Quick Story Safe-Zones */}
         <div className="flex items-center gap-1.5 shrink-0">
           {isStory && (
             <button
@@ -232,10 +231,6 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               🛡️
             </button>
           )}
-
-          <div className="min-h-[44px] flex items-center">
-            <LanguageSwitcher />
-          </div>
         </div>
       </header>
 
@@ -248,6 +243,12 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         data-testid="mobile-canvas"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onPointerDown={(e) => {
+          const target = e.target as HTMLElement;
+          if (!target.closest('[data-testid^="element-hit-"]') && !target.closest('[data-testid="mobile-selection-toolbar"]')) {
+            useSelectionStore.getState().selectElement(undefined);
+          }
+        }}
         style={selectedElementId ? { paddingBottom: 88 } : undefined}
         className="flex-1 flex flex-col items-center justify-center p-3 relative overflow-hidden bg-stone-100 dark:bg-stone-950"
       >

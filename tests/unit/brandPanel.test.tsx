@@ -94,6 +94,7 @@ describe('Brand Panel & Settings (Spec §6.2, §8.1, Task P3-8)', () => {
     it('manages social accounts list (add and remove)', () => {
       act(() => {
         useSettingsStore.getState().toggleSocials(true);
+        useSettingsStore.getState().addSocial('linkedin', 'in/test');
       });
 
       render(<BrandInspector />);

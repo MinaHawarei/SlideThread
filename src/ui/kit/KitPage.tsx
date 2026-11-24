@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useT } from '../../i18n';
+import { Footer } from '../common/Footer';
 import {
   Button,
   DialogClose,
@@ -167,6 +168,7 @@ export function KitPage() {
           <button className="kit-toast-close" onClick={() => setToastOpen(false)} aria-label={t('kit.dismiss')}>×</button>
         </ToastRoot>
         <ToastViewport className="kit-toast-viewport" />
+        <Footer />
       </div>
     </ToastProvider>
   );

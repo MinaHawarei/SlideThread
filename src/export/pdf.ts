@@ -26,6 +26,7 @@ export async function createPdfFromPngs(
     unit: 'px',
     format: [first.width, first.height],
     hotfixes: ['px_scaling'],
+    compress: true,
   });
 
   doc.setProperties({ title });
@@ -36,7 +37,9 @@ export async function createPdfFromPngs(
       const orientation = slide.width > slide.height ? 'landscape' : 'portrait';
       doc.addPage([slide.width, slide.height], orientation);
     }
-    doc.addImage(slide.dataUrl, 'PNG', 0, 0, slide.width, slide.height);
+    const isJpeg = slide.dataUrl.startsWith('data:image/jpeg');
+    const format = isJpeg ? 'JPEG' : 'PNG';
+    doc.addImage(slide.dataUrl, format, 0, 0, slide.width, slide.height, undefined, 'FAST');
   }
 
   return doc.output('blob');

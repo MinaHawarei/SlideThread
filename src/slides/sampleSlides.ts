@@ -179,33 +179,27 @@ console.log('Contrast ink/bg:', getContrastRatio(palette.ink, palette.bg));
 };
 
 export const SAMPLE_BRAND_EN: import('../core/schema').BrandSettings = {
-  displayName: 'Mina Rezk',
-  handle: '@minarezk',
+  displayName: 'user name',
+  handle: '',
   showSignature: true,
-  showSocials: true,
-  socials: [
-    { platform: 'x', handle: '@minarezk' },
-    { platform: 'linkedin', handle: 'in/minarezk' },
-    { platform: 'github', handle: 'minarezk' },
-  ],
+  showSocials: false,
+  socials: [],
   language: 'en',
   defaultTemplateId: 'network',
   defaultPrimaryColor: '#0A84FF',
   defaultTheme: 'dark',
+  appTheme: 'light',
 };
 
 export const SAMPLE_BRAND_AR: import('../core/schema').BrandSettings = {
-  displayName: 'مينا رزق',
-  handle: '@minarezk',
+  displayName: 'user name',
+  handle: '',
   showSignature: true,
-  showSocials: true,
-  socials: [
-    { platform: 'x', handle: '@minarezk' },
-    { platform: 'linkedin', handle: 'in/minarezk' },
-    { platform: 'github', handle: 'minarezk' },
-  ],
+  showSocials: false,
+  socials: [],
   language: 'ar',
   defaultTemplateId: 'network',
   defaultPrimaryColor: '#0A84FF',
   defaultTheme: 'dark',
+  appTheme: 'light',
 };

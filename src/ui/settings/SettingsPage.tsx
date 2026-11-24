@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { useT } from '../../i18n';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useAvatarUpload } from '../common/useAvatarUpload';
-import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { Footer } from '../common/Footer';
 import { SocialIcon } from '../../slides/SignatureBar';
 import { getAllTemplates } from '../../templates';
@@ -65,6 +64,7 @@ export const SettingsPage: React.FC = () => {
   const setDefaultTemplate = useSettingsStore((state) => state.setDefaultTemplate);
   const setDefaultColor = useSettingsStore((state) => state.setDefaultColor);
   const setDefaultTheme = useSettingsStore((state) => state.setDefaultTheme);
+  const setAppTheme = useSettingsStore((state) => state.setAppTheme);
   const updateDefaultCounter = useSettingsStore((state) => state.updateDefaultCounter);
   const updateDefaultSignature = useSettingsStore((state) => state.updateDefaultSignature);
 
@@ -145,7 +145,6 @@ export const SettingsPage: React.FC = () => {
             {t('nav.settings')}
           </a>
         </nav>
-        <LanguageSwitcher />
       </header>
 
       {/* Main Content */}
@@ -270,7 +269,7 @@ export const SettingsPage: React.FC = () => {
                 type="text"
                 value={settings.displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="e.g. Mina Hawarei"
+                placeholder="e.g. user name"
                 className="settings-text-input"
               />
             </div>
@@ -286,7 +285,7 @@ export const SettingsPage: React.FC = () => {
                 type="text"
                 value={settings.handle}
                 onChange={(e) => setHandle(e.target.value)}
-                placeholder="e.g. @minahawarei"
+                placeholder="e.g. @username"
                 className="settings-text-input"
               />
             </div>
@@ -407,6 +406,37 @@ export const SettingsPage: React.FC = () => {
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* App UI Theme (Light / Dark) */}
+            <div className="settings-field">
+              <span className="settings-field-label">App Theme</span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  data-testid="settings-app-theme-light"
+                  onClick={() => setAppTheme('light')}
+                  className={`flex-1 py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                    (settings.appTheme || 'light') === 'light'
+                      ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500'
+                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  ☀️ Light
+                </button>
+                <button
+                  type="button"
+                  data-testid="settings-app-theme-dark"
+                  onClick={() => setAppTheme('dark')}
+                  className={`flex-1 py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                    settings.appTheme === 'dark'
+                      ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500'
+                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  🌙 Dark
+                </button>
+              </div>
             </div>
 
             {/* Default Theme */}

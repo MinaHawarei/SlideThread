@@ -5,6 +5,11 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   /* Visible focus indicator per Spec §10.1 & WCAG 2.1 AA */
   :focus-visible {
     outline: 2px solid hsl(var(--atelier-ring));

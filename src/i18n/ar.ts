@@ -655,4 +655,13 @@ export const ar: Record<TranslationKey, string> = {
   'shortcuts.pan': 'تحريك مساحة العمل',
   'shortcuts.nudge': 'تحريك خفيف',
   'shortcuts.bigNudge': 'تحريك بمقدار ١٠ بكسل',
+  'start.inProgress': 'قيد التنفيذ',
+  'start.seedExamples': 'أمثلة توضيحية',
+  'rail.tmpl': 'القوالب',
+  'rail.shapes': 'الأشكال',
+  'rail.text': 'النصوص',
+  'rail.upload': 'الوسائط',
+  'rail.brand': 'الهوية',
+  'rail.layout': 'التخطيط',
+  'rail.slidesCount': 'الشرائح ({count})',
 };

@@ -373,7 +373,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
         {/* Rail Header */}
         <div className="p-4 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between">
           <span className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
-            Slides ({slides.length})
+            {t('rail.slidesCount', { count: slides.length })}
           </span>
 
           {/* Actions are hidden for single-slide posts per Spec §4.4 */}

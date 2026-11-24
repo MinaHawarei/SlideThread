@@ -8,7 +8,7 @@ import { ChangeFormatDialog } from './ChangeFormatDialog';
 import { SlideRail } from './SlideRail';
 import { MainCanvas } from './MainCanvas';
 import { Inspector, type InspectorTab } from './Inspector';
-import { LanguageSwitcher } from '../common/LanguageSwitcher';
+import { FORMAT_REGISTRY, type FormatId } from '../../core/formats';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { ShortcutsOverlay } from '../common/ShortcutsOverlay';
 import { OnboardingModal } from '../common/OnboardingModal';
@@ -113,7 +113,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
               className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 hover:bg-amber-500/10 hover:text-amber-600 text-[10px] font-mono font-medium transition-colors cursor-pointer"
               title={t('editor.changeFormat')}
             >
-              {project.formatId} ✎
+              {FORMAT_REGISTRY[project.formatId as FormatId]?.label || project.formatId} ✎
             </button>
           </div>
         </div>
@@ -166,8 +166,6 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             💡
           </button>
 
-          <LanguageSwitcher />
-
           <button
             type="button"
             data-testid="editor-export-json-btn"
@@ -213,7 +211,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             aria-label="Templates & Layouts"
           >
             <span className="text-sm">▧</span>
-            <span className="text-[9px] scale-90">Tmpl</span>
+            <span className="text-[9px] scale-90">{t('rail.tmpl')}</span>
           </button>
 
           <button
@@ -230,7 +228,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             aria-label="Shapes & Stickers"
           >
             <span className="text-sm">◇</span>
-            <span className="text-[9px] scale-90">Shapes</span>
+            <span className="text-[9px] scale-90">{t('rail.shapes')}</span>
           </button>
 
           <button
@@ -247,7 +245,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             aria-label="Slide Text & Fields"
           >
             <span className="text-sm font-bold">T</span>
-            <span className="text-[9px] scale-90">Text</span>
+            <span className="text-[9px] scale-90">{t('rail.text')}</span>
           </button>
 
           <button
@@ -261,7 +259,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             aria-label="Upload Assets"
           >
             <span className="text-sm">↑</span>
-            <span className="text-[9px] scale-90">Upload</span>
+            <span className="text-[9px] scale-90">{t('rail.upload')}</span>
           </button>
 
           <button
@@ -278,7 +276,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             aria-label="Brand Kit"
           >
             <span className="text-sm">◉</span>
-            <span className="text-[9px] scale-90">Brand</span>
+            <span className="text-[9px] scale-90">{t('rail.brand')}</span>
           </button>
 
           <button
@@ -292,7 +290,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             aria-label="Layout Design"
           >
             <span className="text-sm">▦</span>
-            <span className="text-[9px] scale-90">Layout</span>
+            <span className="text-[9px] scale-90">{t('rail.layout')}</span>
           </button>
 
           <div className="mt-auto pt-2 border-t border-stone-200 dark:border-stone-800 w-full flex justify-center">

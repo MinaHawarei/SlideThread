@@ -10,6 +10,7 @@ export interface OwnerConfig {
 }
 
 export const APP_NAME = 'SlideThread';
+export const APP_VERSION = '1.0.0';
 
 export const OWNER: OwnerConfig = {
   name: 'Mina Hawarei',

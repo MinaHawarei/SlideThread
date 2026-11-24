@@ -279,6 +279,7 @@ export const BrandSettingsSchema = z.object({
   defaultTemplateId: z.string(),
   defaultPrimaryColor: z.string(),
   defaultTheme: ThemeModeSchema,
+  appTheme: z.enum(['light', 'dark']).optional().default('light'),
 }).strict();
 /** Accepted settings input shape; schema parsing supplies counter/signature defaults. */
 export type BrandSettings = z.input<typeof BrandSettingsSchema>;

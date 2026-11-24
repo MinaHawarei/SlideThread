@@ -7,23 +7,20 @@ import { DEFAULT_COUNTER_CONFIG, DEFAULT_SIGNATURE_CONFIG } from '../core/schema
 import { recordHistoryChange, registerHistoryChannel } from './history';
 
 export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
-  displayName: 'Mina Hawarei',
-  handle: '@minahawarei',
+  displayName: 'user name',
+  handle: '',
   photoDataUrl: undefined,
   showSignature: true,
   showSocials: false,
   showCounter: true,
   defaultCounter: { ...DEFAULT_COUNTER_CONFIG },
   defaultSignature: { ...DEFAULT_SIGNATURE_CONFIG },
-  socials: [
-    { platform: 'linkedin', handle: 'in/minahawarei' },
-    { platform: 'github', handle: 'minahawarei' },
-    { platform: 'instagram', handle: '@minahawarei' },
-  ],
+  socials: [],
   language: 'en',
   defaultTemplateId: 'network',
   defaultPrimaryColor: '#35D0E6',
   defaultTheme: 'dark',
+  appTheme: 'light',
 };
 
 export interface SettingsState {
@@ -42,6 +39,7 @@ export interface SettingsState {
   setDefaultTemplate: (templateId: string) => void;
   setDefaultColor: (color: string) => void;
   setDefaultTheme: (theme: ThemeMode) => void;
+  setAppTheme: (appTheme: 'light' | 'dark') => void;
   updateDefaultCounter: (counter: Partial<CounterConfig>) => void;
   updateDefaultSignature: (signature: Partial<SignatureConfig>) => void;
   resetSettings: () => void;
@@ -133,6 +131,13 @@ export const useSettingsStore = create<SettingsState>()(
 
         setDefaultTheme: (defaultTheme) => {
           get().updateSettings({ defaultTheme });
+        },
+
+        setAppTheme: (appTheme) => {
+          get().updateSettings({ appTheme });
+          if (typeof document !== 'undefined') {
+            document.documentElement.classList.toggle('dark', appTheme === 'dark');
+          }
         },
 
         updateDefaultCounter: (counter) => {

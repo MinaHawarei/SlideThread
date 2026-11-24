@@ -2,6 +2,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { undo, redo } from './store/history';
 import { useT } from './i18n';
+import { useSettingsStore } from './store/settingsStore';
 import { loadFont, loadFontForScript } from './fonts/loader';
 import { FONT_REGISTRY } from './fonts/registry';
 import { GlobalPhotoCropDialog } from './ui/common/PhotoCropDialog';
@@ -10,6 +11,7 @@ const StartScreen = React.lazy(() => import('./ui/start/StartScreen').then((m) =
 const Wizard = React.lazy(() => import('./ui/wizard/Wizard').then((m) => ({ default: m.Wizard })));
 const Editor = React.lazy(() => import('./ui/editor').then((m) => ({ default: m.Editor })));
 const GalleryPage = React.lazy(() => import('./gallery/GalleryPage').then((m) => ({ default: m.GalleryPage })));
+const TemplatePreviewPage = React.lazy(() => import('./gallery/TemplatePreviewPage').then((m) => ({ default: m.TemplatePreviewPage })));
 const KitPage = React.lazy(() => import('./ui/kit/KitPage').then((m) => ({ default: m.KitPage })));
 const LayoutPreviewPage = import.meta.env.DEV
   ? React.lazy(() => import('./templates/layouts/LayoutPreviewPage').then((m) => ({ default: m.LayoutPreviewPage })))
@@ -30,13 +32,18 @@ function LoadingScreen() {
 
 export const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(() => typeof window !== 'undefined' ? window.location.pathname : '/');
-  const [fontsLoadedLocale, setFontsLoadedLocale] = useState<string | null>(null);
+  const [initialFontLoaded, setInitialFontLoaded] = useState(false);
   const { locale, dir } = useT();
+  const appTheme = useSettingsStore((state) => state.settings.appTheme || 'light');
 
   const navigate = (path: string) => {
     if (window.location.pathname !== path) window.history.pushState({}, '', path);
     setCurrentPath(path);
   };
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', appTheme === 'dark');
+  }, [appTheme]);
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -46,11 +53,12 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     let active = true;
-    setFontsLoadedLocale(null);
     void loadFontForScript(locale === 'ar' ? 'arabic' : 'latin')
       .catch((error: unknown) => console.warn('Bundled interface font failed to load', error))
       .finally(() => {
-        if (active) setFontsLoadedLocale(locale);
+        if (active) {
+          setInitialFontLoaded(true);
+        }
       });
     return () => { active = false; };
   }, [locale]);
@@ -79,7 +87,8 @@ export const App: React.FC = () => {
   }, []);
 
   let route: React.ReactNode;
-  if (currentPath === '/gallery') route = <GalleryPage />;
+  if (currentPath === '/gallery') route = <GalleryPage onNavigate={navigate} />;
+  else if (currentPath === '/preview' || currentPath.startsWith('/preview/') || currentPath.startsWith('/preview?')) route = <TemplatePreviewPage onNavigate={navigate} />;
   else if (currentPath === '/editor') route = <Editor onHome={() => navigate('/')} />;
   else if (currentPath === '/wizard') route = <Wizard onComplete={() => navigate('/editor')} onCancel={() => navigate('/')} />;
   else if (currentPath === '/settings') route = <SettingsPage />;
@@ -90,7 +99,7 @@ export const App: React.FC = () => {
   else if (import.meta.env.DEV && currentPath === '/template-dev' && TemplateDevPage) route = <TemplateDevPage />;
   else route = <StartScreen onStartWizard={() => navigate('/wizard')} onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;
 
-  return <>{fontsLoadedLocale === locale ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<GlobalPhotoCropDialog /><Analytics /></>;
+  return <>{initialFontLoaded ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<GlobalPhotoCropDialog /><Analytics /></>;
 };
 
 export default App;

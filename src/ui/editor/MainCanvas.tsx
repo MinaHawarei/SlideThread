@@ -45,6 +45,16 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
   };
 
   const handleStagePointerDown = (e: React.PointerEvent) => {
+    const target = e.target as HTMLElement;
+    if (
+      !target.closest('[data-testid^="element-hit-"]') &&
+      !target.closest('[data-testid="element-context-toolbar"]') &&
+      !target.closest('[data-testid="element-numeric-inspector"]') &&
+      !target.closest('[data-testid="layers-toggle"]') &&
+      !target.closest('[data-testid="canvas-layers-panel"]')
+    ) {
+      selectElement(undefined);
+    }
     if ((e.target as HTMLElement).closest('[data-testid="scaled-slide-container"]')) return;
     isPanningRef.current = true;
     startPanRef.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
@@ -272,6 +282,17 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
       >
         <div
           data-testid="scaled-slide-container"
+          onPointerDown={(e) => {
+            const target = e.target as HTMLElement;
+            if (
+              !target.closest('[data-testid^="element-hit-"]') &&
+              !target.closest('[data-testid="element-context-toolbar"]') &&
+              !target.closest('[data-testid="element-numeric-inspector"]') &&
+              !target.closest('[data-testid="brand-override-popover"]')
+            ) {
+              selectElement(undefined);
+            }
+          }}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           style={{
@@ -329,7 +350,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
           aria-label={t('editor.prevSlide')}
           className="py-1.5 px-3 rounded-lg border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-300 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:ring-2 focus-visible:ring-amber-500"
         >
-          ← {locale === 'ar' ? 'التالي' : 'Previous'}
+          {locale === 'ar' ? 'السابق →' : '← Previous'}
         </button>
 
         <span data-testid="canvas-counter-label" className="text-xs font-bold text-stone-600 dark:text-stone-400">
@@ -344,7 +365,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
           aria-label={t('editor.nextSlide')}
           className="py-1.5 px-3 rounded-lg border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-300 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:ring-2 focus-visible:ring-amber-500"
         >
-          {locale === 'ar' ? 'السابق' : 'Next'} →
+          {locale === 'ar' ? '← التالي' : 'Next →'}
         </button>
       </div>
     </main>

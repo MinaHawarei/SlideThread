@@ -106,7 +106,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       </div>
 
       {/* Swipe & Navigation Controls */}
-      <div className="flex items-center gap-4 mt-4">
+      <div className="flex items-center gap-4 mt-4" dir="ltr">
         <button
           type="button"
           data-testid="hero-prev-btn"
@@ -114,7 +114,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           aria-label={t('editor.prevSlide')}
           className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all focus-visible:ring-2 focus-visible:ring-cyan-500"
         >
-          ←
+          {locale === 'ar' ? '→' : '←'}
         </button>
 
         {/* Slide Dots Indicator */}
@@ -142,10 +142,10 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           type="button"
           data-testid="hero-next-btn"
           onClick={handleNext}
-          aria-label="Next Slide"
+          aria-label={t('editor.nextSlide')}
           className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all focus-visible:ring-2 focus-visible:ring-cyan-500"
         >
-          →
+          {locale === 'ar' ? '←' : '→'}
         </button>
       </div>
     </div>

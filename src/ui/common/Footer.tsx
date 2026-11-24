@@ -1,6 +1,6 @@
 import React from 'react';
 import { useT } from '../../i18n';
-import { OWNER, GITHUB_URL, FEEDBACK_URL } from '../../config/site';
+import { OWNER, GITHUB_URL, FEEDBACK_URL, APP_VERSION } from '../../config/site';
 
 export interface FooterProps {
   className?: string;
@@ -37,6 +37,7 @@ export const Footer: React.FC<FooterProps> = ({
             {OWNER.name}
           </a>
           <span className="text-stone-400">({OWNER.handle})</span>
+          <span className="text-stone-400 font-mono text-[10px]">v{APP_VERSION}</span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -83,6 +84,7 @@ export const Footer: React.FC<FooterProps> = ({
             {OWNER.name}
           </a>
           <span className="text-stone-400">({OWNER.handle})</span>
+          <span className="font-mono text-[11px] text-stone-400 bg-stone-200/50 dark:bg-stone-800/50 px-2 py-0.5 rounded-md">v{APP_VERSION}</span>
 
           <span className="hidden sm:inline text-stone-300 dark:text-stone-700">•</span>
 

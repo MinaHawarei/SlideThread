@@ -6,7 +6,7 @@ import { APP_NAME } from '../../config/site';
 import { useProjectStore } from '../../store/projectStore';
 import { useRecentStore } from '../../store/recentStore';
 import { getDemoProjectEn, getDemoProjectAr } from '../../store/seedProjects';
-import type { FormatId } from '../../core/formats';
+import { FORMAT_REGISTRY, type FormatId } from '../../core/formats';
 import type { Project, PlatformId } from '../../core/schema';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 import { HeroCarousel } from './HeroCarousel';
@@ -245,7 +245,9 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                 Spike
               </button>
             )}
-            <LanguageSwitcher />
+            <div className="sr-only">
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       </header>
@@ -260,13 +262,13 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           >
             <div className="space-y-1">
               <span className="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
-                In Progress
+                {t('start.inProgress')}
               </span>
               <h2 className="text-lg font-bold text-stone-900 dark:text-white">
                 {t('start.continueWorking', { title: currentProject.title || 'Untitled' })}
               </h2>
               <p className="text-xs text-stone-600 dark:text-stone-400">
-                {t('start.slidesCount', { count: currentProject.slides.length })} • {currentProject.formatId} • {currentProject.templateId}
+                {t('start.slidesCount', { count: currentProject.slides.length })} • {FORMAT_REGISTRY[currentProject.formatId as FormatId]?.label || currentProject.formatId} • {currentProject.templateId}
               </p>
             </div>
             <button
@@ -286,7 +288,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         >
           <div className="lg:col-span-7 space-y-5">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
-              PostForge Atelier
+              SlideThread
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-stone-900 dark:text-stone-50 leading-tight">
               {t('start.heroTitle')}
@@ -568,7 +570,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               {t('start.demoTitle')}
             </h2>
             <span className="text-xs text-stone-500 dark:text-stone-400">
-              Spec §11 Seed Examples
+              {t('start.seedExamples')}
             </span>
           </div>
 
