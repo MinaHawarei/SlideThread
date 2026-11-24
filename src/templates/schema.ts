@@ -36,6 +36,7 @@ export const TemplateSchema = z.object({
   signature: z.object({ variants: z.array(z.string().min(1)).min(1), defaultVariant: z.string().min(1) }).strict().optional(),
   formats: z.union([z.literal('all'), z.array(z.string().min(1))]),
   customCss: z.string().min(1).optional(),
+  assets: z.record(z.string().min(1), z.string().min(1)).optional(),
 }).strict().superRefine((template, ctx) => {
   if (template.counter && !template.counter.styles.includes(template.counter.defaultStyle)) {
     ctx.addIssue({ code: 'custom', path: ['counter', 'defaultStyle'], message: 'Default counter style must be declared in styles' });
