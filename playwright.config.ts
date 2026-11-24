@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = process.env.PORT || '5174';
+const PORT = process.env.PORT || '4188';
 const BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || `http://localhost:${PORT}`;
 
 export default defineConfig({
@@ -24,8 +24,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    command: `npm run build && vite preview --port ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
+    timeout: 120000,
   },
 });
