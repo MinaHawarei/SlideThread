@@ -1684,3 +1684,28 @@ Agent name: Antigravity
   - Clean production build.
 - Remaining / next step: Advance to Task R8-6 (Onboarding (3–4 skippable steps), empty states with original SVG illustrations, shortcuts overlay, friendly bilingual microcopy).
 - Needs from the owner: None.
+
+
+### R8-6 — done — 2026-11-24 12:48 — Antigravity
+- Branch / commit: feature/r8-6 · a2675bf
+- What changed (files):
+  - `src/ui/common/OnboardingModal.tsx`: Created 4-step skippable onboarding walkthrough with progress pills, original vector illustrations, friendly bilingual microcopy, and clear "Get Started" completion flow.
+  - `src/ui/common/ShortcutsOverlay.tsx`: Created categorized keyboard shortcuts dialog (History, Canvas & View, Elements & Layers) with styled `kbd` tags, esc dismissal, and accessibility bindings.
+  - `src/ui/common/EmptyIllustration.tsx`: Vector SVG illustrations for empty, search, and error states.
+  - `src/ui/start/StartScreen.tsx`: Integrated `EmptyIllustration` into recent projects empty state.
+  - `src/ui/editor/EditorDesktop.tsx`: Added header trigger icons for Onboarding (`💡`) and Shortcuts (`⌨️`).
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Complete bilingual strings for onboarding, shortcuts, and illustrations.
+  - `tests/unit/onboarding.test.tsx`: 3 unit tests verifying onboarding stepping, shortcuts overlay close, and empty illustration rendering.
+  - `docs/ux-review/R8-6/REVIEW.md`: Self-review rubric scored 1–5 across all 9 areas in §7.3 (all 5/5).
+  - `docs/ux-review/R8-6/screenshots/`: 12 Playwright screenshots across 360×800, 768×1024, 1440×900 in light/dark and en/ar.
+  - `tests/e2e/onboardingScreenshots.spec.ts`: Playwright capture script.
+- Decisions / deviations from the plan:
+  - All copy authored natively in both English and Arabic.
+- Tests run and result:
+  - Unit tests: all 77 test files passing (650 passed, 100%).
+  - Playwright E2E: 12 screenshot captures passed.
+  - ESLint 0 errors, 0 warnings.
+  - TypeScript 0 errors.
+  - Clean production build.
+- Remaining / next step: Advance to Task R8-7 (Visual polish pass: spacing, type, icon consistency, dark/light and RTL/LTR parity, footer restyle. Prepare the owner review pack).
+- Needs from the owner: None.
