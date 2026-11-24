@@ -30,6 +30,18 @@ export interface SnapResult {
   guides: Array<{ axis: 'x' | 'y'; at: number }>;
 }
 
+export function mergeTemplateSlotFrames(
+  variant: LayoutVariant | undefined,
+  slots?: Record<string, Omit<LayoutFrame, 'id'>>,
+): LayoutVariant | undefined {
+  if (!variant || !slots) return variant;
+  const elements = variant.elements.map((frame) => slots[frame.id] ? { ...frame, ...slots[frame.id] } : frame);
+  for (const [id, frame] of Object.entries(slots)) {
+    if (!elements.some((item) => item.id === id)) elements.push({ id: id as LayoutFrame['id'], ...frame });
+  }
+  return { ...variant, elements };
+}
+
 export const SLOT_SELECTORS: Record<string, string> = {
   title: '.slide-title-h1, .slide-title-h2',
   body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',

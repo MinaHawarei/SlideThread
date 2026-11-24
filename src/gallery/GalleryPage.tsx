@@ -3,7 +3,7 @@ import type { ThemeMode } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { useT } from '../i18n';
 import { useSettingsStore } from '../store/settingsStore';
-import { useProjectStore } from '../store/projectStore';
+import { createProjectFromTemplate } from '../store/projectStore';
 import { useRecentStore } from '../store/recentStore';
 import { Footer } from '../ui/common/Footer';
 import { LogoMark } from '../ui/brand/LogoMark';
@@ -41,7 +41,6 @@ export interface GalleryPageProps {
 export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   const { t, dir, locale } = useT();
   const brandSettings = useSettingsStore((state) => state.settings);
-  const createProject = useProjectStore((state) => state.createProject);
   const saveProject = useRecentStore((state) => state.saveProject);
 
   const [query, setQuery] = useState('');
@@ -96,8 +95,8 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
     }
   };
 
-  const handleUseTemplate = (tmplId: string) => {
-    const newProj = createProject({
+  const handleUseTemplate = async (tmplId: string) => {
+    const newProj = await createProjectFromTemplate({
       title: 'Untitled Presentation',
       templateId: tmplId,
       primaryColor: effectivePrimaryColor,

@@ -470,6 +470,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               showSafeZones={false}
               isStory={isStory}
               templateId={project.templateId}
+              templateSnapshot={project.templateSnapshot}
               themeMode={project.theme}
               dimensions={dims}
               projectBackground={project.background}

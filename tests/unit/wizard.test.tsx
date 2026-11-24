@@ -1,14 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Wizard } from '../../src/ui/wizard/Wizard';
 import { useProjectStore } from '../../src/store/projectStore';
 import { useRecentStore } from '../../src/store/recentStore';
+import { useSettingsStore } from '../../src/store/settingsStore';
 import { useI18nStore } from '../../src/i18n';
 import type { Project } from '../../src/core/schema';
 
 describe('Wizard component (Task P3-4)', () => {
   beforeEach(() => {
     useI18nStore.getState().setLocale('en');
+    useSettingsStore.getState().resetSettings();
     useRecentStore.getState().clearRecents();
   });
 
@@ -113,7 +115,7 @@ describe('Wizard component (Task P3-4)', () => {
     expect(screen.getByTestId('orientation-portrait')).toHaveClass('bg-cyan-600');
   });
 
-  it('completes wizard for carousel and creates project with 2 initial slides', () => {
+  it('completes wizard for carousel and creates project with 2 initial slides', async () => {
     const handleComplete = vi.fn();
     render(<Wizard initialPlatform="linkedin" initialContentType="carousel" onComplete={handleComplete} />);
 
@@ -128,7 +130,7 @@ describe('Wizard component (Task P3-4)', () => {
     // Click Create Carousel
     fireEvent.click(screen.getByTestId('wizard-create-btn'));
 
-    expect(handleComplete).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(handleComplete).toHaveBeenCalledTimes(1), { timeout: 10000 });
     const created = handleComplete.mock.calls[0]![0] as Project;
     expect(created.contentType).toBe('carousel');
     expect(created.templateId).toBe('clean-minimal');
@@ -139,7 +141,7 @@ describe('Wizard component (Task P3-4)', () => {
     expect(useRecentStore.getState().getProject(created.id)).toBeDefined();
   });
 
-  it('completes wizard for post and creates project with exactly 1 slide (Spec §4.4)', () => {
+  it('completes wizard for post and creates project with exactly 1 slide (Spec §4.4)', async () => {
     const handleComplete = vi.fn();
     render(<Wizard initialPlatform="instagram" initialContentType="post" onComplete={handleComplete} />);
 
@@ -152,14 +154,14 @@ describe('Wizard component (Task P3-4)', () => {
     expect(screen.getByTestId('wizard-create-btn')).toHaveTextContent('Create Post');
     fireEvent.click(screen.getByTestId('wizard-create-btn'));
 
-    expect(handleComplete).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(handleComplete).toHaveBeenCalledTimes(1), { timeout: 10000 });
     const created = handleComplete.mock.calls[0]![0] as Project;
     expect(created.contentType).toBe('post');
     expect(created.slides.length).toBe(1);
     expect(created.slides[0]!.type).toBe('cover');
   });
 
-  it('completes wizard for story and creates project with safe zones active', () => {
+  it('completes wizard for story and creates project with safe zones active', async () => {
     const handleComplete = vi.fn();
     render(<Wizard initialPlatform="instagram" initialContentType="story" onComplete={handleComplete} />);
 
@@ -171,7 +173,7 @@ describe('Wizard component (Task P3-4)', () => {
     expect(screen.getByTestId('wizard-create-btn')).toHaveTextContent('Create Story');
     fireEvent.click(screen.getByTestId('wizard-create-btn'));
 
-    expect(handleComplete).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(handleComplete).toHaveBeenCalledTimes(1), { timeout: 10000 });
     const created = handleComplete.mock.calls[0]![0] as Project;
     expect(created.contentType).toBe('story');
     expect(created.formatId).toBe('r_9_16');

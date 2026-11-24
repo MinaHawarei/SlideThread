@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { StartScreen } from '../../src/ui/start/StartScreen';
 import { useProjectStore } from '../../src/store/projectStore';
 import { useRecentStore } from '../../src/store/recentStore';
+import { useSettingsStore } from '../../src/store/settingsStore';
 import { useI18nStore } from '../../src/i18n';
 import type { Project } from '../../src/core/schema';
 import { CURRENT_SCHEMA_VERSION } from '../../src/core/schema';
@@ -12,6 +13,7 @@ describe('StartScreen component', () => {
   beforeEach(() => {
     // Reset stores
     useI18nStore.getState().setLocale('en');
+    useSettingsStore.getState().resetSettings();
     useRecentStore.getState().clearRecents();
     useProjectStore.getState().createProject({
       title: 'Current Active Project',
@@ -66,34 +68,34 @@ describe('StartScreen component', () => {
     expect(screen.queryByTestId('direct-dimensions-modal')).not.toBeInTheDocument();
   });
 
-  it('creates project with selected format and opens editor when format is picked', () => {
+  it('creates project with selected format and opens editor when format is picked', async () => {
     const handleOpenProject = vi.fn();
     render(<StartScreen onOpenProject={handleOpenProject} />);
 
     fireEvent.click(screen.getByTestId('start-direct-btn'));
     fireEvent.click(screen.getByTestId('direct-format-r_1_1'));
 
-    expect(handleOpenProject).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(handleOpenProject).toHaveBeenCalledTimes(1), { timeout: 10000 });
     const createdProject = handleOpenProject.mock.calls[0]![0] as Project;
     expect(createdProject.formatId).toBe('r_1_1');
     expect(createdProject.orientation).toBe('portrait');
     expect(useProjectStore.getState().project.formatId).toBe('r_1_1');
   });
 
-  it('creates project directly when a quick platform tile is clicked', () => {
+  it('creates project directly when a quick platform tile is clicked', async () => {
     const handleOpenProject = vi.fn();
     render(<StartScreen onOpenProject={handleOpenProject} />);
 
     // Click LinkedIn Carousel (4:5)
     fireEvent.click(screen.getByTestId('quick-platform-linkedin'));
-    expect(handleOpenProject).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(handleOpenProject).toHaveBeenCalledTimes(1), { timeout: 10000 });
     const linkedinProj = handleOpenProject.mock.calls[0]![0] as Project;
     expect(linkedinProj.platform).toBe('linkedin');
     expect(linkedinProj.formatId).toBe('r_4_5');
 
     // Click Story (9:16)
     fireEvent.click(screen.getByTestId('quick-platform-story'));
-    expect(handleOpenProject).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(handleOpenProject).toHaveBeenCalledTimes(2), { timeout: 10000 });
     const storyProj = handleOpenProject.mock.calls[1]![0] as Project;
     expect(storyProj.formatId).toBe('r_9_16');
   });

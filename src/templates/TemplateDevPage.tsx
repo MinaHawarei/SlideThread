@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { SlideRenderer } from '../slides/SlideRenderer';
-import type { AspectClass, Slide, ThemeMode } from '../core/schema';
+import type { AspectClass, ExtraElement, Slide, ThemeMode } from '../core/schema';
 import { plainTextFieldsToRichText } from '../core/schema';
 import { NETWORK_DARK_PALETTE, NETWORK_LIGHT_PALETTE } from '../core/palette';
 import { FONT_REGISTRY } from '../fonts/registry';
@@ -17,6 +17,7 @@ type StarterManifest = {
   colorFlexible: boolean;
   theme: { modes: Record<string, Record<string, string>>; fonts: { display: string; body: string; mono?: string }; typeScale?: TemplateDef['typeScale']; radius?: TemplateDef['radius'] };
   decor?: { background?: Record<string, unknown> };
+  composition?: Record<string, Record<string, { elements?: ExtraElement[] }>>;
 };
 
 const manifests = import.meta.glob<StarterManifest>('./starters/*/template.json', { eager: true, import: 'default' });
@@ -50,10 +51,10 @@ function makeDataTemplate(manifest: StarterManifest): TemplateDef {
       })}
     </svg>;
   };
-  const staticTemplate = getTemplate(data.id);
+  const staticTemplate = (() => { try { return getTemplate(data.id); } catch { return undefined; } })();
   return {
     id: data.id,
-    className: staticTemplate.id === data.id ? staticTemplate.className : 'template-data',
+    className: staticTemplate?.id === data.id ? staticTemplate.className : 'template-data',
     nameKey: data.name.en,
     previewUrl: '',
     fonts: {
@@ -68,7 +69,7 @@ function makeDataTemplate(manifest: StarterManifest): TemplateDef {
   };
 }
 
-function makeSampleSlide(locale: 'en' | 'ar', long: boolean): Slide {
+function makeSampleSlide(locale: 'en' | 'ar', long: boolean, manifest?: StarterManifest, aspect?: AspectClass): Slide {
   const fields = locale === 'ar'
     ? {
         tag: 'دليل التصميم',
@@ -82,7 +83,10 @@ function makeSampleSlide(locale: 'en' | 'ar', long: boolean): Slide {
         sub: long ? 'A responsive, creator-friendly template preview with mixed bidi text: Arabic العربية, React, CSS, and 2026.' : 'A flexible starter for your next carousel.',
         rule: 'IF the idea matters → THEN make it clear',
       };
-  return { id: 'template-dev-sample', type: 'cover', fields: plainTextFieldsToRichText(fields) };
+  return {
+    id: 'template-dev-sample', type: 'cover', fields: plainTextFieldsToRichText(fields),
+    extras: manifest?.composition?.cover?.[aspect ?? 'portrait']?.elements ?? [],
+  };
 }
 
 export const TemplateDevPage: React.FC = () => {
@@ -96,7 +100,7 @@ export const TemplateDevPage: React.FC = () => {
   const manifest = manifestById.get(templateId);
   const dataTemplate = useMemo(() => manifest ? makeDataTemplate(manifest) : undefined, [manifest]);
   const palette = dataTemplate?.paletteByMode?.[mode] ?? (mode === 'dark' ? NETWORK_DARK_PALETTE : NETWORK_LIGHT_PALETTE);
-  const slide = useMemo(() => makeSampleSlide(locale, long), [locale, long]);
+  const slide = useMemo(() => makeSampleSlide(locale, long, manifest, aspectClass), [locale, long, manifest, aspectClass]);
   const size = dimensions[aspectClass];
   const width = 864;
   const height = Math.round(width * size.height / size.width);

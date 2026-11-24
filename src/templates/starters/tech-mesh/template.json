@@ -16,5 +16,5 @@
   "layouts": { "cover": "cover-editorial", "explain": "explain-editorial", "rule": "rule-centered", "compare": "compare-editorial", "code": "code-editorial", "stat": "stat-centered", "quote": "quote-centered", "image": "image-editorial", "cta": "cta-editorial" },
   "decor": { "background": { "id": "mesh", "params": { "nodesPerTile": 9 }, "intensity": 0.7 } },
   "counter": { "styles": ["number", "bar", "dots"], "defaultStyle": "number" },
-  "formats": "all"
+  "formats": ["post", "carousel"]
 }

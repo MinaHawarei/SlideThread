@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useRecentStore } from '../../store/recentStore';
-import { useProjectStore } from '../../store/projectStore';
+import { createProjectFromTemplate, useProjectStore } from '../../store/projectStore';
 import { useAvatarUpload } from '../common/useAvatarUpload';
 import { clearAllUserData } from '../../core/storage';
 import { SocialIcon } from '../../slides/SignatureBar';
@@ -508,7 +508,7 @@ export const BrandInspector: React.FC = () => {
               await clearAllUserData();
               resetSettings();
               useRecentStore.getState().clearRecents();
-              useProjectStore.getState().createProject({
+              await createProjectFromTemplate({
                 title: 'Untitled Project',
                 platform: 'linkedin',
                 contentType: 'carousel',

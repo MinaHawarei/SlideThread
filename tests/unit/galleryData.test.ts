@@ -17,7 +17,7 @@ const templates: GalleryTemplate[] = [
     categories: ['general', 'coptic'],
     tags: ['dots', 'editorial'],
     colorFlexible: true,
-    formats: 'all',
+    formats: ['post', 'carousel'],
     modes: ['light', 'dark'],
     languages: ['en', 'ar'],
     preview: 'starters/theme-dots/preview.webp',
@@ -29,7 +29,7 @@ const templates: GalleryTemplate[] = [
     categories: ['lifestyle'],
     tags: ['portrait'],
     colorFlexible: false,
-    formats: ['r_4_5', 'r_9_16'],
+    formats: ['post'],
     modes: ['light'],
     languages: ['ar'],
     preview: 'starters/portrait-only/preview.webp',
@@ -61,10 +61,10 @@ describe('template gallery data', () => {
     expect(filterGalleryTemplates(templates, {
       categoryId: 'lifestyle',
       language: 'ar',
-      formatId: 'r_9_16',
+      contentType: 'post',
       mode: 'light',
     }).map(({ id }) => id)).toEqual(['portrait-only']);
-    expect(filterGalleryTemplates(templates, { formatId: 'r_1_1' }).map(({ id }) => id)).toEqual(['theme-dots']);
+    expect(filterGalleryTemplates(templates, { contentType: 'carousel' }).map(({ id }) => id)).toEqual(['theme-dots']);
     expect(filterGalleryTemplates(templates, { categoryId: 'missing' })).toEqual([]);
   });
 

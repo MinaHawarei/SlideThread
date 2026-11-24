@@ -1,5 +1,6 @@
 import type { Palette } from '../core/palette';
 import type { TemplateId, ThemeMode } from '../core/schema';
+import type { TemplateProjectSnapshotInput } from '../core/schema';
 
 export interface TemplateBackgroundProps {
   index: number;
@@ -20,5 +21,6 @@ export interface TemplateDef {
   counter?: { styles: Array<'number' | 'bar' | 'dots'>; defaultStyle: 'number' | 'bar' | 'dots' };
   paletteByMode?: Record<ThemeMode, Palette>;
   paletteOverridesByMode?: Partial<Record<ThemeMode, Partial<Palette>>>;
+  composition?: TemplateProjectSnapshotInput['composition'];
   Background: React.FC<TemplateBackgroundProps>;
 }

@@ -31,7 +31,10 @@
         "statement"
       ],
       "colorFlexible": true,
-      "formats": "all",
+      "formats": [
+        "post",
+        "carousel"
+      ],
       "modes": [
         "dark",
         "light"
@@ -62,7 +65,10 @@
         "whitespace"
       ],
       "colorFlexible": true,
-      "formats": "all",
+      "formats": [
+        "post",
+        "carousel"
+      ],
       "modes": [
         "dark",
         "light"
@@ -92,7 +98,10 @@
         "warm"
       ],
       "colorFlexible": false,
-      "formats": "all",
+      "formats": [
+        "post",
+        "carousel"
+      ],
       "modes": [
         "dark",
         "light"
@@ -123,7 +132,10 @@
         "friendly"
       ],
       "colorFlexible": true,
-      "formats": "all",
+      "formats": [
+        "post",
+        "carousel"
+      ],
       "modes": [
         "dark",
         "light"
@@ -153,7 +165,10 @@
         "original"
       ],
       "colorFlexible": true,
-      "formats": "all",
+      "formats": [
+        "post",
+        "carousel"
+      ],
       "modes": [
         "dark",
         "light"

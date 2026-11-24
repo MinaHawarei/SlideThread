@@ -16,6 +16,7 @@ import type {
   CounterConfig,
   SignatureConfig,
   BrandSettings,
+  TemplateProjectSnapshot,
 } from '../core/schema';
 import {
   CURRENT_SCHEMA_VERSION,
@@ -31,6 +32,8 @@ import { useSettingsStore } from './settingsStore';
 import { migrate } from '../core/migrate';
 import { recordHistoryChange, registerHistoryChannel } from './history';
 import { getTemplate } from '../templates';
+import { aspectClass as calcAspectClass, getDimensions } from '../core/formats';
+import { loadTemplateProjectSnapshot } from '../templates/projectSnapshot';
 
 export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide {
   const id = `slide_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -135,6 +138,18 @@ export function createDefaultProject(init?: Partial<Project>): Project {
   const coverSlide = createDefaultSlide('cover', 0);
   const explainSlide = createDefaultSlide('explain', 1);
   const ctaSlide = createDefaultSlide('cta', 2);
+  const baseSlides = init?.slides || [coverSlide, explainSlide, ctaSlide];
+  const templateSnapshot = init?.templateSnapshot;
+  const selectedFormatId = init?.formatId || 'r_4_5';
+  const selectedOrientation = init?.orientation || 'portrait';
+  const selectedDimensions = getDimensions(selectedFormatId, selectedOrientation);
+  const selectedAspect = calcAspectClass(selectedDimensions.width, selectedDimensions.height);
+  const slides = templateSnapshot ? baseSlides.map((slide) => {
+    const defaults = templateSnapshot.composition[slide.type]?.[selectedAspect]?.elements ?? [];
+    if (!defaults.length) return slide;
+    const existingIds = new Set((slide.extras ?? []).map((element) => element.id));
+    return { ...slide, extras: [...(slide.extras ?? []), ...defaults.filter((element) => !existingIds.has(element.id)).map((element) => structuredClone(element))] };
+  }) : baseSlides;
 
   return {
     schemaVersion: CURRENT_SCHEMA_VERSION,
@@ -142,13 +157,14 @@ export function createDefaultProject(init?: Partial<Project>): Project {
     title: init?.title || 'Untitled Carousel',
     platform: init?.platform || 'linkedin',
     contentType: init?.contentType || 'carousel',
-    formatId: init?.formatId || 'r_4_5',
-    orientation: init?.orientation || 'portrait',
+    formatId: selectedFormatId,
+    orientation: selectedOrientation,
     templateId: (init?.templateId as TemplateId) || 'network',
     primaryColor: init?.primaryColor || '#35D0E6',
     theme: init?.theme || 'dark',
     textDir: init?.textDir || 'auto',
-    slides: init?.slides || [coverSlide, explainSlide, ctaSlide],
+    slides,
+    ...(templateSnapshot ? { templateSnapshot } : {}),
     counter: init?.counter || {
       ...DEFAULT_COUNTER_CONFIG,
       show: (init?.contentType || 'carousel') === 'carousel',
@@ -338,8 +354,14 @@ export const useProjectStore = create<ProjectState>()(
         },
 
         addSlide: (type = 'explain', atIndex) => {
-          const slides = [...get().project.slides];
+          const project = get().project;
+          const slides = [...project.slides];
           const newSlide = createDefaultSlide(type, slides.length);
+          if (project.templateSnapshot) {
+            const dimensions = getDimensions(project.formatId, project.orientation);
+            const aspect = calcAspectClass(dimensions.width, dimensions.height);
+            newSlide.extras = (project.templateSnapshot.composition[type]?.[aspect]?.elements ?? []).map((element) => structuredClone(element));
+          }
           const insertAt = atIndex !== undefined ? atIndex : slides.length;
           slides.splice(insertAt, 0, newSlide);
 
@@ -620,9 +642,14 @@ export const useProjectStore = create<ProjectState>()(
                 if (plainFields.body) preservedFields.body = plainFields.body;
                 if (plainFields.note) preservedFields.note = plainFields.note;
 
+                const dimensions = getDimensions(state.project.formatId, state.project.orientation);
+                const aspect = calcAspectClass(dimensions.width, dimensions.height);
+                const defaults = state.project.templateSnapshot?.composition[nextType]?.[aspect]?.elements ?? [];
+                const existingIds = new Set((s.extras ?? []).map((element) => element.id));
                 return {
                   ...s,
                   type: nextType,
+                  extras: [...(s.extras ?? []), ...defaults.filter((element) => !existingIds.has(element.id)).map((element) => structuredClone(element))],
                   fields: {
                     ...createDefaultSlide(nextType).fields,
                     ...plainTextFieldsToRichText(preservedFields),
@@ -767,6 +794,14 @@ export const useProjectStore = create<ProjectState>()(
     }
   )
 );
+
+/** Load a package and freeze its resolved styles, composition, and assets into a new project. */
+export async function createProjectFromTemplate(init: Partial<Project>): Promise<Project> {
+  const requestedId = String(init.templateId ?? 'tech-mesh');
+  const packageId = ({ network: 'tech-mesh', clean: 'clean-minimal', bold: 'bold-marketing' } as Record<string, string>)[requestedId] ?? requestedId;
+  const snapshot: TemplateProjectSnapshot = init.templateSnapshot ?? await loadTemplateProjectSnapshot(packageId, init.primaryColor ?? '#35D0E6');
+  return useProjectStore.getState().createProject({ ...init, templateSnapshot: snapshot });
+}
 
 registerHistoryChannel('project', useProjectStore.getState().project, (project) => {
   const restoredProject = project as Project;

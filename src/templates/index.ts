@@ -30,7 +30,8 @@ const LEGACY_TEMPLATE_IDS: Record<string, StarterTemplateId> = {
 
 export function getTemplate(id: TemplateId = 'network'): TemplateDef {
   const resolvedId = LEGACY_TEMPLATE_IDS[id] ?? id;
-  return Object.hasOwn(TEMPLATES, resolvedId) ? TEMPLATES[resolvedId as StarterTemplateId] : TEMPLATES['tech-mesh'];
+  if (!Object.hasOwn(TEMPLATES, resolvedId)) throw new Error(`Unknown legacy template: ${id}`);
+  return TEMPLATES[resolvedId as StarterTemplateId];
 }
 
 export function getAllTemplates(): TemplateDef[] {

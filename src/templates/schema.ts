@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { FONT_REGISTRY } from '../fonts/registry';
 import { generatePalette, type Palette } from '../core/palette';
-import { SlideTypeSchema, ThemeModeSchema } from '../core/schema';
+import { AspectClassSchema, ExtraElementSchema, SlideTypeSchema, ThemeModeSchema } from '../core/schema';
 import { CATEGORY_REGISTRY } from './categories';
 
 const BilingualNameSchema = z.object({ en: z.string().trim().min(1), ar: z.string().trim().min(1) }).strict();
@@ -12,10 +12,20 @@ const PaletteSchema = z.object({
   line: z.string().min(1).optional(), card: z.string().min(1).optional(), ok: z.string().min(1).optional(),
   bad: z.string().min(1).optional(), onAcc: z.string().min(1).optional(),
 }).strict();
+const SlotFrameSchema = z.object({
+  blockStart: z.number().min(0).max(1), inlineStart: z.number().min(0).max(1),
+  inlineSize: z.number().positive().max(1), blockSize: z.number().positive().max(1),
+  align: z.enum(['start', 'center', 'end']),
+}).strict();
+const CompositionAspectSchema = z.object({
+  slots: z.partialRecord(z.enum(['title', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source']), SlotFrameSchema).optional(),
+  elements: z.array(ExtraElementSchema).optional(),
+}).strict();
 
 export const TemplateSchema = z.object({
   schema: z.literal(1),
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  testFixture: z.boolean().optional(),
   name: BilingualNameSchema,
   description: z.object({ en: z.string().optional(), ar: z.string().optional() }).strict().optional(),
   author: z.object({ name: z.string().trim().min(1), url: z.string().url().optional() }).strict(),
@@ -31,10 +41,13 @@ export const TemplateSchema = z.object({
     radius: z.object({ card: z.number().min(0).max(9999).optional(), chip: z.number().min(0).max(9999).optional() }).strict().optional(),
   }).strict(),
   layouts: z.partialRecord(SlideTypeSchema, z.string().trim().min(1)).default({}),
+  composition: z.partialRecord(SlideTypeSchema, z.partialRecord(AspectClassSchema, CompositionAspectSchema)).optional(),
   decor: z.object({ background: z.record(z.string(), z.unknown()).optional(), overlay: z.array(z.record(z.string(), z.unknown())).optional() }).strict().optional(),
   counter: z.object({ styles: z.array(z.enum(['number', 'bar', 'dots'])).min(1), defaultStyle: z.enum(['number', 'bar', 'dots']) }).strict().optional(),
   signature: z.object({ variants: z.array(z.string().min(1)).min(1), defaultVariant: z.string().min(1) }).strict().optional(),
-  formats: z.union([z.literal('all'), z.array(z.string().min(1))]),
+  // Schema 1 packages historically used "all"; normalize it to the supported
+  // non-story content types while keeping the resolved runtime contract strict.
+  formats: z.union([z.literal('all').transform(() => ['post', 'carousel']), z.array(z.enum(['post', 'carousel'])).min(1)]).default(['post', 'carousel']),
   customCss: z.string().min(1).optional(),
   assets: z.record(z.string().min(1), z.string().min(1)).optional(),
 }).strict().superRefine((template, ctx) => {
@@ -45,6 +58,17 @@ export const TemplateSchema = z.object({
     ctx.addIssue({ code: 'custom', path: ['signature', 'defaultVariant'], message: 'Default signature variant must be declared in variants' });
   }
   if (template.extends === template.id) ctx.addIssue({ code: 'custom', path: ['extends'], message: 'A template cannot extend itself' });
+  for (const [slideType, variants] of Object.entries(template.composition ?? {})) {
+    for (const [aspect, composition] of Object.entries(variants ?? {})) {
+      const ids = new Set<string>();
+      for (const [id, element] of (composition.elements ?? []).entries()) {
+        if (!['text', 'image', 'shape'].includes(element.kind)) ctx.addIssue({ code: 'custom', path: ['composition', slideType, aspect, 'elements', id, 'kind'], message: 'Composition elements must use the native text, image, or shape editor kind' });
+        if (!/^[a-z0-9][a-z0-9_-]*$/.test(element.id)) ctx.addIssue({ code: 'custom', path: ['composition', slideType, aspect, 'elements', id, 'id'], message: 'Composition element ids must be stable lowercase slugs' });
+        if (ids.has(element.id)) ctx.addIssue({ code: 'custom', path: ['composition', slideType, aspect, 'elements', id, 'id'], message: `Duplicate composition element id: ${element.id}` });
+        ids.add(element.id);
+      }
+    }
+  }
   template.categories.forEach((categoryId, index) => {
     if (!CATEGORY_REGISTRY.some((category) => category.id === categoryId)) {
       ctx.addIssue({ code: 'custom', path: ['categories', index], message: `Unknown category: ${categoryId}` });
@@ -63,7 +87,7 @@ export interface CategoryDefinition {
   status: 'active' | 'planned';
 }
 
-export function resolveTemplate(id: string, templates: readonly TemplateData[]): ValidatedTemplateData {
+export function resolveTemplate(id: string, templates: readonly unknown[]): ValidatedTemplateData {
   const byId = new Map<string, ValidatedTemplateData>();
   for (const source of templates) {
     const parsed = TemplateSchema.parse(source);
@@ -86,6 +110,21 @@ export function resolveTemplate(id: string, templates: readonly TemplateData[]):
       return template;
     }
     const parent = visit(template.extends);
+    const composition = { ...parent.composition };
+    for (const [slideType, aspectDefinitions] of Object.entries(template.composition ?? {})) {
+      const parentAspects = composition[slideType as keyof typeof composition] ?? {};
+      const mergedAspects = { ...parentAspects };
+      for (const [aspect, definition] of Object.entries(aspectDefinitions ?? {})) {
+        const prior = mergedAspects[aspect as keyof typeof mergedAspects];
+        mergedAspects[aspect as keyof typeof mergedAspects] = {
+          ...prior,
+          ...definition,
+          slots: { ...prior?.slots, ...definition?.slots },
+          elements: definition?.elements ?? prior?.elements,
+        };
+      }
+      composition[slideType as keyof typeof composition] = mergedAspects;
+    }
     const merged = TemplateSchema.parse({
       ...parent,
       ...template,
@@ -100,6 +139,7 @@ export function resolveTemplate(id: string, templates: readonly TemplateData[]):
         radius: { ...parent.theme.radius, ...template.theme.radius },
       },
       layouts: { ...parent.layouts, ...template.layouts },
+      composition,
       decor: { ...parent.decor, ...template.decor },
       counter: template.counter ?? parent.counter,
       signature: template.signature ?? parent.signature,

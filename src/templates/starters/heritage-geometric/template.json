@@ -20,5 +20,5 @@
   "layouts": { "cover": "cover-centered", "explain": "explain-editorial", "rule": "rule-centered", "compare": "compare-editorial", "code": "code-centered", "stat": "stat-centered", "quote": "quote-centered", "image": "image-editorial", "cta": "cta-centered" },
   "decor": { "background": { "id": "geometric", "params": { "rows": 4, "columns": 5 }, "intensity": 0.42 } },
   "counter": { "styles": ["number", "dots"], "defaultStyle": "number" },
-  "formats": "all"
+  "formats": ["post", "carousel"]
 }

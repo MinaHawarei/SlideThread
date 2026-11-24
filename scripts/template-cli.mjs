@@ -288,6 +288,7 @@ async function writeIndex(check) {
   const templates = [];
   for (const folder of folders) {
     const manifest = await loadJson(path.join(folder, 'template.json'));
+    if (manifest.testFixture) continue;
     templates.push({
       id: manifest.id,
       name: manifest.name,
@@ -335,7 +336,7 @@ async function scaffold(id) {
     colorFlexible: true,
     theme: { modes: {}, fonts: { display: 'ibm-plex-sans', body: 'ibm-plex-sans' } },
     layouts: {},
-    formats: 'all',
+    formats: ['post', 'carousel'],
   };
   await mkdir(folder, { recursive: true });
   await writeFile(path.join(folder, 'template.json'), `${JSON.stringify(source, null, 2)}\n`);

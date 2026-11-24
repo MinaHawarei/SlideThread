@@ -26,8 +26,10 @@ import {
   type SlideBackground,
   type CounterConfig,
   type SignatureConfig,
+  type TemplateProjectSnapshotInput,
 } from '../core/schema';
 import { SLOT_SELECTORS } from '../core/elementModel';
+import { templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
 import './slides.css';
 
 const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }> = {
@@ -41,6 +43,7 @@ export interface SlideRendererProps extends Omit<SlideProps, 'slide'> {
   slide: Slide;
   style?: React.CSSProperties;
   templateOverride?: TemplateDef;
+  templateSnapshot?: TemplateProjectSnapshotInput;
   counterConfig?: CounterConfig;
   signatureConfig?: SignatureConfig;
   projectBackground?: SlideBackground;
@@ -66,9 +69,10 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     className = '',
     style = {},
     templateOverride,
+    templateSnapshot,
   } = props;
 
-  const template = templateOverride ?? getTemplate(templateId);
+  const template = templateOverride ?? (templateSnapshot ? templateDefinitionFromSnapshot(templateSnapshot) : getTemplate(templateId));
   const templatePalette = {
     ...(template.paletteByMode?.[themeMode] ?? palette),
     ...template.paletteOverridesByMode?.[themeMode],
@@ -258,6 +262,31 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
       }
     };
   }, [overrides, aspectClass, slideDims.width, slideDims.height]);
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    const frames = template.composition?.[slide.type]?.[aspectClass]?.slots;
+    if (!canvas || !frames) return;
+    const restored: Array<{ element: HTMLElement; values: Record<string, string> }> = [];
+    for (const [slotId, frame] of Object.entries(frames)) {
+      const selector = SLOT_SELECTORS[slotId];
+      if (!selector) continue;
+      for (const element of canvas.querySelectorAll<HTMLElement>(selector)) {
+        const names = ['position', 'insetInlineStart', 'insetBlockStart', 'width', 'height', 'textAlign'];
+        const values = Object.fromEntries(names.map((name) => [name, element.style[name as keyof CSSStyleDeclaration] as string]));
+        restored.push({ element, values });
+        element.style.position = 'absolute';
+        element.style.insetInlineStart = `${frame.inlineStart * slideDims.width}px`;
+        element.style.insetBlockStart = `${frame.blockStart * slideDims.height}px`;
+        element.style.width = `${frame.inlineSize * slideDims.width}px`;
+        element.style.height = `${frame.blockSize * slideDims.height}px`;
+        element.style.textAlign = frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center';
+      }
+    }
+    return () => restored.forEach(({ element, values }) => {
+      for (const [name, value] of Object.entries(values)) (element.style as unknown as Record<string, string>)[name] = value;
+    });
+  }, [template, slide.type, aspectClass, slideDims.width, slideDims.height, textDir]);
 
   return (
     <div

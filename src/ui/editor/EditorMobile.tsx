@@ -330,6 +330,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 showSafeZones={showSafeZones}
                 isStory={isStory}
                 templateId={project.templateId}
+                templateSnapshot={project.templateSnapshot}
                 themeMode={project.theme}
                 dimensions={dims}
                 projectBackground={project.background}

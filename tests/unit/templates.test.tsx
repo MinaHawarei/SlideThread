@@ -19,12 +19,12 @@ describe('Template System Registry & Network Template (Spec §7, §7.1)', () => 
     expect(all.map((t) => t.id)).toEqual(['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric']);
   });
 
-  it('getTemplate returns requested template or falls back to network', () => {
+  it('getTemplate returns registered templates and rejects unknown IDs clearly', () => {
     expect(getTemplate('network').id).toBe('tech-mesh');
     expect(getTemplate('clean').id).toBe('clean-minimal');
     expect(getTemplate('bold').id).toBe('bold-marketing');
     expect(getTemplate('soft-gradient').id).toBe('soft-gradient');
-    expect(getTemplate('unknown').id).toBe('tech-mesh');
+    expect(() => getTemplate('unknown')).toThrow('Unknown legacy template: unknown');
   });
 
   it('Network template has required typography and token configurations', () => {

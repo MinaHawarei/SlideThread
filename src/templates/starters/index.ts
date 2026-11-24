@@ -1,17 +1,13 @@
 import { createTemplateRuntime } from '../runtime';
 
-export const STARTER_TEMPLATE_IDS = ['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric'] as const;
-
-export const STARTER_TEMPLATE_LOADERS = {
-  'tech-mesh': () => import('./tech-mesh/template.json'),
-  'clean-minimal': () => import('./clean-minimal/template.json'),
-  'bold-marketing': () => import('./bold-marketing/template.json'),
-  'soft-gradient': () => import('./soft-gradient/template.json'),
-  'heritage-geometric': () => import('./heritage-geometric/template.json'),
-} as const;
+const manifestModules = import.meta.glob<unknown>('./*/template.json');
+export const STARTER_TEMPLATE_IDS = Object.keys(manifestModules).map((path) => path.split('/')[1]!).sort();
+export const STARTER_TEMPLATE_LOADERS = Object.fromEntries(
+  Object.entries(manifestModules).map(([path, load]) => [path.split('/')[1]!, load]),
+);
 
 export const starterTemplateRuntime = createTemplateRuntime(STARTER_TEMPLATE_LOADERS);
 
-export function loadStarterTemplate(id: (typeof STARTER_TEMPLATE_IDS)[number]) {
+export function loadStarterTemplate(id: string) {
   return starterTemplateRuntime.load(id);
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { GalleryPage } from '../../src/gallery/GalleryPage';
 import { useI18nStore } from '../../src/i18n';
 import { useSettingsStore } from '../../src/store/settingsStore';
@@ -105,7 +105,7 @@ describe('GalleryPage component (Task R8-2)', () => {
     expect(screen.getByTestId('gallery-template-choices')).toBeInTheDocument();
   });
 
-  it('R1: clicking template card directly uses it, and only Preview button opens preview', () => {
+  it('R1: clicking template card directly uses it, and only Preview button opens preview', async () => {
     const onNavigate = vi.fn();
     render(<GalleryPage onNavigate={onNavigate} />);
 
@@ -114,7 +114,7 @@ describe('GalleryPage component (Task R8-2)', () => {
       (c) => c.getAttribute('data-template-id') === 'tech-mesh'
     )!;
     fireEvent.click(techMeshCard);
-    expect(onNavigate).toHaveBeenCalledWith('/editor');
+    await waitFor(() => expect(onNavigate).toHaveBeenCalledWith('/editor'));
 
     onNavigate.mockClear();
 

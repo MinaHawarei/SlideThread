@@ -4,38 +4,562 @@
   "title": "SlideThread Template",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "id", "name", "author", "license", "categories", "tags", "colorFlexible", "theme", "layouts", "formats"],
+  "required": [
+    "schema",
+    "id",
+    "name",
+    "author",
+    "license",
+    "categories",
+    "tags",
+    "colorFlexible",
+    "theme",
+    "layouts",
+    "formats"
+  ],
   "properties": {
-    "schema": { "const": 1 },
-    "id": { "$ref": "#/$defs/id" },
-    "name": { "$ref": "#/$defs/bilingualName" },
-    "description": { "$ref": "#/$defs/bilingualOptional" },
-    "author": { "type": "object", "additionalProperties": false, "required": ["name"], "properties": { "name": { "type": "string", "minLength": 1 }, "url": { "type": "string", "format": "uri" } } },
-    "license": { "type": "string", "minLength": 1 },
-    "categories": { "type": "array", "minItems": 1, "items": { "enum": ["coding", "marketing", "education", "lifestyle", "personal-brand", "general", "arabic-heritage", "coptic", "islamic"] }, "uniqueItems": true },
-    "tags": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
-    "extends": { "$ref": "#/$defs/id" },
-    "colorFlexible": { "type": "boolean" },
-    "theme": { "type": "object", "additionalProperties": false, "required": ["fonts"], "properties": {
-      "modes": { "type": "object", "additionalProperties": false, "properties": { "dark": { "$ref": "#/$defs/palette" }, "light": { "$ref": "#/$defs/palette" } } },
-      "fonts": { "type": "object", "additionalProperties": false, "required": ["display", "body"], "properties": { "display": { "enum": ["ibm-plex-sans", "ibm-plex-sans-arabic", "jetbrains-mono", "noto-sans-coptic"] }, "body": { "enum": ["ibm-plex-sans", "ibm-plex-sans-arabic", "jetbrains-mono", "noto-sans-coptic"] }, "mono": { "enum": ["ibm-plex-sans", "ibm-plex-sans-arabic", "jetbrains-mono", "noto-sans-coptic"] } } },
-      "typeScale": { "$ref": "#/$defs/typeScale" },
-      "radius": { "$ref": "#/$defs/radius" }
-    } },
-    "layouts": { "type": "object", "propertyNames": { "enum": ["cover", "explain", "rule", "code", "compare", "stat", "quote", "image", "cta"] }, "additionalProperties": { "type": "string", "minLength": 1 } },
-    "decor": { "type": "object", "additionalProperties": false, "properties": { "background": { "type": "object" }, "overlay": { "type": "array", "items": { "type": "object" } } } },
-    "counter": { "type": "object", "additionalProperties": false, "required": ["styles", "defaultStyle"], "properties": { "styles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["number", "bar", "dots"] } }, "defaultStyle": { "enum": ["number", "bar", "dots"] } } },
-    "signature": { "type": "object", "additionalProperties": false, "required": ["variants", "defaultVariant"], "properties": { "variants": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }, "defaultVariant": { "type": "string", "minLength": 1 } } },
-    "formats": { "oneOf": [{ "const": "all" }, { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }] },
-    "customCss": { "type": "string", "minLength": 1 },
-    "assets": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } }
+    "schema": {
+      "const": 1
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "name": {
+      "$ref": "#/$defs/bilingualName"
+    },
+    "description": {
+      "$ref": "#/$defs/bilingualOptional"
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "coding",
+          "marketing",
+          "education",
+          "lifestyle",
+          "personal-brand",
+          "general",
+          "arabic-heritage",
+          "coptic",
+          "islamic"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "extends": {
+      "$ref": "#/$defs/id"
+    },
+    "colorFlexible": {
+      "type": "boolean"
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fonts"
+      ],
+      "properties": {
+        "modes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "dark": {
+              "$ref": "#/$defs/palette"
+            },
+            "light": {
+              "$ref": "#/$defs/palette"
+            }
+          }
+        },
+        "fonts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "display",
+            "body"
+          ],
+          "properties": {
+            "display": {
+              "enum": [
+                "ibm-plex-sans",
+                "ibm-plex-sans-arabic",
+                "jetbrains-mono",
+                "noto-sans-coptic"
+              ]
+            },
+            "body": {
+              "enum": [
+                "ibm-plex-sans",
+                "ibm-plex-sans-arabic",
+                "jetbrains-mono",
+                "noto-sans-coptic"
+              ]
+            },
+            "mono": {
+              "enum": [
+                "ibm-plex-sans",
+                "ibm-plex-sans-arabic",
+                "jetbrains-mono",
+                "noto-sans-coptic"
+              ]
+            }
+          }
+        },
+        "typeScale": {
+          "$ref": "#/$defs/typeScale"
+        },
+        "radius": {
+          "$ref": "#/$defs/radius"
+        }
+      }
+    },
+    "layouts": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "cover",
+          "explain",
+          "rule",
+          "code",
+          "compare",
+          "stat",
+          "quote",
+          "image",
+          "cta"
+        ]
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "decor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "type": "object"
+        },
+        "overlay": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "counter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "styles",
+        "defaultStyle"
+      ],
+      "properties": {
+        "styles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "number",
+              "bar",
+              "dots"
+            ]
+          }
+        },
+        "defaultStyle": {
+          "enum": [
+            "number",
+            "bar",
+            "dots"
+          ]
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variants",
+        "defaultVariant"
+      ],
+      "properties": {
+        "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "defaultVariant": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "formats": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "post",
+          "carousel"
+        ]
+      }
+    },
+    "customCss": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "testFixture": {
+      "type": "boolean"
+    },
+    "composition": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "cover",
+          "explain",
+          "rule",
+          "code",
+          "compare",
+          "stat",
+          "quote",
+          "image",
+          "cta"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": {
+          "enum": [
+            "landscape",
+            "square",
+            "portrait",
+            "tall"
+          ]
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/compositionAspect"
+        }
+      }
+    }
   },
   "$defs": {
-    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
-    "bilingualName": { "type": "object", "additionalProperties": false, "required": ["en", "ar"], "properties": { "en": { "type": "string", "minLength": 1 }, "ar": { "type": "string", "minLength": 1 } } },
-    "bilingualOptional": { "type": "object", "additionalProperties": false, "properties": { "en": { "type": "string" }, "ar": { "type": "string" } } },
-    "palette": { "type": "object", "additionalProperties": false, "properties": { "bg": { "type": "string" }, "bg2": { "type": "string" }, "ink": { "type": "string" }, "mute": { "type": "string" }, "acc": { "type": "string" }, "acc2": { "type": "string" }, "line": { "type": "string" }, "card": { "type": "string" }, "ok": { "type": "string" }, "bad": { "type": "string" }, "onAcc": { "type": "string" } } },
-    "typeScale": { "type": "object", "additionalProperties": false, "properties": { "h1": { "type": "number", "exclusiveMinimum": 0 }, "h2": { "type": "number", "exclusiveMinimum": 0 }, "body": { "type": "number", "exclusiveMinimum": 0 }, "small": { "type": "number", "exclusiveMinimum": 0 }, "mono": { "type": "number", "exclusiveMinimum": 0 } } },
-    "radius": { "type": "object", "additionalProperties": false, "properties": { "card": { "type": "number", "minimum": 0, "maximum": 9999 }, "chip": { "type": "number", "minimum": 0, "maximum": 9999 } } }
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "bilingualName": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "en",
+        "ar"
+      ],
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ar": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "bilingualOptional": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "ar": {
+          "type": "string"
+        }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bg": {
+          "type": "string"
+        },
+        "bg2": {
+          "type": "string"
+        },
+        "ink": {
+          "type": "string"
+        },
+        "mute": {
+          "type": "string"
+        },
+        "acc": {
+          "type": "string"
+        },
+        "acc2": {
+          "type": "string"
+        },
+        "line": {
+          "type": "string"
+        },
+        "card": {
+          "type": "string"
+        },
+        "ok": {
+          "type": "string"
+        },
+        "bad": {
+          "type": "string"
+        },
+        "onAcc": {
+          "type": "string"
+        }
+      }
+    },
+    "typeScale": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "h1": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "h2": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "body": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "small": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "mono": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "radius": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "card": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9999
+        },
+        "chip": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9999
+        }
+      }
+    },
+    "compositionAspect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "slots": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "title",
+              "body",
+              "media",
+              "counter",
+              "signature",
+              "code",
+              "value",
+              "left",
+              "right",
+              "source"
+            ]
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/frame"
+          }
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          }
+        }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blockStart",
+        "inlineStart",
+        "inlineSize",
+        "blockSize",
+        "align"
+      ],
+      "properties": {
+        "blockStart": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "inlineStart": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "inlineSize": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "blockSize": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "end"
+          ]
+        }
+      }
+    },
+    "element": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "x",
+        "y",
+        "w",
+        "h",
+        "rotation",
+        "z",
+        "locked"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_-]*$"
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "image",
+            "shape"
+          ]
+        },
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "w": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "h": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "rotation": {
+          "type": "number"
+        },
+        "z": {
+          "type": "integer"
+        },
+        "locked": {
+          "type": "boolean"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "text": {
+          "type": "object"
+        },
+        "media": {
+          "type": "object"
+        },
+        "assetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shape": {
+          "enum": [
+            "rectangle",
+            "ellipse",
+            "line",
+            "arrow"
+          ]
+        },
+        "fill": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
   }
 }

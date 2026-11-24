@@ -1,0 +1,405 @@
+{
+  "schema": 1,
+  "id": "composition-test",
+  "testFixture": true,
+  "name": {
+    "en": "Composition Test Fixture",
+    "ar": "قالب اختبار التكوين"
+  },
+  "description": {
+    "en": "Test fixture for editable package compositions.",
+    "ar": "قالب اختبار لعناصر قابلة للتحرير."
+  },
+  "author": {
+    "name": "SlideThread"
+  },
+  "license": "MIT",
+  "categories": [
+    "general"
+  ],
+  "tags": [
+    "test-fixture",
+    "composition"
+  ],
+  "colorFlexible": true,
+  "theme": {
+    "fonts": {
+      "display": "ibm-plex-sans",
+      "body": "ibm-plex-sans-arabic",
+      "mono": "jetbrains-mono"
+    },
+    "typeScale": {
+      "h1": 112,
+      "h2": 76,
+      "body": 44,
+      "small": 30,
+      "mono": 34
+    },
+    "radius": {
+      "card": 24,
+      "chip": 9999
+    }
+  },
+  "layouts": {
+    "cover": "cover-editorial",
+    "explain": "explain-centered",
+    "rule": "rule-centered",
+    "compare": "compare-editorial",
+    "code": "code-editorial",
+    "stat": "stat-centered",
+    "quote": "quote-centered",
+    "image": "image-editorial",
+    "cta": "cta-editorial"
+  },
+  "composition": {
+    "cover": {
+      "landscape": {
+        "slots": {
+          "title": {
+            "blockStart": 0.28,
+            "inlineStart": 0.08,
+            "inlineSize": 0.36,
+            "blockSize": 0.22,
+            "align": "start"
+          },
+          "body": {
+            "blockStart": 0.56,
+            "inlineStart": 0.08,
+            "inlineSize": 0.34,
+            "blockSize": 0.14,
+            "align": "start"
+          }
+        },
+        "elements": [
+          {
+            "id": "hero",
+            "kind": "image",
+            "x": 0.4,
+            "y": 0.15,
+            "w": 0.42,
+            "h": 0.72,
+            "rotation": 0,
+            "z": -2,
+            "locked": false,
+            "assetId": "assets/cover.svg",
+            "media": {
+              "assetId": "assets/cover.svg",
+              "fit": "cover",
+              "placement": "top"
+            }
+          },
+          {
+            "id": "label",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.08,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "STUDIO / 01"
+                    }
+                  ]
+                }
+              ]
+            },
+            "fill": "#F43F5E"
+          },
+          {
+            "id": "orb",
+            "kind": "shape",
+            "x": 0.83,
+            "y": 0.08,
+            "w": 0.11,
+            "h": 0.11,
+            "rotation": 15,
+            "z": 2,
+            "locked": false,
+            "shape": "ellipse",
+            "fill": "#7C3AED",
+            "opacity": 0.82
+          }
+        ]
+      },
+      "square": {
+        "slots": {
+          "title": {
+            "blockStart": 0.08,
+            "inlineStart": 0.08,
+            "inlineSize": 0.84,
+            "blockSize": 0.22,
+            "align": "start"
+          },
+          "body": {
+            "blockStart": 0.31,
+            "inlineStart": 0.08,
+            "inlineSize": 0.82,
+            "blockSize": 0.14,
+            "align": "start"
+          }
+        },
+        "elements": [
+          {
+            "id": "hero",
+            "kind": "image",
+            "x": 0.36,
+            "y": 0.2,
+            "w": 0.48,
+            "h": 0.59,
+            "rotation": 0,
+            "z": -2,
+            "locked": false,
+            "assetId": "assets/cover.svg",
+            "media": {
+              "assetId": "assets/cover.svg",
+              "fit": "cover",
+              "placement": "top"
+            }
+          },
+          {
+            "id": "label",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.76,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "STUDIO / 01"
+                    }
+                  ]
+                }
+              ]
+            },
+            "fill": "#F43F5E"
+          },
+          {
+            "id": "orb",
+            "kind": "shape",
+            "x": 0.83,
+            "y": 0.08,
+            "w": 0.11,
+            "h": 0.11,
+            "rotation": 15,
+            "z": 2,
+            "locked": false,
+            "shape": "ellipse",
+            "fill": "#7C3AED",
+            "opacity": 0.82
+          }
+        ]
+      },
+      "portrait": {
+        "slots": {
+          "title": {
+            "blockStart": 0.08,
+            "inlineStart": 0.08,
+            "inlineSize": 0.84,
+            "blockSize": 0.22,
+            "align": "start"
+          },
+          "body": {
+            "blockStart": 0.31,
+            "inlineStart": 0.08,
+            "inlineSize": 0.82,
+            "blockSize": 0.14,
+            "align": "start"
+          }
+        },
+        "elements": [
+          {
+            "id": "hero",
+            "kind": "image",
+            "x": 0.36,
+            "y": 0.18,
+            "w": 0.55,
+            "h": 0.58,
+            "rotation": 0,
+            "z": -2,
+            "locked": false,
+            "assetId": "assets/cover.svg",
+            "media": {
+              "assetId": "assets/cover.svg",
+              "fit": "cover",
+              "placement": "top"
+            }
+          },
+          {
+            "id": "label",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.76,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "STUDIO / 01"
+                    }
+                  ]
+                }
+              ]
+            },
+            "fill": "#F43F5E"
+          },
+          {
+            "id": "orb",
+            "kind": "shape",
+            "x": 0.83,
+            "y": 0.08,
+            "w": 0.11,
+            "h": 0.11,
+            "rotation": 15,
+            "z": 2,
+            "locked": false,
+            "shape": "ellipse",
+            "fill": "#7C3AED",
+            "opacity": 0.82
+          }
+        ]
+      },
+      "tall": {
+        "slots": {
+          "title": {
+            "blockStart": 0.08,
+            "inlineStart": 0.08,
+            "inlineSize": 0.84,
+            "blockSize": 0.22,
+            "align": "start"
+          },
+          "body": {
+            "blockStart": 0.31,
+            "inlineStart": 0.08,
+            "inlineSize": 0.82,
+            "blockSize": 0.14,
+            "align": "start"
+          }
+        },
+        "elements": [
+          {
+            "id": "hero",
+            "kind": "image",
+            "x": 0.32,
+            "y": 0.2,
+            "w": 0.66,
+            "h": 0.58,
+            "rotation": 0,
+            "z": -2,
+            "locked": false,
+            "assetId": "assets/cover.svg",
+            "media": {
+              "assetId": "assets/cover.svg",
+              "fit": "cover",
+              "placement": "top"
+            }
+          },
+          {
+            "id": "label",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.76,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "STUDIO / 01"
+                    }
+                  ]
+                }
+              ]
+            },
+            "fill": "#F43F5E"
+          },
+          {
+            "id": "orb",
+            "kind": "shape",
+            "x": 0.83,
+            "y": 0.08,
+            "w": 0.11,
+            "h": 0.11,
+            "rotation": 15,
+            "z": 2,
+            "locked": false,
+            "shape": "ellipse",
+            "fill": "#7C3AED",
+            "opacity": 0.82
+          }
+        ]
+      }
+    },
+    "explain": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "explain",
+            "kind": "shape",
+            "x": 0.72,
+            "y": 0.48,
+            "w": 0.2,
+            "h": 0.14,
+            "rotation": -8,
+            "z": -1,
+            "locked": false,
+            "shape": "rectangle",
+            "fill": "#F43F5E",
+            "opacity": 0.55
+          }
+        ]
+      }
+    }
+  },
+  "decor": {
+    "background": {
+      "id": "dots-grid",
+      "params": {
+        "spacing": 54
+      },
+      "intensity": 0.3
+    }
+  },
+  "counter": {
+    "styles": [
+      "number",
+      "bar"
+    ],
+    "defaultStyle": "number"
+  },
+  "formats": [
+    "post",
+    "carousel"
+  ],
+  "assets": {
+    "cover": "assets/cover.svg"
+  }
+}

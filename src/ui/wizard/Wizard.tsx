@@ -16,6 +16,7 @@ import {
 } from '../../core/formats';
 import { getAllTemplates, getTemplate } from '../../templates';
 import { generatePalette } from '../../core/palette';
+import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
 import { SlideRenderer } from '../../slides/SlideRenderer';
 import { Footer } from '../common/Footer';
 import { APP_NAME } from '../../config/site';
@@ -159,7 +160,7 @@ export const Wizard: React.FC<WizardProps> = ({
   }, [platform, locale]);
 
   // Final project creation
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     const isSinglePost = contentType === 'post';
     const isStory = contentType === 'story';
 
@@ -179,6 +180,13 @@ export const Wizard: React.FC<WizardProps> = ({
       ];
     }
 
+    const templateSnapshot = await loadTemplateProjectSnapshot(templateId, primaryColor);
+    const dimensions = getDimensions(formatId, orientation);
+    const aspect = calcAspectClass(dimensions.width, dimensions.height);
+    initialSlides = initialSlides.map((slide) => ({
+      ...slide,
+      extras: (templateSnapshot.composition[slide.type]?.[aspect]?.elements ?? []).map((element) => structuredClone(element)),
+    }));
     const newProject: Project = {
       schemaVersion: CURRENT_SCHEMA_VERSION,
       id: `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
@@ -188,6 +196,7 @@ export const Wizard: React.FC<WizardProps> = ({
       formatId,
       orientation,
       templateId,
+      templateSnapshot,
       primaryColor,
       theme,
       textDir: locale === 'ar' ? 'rtl' : 'ltr',

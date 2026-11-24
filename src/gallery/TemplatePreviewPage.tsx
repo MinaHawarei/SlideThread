@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateId } from '../core/schema';
+import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateId, TemplateProjectSnapshot } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { SlideRenderer } from '../slides/SlideRenderer';
 import { SAMPLE_SLIDES } from '../slides/sampleSlides';
 import { getAllTemplates, getTemplate } from '../templates';
 import { useT } from '../i18n';
 import { useSettingsStore } from '../store/settingsStore';
-import { useProjectStore } from '../store/projectStore';
+import { createProjectFromTemplate } from '../store/projectStore';
 import { useRecentStore } from '../store/recentStore';
 import { Footer } from '../ui/common/Footer';
 import { LogoMark } from '../ui/brand/LogoMark';
 import { MobileNavDrawer } from '../ui/common/MobileNavDrawer';
 import { FORMAT_REGISTRY, type FormatId } from '../core/formats';
+import { loadTemplateProjectSnapshot, templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
 
 const SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -41,7 +42,6 @@ export interface TemplatePreviewPageProps {
 export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavigate }) => {
   const { t, dir } = useT();
   const brandSettings = useSettingsStore((state) => state.settings);
-  const createProject = useProjectStore((state) => state.createProject);
   const saveProject = useRecentStore((state) => state.saveProject);
 
   const getInitialTemplateId = (): string => {
@@ -64,6 +64,8 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
   const [showSafeZones, setShowSafeZones] = useState<boolean>(false);
   const [previewScale, setPreviewScale] = useState<number>(0.22);
   const [containerWidth, setContainerWidth] = useState<number>(1200);
+  const [packageSnapshot, setPackageSnapshot] = useState<TemplateProjectSnapshot>();
+  const [packageLoadError, setPackageLoadError] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -75,7 +77,22 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
   }, []);
 
   const allTemplates = getAllTemplates();
-  const isKnownTemplate = allTemplates.some((t) => t.id === templateId);
+  const isLegacyTemplate = allTemplates.some((t) => t.id === templateId);
+  useEffect(() => {
+    if (isLegacyTemplate) {
+      setPackageSnapshot(undefined);
+      setPackageLoadError(false);
+      return;
+    }
+    let cancelled = false;
+    setPackageSnapshot(undefined);
+    setPackageLoadError(false);
+    loadTemplateProjectSnapshot(templateId, brandSettings.defaultPrimaryColor || '#35D0E6')
+      .then((snapshot) => { if (!cancelled) setPackageSnapshot(snapshot); })
+      .catch(() => { if (!cancelled) setPackageLoadError(true); });
+    return () => { cancelled = true; };
+  }, [templateId, isLegacyTemplate, brandSettings.defaultPrimaryColor]);
+  const isKnownTemplate = isLegacyTemplate || packageSnapshot?.id === templateId;
 
   const navigateTo = (path: string) => {
     if (onNavigate) {
@@ -86,16 +103,17 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
     }
   };
 
-  const handleUseThisTemplate = () => {
+  const handleUseThisTemplate = async () => {
     const effectivePrimaryColor =
       brandSettings.defaultPrimaryColor || (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
 
-    const newProj = createProject({
+    const newProj = await createProjectFromTemplate({
       title: 'Untitled Presentation',
       templateId,
       primaryColor: effectivePrimaryColor,
       theme,
       textDir: lang === 'ar' ? 'rtl' : 'ltr',
+      ...(packageSnapshot ? { templateSnapshot: packageSnapshot } : {}),
     });
     saveProject(newProj);
     navigateTo('/editor');
@@ -109,6 +127,9 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
     }
   };
 
+  if (!isKnownTemplate && !packageLoadError) {
+    return <div data-testid="template-package-loading" className="min-h-screen grid place-items-center">Loading template package…</div>;
+  }
   if (!isKnownTemplate) {
     return (
       <div
@@ -159,10 +180,14 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
     );
   }
 
-  const selectedTemplate = getTemplate(templateId as TemplateId);
+  const selectedTemplate = packageSnapshot
+    ? templateDefinitionFromSnapshot(packageSnapshot)
+    : getTemplate(templateId as TemplateId);
   const effectivePrimaryColor =
     brandSettings.defaultPrimaryColor || (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
-  const palette = generatePalette(effectivePrimaryColor, theme);
+  const palette = packageSnapshot
+    ? packageSnapshot.paletteByMode[theme] as unknown as ReturnType<typeof generatePalette>
+    : generatePalette(effectivePrimaryColor, theme);
 
   // F3: sample content uses "user name" placeholder
   const previewBrand = {
@@ -260,6 +285,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
                       {t(tmpl.nameKey as Parameters<typeof t>[0])} ({tmpl.id})
                     </option>
                   ))}
+                  {packageSnapshot && !isLegacyTemplate && <option value={templateId}>{templateId} (package)</option>}
                 </select>
               </label>
 
@@ -421,7 +447,10 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
                             }}
                           >
                             <SlideRenderer
-                              slide={slide}
+                              slide={packageSnapshot ? {
+                                ...slide,
+                                extras: packageSnapshot.composition[slide.type]?.[aspect]?.elements ?? [],
+                              } : slide}
                               palette={palette}
                               aspectClass={aspect}
                               textDir={textDir}
@@ -431,6 +460,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
                               showCounter={true}
                               showSafeZones={showSafeZones}
                               templateId={templateId}
+                              templateSnapshot={packageSnapshot}
                               themeMode={theme}
                               dimensions={dims}
                             />
