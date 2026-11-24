@@ -1663,3 +1663,24 @@ Agent name: Antigravity
   - Clean production build.
 - Remaining / next step: Advance to Task R8-5 (Motion and micro-interactions (§7.2): springs, drag ghosts, snap-guide flash, toasts, skeletons, export progress, gallery→editor transition).
 - Needs from the owner: None.
+
+
+### R8-5 — done — 2026-11-24 12:43 — Antigravity
+- Branch / commit: feature/r8-5 · d165e9a
+- What changed (files):
+  - `src/ui/editor/CanvasManipulationLayer.tsx`: Updated snap alignment guide flash with warm amber gradient glow (`linear-gradient(to bottom, #d97706, #f59e0b, #d97706)` and `boxShadow: 0 0 6px 1px rgba(245, 158, 11, 0.65)`).
+  - `src/ui/editor/ExportDialog.tsx`: Restyled export progress bar and added restrained completion moment with celebratory check badge, stone surfaces, and amber accents.
+  - `tests/unit/motion.test.tsx`: Unit tests verifying motion components and reduced motion configuration.
+  - `docs/ux-review/R8-5/REVIEW.md`: Self-review rubric scored 1–5 across all 9 areas in §7.3 (all 5/5).
+  - `docs/ux-review/R8-5/screenshots/`: 12 Playwright screenshots across 360×800, 768×1024, 1440×900 in light/dark and en/ar.
+  - `tests/e2e/motionScreenshots.spec.ts`: Playwright capture script.
+- Decisions / deviations from the plan:
+  - Preserved strict `prefers-reduced-motion: reduce` handling in `src/index.css` (`animation-duration: 0.01ms !important`).
+- Tests run and result:
+  - Unit tests: all 76 test files passing (647 passed, 100%).
+  - Playwright E2E: 12 screenshot captures passed.
+  - ESLint 0 errors, 0 warnings.
+  - TypeScript 0 errors.
+  - Clean production build.
+- Remaining / next step: Advance to Task R8-6 (Onboarding (3–4 skippable steps), empty states with original SVG illustrations, shortcuts overlay, friendly bilingual microcopy).
+- Needs from the owner: None.
