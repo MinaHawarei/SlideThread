@@ -1537,24 +1537,33 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 
-### R7-2 — done — 2026-11-24 11:38 — Antigravity
-- Branch / commit: feature/r7-2
-- What changed (files):
-  - `src/ui/editor/SlideTypePicker.tsx`: Created visual type picker displaying all 9 slide types with icons, bilingual labels, descriptions, and keyboard focus support.
-  - `src/ui/editor/SlideRail.tsx`: Integrated `SlideTypePicker` on the Add Slide button; wrapped `SlideRailItem` in `React.memo` to optimize 20-slide carousel rendering.
-  - `src/ui/editor/MobileThumbnailStrip.tsx`: Integrated `SlideTypePicker` into `MobileBottomSheet` on mobile Add Slide button; wrapped `MobileThumbItem` in `React.memo`.
-  - `src/store/projectStore.ts`: Added `setSlides` method integrated with `set` so reordering records to `historyStore` for undo/redo.
-  - `src/ui/editor/index.ts`: Exported `SlideTypePicker`.
-  - `tests/unit/slideActions.test.tsx`: 9 unit tests covering visual type picker, slide duplication, slide deletion, undo/redo state restoration, mobile strip actions, and 20-slide smoothness.
-  - `docs/TASKS.md`: Marked R7-2 `[x]`.
+### R7-3 — started — 2026-11-24 11:42 — Antigravity
+- Branch / commit: feature/r7-3
+- What changed (files): `docs/TASKS.md` (claimed R7-3).
 - Decisions / deviations from the plan:
-  - Memoized both desktop and mobile thumbnail items to eliminate unnecessary re-renders when adding, selecting, or updating other slides.
-- Tests run and result:
-  - `npm test tests/unit/slideActions.test.tsx` (9 passed).
-  - `npm test tests/unit/slideRailReorder.test.tsx` (8 passed).
-  - `npm test tests/unit/accessibility.test.tsx` (14 passed).
-- Remaining / next step: Run full check suite (`lint`, `typecheck`, all tests, `build`), merge to `main`, and claim R7-3.
+  - Add `resetAspectOverrides(aspect, slideId?)` method in `projectStore.ts` supporting targeted layout resetting per aspect class without loss of content.
+  - Update `ChangeFormatDialog.tsx` with clear explanatory guidance regarding per-aspect-class overrides: custom adjustments made in other aspect ratios remain untouched.
+  - Detect when the target format's aspect class has existing custom overrides, and offer an interactive checkbox to "Reset layout for this format".
+  - Add bilingual strings in `src/i18n/en.ts` and `src/i18n/ar.ts` (`design.changeFormat.overridesNotice`, `design.changeFormat.hasOverrides`, `design.changeFormat.resetLayout`, `design.changeFormat.resetLayoutDesc`).
+- Tests run and result: N/A (in progress).
+- Remaining / next step: Run full validation suite and merge `feature/r7-3` to `main`.
 - Needs from the owner: None.
+
+
+### R7-3 — done — 2026-11-24 11:45 — Antigravity
+- Branch / commit: feature/r7-3
+- What changed (files):
+  - `src/store/projectStore.ts`: Implemented `resetAspectOverrides(aspect, slideId?)` with history tracking.
+  - `src/ui/editor/ChangeFormatDialog.tsx`: Added per-class overrides explanation notice, override detection for selected aspect ratio, and optional reset layout checkbox upon applying format.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Added bilingual translation strings for format change override notice and reset options.
+  - `tests/unit/formatChangeDialog.test.tsx`: 5 unit tests verifying notice rendering, override detection, reset layout execution, layout preservation when unchecked, and orientation toggle without content loss.
+  - `docs/TASKS.md`: Marked R7-3 `[x]`.
+- Decisions / deviations from the plan:
+  - Ensured format switching is non-destructive to slide texts and preserves per-class overrides unless the user explicitly opts into resetting layout for that aspect ratio.
+- Tests run and result: `npm test tests/unit/formatChangeDialog.test.tsx` (5 passed, 100%).
+- Remaining / next step: Run full verification suite (`lint`, `typecheck`, all tests, `build`), merge to `main`, and verify Gate GR7.
+- Needs from the owner: None.
+
 
 
 

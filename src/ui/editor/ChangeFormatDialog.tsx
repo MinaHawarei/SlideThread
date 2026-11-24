@@ -26,16 +26,19 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
   const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
+  const resetAspectOverrides = useProjectStore((state) => state.resetAspectOverrides);
   const activeSlide = useActiveSlide();
   const effectiveBrand = useEffectiveBrand();
 
   const [selectedFormatId, setSelectedFormatId] = useState<FormatId>((project.formatId as FormatId) || 'r_4_5');
   const [selectedOrientation, setSelectedOrientation] = useState<Orientation>(project.orientation);
+  const [shouldResetLayout, setShouldResetLayout] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setSelectedFormatId((project.formatId as FormatId) || 'r_4_5');
       setSelectedOrientation(project.orientation);
+      setShouldResetLayout(false);
     }
   }, [isOpen, project.formatId, project.orientation]);
 
@@ -66,7 +69,15 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
 
   const previewSlide = activeSlide || project.slides[0];
 
+  // Check if target aspect has custom overrides in any slide
+  const hasOverrides = project.slides.some(
+    (s) => s.overrides && s.overrides[aspect] && Object.keys(s.overrides[aspect]!).length > 0
+  );
+
   const handleApply = () => {
+    if (shouldResetLayout) {
+      resetAspectOverrides(aspect);
+    }
     updateProjectMeta({
       formatId: selectedFormatId,
       orientation: selectedOrientation,
@@ -192,6 +203,35 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                 </div>
               </div>
             )}
+            {/* Explanation Note on Per-Aspect-Class Overrides */}
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl text-xs space-y-2">
+              <div className="flex items-start gap-2 text-slate-600 dark:text-slate-300">
+                <span className="text-cyan-500 font-bold shrink-0">ℹ️</span>
+                <span>{t('design.changeFormat.overridesNotice')}</span>
+              </div>
+
+              {hasOverrides && (
+                <div className="pt-2 border-t border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between">
+                  <label
+                    htmlFor="reset-layout-checkbox"
+                    className="flex items-center gap-2 cursor-pointer text-slate-700 dark:text-slate-200 select-none font-medium text-xs"
+                  >
+                    <input
+                      id="reset-layout-checkbox"
+                      type="checkbox"
+                      data-testid="reset-layout-checkbox"
+                      checked={shouldResetLayout}
+                      onChange={(e) => setShouldResetLayout(e.target.checked)}
+                      className="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500 w-4 h-4 cursor-pointer"
+                    />
+                    <span>{t('design.changeFormat.resetLayout')}</span>
+                  </label>
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
+                    {t('design.changeFormat.hasOverrides')}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right: Relayout Live Preview */}
