@@ -2,7 +2,7 @@ import React from 'react';
 import type { ExtraElement } from '../core/schema';
 import { MediaRenderer } from './MediaRenderer';
 import { RichTextRenderer } from './RichTextRenderer';
-import { getShapeSvg } from '../assets';
+import { getShapeSvg, getIconSvg } from '../assets';
 
 export interface ExtrasRendererProps {
   extras?: readonly ExtraElement[];
@@ -59,14 +59,14 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
     case 'shape': {
       const fill = extra.fill || 'var(--acc, #0891b2)';
 
-      // Check if this extra references a vector asset from the shapes pack
+      // Check if this extra references a vector asset from the shapes or icons pack
       if (extra.assetId) {
-        const svgContent = getShapeSvg(extra.assetId);
+        const svgContent = getShapeSvg(extra.assetId) || getIconSvg(extra.assetId);
         if (svgContent) {
           return (
             <div
               data-testid={`shape-asset-${extra.id}`}
-              className="shape-asset-svg"
+              className="shape-asset-svg icon-asset-svg"
               style={{
                 width: '100%',
                 height: '100%',

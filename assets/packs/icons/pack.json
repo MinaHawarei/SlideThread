@@ -1,0 +1,199 @@
+{
+  "id": "icons",
+  "version": "1.0.0",
+  "name": {
+    "en": "Essential Presentation Icons",
+    "ar": "أيقونات العرض الأساسية"
+  },
+  "description": {
+    "en": "Curated collection of clean, recolorable vector icons for slides, metrics, and callouts from Lucide (ISC License).",
+    "ar": "مجموعة منتقاة من الأيقونات المتجهية النظيفة القابلة لتغيير اللون للعروض والمؤشرات من Lucide (ترخيص ISC)."
+  },
+  "kind": "icons",
+  "license": "ISC",
+  "sourceUrl": "https://lucide.dev",
+  "author": "Lucide Project Authors (Feather icons Community)",
+  "attribution": "Lucide icons are licensed under the ISC License. Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other copyright (c) 2022-2024 Lucide Contributors.",
+  "items": [
+    {
+      "id": "chart-bar",
+      "name": { "en": "Bar Chart", "ar": "مخطط بياني شريطي" },
+      "file": "chart-bar.svg",
+      "tags": {
+        "en": ["chart", "analytics", "graph", "metric", "data"],
+        "ar": ["مخطط", "تحليل", "رسم بياني", "مؤشر", "بيانات"]
+      }
+    },
+    {
+      "id": "trending-up",
+      "name": { "en": "Trending Up", "ar": "نمو متصاعد" },
+      "file": "trending-up.svg",
+      "tags": {
+        "en": ["trend", "growth", "increase", "success", "analytics"],
+        "ar": ["اتجاه", "نمو", "زيادة", "نجاح", "تحليلات"]
+      }
+    },
+    {
+      "id": "lightbulb",
+      "name": { "en": "Lightbulb", "ar": "فكرة" },
+      "file": "lightbulb.svg",
+      "tags": {
+        "en": ["idea", "insight", "solution", "creativity", "tip"],
+        "ar": ["فكرة", "رؤية", "حل", "إبداع", "نصيحة"]
+      }
+    },
+    {
+      "id": "rocket",
+      "name": { "en": "Rocket", "ar": "انطلاق" },
+      "file": "rocket.svg",
+      "tags": {
+        "en": ["launch", "speed", "startup", "progress", "boost"],
+        "ar": ["إطلاق", "سرعة", "مشروع", "تقدم", "دفعة"]
+      }
+    },
+    {
+      "id": "target",
+      "name": { "en": "Target", "ar": "هدف" },
+      "file": "target.svg",
+      "tags": {
+        "en": ["goal", "focus", "aim", "strategy", "objective"],
+        "ar": ["هدف", "تركيز", "غاية", "استراتيجية", "مقصد"]
+      }
+    },
+    {
+      "id": "shield-check",
+      "name": { "en": "Shield Check", "ar": "حماية وأمان" },
+      "file": "shield-check.svg",
+      "tags": {
+        "en": ["security", "verified", "protection", "safe", "privacy"],
+        "ar": ["أمان", "موثوق", "حماية", "آمن", "خصوصية"]
+      }
+    },
+    {
+      "id": "award",
+      "name": { "en": "Award", "ar": "جائزة" },
+      "file": "award.svg",
+      "tags": {
+        "en": ["achievement", "medal", "prize", "quality", "badge"],
+        "ar": ["إنجاز", "ميدالية", "جائزة", "جودة", "شارة"]
+      }
+    },
+    {
+      "id": "zap",
+      "name": { "en": "Energy", "ar": "طاقة وسرعة" },
+      "file": "zap.svg",
+      "tags": {
+        "en": ["lightning", "power", "fast", "instant", "energy"],
+        "ar": ["برق", "قوة", "سريع", "فوري", "طاقة"]
+      }
+    },
+    {
+      "id": "users",
+      "name": { "en": "Team", "ar": "فريق ومجتمع" },
+      "file": "users.svg",
+      "tags": {
+        "en": ["people", "community", "collaboration", "network", "audience"],
+        "ar": ["أشخاص", "مجتمع", "تعاون", "شبكة", "جمهور"]
+      }
+    },
+    {
+      "id": "check-circle",
+      "name": { "en": "Check Circle", "ar": "مكتمل ومؤكد" },
+      "file": "check-circle.svg",
+      "tags": {
+        "en": ["done", "success", "confirmed", "correct", "approve"],
+        "ar": ["منجز", "نجاح", "مؤكد", "صحيح", "موافقة"]
+      }
+    },
+    {
+      "id": "alert-circle",
+      "name": { "en": "Alert Circle", "ar": "تنبيه" },
+      "file": "alert-circle.svg",
+      "tags": {
+        "en": ["warning", "caution", "notice", "important", "info"],
+        "ar": ["تحذير", "انتباه", "ملاحظة", "هام", "معلومة"]
+      }
+    },
+    {
+      "id": "help-circle",
+      "name": { "en": "Help Circle", "ar": "استفسار" },
+      "file": "help-circle.svg",
+      "tags": {
+        "en": ["question", "support", "faq", "why", "curiosity"],
+        "ar": ["سؤال", "دعم", "أسئلة شائعة", "لماذا", "استفسار"]
+      }
+    },
+    {
+      "id": "sparkles",
+      "name": { "en": "Sparkles", "ar": "بريق وميزة" },
+      "file": "sparkles.svg",
+      "tags": {
+        "en": ["magic", "ai", "feature", "shine", "premium"],
+        "ar": ["سحر", "ذكاء اصطناعي", "ميزة", "لمعان", "مميز"]
+      }
+    },
+    {
+      "id": "heart",
+      "name": { "en": "Heart", "ar": "إعجاب وشغف" },
+      "file": "heart.svg",
+      "tags": {
+        "en": ["like", "favorite", "love", "health", "care"],
+        "ar": ["إعجاب", "مفضل", "حب", "صحة", "اهتمام"]
+      }
+    },
+    {
+      "id": "clock",
+      "name": { "en": "Clock", "ar": "وقت وموعد" },
+      "file": "clock.svg",
+      "tags": {
+        "en": ["time", "schedule", "deadline", "speed", "history"],
+        "ar": ["وقت", "جدول", "موعد نهائي", "سرعة", "تاريخ"]
+      }
+    },
+    {
+      "id": "quote",
+      "name": { "en": "Quote Marks", "ar": "علامات الاقتباس" },
+      "file": "quote.svg",
+      "tags": {
+        "en": ["testimonial", "speech", "citation", "message", "saying"],
+        "ar": ["شهادة", "حديث", "اقتباس", "رسالة", "قول"]
+      }
+    },
+    {
+      "id": "compass",
+      "name": { "en": "Compass", "ar": "بوصلة وتوجيه" },
+      "file": "compass.svg",
+      "tags": {
+        "en": ["direction", "navigation", "strategy", "vision", "guide"],
+        "ar": ["اتجاه", "ملاحة", "استراتيجية", "رؤية", "دليل"]
+      }
+    },
+    {
+      "id": "code",
+      "name": { "en": "Code", "ar": "برمجة وشفرة" },
+      "file": "code.svg",
+      "tags": {
+        "en": ["tech", "developer", "syntax", "software", "api"],
+        "ar": ["تقنية", "مطور", "شفرة", "برمجيات", "واجهة برمجية"]
+      }
+    },
+    {
+      "id": "share",
+      "name": { "en": "Share", "ar": "مشاركة ونشر" },
+      "file": "share.svg",
+      "tags": {
+        "en": ["social", "spread", "distribution", "reach", "export"],
+        "ar": ["مشاركة", "نشر", "توزيع", "وصول", "تصدير"]
+      }
+    },
+    {
+      "id": "bookmark",
+      "name": { "en": "Bookmark", "ar": "حفظ وإشارة" },
+      "file": "bookmark.svg",
+      "tags": {
+        "en": ["save", "keep", "reference", "later", "tag"],
+        "ar": ["حفظ", "إبقاء", "مرجع", "لاحقا", "إشارة"]
+      }
+    }
+  ]
+}
