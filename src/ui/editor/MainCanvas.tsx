@@ -218,8 +218,9 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
           <div className="flex items-center gap-1.5">
             <button
               type="button"
+              data-testid="canvas-zoom-out-btn"
               onClick={() => setZoomLevel((z) => Math.max(0.2, Math.round((z - 0.05) * 100) / 100))}
-              className="w-6 h-6 rounded bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 flex items-center justify-center font-bold text-stone-700 dark:text-stone-300 focus-visible:ring-1 focus-visible:ring-amber-500"
+              className="w-6 h-6 rounded bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 flex items-center justify-center font-bold text-stone-700 dark:text-stone-300 focus-visible:ring-1 focus-visible:ring-amber-500 cursor-pointer"
               aria-label="Zoom out"
               title="Zoom out"
             >
@@ -230,8 +231,9 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
             </span>
             <button
               type="button"
+              data-testid="canvas-zoom-in-btn"
               onClick={() => setZoomLevel((z) => Math.min(1.5, Math.round((z + 0.05) * 100) / 100))}
-              className="w-6 h-6 rounded bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 flex items-center justify-center font-bold text-stone-700 dark:text-stone-300 focus-visible:ring-1 focus-visible:ring-amber-500"
+              className="w-6 h-6 rounded bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 flex items-center justify-center font-bold text-stone-700 dark:text-stone-300 focus-visible:ring-1 focus-visible:ring-amber-500 cursor-pointer"
               aria-label="Zoom in"
               title="Zoom in"
             >
