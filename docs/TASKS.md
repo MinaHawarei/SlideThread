@@ -125,7 +125,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ### Phase R9 — Hardening and release prep (GATE GR9)
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| R9-1 | Export regression suite over all new features (aspect classes, themes, RTL, rich text, extras, patterns). | GR8 | [ ] | |
+| R9-1 | Export regression suite over all new features (aspect classes, themes, RTL, rich text, extras, patterns). | GR8 | [x] | Antigravity 2026-11-24 · feature/r9-1 · 373f02d |
 | R9-2 | Performance and bundle audit; lazy-loading review; mobile profiling. | R9-1 | [ ] | |
 | R9-3 | Accessibility audit (axe, keyboard-only, screen-reader labels, contrast) (supersedes P3-10). | R9-2 | [ ] | |
 | R9-4 | Security review: sanitizer tests, CSP update (fonts, assets), no `dangerouslySetInnerHTML`, dependency audit. | R9-3 | [ ] | |
