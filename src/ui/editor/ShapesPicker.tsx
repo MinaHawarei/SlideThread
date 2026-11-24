@@ -1,0 +1,185 @@
+import React, { useState } from 'react';
+import { useT } from '../../i18n';
+import { useProjectStore, useActiveSlide } from '../../store/projectStore';
+import { useSelectionStore } from '../../store/selectionStore';
+import { SHAPES_ITEMS, getShapeSvg } from '../../assets';
+import type { ExtraElement } from '../../core/schema';
+
+const SHAPE_PALETTE_COLORS = [
+  '#0891b2', // Cyan
+  '#0284c7', // Sky
+  '#6366f1', // Indigo
+  '#a855f7', // Purple
+  '#f43f5e', // Rose
+  '#f59e0b', // Amber
+  '#10b981', // Emerald
+  '#0f172a', // Slate Ink
+  '#ffffff', // White
+];
+
+export const ShapesPicker: React.FC = () => {
+  const { t, locale } = useT();
+  const project = useProjectStore((state) => state.project);
+  const activeSlide = useActiveSlide();
+  const addExtraElement = useProjectStore((state) => state.addExtraElement);
+  const updateExtraElement = useProjectStore((state) => state.updateExtraElement);
+  const deleteExtraElement = useProjectStore((state) => state.deleteExtraElement);
+  const selectedElementId = useSelectionStore((state) => state.selectedElementId);
+  const selectElement = useSelectionStore((state) => state.selectElement);
+
+  const [isOpen, setIsOpen] = useState(true);
+
+  if (!activeSlide) return null;
+
+  // Check if a shape extra on this slide is selected
+  const selectedExtra = activeSlide.extras?.find(
+    (extra) => extra.id === selectedElementId && extra.kind === 'shape'
+  );
+
+  const handleAddShape = (shapeId: string) => {
+    const item = SHAPES_ITEMS.find((i) => i.id === shapeId);
+    if (!item) return;
+
+    const baseWidth = item.defaultWidth ? Math.min(0.4, item.defaultWidth / 500) : 0.2;
+    const baseHeight = item.defaultHeight ? Math.min(0.3, item.defaultHeight / 500) : 0.15;
+
+    const newExtra: ExtraElement = {
+      id: `shape_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      kind: 'shape',
+      assetId: item.id,
+      x: Math.max(0.05, 0.5 - baseWidth / 2),
+      y: Math.max(0.05, 0.5 - baseHeight / 2),
+      w: baseWidth,
+      h: baseHeight,
+      rotation: 0,
+      z: (activeSlide.extras?.length ?? 0) + 1,
+      locked: false,
+      fill: project.primaryColor || '#0891b2',
+    };
+
+    addExtraElement(activeSlide.id, newExtra);
+    selectElement(newExtra.id);
+  };
+
+  const handleColorChange = (newColor: string) => {
+    if (!selectedExtra) return;
+    updateExtraElement(activeSlide.id, {
+      ...selectedExtra,
+      fill: newColor,
+    });
+  };
+
+  const handleDeleteSelected = () => {
+    if (!selectedExtra) return;
+    deleteExtraElement(activeSlide.id, selectedExtra.id);
+    selectElement();
+  };
+
+  return (
+    <div data-testid="shapes-picker" className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+          <span>📐</span>
+          <span>{t('assets.shapesTitle')}</span>
+        </label>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+          aria-expanded={isOpen}
+        >
+          {isOpen ? '▲' : '▼'}
+        </button>
+      </div>
+
+      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+        {t('assets.shapesDesc')}
+      </p>
+
+      {/* Selected Shape Color & Actions (Visible when a shape is selected) */}
+      {selectedExtra && (
+        <div
+          data-testid="selected-shape-controls"
+          className="p-3 bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800 rounded-xl space-y-2.5"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-cyan-900 dark:text-cyan-300">
+              {t('assets.selectedShape')}
+            </span>
+            <button
+              type="button"
+              data-testid="delete-shape-btn"
+              onClick={handleDeleteSelected}
+              className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer"
+            >
+              {t('assets.deleteShape')}
+            </button>
+          </div>
+
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400 block">
+              {t('assets.shapeColor')}
+            </span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {SHAPE_PALETTE_COLORS.map((hex) => (
+                <button
+                  key={hex}
+                  type="button"
+                  data-testid={`shape-palette-color-${hex}`}
+                  onClick={() => handleColorChange(hex)}
+                  style={{ backgroundColor: hex }}
+                  className={`w-6 h-6 rounded-md border transition-transform cursor-pointer ${
+                    selectedExtra.fill === hex
+                      ? 'scale-110 border-cyan-500 ring-2 ring-cyan-400/50'
+                      : 'border-slate-300 dark:border-slate-700 hover:scale-105'
+                  }`}
+                  aria-label={hex}
+                />
+              ))}
+              <input
+                type="color"
+                data-testid="shape-color-input"
+                value={selectedExtra.fill?.startsWith('#') ? selectedExtra.fill : '#0891b2'}
+                onChange={(e) => handleColorChange(e.target.value)}
+                className="w-7 h-7 p-0 rounded-md border border-slate-300 dark:border-slate-700 cursor-pointer"
+                title="Custom color"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Shapes Grid */}
+      {isOpen && (
+        <div className="grid grid-cols-4 gap-2 pt-1" data-testid="shapes-grid">
+          {SHAPES_ITEMS.map((item) => {
+            const displayName = locale === 'ar' ? item.name.ar : item.name.en;
+            const svgContent = getShapeSvg(item.id);
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                data-testid={`add-shape-${item.id}`}
+                onClick={() => handleAddShape(item.id)}
+                title={displayName}
+                aria-label={displayName}
+                className="p-2 h-14 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:border-cyan-500 hover:bg-cyan-50/50 dark:hover:bg-slate-750 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all shadow-xs group cursor-pointer"
+              >
+                {svgContent ? (
+                  <div
+                    className="w-8 h-8 flex items-center justify-center text-current group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors"
+                    dangerouslySetInnerHTML={{ __html: svgContent }}
+                  />
+                ) : (
+                  <span className="text-xs font-bold">★</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};

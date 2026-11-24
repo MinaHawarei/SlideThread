@@ -30,6 +30,21 @@
       "defaultHeight": 12
     },
     {
+      "id": "line-dashed",
+      "name": {
+        "en": "Dashed Line",
+        "ar": "خط متقطع"
+      },
+      "tags": {
+        "en": ["dashed", "line", "divider", "separator"],
+        "ar": ["متقطع", "خط", "فاصل"]
+      },
+      "file": "line-dashed.svg",
+      "recolorable": true,
+      "defaultWidth": 120,
+      "defaultHeight": 12
+    },
+    {
       "id": "line-arrow",
       "name": {
         "en": "Straight Arrow",
@@ -40,6 +55,36 @@
         "ar": ["سهم", "مؤشر", "اتجاه", "يمين"]
       },
       "file": "line-arrow.svg",
+      "recolorable": true,
+      "defaultWidth": 120,
+      "defaultHeight": 24
+    },
+    {
+      "id": "line-double-arrow",
+      "name": {
+        "en": "Double-Ended Arrow",
+        "ar": "سهم مزدوج الاتجاه"
+      },
+      "tags": {
+        "en": ["arrow", "double", "bidirectional", "connector"],
+        "ar": ["سهم", "مزدوج", "رابط"]
+      },
+      "file": "line-double-arrow.svg",
+      "recolorable": true,
+      "defaultWidth": 120,
+      "defaultHeight": 24
+    },
+    {
+      "id": "line-zigzag",
+      "name": {
+        "en": "Zigzag Wave",
+        "ar": "خط متعرج"
+      },
+      "tags": {
+        "en": ["zigzag", "wave", "accent", "separator"],
+        "ar": ["متعرج", "موجة", "فاصل"]
+      },
+      "file": "line-zigzag.svg",
       "recolorable": true,
       "defaultWidth": 120,
       "defaultHeight": 24
@@ -60,6 +105,36 @@
       "defaultHeight": 80
     },
     {
+      "id": "arrow-loop",
+      "name": {
+        "en": "Looped Arrow",
+        "ar": "سهم ملتف"
+      },
+      "tags": {
+        "en": ["arrow", "loop", "pointer", "creative"],
+        "ar": ["سهم", "ملتف", "إبداعي"]
+      },
+      "file": "arrow-loop.svg",
+      "recolorable": true,
+      "defaultWidth": 80,
+      "defaultHeight": 80
+    },
+    {
+      "id": "arrow-pointer-block",
+      "name": {
+        "en": "Block Arrow",
+        "ar": "سهم عريض"
+      },
+      "tags": {
+        "en": ["arrow", "block", "bold", "pointer"],
+        "ar": ["سهم", "عريض", "واضح"]
+      },
+      "file": "arrow-pointer-block.svg",
+      "recolorable": true,
+      "defaultWidth": 80,
+      "defaultHeight": 80
+    },
+    {
       "id": "circle-outline",
       "name": {
         "en": "Circle Outline",
@@ -73,6 +148,36 @@
       "recolorable": true,
       "defaultWidth": 80,
       "defaultHeight": 80
+    },
+    {
+      "id": "highlight-circle",
+      "name": {
+        "en": "Hand-Drawn Circle",
+        "ar": "دائرة مرسومة"
+      },
+      "tags": {
+        "en": ["circle", "hand-drawn", "highlight", "emphasis"],
+        "ar": ["دائرة", "مرسومة", "تأكيد", "تمييز"]
+      },
+      "file": "highlight-circle.svg",
+      "recolorable": true,
+      "defaultWidth": 100,
+      "defaultHeight": 80
+    },
+    {
+      "id": "highlight-underline",
+      "name": {
+        "en": "Marker Underline",
+        "ar": "خط تمييز سفلي"
+      },
+      "tags": {
+        "en": ["highlight", "underline", "marker", "hand-drawn"],
+        "ar": ["تمييز", "خط سفلي", "يدوي"]
+      },
+      "file": "highlight-underline.svg",
+      "recolorable": true,
+      "defaultWidth": 140,
+      "defaultHeight": 18
     },
     {
       "id": "badge-star",
@@ -90,19 +195,34 @@
       "defaultHeight": 80
     },
     {
-      "id": "highlight-underline",
+      "id": "badge-sparkle",
       "name": {
-        "en": "Marker Underline",
-        "ar": "خط تمييز سفلي"
+        "en": "Sparkle Accent",
+        "ar": "بريق مميز"
       },
       "tags": {
-        "en": ["highlight", "underline", "marker", "hand-drawn"],
-        "ar": ["تمييز", "خط سفلي", "يدوي"]
+        "en": ["sparkle", "star", "magic", "accent"],
+        "ar": ["بريق", "نجمة", "سحر", "تألق"]
       },
-      "file": "highlight-underline.svg",
+      "file": "badge-sparkle.svg",
       "recolorable": true,
-      "defaultWidth": 140,
-      "defaultHeight": 18
+      "defaultWidth": 80,
+      "defaultHeight": 80
+    },
+    {
+      "id": "cross-x",
+      "name": {
+        "en": "Cross Accent",
+        "ar": "علامة متقاطعة"
+      },
+      "tags": {
+        "en": ["cross", "x", "accent", "cancel"],
+        "ar": ["تقاطع", "إشارة", "مميز"]
+      },
+      "file": "cross-x.svg",
+      "recolorable": true,
+      "defaultWidth": 80,
+      "defaultHeight": 80
     },
     {
       "id": "bracket-curly",
