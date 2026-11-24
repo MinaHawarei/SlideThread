@@ -16,3 +16,4 @@ export * from './RichTextEditor';
 export * from './ShapesPicker';
 export * from './IconsPicker';
 export * from './EmojiStickersPicker';
+export * from './AssetsPanel';

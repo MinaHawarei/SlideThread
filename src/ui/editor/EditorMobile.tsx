@@ -10,13 +10,14 @@ import { MobileBottomSheet } from './MobileBottomSheet';
 import { SlideInspector } from './SlideInspector';
 import { DesignInspector } from './DesignInspector';
 import { BrandInspector } from './BrandInspector';
+import { AssetsPanel } from './AssetsPanel';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { handleExportProject } from '../../core/projectIO';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 import { CanvasManipulationLayer } from './CanvasManipulationLayer';
 
-export type MobileTab = 'slides' | 'edit' | 'design' | 'export';
+export type MobileTab = 'slides' | 'edit' | 'assets' | 'design' | 'export';
 
 export interface EditorMobileProps {
   onHome?: () => void;
@@ -379,6 +380,25 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           <span>{t('editor.mobileTabEdit')}</span>
         </button>
 
+        {/* Assets Tab */}
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'assets'}
+          data-testid="mobile-tab-assets"
+          onClick={() => handleTabClick('assets')}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
+            activeTab === 'assets'
+              ? 'text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-50/50 dark:bg-cyan-950/30'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>{t('editor.tabAssets')}</span>
+        </button>
+
         {/* Design Tab */}
         <button
           type="button"
@@ -425,12 +445,16 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         title={
           activeTab === 'edit'
             ? t('editor.tabSlide')
+            : activeTab === 'assets'
+            ? t('editor.tabAssets')
             : activeTab === 'design'
             ? t('editor.tabDesign')
             : t('editor.mobileTabExport')
         }
       >
         {activeTab === 'edit' && <SlideInspector />}
+
+        {activeTab === 'assets' && <AssetsPanel />}
 
         {activeTab === 'design' && (
           <div className="flex flex-col">
