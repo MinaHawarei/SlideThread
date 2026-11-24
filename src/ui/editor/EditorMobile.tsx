@@ -16,9 +16,10 @@ import { handleExportProject } from '../../core/projectIO';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 import { CanvasManipulationLayer } from './CanvasManipulationLayer';
 import { ElementPropertiesPanel } from './ElementPropertiesPanel';
+import { LayersPanel } from './LayersPanel';
 import { LogoMark } from '../brand/LogoMark';
 
-export type MobileTab = 'slides' | 'edit' | 'assets' | 'design' | 'export';
+export type MobileTab = 'slides' | 'edit' | 'assets' | 'layers' | 'design' | 'export';
 
 export interface EditorMobileProps {
   onHome?: () => void;
@@ -400,6 +401,25 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           <span>{t('editor.tabAssets')}</span>
         </button>
 
+        {/* Layers Tab (P5) */}
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'layers'}
+          data-testid="mobile-tab-layers"
+          onClick={() => handleTabClick('layers')}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
+            activeTab === 'layers'
+              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          <span>{t('editor.mobileTabLayers')}</span>
+        </button>
+
         {/* Design Tab */}
         <button
           type="button"
@@ -443,10 +463,12 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
       <MobileBottomSheet
         isOpen={isSheetOpen}
         onClose={handleCloseSheet}
-        halfHeight={Boolean(selectedElementId && activeTab === 'edit')}
+        halfHeight={Boolean((selectedElementId && (activeTab === 'edit' || activeTab === 'layers')) || activeTab === 'layers')}
         title={
-          selectedElementId && activeTab === 'edit'
+          selectedElementId && (activeTab === 'edit' || activeTab === 'layers')
             ? t('editor.elementProperties')
+            : activeTab === 'layers'
+            ? t('editor.tabLayers')
             : activeTab === 'edit'
             ? t('editor.tabSlide')
             : activeTab === 'assets'
@@ -465,6 +487,14 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         )}
 
         {activeTab === 'assets' && <AssetsPanel />}
+
+        {activeTab === 'layers' && (
+          selectedElementId ? (
+            <ElementPropertiesPanel onClose={handleCloseSheet} />
+          ) : (
+            <LayersPanel />
+          )
+        )}
 
         {activeTab === 'design' && (
           <div className="flex flex-col">

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { SlideProps } from './types';
 import { RichTextRenderer } from './RichTextRenderer';
 import { useAvatarUpload } from '../ui/common/useAvatarUpload';
+import { getAssetUrl } from '../core/assetStore';
 
 export const CtaSlide: React.FC<SlideProps> = ({
   slide,
@@ -10,16 +11,33 @@ export const CtaSlide: React.FC<SlideProps> = ({
   brand,
   signatureConfig,
 }) => {
-  const { title, body, action, name, handle } = slide.fields;
+  const { title, body, action, name, handle, imageUrl } = slide.fields;
   const isLandscape = aspectClass === 'landscape';
   const effectiveDir = textDir && textDir !== 'auto' ? textDir : 'auto';
 
+  const [resolvedMediaUrl, setResolvedMediaUrl] = useState<string | undefined>();
+  const { fileInputRef, handleFileChange } = useAvatarUpload();
+
+  useEffect(() => {
+    let active = true;
+    if (slide.media?.assetId) {
+      getAssetUrl(slide.media.assetId).then((url) => {
+        if (active) setResolvedMediaUrl(url);
+      });
+    } else {
+      setResolvedMediaUrl(undefined);
+    }
+    return () => {
+      active = false;
+    };
+  }, [slide.media?.assetId]);
+
   const photoShape = signatureConfig?.photoShape || 'circle';
-  const photoDataUrl = brand?.photoDataUrl;
+  const photoDataUrl = resolvedMediaUrl || (typeof imageUrl === 'string' && imageUrl ? imageUrl : brand?.photoDataUrl);
+  const mediaOpacity = slide.overrides?.[aspectClass]?.['media']?.opacity ?? 1;
   const displayName = name || brand?.displayName || '';
   const displayHandle = handle || brand?.handle || '';
   const initial = (displayName || title || 'S').trim().charAt(0).toUpperCase();
-  const { fileInputRef, handleFileChange, triggerUpload } = useAvatarUpload();
 
   return (
     <div className="slide-content-area" style={{ justifyContent: 'center' }}>
@@ -29,45 +47,32 @@ export const CtaSlide: React.FC<SlideProps> = ({
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
           <div
-            className="cta-avatar-ring"
+            className="cta-avatar-ring slide-media-element"
             data-testid="cta-avatar-ring"
+            data-slot="media"
             data-shape={photoShape}
             role="button"
             tabIndex={0}
-            aria-label={photoDataUrl ? 'Change photo' : 'Add photo'}
-            onClick={(e) => {
-              e.stopPropagation();
-              triggerUpload();
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.stopPropagation();
-                triggerUpload();
-              }
-            }}
+            aria-label={photoDataUrl ? 'Photo' : 'Empty photo placeholder'}
           >
             {photoDataUrl ? (
               <img
                 src={photoDataUrl}
                 alt={displayName || 'Avatar'}
                 className="cta-avatar-img"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: mediaOpacity }}
                 data-testid="cta-avatar-img"
               />
             ) : (
               <div
                 className="cta-avatar-placeholder"
                 data-testid="cta-avatar-placeholder"
+                style={{ opacity: mediaOpacity }}
               >
                 {initial}
                 <span className="avatar-camera-badge cta-avatar-badge" aria-hidden="true">📷</span>
               </div>
             )}
-
-            <div className="avatar-hover-overlay" aria-hidden="true">
-              <span className="avatar-hover-icon">📷</span>
-            </div>
 
             <input
               ref={fileInputRef}

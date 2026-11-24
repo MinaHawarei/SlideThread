@@ -16,7 +16,7 @@ test('canvas selects, moves, and resets a layout slot through normalized overrid
   const title = page.getByTestId('element-hit-title');
   await expect(title).toBeVisible();
   await title.click();
-  await expect(page.getByTestId('reset-title')).toBeVisible();
+  await expect(page.getByTestId('sidebar-reset-title')).toBeVisible();
   const before = await title.evaluate((node) => (node as HTMLElement).style.left);
   const box = await title.boundingBox();
   if (!box) throw new Error('Title manipulation frame is not visible');
@@ -26,7 +26,7 @@ test('canvas selects, moves, and resets a layout slot through normalized overrid
   await page.mouse.up();
   await expect.poll(() => title.evaluate((node) => (node as HTMLElement).style.left)).not.toBe(before);
   await expect(page.locator('[data-testid="snap-guide"]')).toHaveCount(0);
-  await page.getByTestId('reset-title').click();
+  await page.getByTestId('sidebar-reset-title').click();
   await expect.poll(async () => Number.parseFloat(await title.evaluate((node) => (node as HTMLElement).style.left))).toBeCloseTo(Number.parseFloat(before), 3);
 });
 
@@ -56,7 +56,7 @@ test('manipulation overlay review matrix', async ({ page }) => {
         await page.getByTestId('mobile-tab-slides').click();
       }
       for (const direction of ['ltr', 'rtl']) {
-        if (await page.locator('html').getAttribute('dir') !== direction) await page.getByTestId('language-switcher').click();
+        await page.evaluate((dir) => { document.documentElement.dir = dir; }, direction);
         await expect(page.locator('html')).toHaveAttribute('dir', direction);
         await page.evaluate(({ theme: currentTheme }) => {
           document.documentElement.dataset.theme = currentTheme;

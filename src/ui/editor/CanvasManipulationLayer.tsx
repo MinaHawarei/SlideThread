@@ -4,7 +4,7 @@ import { resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotat
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
-import { useT, type TranslationKey } from '../../i18n';
+import { useT } from '../../i18n';
 import { RichTextEditor } from './RichTextEditor';
 import { BrandOverridePopover } from './BrandOverridePopover';
 
@@ -28,231 +28,6 @@ type Gesture = {
   hasMoved: boolean;
 };
 
-interface NumericInspectorProps {
-  element: ResolvedElement;
-  zoom: number;
-  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
-  onCommit: (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', value: number) => void;
-  style?: React.CSSProperties;
-}
-
-const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, onCommit, style }) => {
-  const currentScale = Math.round(
-    element.kind === 'slot'
-      ? (element.w / (element.frame?.inlineSize ?? element.w)) * 100
-      : 100
-  );
-  const currentOpacity = Math.round((element.opacity ?? 1) * 100);
-
-  const [localValues, setLocalValues] = useState<{
-    x: string;
-    y: string;
-    w: string;
-    scale: string;
-    rotation: string;
-    opacity: string;
-  }>({
-    x: String(Math.round(element.x * 100)),
-    y: String(Math.round(element.y * 100)),
-    w: String(Math.round(element.w * 100)),
-    scale: String(currentScale || 100),
-    rotation: String(Math.round(element.rotation || 0)),
-    opacity: String(currentOpacity),
-  });
-
-  const [activeField, setActiveField] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (activeField === null) {
-      setLocalValues({
-        x: String(Math.round(element.x * 100)),
-        y: String(Math.round(element.y * 100)),
-        w: String(Math.round(element.w * 100)),
-        scale: String(currentScale || 100),
-        rotation: String(Math.round(element.rotation || 0)),
-        opacity: String(Math.round((element.opacity ?? 1) * 100)),
-      });
-    }
-  }, [element.x, element.y, element.w, element.rotation, element.opacity, currentScale, activeField]);
-
-  const handleFieldChange = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', val: string) => {
-    setLocalValues((prev) => ({ ...prev, [field]: val }));
-    const num = parseFloat(val);
-    if (Number.isFinite(num)) {
-      let clamped = num;
-      if (field === 'x' || field === 'y') clamped = Math.max(0, Math.min(98, num));
-      if (field === 'w') clamped = Math.max(2, Math.min(100, num));
-      if (field === 'scale') clamped = Math.max(20, Math.min(500, num));
-      if (field === 'rotation') clamped = ((num % 360) + 360) % 360;
-      if (field === 'opacity') clamped = Math.max(0, Math.min(100, num));
-      onCommit(field, clamped);
-    }
-  };
-
-  const commitField = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity') => {
-    setActiveField(null);
-    const num = parseFloat(localValues[field]);
-    if (!Number.isFinite(num)) {
-      // Revert to current value
-      const fallback =
-        field === 'x'
-          ? Math.round(element.x * 100)
-          : field === 'y'
-          ? Math.round(element.y * 100)
-          : field === 'w'
-          ? Math.round(element.w * 100)
-          : field === 'scale'
-          ? currentScale
-          : field === 'opacity'
-          ? Math.round((element.opacity ?? 1) * 100)
-          : Math.round(element.rotation);
-      setLocalValues((prev) => ({ ...prev, [field]: String(fallback) }));
-      return;
-    }
-
-    let clamped = num;
-    if (field === 'x' || field === 'y') clamped = Math.max(0, Math.min(98, num));
-    if (field === 'w') clamped = Math.max(2, Math.min(100, num));
-    if (field === 'scale') clamped = Math.max(20, Math.min(500, num));
-    if (field === 'rotation') clamped = ((num % 360) + 360) % 360;
-    if (field === 'opacity') clamped = Math.max(0, Math.min(100, num));
-
-    setLocalValues((prev) => ({ ...prev, [field]: String(Math.round(clamped)) }));
-    onCommit(field, clamped);
-  };
-
-  return (
-    <div
-      data-testid="element-numeric-inspector"
-      onPointerDown={(event) => event.stopPropagation()}
-      onKeyDown={(event) => event.stopPropagation()}
-      style={{
-        zIndex: 50,
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 8,
-        width: 380,
-        maxWidth: 'min(380px, calc(100vw - 32px))',
-        padding: 10,
-        borderRadius: 12,
-        background: 'white',
-        color: '#0f172a',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.18)',
-        border: '1px solid #cbd5e1',
-        transform: `scale(${1 / zoom})`,
-        transformOrigin: 'top left',
-        pointerEvents: 'auto',
-        ...style,
-      }}
-    >
-      {(['x', 'y', 'w', 'scale'] as const).map((field) => {
-        const labelKey =
-          field === 'x'
-            ? 'editor.xPosition'
-            : field === 'y'
-            ? 'editor.yPosition'
-            : field === 'w'
-            ? 'editor.elementWidth'
-            : 'editor.elementScale';
-        return (
-          <label key={field} style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 600 }}>
-            <span style={{ color: '#475569' }}>{t(labelKey)} (%)</span>
-            <input
-              aria-label={t(labelKey)}
-              type="number"
-              step="1"
-              value={localValues[field]}
-              onFocus={() => setActiveField(field)}
-              onChange={(e) => handleFieldChange(field, e.target.value)}
-              onBlur={() => commitField(field)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.currentTarget.blur();
-                } else if (e.key === 'Escape') {
-                  setActiveField(null);
-                  e.currentTarget.blur();
-                }
-              }}
-              style={{
-                width: 64,
-                minHeight: 32,
-                border: '1px solid #94a3b8',
-                borderRadius: 6,
-                padding: '3px 6px',
-                fontSize: 13,
-                fontFamily: 'monospace',
-                background: '#f8fafc',
-              }}
-            />
-          </label>
-        );
-      })}
-      <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 600 }}>
-        <span style={{ color: '#475569' }}>{t('editor.elementRotation')} (°)</span>
-        <input
-          aria-label={t('editor.elementRotation')}
-          type="number"
-          step="1"
-          value={localValues.rotation}
-          onFocus={() => setActiveField('rotation')}
-          onChange={(e) => handleFieldChange('rotation', e.target.value)}
-          onBlur={() => commitField('rotation')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.currentTarget.blur();
-            } else if (e.key === 'Escape') {
-              setActiveField(null);
-              e.currentTarget.blur();
-            }
-          }}
-          style={{
-            width: 64,
-            minHeight: 32,
-            border: '1px solid #94a3b8',
-            borderRadius: 6,
-            padding: '3px 6px',
-            fontSize: 13,
-            fontFamily: 'monospace',
-            background: '#f8fafc',
-          }}
-        />
-      </label>
-      <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 600 }}>
-        <span style={{ color: '#475569' }}>{t('editor.elementOpacity')}</span>
-        <input
-          aria-label={t('editor.elementOpacity')}
-          type="number"
-          min="0"
-          max="100"
-          step="5"
-          value={localValues.opacity}
-          onFocus={() => setActiveField('opacity')}
-          onChange={(e) => handleFieldChange('opacity', e.target.value)}
-          onBlur={() => commitField('opacity')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.currentTarget.blur();
-            } else if (e.key === 'Escape') {
-              setActiveField(null);
-              e.currentTarget.blur();
-            }
-          }}
-          style={{
-            width: 64,
-            minHeight: 32,
-            border: '1px solid #94a3b8',
-            borderRadius: 6,
-            padding: '3px 6px',
-            fontSize: 13,
-            fontFamily: 'monospace',
-            background: '#f8fafc',
-          }}
-        />
-      </label>
-    </div>
-  );
-};
-
 export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = ({ slide, aspect, width, height, zoom }) => {
   const { t } = useT();
   const layout = getLayoutArchetype(`${slide.type}-centered`);
@@ -268,9 +43,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const [preview, setPreview] = useState<{ id: string; geometry: ElementGeometry; guides: Array<{ axis: 'x' | 'y'; at: number }> }>();
   const [announcement, setAnnouncement] = useState('');
   const [touchLayout, setTouchLayout] = useState(false);
-  const [layersOpen, setLayersOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const gesture = useRef<Gesture>();
   const activePointers = useRef(new Map<number, { x: number; y: number }>());
   const layerRef = useRef<HTMLDivElement>(null);
@@ -288,7 +61,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     return () => query.removeEventListener('change', update);
   }, []);
 
-  // F16: Outside click / tap and Escape deselects and closes floating edit panel
+  // Outside click / tap and Escape deselects
   useEffect(() => {
     if (!selectedId) return;
 
@@ -296,33 +69,26 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       const target = event.target as HTMLElement | null;
       if (!target) return;
       if (
-        target.closest('[data-testid="element-context-toolbar"]') ||
-        target.closest('[data-testid="element-numeric-inspector"]') ||
         target.closest('[data-testid="mobile-selection-toolbar"]') ||
         target.closest('[data-testid^="element-hit-"]') ||
         target.closest('[data-testid^="resize-"]') ||
         target.closest('[data-testid^="rotate-"]') ||
         target.closest('[data-testid="brand-override-popover"]') ||
         target.closest('.brand-override-popover') ||
-        target.closest('[data-testid="canvas-layers-panel"]') ||
-        target.closest('[data-testid="layers-toggle"]') ||
-        target.closest('[data-testid="element-menu-toggle"]') ||
         target.closest('[data-testid="inspector"]') ||
-        target.closest('[data-testid="element-properties-panel"]')
+        target.closest('[data-testid="element-properties-panel"]') ||
+        target.closest('[data-testid="layers-panel"]')
       ) {
         return;
       }
       selectElement(undefined);
       setEditingId(null);
-      setMenuOpenId(null);
     };
 
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         if (editingId) {
           setEditingId(null);
-        } else if (menuOpenId) {
-          setMenuOpenId(null);
         } else {
           selectElement(undefined);
         }
@@ -335,7 +101,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       window.removeEventListener('pointerdown', handleGlobalPointerDown);
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, [selectedId, editingId, menuOpenId, selectElement]);
+  }, [selectedId, editingId, selectElement]);
 
   useLayoutEffect(() => {
     const stage = layerRef.current?.parentElement;
@@ -406,52 +172,6 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         rotation: geometry.rotation,
       });
     }
-  };
-
-  const applyNumericGeometry = (element: ResolvedElement, field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', value: number) => {
-    const prior = slide.overrides?.[aspect]?.[element.id];
-    if (element.kind === 'slot') {
-      const baseOverride = {
-        dx: prior?.dx ?? 0,
-        dy: prior?.dy ?? 0,
-        scale: prior?.scale ?? 1,
-        ...prior,
-      };
-      if (field === 'x') {
-        const naturalX = element.frame?.inlineStart ?? (element.x - (prior?.dx ?? 0));
-        const newDx = (value / 100) - naturalX;
-        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, dx: newDx });
-      } else if (field === 'y') {
-        const naturalY = element.frame?.blockStart ?? (element.y - (prior?.dy ?? 0));
-        const newDy = (value / 100) - naturalY;
-        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, dy: newDy });
-      } else if (field === 'w') {
-        const newW = Math.max(0.02, Math.min(1, value / 100));
-        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, w: newW });
-      } else if (field === 'scale') {
-        const newScale = Math.max(0.2, Math.min(5, value / 100));
-        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, scale: newScale });
-      } else if (field === 'rotation') {
-        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, rotation: ((value % 360) + 360) % 360 });
-      } else if (field === 'opacity') {
-        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, opacity: Math.max(0, Math.min(1, value / 100)) });
-      }
-    } else if (element.extra) {
-      if (field === 'x') updateExtraElement(slide.id, { ...element.extra, x: Math.max(0, Math.min(0.98, value / 100)) });
-      else if (field === 'y') updateExtraElement(slide.id, { ...element.extra, y: Math.max(0, Math.min(0.98, value / 100)) });
-      else if (field === 'w') updateExtraElement(slide.id, { ...element.extra, w: Math.max(0.02, Math.min(1, value / 100)) });
-      else if (field === 'scale') {
-        const currentW = element.extra.w || 0.2;
-        const targetW = Math.max(0.02, Math.min(1, value / 100));
-        const ratio = targetW / currentW;
-        updateExtraElement(slide.id, { ...element.extra, w: targetW, h: Math.max(0.02, Math.min(1, (element.extra.h || 0.2) * ratio)) });
-      } else if (field === 'rotation') {
-        updateExtraElement(slide.id, { ...element.extra, rotation: ((value % 360) + 360) % 360 });
-      } else if (field === 'opacity') {
-        updateExtraElement(slide.id, { ...element.extra, opacity: Math.max(0, Math.min(1, value / 100)) });
-      }
-    }
-    setAnnouncement(t('editor.movedAnnouncement', { id: element.id }));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, element: ResolvedElement) => {
@@ -677,49 +397,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     }
   };
 
-  const setLayerState = (element: ResolvedElement, changes: { z?: number; locked?: boolean; hidden?: boolean }) => {
-    if (element.kind === 'slot' && element.frame) {
-      const prior = slide.overrides?.[aspect]?.[element.id];
-      updateSlotOverride(slide.id, aspect, element.id, {
-        dx: prior?.dx ?? 0, dy: prior?.dy ?? 0, scale: prior?.scale ?? 1,
-        ...(prior?.w !== undefined ? { w: prior.w } : {}),
-        ...(prior?.h !== undefined ? { h: prior.h } : {}),
-        z: changes.z ?? element.z,
-        locked: changes.locked ?? element.locked,
-        hidden: changes.hidden ?? element.hidden,
-      });
-    } else if (element.extra) {
-      updateExtraElement(slide.id, { ...element.extra, z: changes.z === undefined ? element.extra.z : changes.z - (variant?.elements.length ?? 0), locked: changes.locked ?? element.locked, hidden: changes.hidden ?? element.hidden });
-    }
-  };
-
-  const moveLayer = (elementId: string, delta: -1 | 1) => {
-    const ordered = [...elements];
-    const current = ordered.findIndex((item) => item.id === elementId);
-    const next = current + delta;
-    if (current < 0 || next < 0 || next >= ordered.length) return;
-    const first = ordered[current]!;
-    const second = ordered[next]!;
-    setLayerState(first, { z: second.z });
-    setLayerState(second, { z: first.z });
-  };
-
   return (
     <div ref={layerRef} aria-label={t('editor.manipulationOverlay')} data-testid="manipulation-layer" onTouchStart={(event) => event.stopPropagation()} onTouchMove={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()} style={{ position: 'absolute', inset: 0, width, height, zIndex: 20, pointerEvents: 'none' }}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 60, pointerEvents: 'auto', transform: touchLayout ? undefined : `scale(${1 / zoom})`, transformOrigin: 'top right' }}>
-        <button type="button" data-testid="layers-toggle" aria-expanded={layersOpen} aria-controls="canvas-layers-panel" onClick={() => setLayersOpen((open) => !open)} style={{ minWidth: 44, minHeight: 44, padding: '0 12px', border: '1px solid #94a3b8', borderRadius: 10, background: 'white', color: '#0f172a', fontWeight: 700 }}>{t('editor.layers')}</button>
-        {layersOpen && <section id="canvas-layers-panel" data-testid="canvas-layers-panel" aria-label={t('editor.layers')} style={{ width: 300, maxHeight: Math.min(touchLayout ? height - 64 : height * zoom - 64, 420), overflowY: 'auto', marginTop: 6, padding: 8, borderRadius: 12, background: 'white', color: '#0f172a', boxShadow: '0 6px 24px #0004' }}>
-          <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {elements.map((item, index) => <li key={item.id} data-testid={`layer-row-${item.id}`} style={{ display: 'flex', alignItems: 'center', gap: 4, minHeight: 48, borderBottom: '1px solid #e2e8f0', opacity: item.hidden ? 0.6 : 1 }}>
-              <button type="button" onClick={() => selectElement(item.id)} aria-current={selectedId === item.id ? 'true' : undefined} style={{ flex: 1, minWidth: 0, minHeight: 44, padding: '0 6px', textAlign: 'start', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: selectedId === item.id ? 700 : 500 }}>{item.id}</button>
-              <button type="button" aria-label={t(item.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: item.id })} onClick={() => setLayerState(item, { locked: !item.locked })} style={{ minWidth: 40, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{item.locked ? '🔒' : '🔓'}</button>
-              <button type="button" aria-label={t(item.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: item.id })} onClick={() => setLayerState(item, { hidden: !item.hidden })} style={{ minWidth: 40, minHeight: 44, borderRadius: 8, background: '#f1f5f9' }}>{item.hidden ? '◉' : '◌'}</button>
-              <button type="button" aria-label={t('editor.layerMoveUp', { id: item.id })} disabled={index === 0} onClick={() => moveLayer(item.id, -1)} style={{ minWidth: 36, minHeight: 44, opacity: index === 0 ? 0.4 : 1 }}>↑</button>
-              <button type="button" aria-label={t('editor.layerMoveDown', { id: item.id })} disabled={index === elements.length - 1} onClick={() => moveLayer(item.id, 1)} style={{ minWidth: 36, minHeight: 44, opacity: index === elements.length - 1 ? 0.4 : 1 }}>↓</button>
-            </li>)}
-          </ol>
-        </section>}
-      </div>
       {elements.filter((item) => !item.hidden).map((modelElement) => {
         const element = measuredGeometry[modelElement.id]
           ? {
@@ -740,7 +419,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
             aria-label={t('editor.selectElement', { id: element.id })}
             aria-current={isSelected ? 'true' : undefined}
             aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Shift+ArrowUp Shift+ArrowDown Shift+ArrowLeft Shift+ArrowRight + - Escape Delete Control+D"
-            role="group"
+            role="group" className="transition-all hover:ring-2 hover:ring-amber-400/50 hover:ring-offset-1 rounded-sm"
             tabIndex={element.locked ? -1 : 0}
             onFocus={() => { selectElement(element.id); setAnnouncement(t('editor.selectedAnnouncement', { id: element.id })); }}
             onKeyDown={(event) => handleKeyDown(event, element)}
@@ -753,20 +432,6 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
             onPointerDown={(event) => {
               if (isCurrentlyEditing) {
                 event.stopPropagation();
-                return;
-              }
-              const target = event.target as HTMLElement;
-              const avatar =
-                target.closest('.sig-avatar-ring, .cta-avatar-ring') ||
-                (typeof document !== 'undefined' && document.elementsFromPoint
-                  ? document
-                      .elementsFromPoint(event.clientX, event.clientY)
-                      .find((el) => el.closest('.sig-avatar-ring, .cta-avatar-ring'))
-                      ?.closest<HTMLElement>('.sig-avatar-ring, .cta-avatar-ring')
-                  : null);
-              if (avatar) {
-                event.stopPropagation();
-                (avatar as HTMLElement).click();
                 return;
               }
               begin(event, element, 'move');
@@ -817,197 +482,6 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                 </>
               ) : (
                 <>
-                  {/* D4: Small icon button to open/close the element menu. Menu does NOT open automatically. */}
-                  {!touchLayout && (() => {
-                    const placeAbove = shown.y > 0.35;
-                    const isMenuOpen = menuOpenId === element.id;
-                    return (
-                      <>
-                        {/* Menu toggle icon — always visible when selected, opens menu on click */}
-                        <button
-                          type="button"
-                          data-testid="element-menu-toggle"
-                          aria-label={t('editor.selectionToolbar')}
-                          title={t('editor.selectionToolbar')}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setMenuOpenId(isMenuOpen ? null : element.id);
-                          }}
-                          onPointerDown={(e) => e.stopPropagation()}
-                          style={{
-                            position: 'absolute',
-                            top: placeAbove ? -40 : 'calc(100% + 4px)',
-                            insetInlineStart: 0,
-                            zIndex: 56,
-                            width: 36,
-                            height: 36,
-                            borderRadius: 8,
-                            background: isMenuOpen ? '#0891b2' : 'white',
-                            color: isMenuOpen ? 'white' : '#0f172a',
-                            border: '1px solid #cbd5e1',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                            cursor: 'pointer',
-                            pointerEvents: 'auto',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transform: `scale(${1 / zoom}) rotate(-${shown.rotation}deg)`,
-                            transformOrigin: placeAbove ? 'bottom left' : 'top left',
-                          }}
-                        >
-                          <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                            <circle cx="12" cy="5" r="1.5" fill="currentColor" />
-                            <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-                            <circle cx="12" cy="19" r="1.5" fill="currentColor" />
-                          </svg>
-                        </button>
-
-                        {isMenuOpen && (
-                          <>
-                            <div
-                              data-testid="element-context-toolbar"
-                              role="toolbar"
-                              aria-label={t('editor.selectionToolbar')}
-                              onPointerDown={(event) => event.stopPropagation()}
-                              style={{
-                                position: 'absolute',
-                                top: placeAbove ? -48 : 'calc(100% + 8px)',
-                                insetInlineStart: 40,
-                                zIndex: 55,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 4,
-                                padding: 4,
-                                borderRadius: 10,
-                                background: 'white',
-                                color: '#0f172a',
-                                boxShadow: '0 4px 18px rgba(0,0,0,0.15)',
-                                border: '1px solid #cbd5e1',
-                                pointerEvents: 'auto',
-                                transform: `scale(${1 / zoom}) rotate(-${shown.rotation}deg)`,
-                                transformOrigin: placeAbove ? 'bottom left' : 'top left',
-                              }}
-                            >
-                              {/* Lock / Unlock button */}
-                              <button
-                                type="button"
-                                aria-label={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })}
-                                title={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })}
-                                onClick={() => setLayerState(element, { locked: !element.locked })}
-                                style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
-                              >
-                                {element.locked ? (
-                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                                  </svg>
-                                ) : (
-                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-                                  </svg>
-                                )}
-                              </button>
-
-                              {/* Hide / Show (Eye) button */}
-                              <button
-                                type="button"
-                                aria-label={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })}
-                                title={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })}
-                                onClick={() => setLayerState(element, { hidden: !element.hidden })}
-                                style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
-                              >
-                                {element.hidden ? (
-                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                                    <line x1="1" y1="1" x2="23" y2="23" />
-                                  </svg>
-                                ) : (
-                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                  </svg>
-                                )}
-                              </button>
-
-                              {/* Edit Text (Pencil) button */}
-                              {isTextElement && (
-                                <button
-                                  type="button"
-                                  aria-label={t('editor.editText')}
-                                  title={t('editor.editText')}
-                                  data-testid={`edit-text-btn-${element.id}`}
-                                  onClick={(e) => { e.stopPropagation(); setEditingId(element.id); setMenuOpenId(null); }}
-                                  style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
-                                >
-                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                  </svg>
-                                </button>
-                              )}
-
-                              {element.extra && (
-                                <>
-                                  <button
-                                    type="button"
-                                    aria-label={t('editor.duplicateElement')}
-                                    title={t('editor.duplicateElement')}
-                                    onClick={() => {
-                                      const duplicate = { ...element.extra!, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.extra!.z + 1 };
-                                      addExtraElement(slide.id, duplicate);
-                                      selectElement(duplicate.id);
-                                      setMenuOpenId(null);
-                                    }}
-                                    style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155', fontSize: 16, fontWeight: 700 }}
-                                  >
-                                    ＋
-                                  </button>
-                                  <button
-                                    type="button"
-                                    aria-label={t('editor.deleteElement')}
-                                    title={t('editor.deleteElement')}
-                                    onClick={() => { deleteExtraElement(slide.id, element.id); selectElement(); setMenuOpenId(null); }}
-                                    style={{ width: 36, height: 36, borderRadius: 8, background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#b91c1c', fontSize: 16, fontWeight: 700 }}
-                                  >
-                                    ×
-                                  </button>
-                                </>
-                              )}
-
-                              <button
-                                type="button"
-                                aria-label={t('editor.resetElement')}
-                                title={t('editor.resetElement')}
-                                data-testid={`reset-${element.id}`}
-                                onPointerDown={(event) => event.stopPropagation()}
-                                onClick={(event) => { event.stopPropagation(); reset(element); setMenuOpenId(null); }}
-                                style={{ minHeight: 32, padding: '0 8px', borderRadius: 6, background: '#0e7490', color: 'white', fontSize: 11, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
-                              >
-                                <span>↺</span>
-                                <span>{t('editor.resetElement')}</span>
-                              </button>
-                            </div>
-
-                            <NumericInspector
-                              element={element}
-                              zoom={zoom}
-                              t={t}
-                              onCommit={(field, value) => applyNumericGeometry(element, field, value)}
-                              style={{
-                                position: 'absolute',
-                                top: placeAbove ? -148 : 'calc(100% + 56px)',
-                                insetInlineStart: 0,
-                                transform: `scale(${1 / zoom}) rotate(-${shown.rotation}deg)`,
-                                transformOrigin: placeAbove ? 'bottom left' : 'top left',
-                              }}
-                            />
-                          </>
-                        )}
-                      </>
-                    );
-                  })()}
-
                   {/* Corner Resize Handle */}
                   <button
                     aria-label={t('editor.resizeElement')}

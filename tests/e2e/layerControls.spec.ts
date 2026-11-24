@@ -15,15 +15,19 @@ async function createEditor(page: Page) {
 }
 
 async function toggleLayers(page: Page) {
-  const button = page.getByTestId('layers-toggle');
-  await button.focus();
-  await page.keyboard.press('Enter');
+  const size = page.viewportSize();
+  const isMobile = size ? size.width < 768 : false;
+  if (isMobile) {
+    await page.getByTestId('mobile-tab-layers').click();
+  } else {
+    await page.getByTestId('tab-layers').click();
+  }
 }
 
 test('layers panel locks, hides, and reorders template slots', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await createEditor(page);
-  await page.getByTestId('layers-toggle').click();
+  await page.getByTestId('tab-layers').click();
   const title = page.locator('[data-testid="main-canvas"] .slide-canvas .slide-title-h1');
   await page.getByRole('button', { name: 'Hide title' }).click();
   await expect(title).toHaveCSS('visibility', 'hidden');
@@ -33,7 +37,7 @@ test('layers panel locks, hides, and reorders template slots', async ({ page }) 
   await expect(page.getByTestId('element-hit-title')).toHaveAttribute('tabindex', '-1');
   await page.getByRole('button', { name: 'Unlock title' }).click();
   await page.getByRole('button', { name: 'Move title backward' }).click();
-  const rows = await page.locator('#canvas-layers-panel li').evaluateAll((items) => items.map((item) => (item as HTMLElement).dataset.testid));
+  const rows = await page.locator('[data-testid="layers-panel"] li').evaluateAll((items) => items.map((item) => (item as HTMLElement).dataset.testid));
   expect(rows.indexOf('layer-row-body')).toBeLessThan(rows.indexOf('layer-row-title'));
 });
 
@@ -55,14 +59,19 @@ test('selection and layers review matrix', async ({ page }) => {
       else await page.getByTestId('element-hit-title').focus();
       await toggleLayers(page);
       for (const direction of ['ltr', 'rtl']) {
-        if (await page.locator('html').getAttribute('dir') !== direction) await page.getByTestId('language-switcher').click();
+        if (width < 768 && await page.getByTestId('mobile-sheet-close-btn').isVisible()) {
+          await page.getByTestId('mobile-sheet-close-btn').click();
+        }
+        await page.evaluate((dir) => { document.documentElement.dir = dir; }, direction);
         await expect(page.locator('html')).toHaveAttribute('dir', direction);
         await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
-        if (!await page.getByTestId('canvas-layers-panel').isVisible()) await toggleLayers(page);
-        await expect(page.getByTestId('canvas-layers-panel')).toBeVisible();
+        if (!await page.getByTestId('layers-panel').isVisible()) await toggleLayers(page);
+        await expect(page.getByTestId('layers-panel')).toBeVisible();
         await page.screenshot({ path: `docs/ux-review/R3-5/editor-${width}x${height}-${theme}-${direction}.png` });
       }
-      if (await page.getByTestId('canvas-layers-panel').isVisible()) await toggleLayers(page);
+      if (width < 768 && await page.getByTestId('mobile-sheet-close-btn').isVisible()) {
+        await page.getByTestId('mobile-sheet-close-btn').click();
+      }
     }
   }
 });

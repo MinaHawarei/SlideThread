@@ -33,7 +33,7 @@ export interface SnapResult {
 export const SLOT_SELECTORS: Record<string, string> = {
   title: '.slide-title-h1, .slide-title-h2',
   body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',
-  media: '.slide-media-element, .slide-bg-media',
+  media: '.slide-media-element, .slide-bg-media, .cta-avatar-ring, .media-placeholder',
   counter: '.sig-counter-badge',
   signature: '.slide-signature-container',
   code: '.code-container',

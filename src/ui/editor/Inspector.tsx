@@ -5,9 +5,10 @@ import { SlideInspector } from './SlideInspector';
 import { DesignInspector } from './DesignInspector';
 import { BrandInspector } from './BrandInspector';
 import { AssetsPanel } from './AssetsPanel';
+import { LayersPanel } from './LayersPanel';
 import { ElementPropertiesPanel } from './ElementPropertiesPanel';
 
-export type InspectorTab = 'slide' | 'assets' | 'design' | 'brand';
+export type InspectorTab = 'slide' | 'assets' | 'design' | 'layers' | 'brand';
 
 export interface InspectorProps {
   className?: string;
@@ -45,12 +46,12 @@ export const Inspector: React.FC<InspectorProps> = ({
       aria-label="Slide properties inspector"
       className={`w-80 border-l border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col h-full shrink-0 ${className}`}
     >
-      {/* Four Tabs: Slide / Assets / Design / Brand */}
+      {/* Five Tabs: Slide / Assets / Design / Layers / Brand */}
       <div
         data-testid="inspector-tabs"
         role="tablist"
         aria-label="Inspector tabs"
-        className="grid grid-cols-4 border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 p-1"
+        className="grid grid-cols-5 border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 p-1"
       >
         <button
           type="button"
@@ -60,7 +61,7 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={currentTab === 'slide'}
           data-testid="tab-slide"
           onClick={() => handleTabClick('slide')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+          className={`py-2 text-[11px] font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 truncate px-1 cursor-pointer ${
             currentTab === 'slide'
               ? 'bg-white dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-sm border-b-2 border-amber-600 dark:border-amber-500'
               : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
@@ -77,7 +78,7 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={currentTab === 'assets'}
           data-testid="tab-assets"
           onClick={() => handleTabClick('assets')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+          className={`py-2 text-[11px] font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 truncate px-1 cursor-pointer ${
             currentTab === 'assets'
               ? 'bg-white dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-sm border-b-2 border-amber-600 dark:border-amber-500'
               : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
@@ -94,13 +95,31 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={currentTab === 'design'}
           data-testid="tab-design"
           onClick={() => handleTabClick('design')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+          className={`py-2 text-[11px] font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 truncate px-1 cursor-pointer ${
             currentTab === 'design'
               ? 'bg-white dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-sm border-b-2 border-amber-600 dark:border-amber-500'
               : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
           }`}
         >
           {t('editor.tabDesign')}
+        </button>
+
+        {/* P5: Layers tab before Brand */}
+        <button
+          type="button"
+          role="tab"
+          id="tab-layers"
+          aria-controls="panel-layers"
+          aria-selected={currentTab === 'layers'}
+          data-testid="tab-layers"
+          onClick={() => handleTabClick('layers')}
+          className={`py-2 text-[11px] font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 truncate px-1 cursor-pointer ${
+            currentTab === 'layers'
+              ? 'bg-white dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-sm border-b-2 border-amber-600 dark:border-amber-500'
+              : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
+          }`}
+        >
+          {t('editor.tabLayers')}
         </button>
 
         <button
@@ -111,7 +130,7 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={currentTab === 'brand'}
           data-testid="tab-brand"
           onClick={() => handleTabClick('brand')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 ${
+          className={`py-2 text-[11px] font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-amber-500 truncate px-1 cursor-pointer ${
             currentTab === 'brand'
               ? 'bg-white dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-sm border-b-2 border-amber-600 dark:border-amber-500'
               : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
@@ -140,6 +159,11 @@ export const Inspector: React.FC<InspectorProps> = ({
             {currentTab === 'design' && (
               <div role="tabpanel" id="panel-design" aria-labelledby="tab-design">
                 <DesignInspector />
+              </div>
+            )}
+            {currentTab === 'layers' && (
+              <div role="tabpanel" id="panel-layers" aria-labelledby="tab-layers">
+                <LayersPanel />
               </div>
             )}
             {currentTab === 'brand' && (

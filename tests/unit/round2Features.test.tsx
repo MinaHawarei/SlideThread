@@ -23,27 +23,18 @@ describe('Round 2 Fixes and Features', () => {
     });
   });
 
-  describe('D4: Menu does not open automatically on selection', () => {
-    it('shows toggle button on select, only opens toolbar when toggle is clicked', () => {
+  describe('Properties panel migration', () => {
+    it('opens properties panel on selection without redundant floating menu toggle', () => {
       render(<EditorDesktop />);
       const titleHit = screen.getByTestId('element-hit-title');
       fireEvent.click(titleHit);
 
-      // Context toolbar should NOT be in the document yet (D4)
+      // Context toolbar and toggle are removed in favor of Properties panel
       expect(screen.queryByTestId('element-context-toolbar')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('element-menu-toggle')).not.toBeInTheDocument();
 
-      // Toggle button should be visible
-      const toggle = screen.getByTestId('element-menu-toggle');
-      expect(toggle).toBeInTheDocument();
-
-      // Click toggle -> toolbar and inspector appear
-      fireEvent.click(toggle);
-      expect(screen.getByTestId('element-context-toolbar')).toBeInTheDocument();
-      expect(screen.getByTestId('element-numeric-inspector')).toBeInTheDocument();
-
-      // Click toggle again -> toolbar closes
-      fireEvent.click(toggle);
-      expect(screen.queryByTestId('element-context-toolbar')).not.toBeInTheDocument();
+      // Properties panel is open in Inspector
+      expect(screen.getByTestId('element-properties-panel')).toBeInTheDocument();
     });
   });
 
@@ -67,16 +58,15 @@ describe('Round 2 Fixes and Features', () => {
   });
 
   describe('F2: Opacity & rotation for all elements', () => {
-    it('exposes opacity and rotation in numeric inspector for slot elements', () => {
+    it('exposes opacity and rotation in properties panel for slot elements', () => {
       render(<EditorDesktop />);
       fireEvent.click(screen.getByTestId('element-hit-title'));
-      fireEvent.click(screen.getByTestId('element-menu-toggle'));
 
-      const rotInput = screen.getByRole('spinbutton', { name: 'Rotation (°)' });
+      const rotInput = screen.getByTestId('sidebar-rotation-input');
       expect(rotInput).toBeInTheDocument();
       act(() => fireEvent.change(rotInput, { target: { value: '45' } }));
 
-      const opacityInput = screen.getByRole('spinbutton', { name: 'Opacity (%)' });
+      const opacityInput = screen.getByTestId('sidebar-opacity-input');
       expect(opacityInput).toBeInTheDocument();
       act(() => fireEvent.change(opacityInput, { target: { value: '80' } }));
 

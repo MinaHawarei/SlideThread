@@ -48,10 +48,9 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
     const target = e.target as HTMLElement;
     if (
       !target.closest('[data-testid^="element-hit-"]') &&
-      !target.closest('[data-testid="element-context-toolbar"]') &&
-      !target.closest('[data-testid="element-numeric-inspector"]') &&
-      !target.closest('[data-testid="layers-toggle"]') &&
-      !target.closest('[data-testid="canvas-layers-panel"]')
+      !target.closest('[data-testid="inspector"]') &&
+      !target.closest('[data-testid="element-properties-panel"]') &&
+      !target.closest('[data-testid="layers-panel"]')
     ) {
       selectElement(undefined);
     }

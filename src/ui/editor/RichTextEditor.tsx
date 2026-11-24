@@ -62,6 +62,7 @@ export interface RichTextEditorProps {
   autoFocus?: boolean;
   style?: React.CSSProperties;
   className?: string;
+  embedded?: boolean;
 }
 
 const FONT_OPTIONS = [
@@ -87,6 +88,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   autoFocus = true,
   style = {},
   className = '',
+  embedded = false,
 }) => {
   const { t } = useT();
   const initialJSON = useRef(richTextToTiptapJSON(content));
@@ -132,6 +134,15 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   });
 
   useEffect(() => {
+    if (!editor || editor.isFocused) return;
+    const currentJSON = editor.getJSON();
+    const newJSON = richTextToTiptapJSON(content);
+    if (JSON.stringify(currentJSON) !== JSON.stringify(newJSON)) {
+      editor.commands.setContent(newJSON, { emitUpdate: false });
+    }
+  }, [editor, content]);
+
+  useEffect(() => {
     if (!editor) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -157,12 +168,12 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div
       className={`rich-text-editor-container ${className}`.trim()}
-      style={{ position: 'relative', width: '100%', height: '100%', ...style }}
+      style={{ position: 'relative', width: '100%', ...(embedded ? {} : { height: '100%' }), ...style }}
       data-testid="rich-text-editor-container"
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
     >
-      {/* Floating Toolbar */}
+      {/* Floating or Embedded Toolbar */}
       <div
         role="toolbar"
         aria-label={t('editor.richTextToolbar')}
@@ -173,8 +184,22 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           e.stopPropagation();
         }}
         style={
-          touchLayout
+          embedded
             ? {
+              position: 'relative',
+              zIndex: 10,
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 4,
+              padding: '6px',
+              background: '#f8fafc',
+              border: '1px solid #cbd5e1',
+              borderRadius: 8,
+              marginBottom: 6,
+            }
+            : touchLayout
+              ? {
                 position: 'fixed',
                 bottom: 0,
                 left: 0,
@@ -190,7 +215,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
                 borderTop: '1px solid #cbd5e1',
                 boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.15)',
               }
-            : {
+              : {
                 position: 'absolute',
                 top: -56,
                 insetInlineStart: 0,
@@ -482,12 +507,15 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         editor={editor}
         style={{
           width: '100%',
-          height: '100%',
+          height: embedded ? 'auto' : '100%',
+          minHeight: embedded ? 80 : undefined,
+          maxHeight: embedded ? 200 : undefined,
           background: 'rgba(255, 255, 255, 0.95)',
           color: '#0f172a',
-          padding: 4,
-          borderRadius: 4,
-          boxShadow: '0 0 0 2px #0891b2',
+          padding: embedded ? 8 : 4,
+          borderRadius: embedded ? 8 : 4,
+          border: embedded ? '1px solid #cbd5e1' : undefined,
+          boxShadow: embedded ? 'none' : '0 0 0 2px #0891b2',
           overflowY: 'auto',
           boxSizing: 'border-box',
         }}

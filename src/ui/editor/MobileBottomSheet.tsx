@@ -45,6 +45,7 @@ export const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
       {/* Bottom Sheet Modal Panel */}
       <div
         data-testid="mobile-bottom-sheet"
+        data-half-height={halfHeight ? 'true' : 'false'}
         role="dialog"
         aria-modal="true"
         aria-label={title}
