@@ -14,6 +14,7 @@ interface CanvasManipulationLayerProps {
   width: number;
   height: number;
   zoom: number;
+  hideBrandPopover?: boolean;
 }
 
 
@@ -28,7 +29,7 @@ type Gesture = {
   hasMoved: boolean;
 };
 
-export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = ({ slide, aspect, width, height, zoom }) => {
+export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = ({ slide, aspect, width, height, zoom, hideBrandPopover = false }) => {
   const { t } = useT();
   const layout = getLayoutArchetype(`${slide.type}-centered`);
   const variant = layout?.variants[aspect];
@@ -475,11 +476,13 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
               isSelected && !element.locked && <>
               {element.id === 'signature' ? (
                 <>
-                  <BrandOverridePopover
-                    zoom={zoom}
-                    position={shown.y < 0.3 ? 'bottom' : 'top'}
-                    onClose={() => selectElement()}
-                  />
+                  {!hideBrandPopover && !touchLayout && (
+                    <BrandOverridePopover
+                      zoom={zoom}
+                      position={shown.y < 0.3 ? 'bottom' : 'top'}
+                      onClose={() => selectElement()}
+                    />
+                  )}
                   <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', right: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize' }} />
                 </>
               ) : (

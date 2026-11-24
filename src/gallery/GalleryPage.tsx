@@ -129,15 +129,23 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
       {/* Top Header & Navigation */}
       <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-4 sm:px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <LogoMark size={32} className="shrink-0" />
-            <div className="min-w-0">
-              <h1 className="text-base sm:text-xl font-bold tracking-tight text-stone-900 dark:text-white font-serif truncate">
-                SlideThread Component Gallery
-              </h1>
-              <p className="text-xs text-stone-500 dark:text-stone-400 hidden sm:block">
-                {t('ux.gallery.eyebrow')}
-              </p>
+          {/* Mobile Side Drawer Navigation */}
+          <MobileNavDrawer currentPath="/gallery" onNavigate={navigateTo} />
+
+          <div className="flex items-center gap-3 min-w-0 flex-1 justify-end md:justify-start">
+            <div className="flex items-center gap-3 min-w-0" dir="ltr">
+              <LogoMark size={32} className="shrink-0" />
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-xl font-bold tracking-tight text-stone-900 dark:text-white font-serif truncate">
+                  SlideThread Component Gallery
+                </h1>
+                <p
+                  dir={dir}
+                  className="text-xs text-stone-500 dark:text-stone-400 hidden sm:block"
+                >
+                  {t('ux.gallery.eyebrow')}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -158,9 +166,6 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
               {t('nav.settings')}
             </button>
           </div>
-
-          {/* Mobile Side Drawer Navigation */}
-          <MobileNavDrawer currentPath="/gallery" onNavigate={navigateTo} />
         </div>
       </header>
 

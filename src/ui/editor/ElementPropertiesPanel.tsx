@@ -10,12 +10,17 @@ import { parsePlainTextToRichText } from '../../core/richText';
 import { processUserUpload } from '../../core/uploads';
 import { getAssetUrl } from '../../core/assetStore';
 import type { RichText } from '../../core/schema';
+import { BrandOverrideControls } from './BrandOverridePopover';
 
 export interface ElementPropertiesPanelProps {
   onClose?: () => void;
+  inlineBrandOverride?: boolean;
 }
 
-export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({ onClose }) => {
+export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
+  onClose,
+  inlineBrandOverride = false,
+}) => {
   const { t } = useT();
   const project = useProjectStore((state) => state.project);
   const activeSlide = useActiveSlide();
@@ -381,6 +386,11 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({ 
           ✕
         </button>
       </div>
+
+      {/* 1b. Branding Override Controls (inline in Edit panel for mobile) */}
+      {inlineBrandOverride && element.id === 'signature' && (
+        <BrandOverrideControls inline />
+      )}
 
       {/* 2. Position & Size ("Settings first") */}
       <div className="space-y-3">

@@ -136,7 +136,8 @@ export const SettingsPage: React.FC = () => {
     <div className="settings-shell" dir={dir}>
       {/* Header Navigation */}
       <header className="settings-header">
-        <a className="settings-brand" href="/" aria-label={t('nav.home')}>
+        <MobileNavDrawer currentPath="/settings" />
+        <a className="settings-brand" href="/" aria-label={t('nav.home')} dir="ltr">
           <LogoMark size={24} />
           <span>SlideThread</span>
         </a>
@@ -147,7 +148,6 @@ export const SettingsPage: React.FC = () => {
             {t('nav.settings')}
           </a>
         </nav>
-        <MobileNavDrawer currentPath="/settings" />
       </header>
 
       {/* Main Content */}

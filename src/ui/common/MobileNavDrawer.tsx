@@ -153,7 +153,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
               {/* Drawer Header */}
               <div>
                 <div className="flex items-center justify-between pb-4 border-b border-stone-200 dark:border-stone-800">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5" dir="ltr">
                     <LogoMark size={28} />
                     <span className="font-serif font-bold text-base text-stone-900 dark:text-stone-100">
                       {APP_NAME}

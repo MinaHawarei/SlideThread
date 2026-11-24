@@ -24,7 +24,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   onOpenProject,
   onNavigate,
 }) => {
-  const { t } = useT();
+  const { t, dir } = useT();
   const currentProject = useProjectStore((state) => state.project);
   const setProject = useProjectStore((state) => state.setProject);
   const createProject = useProjectStore((state) => state.createProject);
@@ -206,20 +206,28 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col justify-between selection:bg-amber-500 selection:text-white"
     >
       {/* Top Header */}
-      <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <LogoMark size={36} />
-            <div>
-              <h1
-                data-testid="start-app-title"
-                className="text-xl font-bold tracking-tight text-stone-900 dark:text-white font-serif"
-              >
-                {APP_NAME}
-              </h1>
-              <p className="text-xs text-stone-500 dark:text-stone-400 hidden sm:block">
-                {t('app.tagline')}
-              </p>
+      <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-4 sm:px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+          {/* Mobile Side Drawer Navigation */}
+          <MobileNavDrawer currentPath="/" onNavigate={handleNavigate} />
+
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-3" dir="ltr">
+              <LogoMark size={36} />
+              <div className="min-w-0">
+                <h1
+                  data-testid="start-app-title"
+                  className="text-xl font-bold tracking-tight text-stone-900 dark:text-white font-serif"
+                >
+                  {APP_NAME}
+                </h1>
+                <p
+                  dir={dir}
+                  className="text-xs text-stone-500 dark:text-stone-400 hidden sm:block"
+                >
+                  {t('app.tagline')}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -246,9 +254,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               </button>
             )}
           </div>
-
-          {/* Mobile Side Drawer Navigation */}
-          <MobileNavDrawer currentPath="/" onNavigate={handleNavigate} />
         </div>
       </header>
 

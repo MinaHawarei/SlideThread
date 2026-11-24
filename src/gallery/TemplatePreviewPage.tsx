@@ -187,19 +187,36 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
       {/* Top Header */}
       <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-4 sm:px-6 py-3.5">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+          {/* Mobile Top Row: Hamburger on start, Logo on end */}
+          <div className="flex md:hidden items-center justify-between w-full gap-3">
+            <MobileNavDrawer currentPath="/preview" onNavigate={navigateTo} />
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateTo('/');
+              }}
+              dir="ltr"
+              className="flex items-center gap-2 text-stone-900 dark:text-white"
+            >
+              <LogoMark size={24} />
+              <span className="font-serif font-bold text-base">SlideThread</span>
+            </a>
+          </div>
+
+          <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
               data-testid="preview-back-gallery"
               onClick={() => navigateTo('/gallery')}
-              className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors flex items-center gap-1"
+              className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors flex items-center gap-1 shrink-0"
             >
               <span>←</span>
               <span>{t('nav.gallery')}</span>
             </button>
 
-            <div>
-              <h1 className="text-base sm:text-lg font-bold font-serif text-stone-900 dark:text-white flex items-center gap-2">
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold font-serif text-stone-900 dark:text-white flex items-center gap-2 truncate">
                 <span>{t(selectedTemplate.nameKey as Parameters<typeof t>[0])}</span>
                 <span className="text-xs font-mono font-normal text-stone-400">({selectedTemplate.id})</span>
               </h1>
@@ -216,7 +233,6 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
               <span>✨</span>
               <span>{t('ux.gallery.use')}</span>
             </button>
-            <MobileNavDrawer currentPath="/preview" onNavigate={navigateTo} />
           </div>
         </div>
       </header>

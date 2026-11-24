@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
+import { undo, redo, useHistoryStore } from '../../store/history';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
@@ -31,13 +32,16 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
   onHome,
   onOpenExport,
 }) => {
-  const { t, locale } = useT();
+  const { t, dir, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const activeSlideId = useProjectStore((state) => state.activeSlideId);
   const setActiveSlideId = useProjectStore((state) => state.setActiveSlideId);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
   const effectiveBrand = useEffectiveBrand();
   const selectedElementId = useSelectionStore((state) => state.selectedElementId);
+  const canUndo = useHistoryStore((state) => state.canUndo);
+  const canRedo = useHistoryStore((state) => state.canRedo);
+  const isRtl = dir === 'rtl';
 
   const activeSlide = useActiveSlide();
   const slides = project.slides;
@@ -50,6 +54,16 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
   const [designSubTab, setDesignSubTab] = useState<'design' | 'brand'>('design');
   const [showSafeZones, setShowSafeZones] = useState<boolean>(false);
+
+  // Open Edit panel automatically when branding element ('signature') is selected/tapped
+  const prevSelectedIdRef = useRef<string | undefined>(selectedElementId);
+  useEffect(() => {
+    if (prevSelectedIdRef.current !== 'signature' && selectedElementId === 'signature') {
+      setActiveTab('edit');
+      setIsSheetOpen(true);
+    }
+    prevSelectedIdRef.current = selectedElementId;
+  }, [selectedElementId]);
 
   const [sizeWarning, setSizeWarning] = useState<{
     isOpen: boolean;
@@ -215,8 +229,30 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           />
         </div>
 
-        {/* Right: Quick Story Safe-Zones */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        {/* Right: Undo/Redo & Quick Story Safe-Zones */}
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            data-testid="mobile-editor-undo-btn"
+            disabled={!canUndo}
+            onClick={() => undo()}
+            aria-label={t('editor.undo')}
+            title={t('editor.undo')}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-200/60 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors text-base"
+          >
+            {isRtl ? '↻' : '↺'}
+          </button>
+          <button
+            type="button"
+            data-testid="mobile-editor-redo-btn"
+            disabled={!canRedo}
+            onClick={() => redo()}
+            aria-label={t('editor.redo')}
+            title={t('editor.redo')}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-200/60 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors text-base"
+          >
+            {isRtl ? '↺' : '↻'}
+          </button>
           {isStory && (
             <button
               type="button"
@@ -299,7 +335,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 projectBackground={project.background}
               />
             </div>
-            <CanvasManipulationLayer slide={currentSlide} aspect={aspect} width={scaledWidth} height={scaledHeight} zoom={scale} />
+            <CanvasManipulationLayer slide={currentSlide} aspect={aspect} width={scaledWidth} height={scaledHeight} zoom={scale} hideBrandPopover />
           </div>
         )}
 
@@ -473,7 +509,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
       >
         {activeTab === 'edit' && (
           selectedElementId ? (
-            <ElementPropertiesPanel onClose={handleCloseSheet} />
+            <ElementPropertiesPanel onClose={handleCloseSheet} inlineBrandOverride />
           ) : (
             <SlideInspector />
           )
