@@ -184,11 +184,11 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
   return (
     <div
       data-testid="editor-mobile"
-      className="h-screen w-screen flex flex-col bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden select-none"
+      className="h-screen w-screen flex flex-col bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 overflow-hidden select-none"
     >
       <StorageQuotaBanner />
       {/* Mobile Top Navigation Header */}
-      <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 flex items-center justify-between shrink-0 z-20">
+      <header className="h-14 border-b border-stone-200/80 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 px-3 flex items-center justify-between shrink-0 z-20 pt-[env(safe-area-inset-top,0px)]">
         {/* Left: Home & Title */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <button
@@ -196,9 +196,9 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
             data-testid="mobile-editor-home-btn"
             onClick={onHome}
             aria-label="Return to Start Screen"
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors shrink-0"
           >
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-600 to-amber-500 flex items-center justify-center text-stone-950 font-serif font-black text-sm shadow-xs">
               S
             </div>
           </button>
@@ -210,7 +210,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
             value={project.title}
             onChange={(e) => updateProjectMeta({ title: e.target.value })}
             placeholder="Untitled Presentation"
-            className="min-h-[44px] flex-1 min-w-0 font-semibold text-xs sm:text-sm py-1.5 px-2 rounded-lg border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-cyan-500 bg-transparent focus:bg-white dark:focus:bg-slate-800 focus:outline-none transition-colors truncate"
+            className="min-h-[44px] flex-1 min-w-0 font-serif font-bold text-xs sm:text-sm py-1.5 px-2 rounded-lg border border-transparent hover:border-stone-300 dark:hover:border-stone-700 focus:border-amber-500 bg-transparent focus:bg-stone-50 dark:focus:bg-stone-800 focus:outline-none transition-colors truncate"
           />
         </div>
 
@@ -226,7 +226,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border text-xs transition-colors ${
                 showSafeZones
                   ? 'bg-red-500/10 border-red-500 text-red-600 dark:text-red-400'
-                  : 'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  : 'border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400'
               }`}
             >
               🛡️
@@ -249,7 +249,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         style={selectedElementId ? { paddingBottom: 88 } : undefined}
-        className="flex-1 flex flex-col items-center justify-center p-3 relative overflow-hidden bg-slate-100 dark:bg-slate-950"
+        className="flex-1 flex flex-col items-center justify-center p-3 relative overflow-hidden bg-stone-100 dark:bg-stone-950"
       >
         {/* Scaled Slide Box */}
         {currentSlide && (
@@ -262,7 +262,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               position: 'relative',
               overflow: 'visible',
               borderRadius: '12px',
-              boxShadow: '0 12px 28px -6px rgba(0, 0, 0, 0.35)',
+              boxShadow: '0 16px 36px -8px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(0, 0, 0, 0.05)',
               background: palette.bg,
               transition: 'width 0.2s, height 0.2s',
             }}
@@ -302,21 +302,21 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
 
         {/* Floating Bottom Canvas Nav Pill (Previous / Counter / Next) */}
         {!selectedElementId && <div className="absolute bottom-3 inset-x-0 flex justify-center pointer-events-none">
-          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded-full shadow-lg border border-slate-200 dark:border-slate-800 flex items-center gap-1.5 pointer-events-auto">
+          <div className="bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur-md px-2 py-1 rounded-full shadow-lg border border-stone-200/80 dark:border-stone-800 flex items-center gap-1.5 pointer-events-auto">
             <button
               type="button"
               data-testid="mobile-prev-slide-btn"
               disabled={validIndex === 0}
               onClick={prevSlide}
               aria-label="Previous Slide"
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors font-bold text-sm"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors font-bold text-sm text-stone-700 dark:text-stone-300"
             >
               ‹
             </button>
 
             <span
               data-testid="mobile-slide-counter"
-              className="font-mono text-xs font-semibold px-2 text-slate-700 dark:text-slate-300"
+              className="font-mono text-xs font-semibold px-2 text-stone-700 dark:text-stone-300"
             >
               {validIndex + 1} / {slides.length}
             </span>
@@ -327,7 +327,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               disabled={validIndex >= slides.length - 1}
               onClick={nextSlide}
               aria-label="Next Slide"
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors font-bold text-sm"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors font-bold text-sm text-stone-700 dark:text-stone-300"
             >
               ›
             </button>
@@ -340,7 +340,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         data-testid="mobile-bottom-tabs"
         role="tablist"
         aria-label="Mobile Navigation Tabs"
-        className="h-16 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-stretch shrink-0 z-30"
+        className="h-16 border-t border-stone-200/80 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 flex items-stretch shrink-0 z-30 pb-[env(safe-area-inset-bottom,0px)]"
       >
         {/* Slides Tab */}
         <button
@@ -351,8 +351,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           onClick={() => handleTabClick('slides')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
             activeTab === 'slides'
-              ? 'text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-50/50 dark:bg-cyan-950/30'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
           }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,8 +370,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           onClick={() => handleTabClick('edit')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
             activeTab === 'edit'
-              ? 'text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-50/50 dark:bg-cyan-950/30'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
           }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,8 +389,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           onClick={() => handleTabClick('assets')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
             activeTab === 'assets'
-              ? 'text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-50/50 dark:bg-cyan-950/30'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
           }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -408,8 +408,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           onClick={() => handleTabClick('design')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
             activeTab === 'design'
-              ? 'text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-50/50 dark:bg-cyan-950/30'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
           }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -427,8 +427,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           onClick={() => handleTabClick('export')}
           className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
             activeTab === 'export'
-              ? 'text-cyan-600 dark:text-cyan-400 font-bold bg-cyan-50/50 dark:bg-cyan-950/30'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
           }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -460,15 +460,15 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           <div className="flex flex-col">
             {/* Sub-tab segmented switcher: Design vs Brand */}
             <div className="px-4 pt-2">
-              <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+              <div className="grid grid-cols-2 p-1 bg-stone-100 dark:bg-stone-800 rounded-xl">
                 <button
                   type="button"
                   data-testid="mobile-design-subtab-design"
                   onClick={() => setDesignSubTab('design')}
                   className={`min-h-[44px] py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
                     designSubTab === 'design'
-                      ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      ? 'bg-stone-50 dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
                   }`}
                 >
                   {t('editor.tabDesign')}
@@ -479,8 +479,8 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                   onClick={() => setDesignSubTab('brand')}
                   className={`min-h-[44px] py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
                     designSubTab === 'brand'
-                      ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      ? 'bg-stone-50 dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
                   }`}
                 >
                   {t('editor.tabBrand')}
@@ -494,7 +494,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
 
         {activeTab === 'export' && (
           <div data-testid="mobile-export-sheet" className="p-4 space-y-4">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-stone-500 dark:text-stone-400">
               {t('export.title')} ({slides.length} slides)
             </p>
 
@@ -505,7 +505,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 handleCloseSheet();
                 onOpenExport?.();
               }}
-              className="w-full min-h-[44px] py-3 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
+              className="w-full min-h-[44px] py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>↓</span>
               <span>{t('editor.export')}</span>
@@ -515,7 +515,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               type="button"
               data-testid="mobile-export-json-btn"
               onClick={handleExportJson}
-              className="w-full min-h-[44px] py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium text-xs transition-colors flex items-center justify-center gap-2"
+              className="w-full min-h-[44px] py-2.5 px-4 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-200 font-medium text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>📄</span>
               <span>{t('io.exportJson')}</span>
