@@ -1914,3 +1914,15 @@ Agent name: Antigravity
   - TypeScript, ESLint, production build: 0 errors.
 - Remaining / next step: Advance to Task P5-5 (Verify name SlideThread is applied consistently).
 - Needs from the owner: None.
+
+### P5-5 — done — 2026-11-24 13:21 — Antigravity
+- Branch / commit: feature/p5-5
+- What changed (files):
+  - `index.html`: Added Open Graph (`og:site_name`, `og:title`, `og:description`, `og:type`) and Twitter meta tags consistently referencing `SlideThread`.
+  - `docs/TASKS.md`: Marked P5-5 as done `[x]`.
+- Decisions / deviations from the plan:
+  - Verified consistent naming across `src/config/site.ts` (`APP_NAME = 'SlideThread'`), `README.md`, `package.json`, page `<title>`, and HTML metadata.
+- Tests run and result:
+  - Full lint, typecheck, unit tests, and build clean.
+- Remaining / next step: Check owner-only release task P5-6 and evaluate final Gate G5.
+- Needs from the owner: None.
