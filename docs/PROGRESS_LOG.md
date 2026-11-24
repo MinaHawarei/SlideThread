@@ -1822,3 +1822,26 @@ Agent name: Antigravity
   - Clean production build (53.02 kB gzip lazy editor chunk).
 - Remaining / next step: Advance to Task R9-6 (Release prep: feature-flag review, known-issues list, release notes).
 - Needs from the owner: None.
+
+### R9-6 — started — 2026-11-24 13:11 — Antigravity
+- Branch / commit: feature/r9-6
+- What changed (files): `docs/TASKS.md` (claimed R9-6).
+- Decisions / deviations from the plan: Review `src/config/features.ts` feature flags for production release, document known issues in `docs/KNOWN_ISSUES.md`, and author comprehensive release notes in `docs/RELEASE_NOTES.md`.
+- Tests run and result: Verification suite running.
+- Remaining / next step: Author release notes and known issues list, update feature flags for production readiness, and verify build/tests.
+- Needs from the owner: None.
+
+### R9-6 — done — 2026-11-24 13:14 — Antigravity
+- Branch / commit: feature/r9-6 · 0e7b82d
+- What changed (files):
+  - `src/config/features.ts`: Enabled all completed revision feature flags (`templatePlatform`, `elementManipulation`, `richTextEditing`, `undoRedo`, `assetLibrary`, `animatedSlideReordering`, `settingsPage`, `redesignedAppShell`) with clear comments and owner toggling instructions.
+  - `docs/KNOWN_ISSUES.md`: Documented non-blocking verification items, device-dependent hardware checks (D-09 physical Arabic IME composition, physical touch frame pacing on mid-range Android, Safari visual check), asset pack boundaries (D-08), and storage quota mitigations.
+  - `docs/RELEASE_NOTES.md`: Authored complete release notes for SlideThread v1.0.0 (Revision 2.0 Consolidated) detailing Direction A (Atelier) visual design, starter templates, canvas manipulation, bilingual rich text, export matrix, performance/security audit results, and deployment instructions.
+- Decisions / deviations from the plan:
+  - Enabled all verified revision features by default while preserving owner feature toggle control.
+- Tests run and result:
+  - 100% unit tests passing.
+  - 0 lint errors, 0 typecheck errors.
+  - Clean production build (53.02 kB gzip lazy editor chunk).
+- Remaining / next step: Verify Gate GR9, then proceed to post-GR9 P5 tasks.
+- Needs from the owner: None.
