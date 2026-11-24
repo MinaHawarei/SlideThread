@@ -10,6 +10,7 @@ import type { FormatId } from '../../core/formats';
 import type { Project, PlatformId } from '../../core/schema';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 import { HeroCarousel } from './HeroCarousel';
+import { EmptyIllustration } from '../common/EmptyIllustration';
 
 export interface StartScreenProps {
   onStartWizard?: () => void;
@@ -650,9 +651,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           {recentList.length === 0 ? (
             <div
               data-testid="recent-empty"
-              className="p-10 rounded-2xl border-2 border-dashed border-stone-200 dark:border-stone-800 text-center space-y-2"
+              className="p-10 rounded-2xl border-2 border-dashed border-stone-200 dark:border-stone-800 flex flex-col items-center justify-center text-center space-y-3"
             >
-              <p className="text-sm text-stone-500 dark:text-stone-400">
+              <EmptyIllustration variant="empty" className="w-20 h-20 text-stone-400 dark:text-stone-600" />
+              <p className="text-sm font-medium text-stone-500 dark:text-stone-400 max-w-sm">
                 {t('start.recentEmpty')}
               </p>
             </div>

@@ -10,6 +10,8 @@ import { MainCanvas } from './MainCanvas';
 import { Inspector, type InspectorTab } from './Inspector';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
+import { ShortcutsOverlay } from '../common/ShortcutsOverlay';
+import { OnboardingModal } from '../common/OnboardingModal';
 import { APP_NAME } from '../../config/site';
 
 export interface EditorDesktopProps {
@@ -28,6 +30,8 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   const [activeTab, setActiveTab] = useState<InspectorTab>('slide');
   const [isSlideRailVisible, setIsSlideRailVisible] = useState(true);
   const [isFormatDialogOpen, setIsFormatDialogOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
   const [sizeWarning, setSizeWarning] = useState<{
     isOpen: boolean;
@@ -140,6 +144,28 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
 
         {/* Right: Quick Actions */}
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            data-testid="editor-shortcuts-btn"
+            onClick={() => setIsShortcutsOpen(true)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-sm"
+            title={t('shortcuts.title')}
+            aria-label={t('shortcuts.title')}
+          >
+            ⌨️
+          </button>
+
+          <button
+            type="button"
+            data-testid="editor-onboarding-btn"
+            onClick={() => setIsOnboardingOpen(true)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-sm"
+            title={t('onboarding.step1Title')}
+            aria-label={t('onboarding.step1Title')}
+          >
+            💡
+          </button>
+
           <LanguageSwitcher />
 
           <button
@@ -309,6 +335,19 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
       <ChangeFormatDialog
         isOpen={isFormatDialogOpen}
         onClose={() => setIsFormatDialogOpen(false)}
+      />
+
+      {/* Shortcuts Overlay */}
+      <ShortcutsOverlay
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+      />
+
+      {/* Onboarding Modal */}
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        onComplete={() => setIsOnboardingOpen(false)}
       />
 
       {/* Size Warning Modal */}
