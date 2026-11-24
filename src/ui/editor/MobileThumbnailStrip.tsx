@@ -116,9 +116,9 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
         zIndex: 40,
       }}
       transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-      className={`relative shrink-0 rounded-lg overflow-hidden border-2 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center p-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:outline-none select-none ${isActive
-        ? 'border-cyan-500 shadow-md ring-2 ring-cyan-500/30'
-        : 'border-slate-200 dark:border-slate-700 opacity-80 hover:opacity-100'
+      className={`relative shrink-0 rounded-xl overflow-hidden border-2 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center p-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none select-none ${isActive
+        ? 'border-amber-500 shadow-md ring-2 ring-amber-500/30'
+        : 'border-stone-200 dark:border-stone-700 opacity-80 hover:opacity-100'
         }`}
       style={{
         width: `${Math.max(44, Math.round(thumbWidth) + 6)}px`,
@@ -277,7 +277,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
     <MotionConfig reducedMotion="user">
       <div
         data-testid="mobile-thumbnail-strip"
-        className={`border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-2 py-1.5 flex flex-col gap-1.5 shrink-0 select-none ${className}`}
+        className={`border-b border-stone-200/80 dark:border-stone-800 bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur-sm px-2 py-1.5 flex flex-col gap-1.5 shrink-0 select-none ${className}`}
       >
         {/* Screen Reader Announcement */}
         <div
@@ -333,7 +333,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 data-testid="mobile-add-slide-btn"
                 onClick={() => handleAddSlide('explain')}
                 aria-label={t('editor.addSlide')}
-                className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-lg border-2 border-dashed border-cyan-400 dark:border-cyan-600 bg-cyan-50/50 dark:bg-cyan-950/30 text-cyan-600 dark:text-cyan-400 flex flex-col items-center justify-center font-bold text-lg hover:bg-cyan-100 transition-colors"
+                className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-xl border-2 border-dashed border-amber-400 dark:border-amber-600 bg-amber-500/10 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 flex flex-col items-center justify-center font-bold text-lg hover:bg-amber-500/20 transition-colors"
               >
                 <span>+</span>
               </button>
@@ -343,7 +343,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 onClick={() => setIsPickerOpen(true)}
                 aria-label="Choose slide type"
                 title="Choose slide type"
-                className="shrink-0 min-h-[44px] min-w-[36px] h-[60px] w-9 rounded-lg border-2 border-dashed border-cyan-300 dark:border-cyan-700 bg-cyan-50/30 dark:bg-cyan-950/20 text-cyan-500 dark:text-cyan-400 flex flex-col items-center justify-center text-xs hover:bg-cyan-100 transition-colors"
+                className="shrink-0 min-h-[44px] min-w-[36px] h-[60px] w-9 rounded-xl border-2 border-dashed border-amber-400/60 dark:border-amber-700/60 bg-amber-500/5 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 flex flex-col items-center justify-center text-xs hover:bg-amber-500/15 transition-colors"
               >
                 <span>✨</span>
               </button>
@@ -353,7 +353,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 onClick={() => setIsPasteOpen(true)}
                 aria-label={t('paste.title')}
                 title={t('paste.title')}
-                className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 flex flex-col items-center justify-center font-bold text-sm hover:bg-slate-100 transition-colors"
+                className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 bg-stone-100/50 dark:bg-stone-800/50 text-stone-600 dark:text-stone-400 flex flex-col items-center justify-center font-bold text-sm hover:bg-stone-200/50 dark:hover:bg-stone-700/50 transition-colors"
               >
                 <span>📋</span>
               </button>
@@ -362,8 +362,8 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
         </Reorder.Group>
 
         {/* Slide Operations Toolbar (Duplicate, Delete, Move Earlier, Move Later) */}
-        <div className="flex items-center justify-between px-1 text-xs text-slate-500 dark:text-slate-400">
-          <span className="font-semibold text-[11px] font-mono">
+        <div className="flex items-center justify-between px-1 text-xs text-stone-500 dark:text-stone-400">
+          <span className="font-semibold text-[11px] font-mono text-stone-600 dark:text-stone-300">
             {validIndex + 1} / {slides.length}
           </span>
 
@@ -377,7 +377,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 onClick={handleMoveEarlier}
                 aria-label={t('editor.moveUp')}
                 title={t('editor.moveUp')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
               >
                 ←
               </button>
@@ -392,7 +392,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 onClick={handleMoveLater}
                 aria-label={t('editor.moveDown')}
                 title={t('editor.moveDown')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
               >
                 →
               </button>
@@ -406,7 +406,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 onClick={handleDuplicate}
                 aria-label={t('editor.duplicateSlide')}
                 title={t('editor.duplicateSlide')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -423,7 +423,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 onClick={handleDelete}
                 aria-label={t('editor.deleteSlide')}
                 title={t('editor.deleteSlide')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 text-red-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-500/10 text-red-600 dark:text-red-400 disabled:opacity-30 disabled:pointer-events-none transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
