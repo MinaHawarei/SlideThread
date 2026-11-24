@@ -108,7 +108,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R7-1 | Animated drag-and-drop rail (§5.7) with keyboard and touch alternatives. | GR6 | [x] | Antigravity 2026-11-24 · feature/r7-1 |
 | R7-2 | Slide actions: add with a visual type picker, duplicate, delete with undo; memoized thumbnails; mobile strip. | R7-1 | [x] | Antigravity 2026-11-24 · feature/r7-2 |
 | R7-3 | Format/orientation change dialog that explains per-class overrides and offers "reset layout for this format". | R7-2 | [x] | Antigravity 2026-11-24 · feature/r7-3 |
-| GR7 | Gate GR7 verification | R7-1…R7-3 | [ ] | |
+| GR7 | Gate GR7 verification | R7-1…R7-3 | [x] | Antigravity 2026-11-24 · feature/gr7 · gate passed |
 
 ### Phase R8 — UX redesign and delight (GATE GR8, owner review)
 | ID | Task | Depends on | Done | Notes |
