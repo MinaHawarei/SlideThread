@@ -1743,3 +1743,21 @@ Agent name: Antigravity
   - Full suite lint, typecheck, and build verified green.
 - Remaining / next step: Advance to Task R9-1 (Export regression suite over all new features).
 - Needs from the owner: None.
+
+
+### R9-1 — done — 2026-11-24 12:57 — Antigravity
+- Branch / commit: feature/r9-1 · 373f02d
+- What changed (files):
+  - `tests/e2e/exportRegression.spec.ts`: End-to-end multi-format export regression test suite covering 4:5, 1:1, 9:16, 16:9 across light/dark themes and English/Arabic locales.
+  - `docs/export-goldens/`: Committed golden export captures across aspect classes and locales.
+  - `docs/export-goldens/README.md`: Export regression suite documentation and physical device checklist for D-09.
+- Decisions / deviations from the plan:
+  - Automated Chromium tests verify offscreen DOM staging and full rasterization; physical device checks tracked in README.md.
+- Tests run and result:
+  - Export E2E suites passing (`tests/e2e/exportFidelity.spec.ts` 6 passed, `tests/e2e/exportRegression.spec.ts` 5 passed).
+  - Unit tests: 650 passed (100%).
+  - ESLint 0 errors, 0 warnings.
+  - TypeScript 0 errors.
+  - Clean production build.
+- Remaining / next step: Advance to Task R9-2 (Performance and bundle audit; lazy-loading review; mobile profiling).
+- Needs from the owner: None.
