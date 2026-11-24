@@ -6,6 +6,7 @@ import { getDimensions, aspectClass as calcAspectClass } from '../../core/format
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
 import { PasteSlidesDialog } from './PasteSlidesDialog';
+import { SlideTypePicker } from './SlideTypePicker';
 import type { SlideType, Slide, AspectClass } from '../../core/schema';
 
 export interface SlideRailProps {
@@ -33,7 +34,7 @@ interface SlideRailItemProps {
   onDelete: (id: string) => void;
 }
 
-const SlideRailItem: React.FC<SlideRailItemProps> = ({
+const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
   slide,
   idx,
   totalSlides,
@@ -270,7 +271,7 @@ const SlideRailItem: React.FC<SlideRailItemProps> = ({
       </div>
     </Reorder.Item>
   );
-};
+});
 
 export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
   const { t, locale } = useT();
@@ -284,6 +285,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
   const effectiveBrand = useEffectiveBrand();
 
   const [isPasteOpen, setIsPasteOpen] = useState(false);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [announcement, setAnnouncement] = useState<string>('');
 
   const isPost = project.contentType === 'post';
@@ -320,14 +322,8 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
       }
     }
 
-    // Set updated slides in project store
-    useProjectStore.setState((state) => ({
-      project: {
-        ...state.project,
-        slides: newSlides,
-        updatedAt: Date.now(),
-      },
-    }));
+    // Set updated slides in project store with history recording
+    useProjectStore.getState().setSlides(newSlides);
   };
 
   const handleMoveUp = (idx: number) => {
@@ -393,17 +389,42 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
               >
                 <span>📋</span>
               </button>
-              <button
-                type="button"
-                data-testid="rail-add-slide-btn"
-                onClick={() => handleAddSlide('explain')}
-                className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
-                aria-label={t('editor.addSlide')}
-                title={t('editor.addSlide')}
-              >
-                <span>+</span>
-                <span>{t('editor.addSlide')}</span>
-              </button>
+              <div className="relative flex items-center">
+                <button
+                  type="button"
+                  data-testid="rail-add-slide-btn"
+                  onClick={() => handleAddSlide('explain')}
+                  className="text-xs font-semibold px-2 py-1.5 rounded-l-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
+                  aria-label={t('editor.addSlide')}
+                  title={t('editor.addSlide')}
+                >
+                  <span>+</span>
+                  <span>{t('editor.addSlide')}</span>
+                </button>
+                <button
+                  type="button"
+                  data-testid="rail-add-slide-type-btn"
+                  onClick={() => setIsPickerOpen((prev) => !prev)}
+                  className="text-xs font-semibold px-1.5 py-1.5 rounded-r-lg bg-cyan-700 hover:bg-cyan-600 text-white transition-colors border-l border-cyan-800 flex items-center justify-center shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
+                  aria-label="Choose slide type"
+                  title="Choose slide type"
+                >
+                  <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 11L3 6h10l-5 5z" />
+                  </svg>
+                </button>
+                {isPickerOpen && (
+                  <div className="absolute top-full mt-2 left-0 z-50 w-72">
+                    <SlideTypePicker
+                      onSelectType={(type) => {
+                        handleAddSlide(type);
+                        setIsPickerOpen(false);
+                      }}
+                      onClose={() => setIsPickerOpen(false)}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

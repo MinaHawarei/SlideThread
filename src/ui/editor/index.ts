@@ -17,3 +17,4 @@ export * from './ShapesPicker';
 export * from './IconsPicker';
 export * from './EmojiStickersPicker';
 export * from './AssetsPanel';
+export * from './SlideTypePicker';

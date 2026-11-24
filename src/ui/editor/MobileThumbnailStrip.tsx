@@ -6,6 +6,8 @@ import { getDimensions, aspectClass as calcAspectClass } from '../../core/format
 import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
 import { PasteSlidesDialog } from './PasteSlidesDialog';
+import { SlideTypePicker } from './SlideTypePicker';
+import { MobileBottomSheet } from './MobileBottomSheet';
 import type { SlideType, Slide, CounterConfig, SignatureConfig, ThemeMode, AspectClass } from '../../core/schema';
 
 export interface MobileThumbnailStripProps {
@@ -36,7 +38,7 @@ interface MobileThumbItemProps {
   onMoveLater: (idx: number) => void;
 }
 
-const MobileThumbItem: React.FC<MobileThumbItemProps> = ({
+const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
   slide,
   idx,
   totalSlides,
@@ -179,7 +181,7 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = ({
       </span>
     </Reorder.Item>
   );
-};
+});
 
 export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
   className = '',
@@ -195,6 +197,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
   const effectiveBrand = useEffectiveBrand();
 
   const [isPasteOpen, setIsPasteOpen] = useState(false);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [announcement, setAnnouncement] = useState<string>('');
 
   const isPost = project.contentType === 'post';
@@ -243,13 +246,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
       }
     }
 
-    useProjectStore.setState((state) => ({
-      project: {
-        ...state.project,
-        slides: newSlides,
-        updatedAt: Date.now(),
-      },
-    }));
+    useProjectStore.getState().setSlides(newSlides);
   };
 
   const handleMoveEarlier = () => {
@@ -344,6 +341,16 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
               </button>
               <button
                 type="button"
+                data-testid="mobile-add-slide-type-btn"
+                onClick={() => setIsPickerOpen(true)}
+                aria-label="Choose slide type"
+                title="Choose slide type"
+                className="shrink-0 min-h-[44px] min-w-[36px] h-[60px] w-9 rounded-lg border-2 border-dashed border-cyan-300 dark:border-cyan-700 bg-cyan-50/30 dark:bg-cyan-950/20 text-cyan-500 dark:text-cyan-400 flex flex-col items-center justify-center text-xs hover:bg-cyan-100 transition-colors"
+              >
+                <span>✨</span>
+              </button>
+              <button
+                type="button"
                 data-testid="mobile-paste-slides-btn"
                 onClick={() => setIsPasteOpen(true)}
                 aria-label={t('paste.title')}
@@ -433,6 +440,21 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
           isOpen={isPasteOpen}
           onClose={() => setIsPasteOpen(false)}
         />
+
+        {/* Visual Slide Type Picker Bottom Sheet */}
+        <MobileBottomSheet
+          isOpen={isPickerOpen}
+          onClose={() => setIsPickerOpen(false)}
+          title={t('editor.addSlide')}
+        >
+          <SlideTypePicker
+            onSelectType={(type) => {
+              handleAddSlide(type);
+              setIsPickerOpen(false);
+            }}
+            onClose={() => setIsPickerOpen(false)}
+          />
+        </MobileBottomSheet>
       </div>
     </MotionConfig>
   );
