@@ -40,7 +40,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   }>({
     isOpen: false,
     sizeMB: '0',
-    proceed: () => {},
+    proceed: () => { },
   });
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -205,11 +205,10 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             onClick={() => {
               setActiveTab('design');
             }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
-              activeTab === 'design'
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-            }`}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'design'
+              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+              }`}
             title="Templates & Layouts"
             aria-label="Templates & Layouts"
           >
@@ -223,11 +222,10 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             onClick={() => {
               setActiveTab('assets');
             }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
-              activeTab === 'assets'
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-            }`}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'assets'
+              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+              }`}
             title="Shapes & Stickers"
             aria-label="Shapes & Stickers"
           >
@@ -241,11 +239,10 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             onClick={() => {
               setActiveTab('slide');
             }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
-              activeTab === 'slide'
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-            }`}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'slide'
+              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+              }`}
             title="Slide Text & Fields"
             aria-label="Slide Text & Fields"
           >
@@ -273,11 +270,10 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             onClick={() => {
               setActiveTab('brand');
             }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
-              activeTab === 'brand'
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-            }`}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'brand'
+              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+              }`}
             title="Brand Kit"
             aria-label="Brand Kit"
           >
@@ -304,11 +300,10 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
               type="button"
               data-testid="rail-tool-slides"
               onClick={() => setIsSlideRailVisible((prev) => !prev)}
-              className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
-                isSlideRailVisible
-                  ? 'text-amber-600 dark:text-amber-400'
-                  : 'text-stone-400 hover:text-stone-600'
-              }`}
+              className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${isSlideRailVisible
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-stone-400 hover:text-stone-600'
+                }`}
               title="Toggle Slide Rail"
               aria-label="Toggle Slide Rail"
             >
