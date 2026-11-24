@@ -1587,8 +1587,9 @@
   background: radial-gradient(circle at 6px 6px, #ee776d 0 5px, transparent 5.5px), radial-gradient(circle at 21px 6px, #e6b75b 0 5px, transparent 5.5px), radial-gradient(circle at 36px 6px, #71bf83 0 5px, transparent 5.5px);
 }
 
-/* Vector Shapes & Asset Packs (R6-2) */
-.shape-asset-svg {
+/* Vector Shapes & Asset Packs (R6-2, R6-3) */
+.shape-asset-svg,
+.icon-asset-svg {
   width: 100%;
   height: 100%;
   display: flex;
@@ -1596,7 +1597,8 @@
   justify-content: center;
 }
 
-.shape-asset-svg svg {
+.shape-asset-svg svg,
+.icon-asset-svg svg {
   width: 100%;
   height: 100%;
   display: block;

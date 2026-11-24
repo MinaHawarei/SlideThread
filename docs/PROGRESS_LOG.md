@@ -1382,3 +1382,28 @@ Agent name: Antigravity
 - Remaining / next step: Claim and implement R6-3 (Icons pack from a verified open-source set, lazy and tree-shaken).
 - Needs from the owner: None.
 
+
+### R6-3 — done — 2026-11-24 00:42 — Antigravity
+- Branch / commit: feature/r6-3
+- What changed (files):
+  - `assets/packs/icons/pack.json`: Pack specification for 20 curated presentation icons from Lucide (ISC license) with bilingual metadata (`name`, `description`, `tags` in en/ar).
+  - `assets/packs/icons/*.svg`: Added 20 sanitized, tree-shaken SVG vector icons (`chart-bar`, `trending-up`, `lightbulb`, `rocket`, `target`, `shield-check`, `award`, `zap`, `users`, `check-circle`, `alert-circle`, `help-circle`, `sparkles`, `heart`, `clock`, `quote`, `compass`, `code`, `share`, `bookmark`).
+  - `src/assets/iconsRegistry.ts`: Synchronous registry and SVG cache for instant DOM rendering and export capture, with tree-shaken and lazy loader compatibility.
+  - `src/assets/index.ts`: Exported `ICONS_PACK`, `ICONS_ITEMS`, `getIconSvg`, `getIconItem`, and `getAllIcons`.
+  - `src/slides/ExtrasRenderer.tsx`: Integrated icon asset rendering via `getShapeSvg` and `getIconSvg` with dynamic recoloring via `currentColor`.
+  - `src/slides/slides.css`: Added styles for `.icon-asset-svg`.
+  - `src/ui/editor/IconsPicker.tsx`: Visual picker for presentation icons in the inspector panel with category header, ISC badge, icon grid, selection detection, color palette swatches, custom hex color picker, and delete action.
+  - `src/ui/editor/SlideInspector.tsx` & `src/ui/editor/index.ts`: Mounted `IconsPicker` into slide editor sidebar.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Bilingual translation strings (`assets.iconsTitle`, `assets.iconsDesc`, `assets.selectedIcon`, `assets.deleteIcon`, `assets.customColor`).
+  - `ASSET_LICENSES.md`: Registered Lucide icons pack with ISC license and source URL (`https://lucide.dev`).
+  - `NOTICE`: Appended full ISC license text with Feather copyright attribution.
+  - `tests/unit/iconsPack.test.tsx`: 10 comprehensive unit tests covering metadata compliance, schema validation, SVGs using `currentColor`, synchronous registry, lazy loader discovery, and inspector picker interactions.
+  - `tests/e2e/iconsPack.spec.ts`: End-to-end Playwright test verifying adding an icon from the panel, recoloring it, canvas rendering, and PNG export generation.
+  - `docs/TASKS.md`: Marked R6-3 `[x]`.
+- Decisions / deviations from the plan:
+  1. Selected Lucide icons (ISC license, derived from Feather icons) as the open-source icon set per §5.6 rules, providing high-quality, lightweight, consistent line icons that naturally inherit currentColor.
+  2. Recorded full attribution and license text in `ASSET_LICENSES.md` and `NOTICE`.
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (66 test files, 585 passed, 100%), Playwright E2E (`tests/e2e/iconsPack.spec.ts` passed), and `npm run build` (clean).
+- Remaining / next step: Claim and implement R6-4 (Emoji and stickers/illustrations packs (§5.6 rules)).
+- Needs from the owner: None.
+
