@@ -153,18 +153,35 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
     }
     case 'image':
     case 'sticker': {
+      let borderRadius = '0px';
+      if (extra.shape === 'ellipse') {
+        borderRadius = '50%';
+      } else if (extra.shape === 'rectangle') {
+        borderRadius = '16px';
+      }
+
       return (
-        <MediaRenderer
-          media={extra.media}
-          imageUrl={
-            extra.assetId?.startsWith('http') ||
-            extra.assetId?.startsWith('data:') ||
-            extra.assetId?.startsWith('blob:')
-              ? extra.assetId
-              : undefined
-          }
-          style={{ width: '100%', height: '100%', objectFit: extra.media?.fit || 'contain' }}
-        />
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius,
+            overflow: 'hidden',
+          }}
+          data-testid={`image-extra-mask-${extra.id}`}
+        >
+          <MediaRenderer
+            media={extra.media}
+            imageUrl={
+              extra.assetId?.startsWith('http') ||
+              extra.assetId?.startsWith('data:') ||
+              extra.assetId?.startsWith('blob:')
+                ? extra.assetId
+                : undefined
+            }
+            style={{ width: '100%', height: '100%', objectFit: extra.media?.fit || 'cover' }}
+          />
+        </div>
       );
     }
     case 'icon': {

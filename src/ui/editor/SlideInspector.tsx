@@ -7,6 +7,7 @@ import { hasManualTextSize } from '../../core/richText';
 import { ShapesPicker } from './ShapesPicker';
 import { IconsPicker } from './IconsPicker';
 import { EmojiStickersPicker } from './EmojiStickersPicker';
+import { ImageExtraControls } from './ImageExtraControls';
 
 const ALL_SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -538,6 +539,9 @@ export const SlideInspector: React.FC = () => {
           </>
         )}
       </div>
+
+      {/* Selected Image Extra Controls (R6-6) */}
+      <ImageExtraControls />
 
       {/* Shapes, Lines & Arrows Pack (R6-2) */}
       <ShapesPicker />

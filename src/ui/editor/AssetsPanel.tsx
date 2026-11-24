@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { useRecentAssetsStore } from '../../store/recentAssetsStore';
+import { processUserUpload } from '../../core/uploads';
 import {
   SHAPES_ITEMS,
   getShapeSvg,
@@ -32,6 +33,45 @@ export const AssetsPanel: React.FC = () => {
 
   const [category, setCategory] = useState<AssetCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeSlide) return;
+
+    setUploadError(null);
+    try {
+      const processed = await processUserUpload(file);
+
+      const newExtra: ExtraElement = {
+        id: `upload_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        kind: 'image',
+        x: 0.2,
+        y: 0.2,
+        w: 0.35,
+        h: 0.35,
+        rotation: 0,
+        z: (activeSlide.extras?.length ?? 0) + 1,
+        locked: false,
+        shape: 'rectangle', // Default rounded corners
+        media: {
+          assetId: processed.assetId,
+          fit: 'cover',
+          placement: 'background',
+        },
+      };
+
+      addExtraElement(activeSlide.id, newExtra);
+      selectElement(newExtra.id);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   // Assemble full item index
   const allItems: UnifiedAssetItem[] = useMemo(() => {
@@ -143,27 +183,55 @@ export const AssetsPanel: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full space-y-4 p-4" data-testid="assets-panel">
-      {/* Search Input */}
-      <div className="relative">
+      {/* Search Input and Upload button */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            data-testid="assets-search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('assets.searchPlaceholder')}
+            className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-8"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              data-testid="clear-search-btn"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
         <input
-          type="text"
-          data-testid="assets-search-input"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t('assets.searchPlaceholder')}
-          className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-8"
+          type="file"
+          ref={fileInputRef}
+          data-testid="asset-file-input"
+          onChange={handleFileUpload}
+          accept="image/png,image/jpeg,image/webp,image/svg+xml"
+          className="hidden"
         />
-        {searchQuery && (
-          <button
-            type="button"
-            data-testid="clear-search-btn"
-            onClick={() => setSearchQuery('')}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
-          >
-            ×
-          </button>
-        )}
+
+        <button
+          type="button"
+          data-testid="upload-asset-btn"
+          onClick={() => fileInputRef.current?.click()}
+          title={t('assets.uploadTitle')}
+          className="px-3 py-2 text-xs font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap"
+        >
+          <span>↑</span>
+          <span>{t('assets.uploadBtn')}</span>
+        </button>
       </div>
+
+      {uploadError && (
+        <div className="p-2 rounded bg-rose-500/10 border border-rose-500/20 text-xs text-rose-600 dark:text-rose-400" data-testid="upload-error-message">
+          {uploadError}
+        </div>
+      )}
 
       {/* Category Pills */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs" data-testid="asset-categories">

@@ -1454,3 +1454,24 @@ Agent name: Antigravity
 - Remaining / next step: Claim and implement R6-6 (Uploads: images and sanitized SVG, downscale, IndexedDB, replace, basic crop/mask (circle, rounded)).
 - Needs from the owner: None.
 
+
+### R6-6 — done — 2026-11-24 01:08 — Antigravity
+- Branch / commit: feature/r6-6
+- What changed (files):
+  - `src/core/uploads.ts`: Created file upload pipeline handling images (JPEG, PNG, WebP) downscaled to max 2400 px, and SVG files validated & sanitized via DOMPurify (`validateAssetSvg`), storing clean blobs in IndexedDB (`assetStore`) under unique asset IDs.
+  - `src/core/uploads.ts`: Implemented `replaceUserUpload` preserving assetId across replacements.
+  - `src/core/projectIO.ts`: Expanded `exportProjectToJSON` and `importProjectFromJSON` to collect, embed, and unpack extra media assets (`slide.extras[].media.assetId`) for full lossless project round-tripping.
+  - `src/slides/ExtrasRenderer.tsx`: Added basic crop/mask shape handling (`circle` via `border-radius: 50%`, `rounded` via `16px`, and `square` via `0px`) on extra image elements.
+  - `src/ui/editor/AssetsPanel.tsx`: Added file upload input and button with instant error reporting for rejected SVGs.
+  - `src/ui/editor/ImageExtraControls.tsx`: Built in-inspector controls for selected image extra elements (mask selector: rounded/circle/square, fit selector: cover/contain, replace file button, and delete action).
+  - `src/ui/editor/SlideInspector.tsx`: Mounted `ImageExtraControls`.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Added bilingual translation strings (`assets.uploadTitle`, `assets.uploadBtn`, `assets.imageSettingsTitle`, `assets.maskShape`, `assets.maskRounded`, `assets.maskCircle`, `assets.maskSquare`, `assets.fitLabel`, `assets.replaceImage`).
+  - `tests/unit/uploads.test.ts`: 6 unit tests verifying safe SVG upload, malicious SVG rejection (scripts & inline event handlers), raster downscaling, asset replacement, and project JSON round-trip with IndexedDB restoration.
+  - `tests/e2e/uploads.spec.ts`: End-to-end Playwright test uploading SVG, applying circle mask, and exporting to PNG.
+  - `docs/TASKS.md`: Marked R6-6 `[x]`.
+- Decisions / deviations from the plan:
+  - Supported lossless embedding and extraction of extra image assets in `projectIO.ts` so exported project bundles include all uploaded artwork, and verified that malicious SVGs are rejected before entering IndexedDB.
+- Tests run and result: `npm run lint` (clean, 0 warnings), `npm run typecheck` (clean, 0 errors), `npm test` (69 test files, 607 passed, 100%), Playwright E2E (`tests/e2e/uploads.spec.ts` passed), and `npm run build` (clean).
+- Remaining / next step: Claim and implement R6-7 (Templates can reference pack assets and local SVGs; validators updated).
+- Needs from the owner: None.
+

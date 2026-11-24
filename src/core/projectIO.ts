@@ -82,7 +82,7 @@ export async function exportProjectToJSON(project: Project): Promise<{
 }> {
   const assets: Record<string, string> = {};
 
-  // Find all assets referenced in slides
+  // Find all assets referenced in slides and extras
   for (const slide of project.slides) {
     if (slide.media && slide.media.assetId) {
       const assetId = slide.media.assetId;
@@ -95,6 +95,26 @@ export async function exportProjectToJSON(project: Project): Promise<{
           }
         } catch (err) {
           console.warn(`[ProjectIO] Failed to embed asset ${assetId}:`, err);
+        }
+      }
+    }
+
+    // Also collect assets from slide extras (images/uploads)
+    if (slide.extras) {
+      for (const extra of slide.extras) {
+        if (extra.media?.assetId) {
+          const assetId = extra.media.assetId;
+          if (!assets[assetId]) {
+            try {
+              const blob = await getAsset(assetId);
+              if (blob) {
+                const dataUrl = await blobToDataUrl(blob);
+                assets[assetId] = dataUrl;
+              }
+            } catch (err) {
+              console.warn(`[ProjectIO] Failed to embed extra asset ${assetId}:`, err);
+            }
+          }
         }
       }
     }
