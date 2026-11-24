@@ -1804,3 +1804,21 @@ Agent name: Antigravity
   - Clean production build.
 - Remaining / next step: Advance to Task R9-5 (Docs: README (with GIF), finalize TEMPLATE_GUIDE, update QA_CHECKLIST, consolidate Spec.md into v2, refresh BACKLOG).
 - Needs from the owner: None.
+
+### R9-5 — done — 2026-11-24 13:10 — Antigravity
+- Branch / commit: feature/r9-5 · bfe5016
+- What changed (files):
+  - `docs/history/Spec.v1.md`: Preserved pristine snapshot of original v1 specification.
+  - `docs/Spec.md`: Consolidated comprehensive Spec v2 resolving all historical contradictions with Schema v2, in-place rich text formatting, direct canvas manipulation and overrides, 5 starter data-only templates, continuous prefix-stable patterns, separate counter and signature bars, Atelier visual styling, and settings persistence.
+  - `README.md`: Modernized documentation with Direction A (Atelier) visual language, core capability highlights, schema v2 architecture, and direct links to guides.
+  - `docs/TEMPLATE_GUIDE.md`: Updated starter manifest sample to schema 2.
+  - `docs/QA_CHECKLIST.md`: Expanded with direct manipulation, rich-text, Atelier visual language, and automated regression suite references (unit/integration, export regression goldens, accessibility audits, bundle budgets).
+  - `docs/BACKLOG.md`: Refreshed with forward-looking backlog initiatives (video/GIF exports, cloud sync/teams, custom font uploads, opt-in AI copywriting, presenter mode).
+- Decisions / deviations from the plan:
+  - Ensured all technical references in docs match current codebase truth.
+- Tests run and result:
+  - 100% unit tests passing (25 test files).
+  - 0 lint errors, 0 typecheck errors.
+  - Clean production build (53.02 kB gzip lazy editor chunk).
+- Remaining / next step: Advance to Task R9-6 (Release prep: feature-flag review, known-issues list, release notes).
+- Needs from the owner: None.

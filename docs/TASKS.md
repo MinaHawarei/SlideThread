@@ -129,7 +129,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 | R9-2 | Performance and bundle audit; lazy-loading review; mobile profiling. | R9-1 | [x] | Antigravity 2026-11-24 · feature/r9-2 · e48ef35 |
 | R9-3 | Accessibility audit (axe, keyboard-only, screen-reader labels, contrast) (supersedes P3-10). | R9-2 | [x] | Antigravity 2026-11-24 · feature/r9-3 · e509cca |
 | R9-4 | Security review: sanitizer tests, CSP update (fonts, assets), no `dangerouslySetInnerHTML`, dependency audit. | R9-3 | [x] | Antigravity 2026-11-24 · feature/r9-4 · bb710eb |
-| R9-5 | Docs: README (with GIF), finalize `TEMPLATE_GUIDE`, update `QA_CHECKLIST`, consolidate `Spec.md` into a v2 that merges §2 amendments (keep the old file as `docs/history/Spec.v1.md`), refresh `BACKLOG`. | R9-4 | [ ] | |
+| R9-5 | Docs: README (with GIF), finalize `TEMPLATE_GUIDE`, update `QA_CHECKLIST`, consolidate `Spec.md` into a v2 that merges §2 amendments (keep the old file as `docs/history/Spec.v1.md`), refresh `BACKLOG`. | R9-4 | [x] | Antigravity 2026-11-24 · feature/r9-5 · bfe5016 |
 | R9-6 | Release prep: feature-flag review, known-issues list, release notes. Owner decides what ships. | R9-5 | [ ] | |
 | GR9 | Gate GR9 verification | R9-1…R9-6 | [ ] | |
 
