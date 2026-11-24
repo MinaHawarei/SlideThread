@@ -474,7 +474,23 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
           <button type="button" aria-label={t('editor.resetElement')} onClick={() => reset(element)} style={{ minHeight: 44, borderRadius: 10, padding: '0 14px', background: '#0e7490', color: 'white', fontWeight: 600 }}>{t('editor.resetElement')}</button>
         </div>;
       })()}
-      {preview?.guides.map((guide, index) => <div key={`${guide.axis}-${index}`} data-testid="snap-guide" style={{ position: 'absolute', ...(guide.axis === 'x' ? { insetBlock: 0, left: `${guide.at * 100}%`, width: 1 } : { insetInline: 0, top: `${guide.at * 100}%`, height: 1 }), background: '#0ea5e9', pointerEvents: 'none' }} />)}
+      {preview?.guides.map((guide, index) => (
+        <div
+          key={`${guide.axis}-${index}`}
+          data-testid="snap-guide"
+          className="animate-in fade-in duration-100 transition-opacity"
+          style={{
+            position: 'absolute',
+            ...(guide.axis === 'x'
+              ? { insetBlock: 0, left: `${guide.at * 100}%`, width: 1.5 }
+              : { insetInline: 0, top: `${guide.at * 100}%`, height: 1.5 }),
+            background: 'linear-gradient(to bottom, #d97706, #f59e0b, #d97706)',
+            boxShadow: '0 0 6px 1px rgba(245, 158, 11, 0.65)',
+            pointerEvents: 'none',
+            zIndex: 40,
+          }}
+        />
+      ))}
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only" data-testid="canvas-live-announcement">{announcement}</div>
     </div>
   );

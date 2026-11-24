@@ -338,10 +338,10 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
           {isExporting && progress && (
             <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-slate-700 dark:text-slate-200">
+                <span className="font-semibold text-stone-700 dark:text-stone-200 font-serif">
                   {progress.message}
                 </span>
-                <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">
+                <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">
                   {progress.current} / {progress.total}
                 </span>
               </div>
@@ -350,13 +350,19 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
                 aria-valuenow={Math.round((progress.current / progress.total) * 100)}
                 aria-valuemin={0}
                 aria-valuemax={100}
-                className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden"
+                className="w-full h-2.5 rounded-full bg-stone-200 dark:bg-stone-700 overflow-hidden p-0.5"
               >
                 <div
-                  className="h-full bg-cyan-500 transition-all duration-200"
+                  className="h-full bg-gradient-to-r from-amber-600 to-amber-500 rounded-full transition-all duration-300 ease-out shadow-xs"
                   style={{ width: `${(progress.current / progress.total) * 100}%` }}
                 />
               </div>
+              {success && (
+                <div className="flex items-center gap-2 pt-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium animate-in slide-in-from-bottom-1 duration-200">
+                  <span className="flex items-center justify-center w-4 h-4 rounded-full bg-emerald-500/20 text-[10px] font-bold">✓</span>
+                  <span>{t('export.success')}</span>
+                </div>
+              )}
             </div>
           )}
 
@@ -401,7 +407,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
             data-testid="export-start-btn"
             disabled={isExporting || success}
             onClick={() => startExport(false)}
-            className="px-5 py-2.5 rounded-xl text-xs font-bold bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white shadow-sm transition-all flex items-center gap-1.5"
+            className="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
           >
             {isExporting ? (
               <>
