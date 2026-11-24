@@ -2,7 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/brand/slidethread-icon/svg/icon-light-mode.svg" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="/brand/slidethread-icon/svg/icon-dark-mode.svg" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/slidethread-icon/light-mode/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/brand/slidethread-icon/light-mode/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/slidethread-icon/light-mode/favicon-180.png" />
+    <style>
+      #root:empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100vw;
+      }
+      .initial-splash {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+      @keyframes splashPulse {
+        0%, 100% { opacity: 0.65; transform: scale(0.98); }
+        50% { opacity: 1; transform: scale(1); }
+      }
+      .splash-anim {
+        animation: splashPulse 1.6s ease-in-out infinite;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .splash-anim { animation: none !important; }
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background-color: #0c0a09; color: #f5f5f4; }
+        .splash-stone { fill: #F5F0E8 !important; }
+      }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="SlideThread — Privacy-first, local-first carousel & post creator for LinkedIn, Instagram, and social feeds." />
     <!-- Open Graph Metadata -->
@@ -17,7 +51,24 @@
     <title>SlideThread — Free Carousel & Post Maker</title>
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <div class="initial-splash" role="status" aria-label="Loading SlideThread">
+        <svg class="splash-anim" width="56" height="56" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g transform="translate(143.36 326.9199175257732) scale(0.7600824742268041)">
+            <defs>
+              <clipPath id="k-init">
+                <path clip-rule="evenodd" d="M-10 -10H980V497H-10Z M202.0 198.5H768.0A45.0 45.0 0 0 1 768.0 288.5H202.0A45.0 45.0 0 0 1 202.0 198.5Z"/>
+              </clipPath>
+            </defs>
+            <g clip-path="url(#k-init)">
+              <rect class="splash-stone" width="447" height="487" rx="78" fill="#44403C"/>
+              <rect x="523" width="447" height="487" rx="78" fill="#F2993A"/>
+            </g>
+            <rect class="splash-stone" x="181" y="222.5" width="608" height="42" rx="21" fill="#44403C"/>
+          </g>
+        </svg>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

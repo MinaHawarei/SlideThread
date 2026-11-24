@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useT } from '../../i18n';
+import { useSelectionStore } from '../../store/selectionStore';
 import { SlideInspector } from './SlideInspector';
 import { DesignInspector } from './DesignInspector';
 import { BrandInspector } from './BrandInspector';
 import { AssetsPanel } from './AssetsPanel';
+import { ElementPropertiesPanel } from './ElementPropertiesPanel';
 
 export type InspectorTab = 'slide' | 'assets' | 'design' | 'brand';
 
@@ -22,10 +24,15 @@ export const Inspector: React.FC<InspectorProps> = ({
 }) => {
   const { t } = useT();
   const [internalTab, setInternalTab] = useState<InspectorTab>(defaultTab);
+  const selectedElementId = useSelectionStore((state) => state.selectedElementId);
+  const selectElement = useSelectionStore((state) => state.selectElement);
 
   const currentTab = controlledActiveTab !== undefined ? controlledActiveTab : internalTab;
 
   const handleTabClick = (tab: InspectorTab) => {
+    if (selectedElementId) {
+      selectElement(undefined);
+    }
     if (onTabChange) {
       onTabChange(tab);
     }
@@ -116,25 +123,31 @@ export const Inspector: React.FC<InspectorProps> = ({
 
       {/* Tab Panels */}
       <div className="flex-1 overflow-y-auto">
-        {currentTab === 'slide' && (
-          <div role="tabpanel" id="panel-slide" aria-labelledby="tab-slide">
-            <SlideInspector />
-          </div>
-        )}
-        {currentTab === 'assets' && (
-          <div role="tabpanel" id="panel-assets" aria-labelledby="tab-assets">
-            <AssetsPanel />
-          </div>
-        )}
-        {currentTab === 'design' && (
-          <div role="tabpanel" id="panel-design" aria-labelledby="tab-design">
-            <DesignInspector />
-          </div>
-        )}
-        {currentTab === 'brand' && (
-          <div role="tabpanel" id="panel-brand" aria-labelledby="tab-brand">
-            <BrandInspector />
-          </div>
+        {selectedElementId ? (
+          <ElementPropertiesPanel onClose={() => selectElement(undefined)} />
+        ) : (
+          <>
+            {currentTab === 'slide' && (
+              <div role="tabpanel" id="panel-slide" aria-labelledby="tab-slide">
+                <SlideInspector />
+              </div>
+            )}
+            {currentTab === 'assets' && (
+              <div role="tabpanel" id="panel-assets" aria-labelledby="tab-assets">
+                <AssetsPanel />
+              </div>
+            )}
+            {currentTab === 'design' && (
+              <div role="tabpanel" id="panel-design" aria-labelledby="tab-design">
+                <DesignInspector />
+              </div>
+            )}
+            {currentTab === 'brand' && (
+              <div role="tabpanel" id="panel-brand" aria-labelledby="tab-brand">
+                <BrandInspector />
+              </div>
+            )}
+          </>
         )}
       </div>
     </aside>

@@ -13,6 +13,7 @@ import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { ShortcutsOverlay } from '../common/ShortcutsOverlay';
 import { OnboardingModal } from '../common/OnboardingModal';
 import { APP_NAME } from '../../config/site';
+import { LogoMark } from '../brand/LogoMark';
 
 export interface EditorDesktopProps {
   onHome?: () => void;
@@ -78,9 +79,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
             title="Return to Start Screen"
           >
-            <div className="w-7 h-7 rounded-lg bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-              S
-            </div>
+            <LogoMark size={28} />
             <span className="font-serif font-bold text-sm hidden sm:inline-block text-stone-900 dark:text-white">
               {APP_NAME}
             </span>

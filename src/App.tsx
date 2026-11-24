@@ -6,6 +6,7 @@ import { useSettingsStore } from './store/settingsStore';
 import { loadFont, loadFontForScript } from './fonts/loader';
 import { FONT_REGISTRY } from './fonts/registry';
 import { GlobalPhotoCropDialog } from './ui/common/PhotoCropDialog';
+import { LoadingScreen } from './ui/brand/LoadingScreen';
 
 const StartScreen = React.lazy(() => import('./ui/start/StartScreen').then((m) => ({ default: m.StartScreen })));
 const Wizard = React.lazy(() => import('./ui/wizard/Wizard').then((m) => ({ default: m.Wizard })));
@@ -24,11 +25,6 @@ const UxPreview = import.meta.env.DEV
 const TemplateDevPage = import.meta.env.DEV
   ? React.lazy(() => import('./templates/TemplateDevPage').then((m) => ({ default: m.TemplateDevPage })))
   : null;
-
-function LoadingScreen() {
-  const { t } = useT();
-  return <div className="route-loading" role="status">{t('app.loading')}</div>;
-}
 
 export const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(() => typeof window !== 'undefined' ? window.location.pathname : '/');

@@ -15,6 +15,8 @@ import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { handleExportProject } from '../../core/projectIO';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 import { CanvasManipulationLayer } from './CanvasManipulationLayer';
+import { ElementPropertiesPanel } from './ElementPropertiesPanel';
+import { LogoMark } from '../brand/LogoMark';
 
 export type MobileTab = 'slides' | 'edit' | 'assets' | 'design' | 'export';
 
@@ -197,9 +199,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
             aria-label="Return to Start Screen"
             className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors shrink-0"
           >
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-600 to-amber-500 flex items-center justify-center text-stone-950 font-serif font-black text-sm shadow-xs">
-              S
-            </div>
+            <LogoMark size={28} />
           </button>
 
           {/* Project Title Input */}
@@ -443,8 +443,11 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
       <MobileBottomSheet
         isOpen={isSheetOpen}
         onClose={handleCloseSheet}
+        halfHeight={Boolean(selectedElementId && activeTab === 'edit')}
         title={
-          activeTab === 'edit'
+          selectedElementId && activeTab === 'edit'
+            ? t('editor.elementProperties')
+            : activeTab === 'edit'
             ? t('editor.tabSlide')
             : activeTab === 'assets'
             ? t('editor.tabAssets')
@@ -453,7 +456,13 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
             : t('editor.mobileTabExport')
         }
       >
-        {activeTab === 'edit' && <SlideInspector />}
+        {activeTab === 'edit' && (
+          selectedElementId ? (
+            <ElementPropertiesPanel onClose={handleCloseSheet} />
+          ) : (
+            <SlideInspector />
+          )
+        )}
 
         {activeTab === 'assets' && <AssetsPanel />}
 

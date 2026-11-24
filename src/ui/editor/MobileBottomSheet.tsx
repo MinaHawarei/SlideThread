@@ -6,6 +6,8 @@ export interface MobileBottomSheetProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  maxHeightClass?: string;
+  halfHeight?: boolean;
 }
 
 export const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
@@ -13,6 +15,8 @@ export const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
   onClose,
   title,
   children,
+  maxHeightClass,
+  halfHeight = false,
 }) => {
   const { t } = useT();
 
@@ -45,7 +49,9 @@ export const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-h-[85vh] min-h-[40vh] bg-stone-50 dark:bg-stone-900 rounded-t-3xl shadow-2xl border-t border-stone-200/80 dark:border-stone-800 flex flex-col overflow-hidden pb-[env(safe-area-inset-bottom,0px)] animate-in slide-in-from-bottom duration-200"
+        className={`w-full ${
+          halfHeight ? 'max-h-[50vh] min-h-[30vh]' : (maxHeightClass || 'max-h-[85vh] min-h-[40vh]')
+        } bg-stone-50 dark:bg-stone-900 rounded-t-3xl shadow-2xl border-t border-stone-200/80 dark:border-stone-800 flex flex-col overflow-hidden pb-[env(safe-area-inset-bottom,0px)] animate-in slide-in-from-bottom duration-200`}
       >
         {/* Grab Handle */}
         <div className="py-2.5 flex justify-center shrink-0">

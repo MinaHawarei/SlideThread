@@ -9,6 +9,7 @@ import { useSettingsStore } from '../store/settingsStore';
 import { useProjectStore } from '../store/projectStore';
 import { useRecentStore } from '../store/recentStore';
 import { Footer } from '../ui/common/Footer';
+import { LogoMark } from '../ui/brand/LogoMark';
 import { FORMAT_REGISTRY, type FormatId } from '../core/formats';
 
 const SLIDE_TYPES: SlideType[] = [
@@ -116,7 +117,10 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
       >
         <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur px-6 py-4">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <h1 className="text-xl font-bold font-serif">SlideThread</h1>
+            <div className="flex items-center gap-2.5">
+              <LogoMark size={28} />
+              <h1 className="text-xl font-bold font-serif">SlideThread</h1>
+            </div>
             <button
               type="button"
               onClick={() => navigateTo('/gallery')}
@@ -132,10 +136,10 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
             ⚠️
           </div>
           <h2 className="text-xl font-bold font-serif text-stone-900 dark:text-stone-100">
-            {t('gallery.templateNotFound' as never) || 'Template Not Found'}
+            {t('gallery.templateNotFound')}
           </h2>
           <p className="text-xs text-stone-600 dark:text-stone-400">
-            {t('gallery.templateNotFoundDesc' as never) || `The requested template "${templateId}" does not exist in the catalog.`}
+            {t('gallery.templateNotFoundDesc', { templateId })}
           </p>
           <div className="pt-2">
             <button
@@ -226,7 +230,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
             <div className="flex flex-wrap items-center gap-3">
               {/* Template dropdown */}
               <label className="text-xs font-semibold text-stone-500 dark:text-stone-400 flex items-center gap-1.5">
-                <span>Template:</span>
+                <span>{t('preview.templateLabel')}</span>
                 <select
                   value={templateId}
                   onChange={(e) => handleTemplateChange(e.target.value)}
@@ -243,14 +247,14 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
 
               {/* Slide Type filter */}
               <label className="text-xs font-semibold text-stone-500 dark:text-stone-400 flex items-center gap-1.5">
-                <span>Type:</span>
+                <span>{t('preview.typeLabel')}</span>
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
                   data-testid="slide-type-filter"
                   className="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 text-xs rounded-lg px-2.5 py-1.5 capitalize"
                 >
-                  <option value="all">All Types (9)</option>
+                  <option value="all">{t('preview.allTypes', { count: SLIDE_TYPES.length })}</option>
                   {SLIDE_TYPES.map((type) => (
                     <option key={type} value={type} className="capitalize">
                       {type}
@@ -261,14 +265,14 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
 
               {/* Aspect filter */}
               <label className="text-xs font-semibold text-stone-500 dark:text-stone-400 flex items-center gap-1.5">
-                <span>Aspect:</span>
+                <span>{t('preview.aspectLabel')}</span>
                 <select
                   value={selectedAspect}
                   onChange={(e) => setSelectedAspect(e.target.value)}
                   data-testid="aspect-filter"
                   className="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 text-xs rounded-lg px-2.5 py-1.5 capitalize"
                 >
-                  <option value="all">All Aspects (4)</option>
+                  <option value="all">{t('preview.allAspects', { count: ASPECT_CLASSES.length })}</option>
                   {ASPECT_CLASSES.map((aspect) => (
                     <option key={aspect} value={aspect} className="capitalize">
                       {aspect} ({FORMAT_REGISTRY[ASPECT_DIMENSIONS[aspect].formatId as FormatId]?.label || aspect})
@@ -286,7 +290,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
                 data-testid="toggle-theme"
                 className="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-semibold hover:bg-amber-500 transition-colors"
               >
-                {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+                {theme === 'dark' ? t('preview.themeDark') : t('preview.themeLight')}
               </button>
 
               {/* Safe zones toggle */}
@@ -300,7 +304,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
                     : 'bg-white dark:bg-stone-900 text-red-600 border-red-300 dark:border-red-900'
                 }`}
               >
-                {showSafeZones ? '🛡️ Safe Zones: ON' : '🛡️ Safe Zones: OFF'}
+                {showSafeZones ? t('preview.safeZonesOn') : t('preview.safeZonesOff')}
               </button>
 
               {/* Language toggle */}
@@ -319,7 +323,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
 
               {/* Zoom scale slider */}
               <div className="hidden sm:flex items-center gap-1.5 text-xs text-stone-500">
-                <span>Zoom: {Math.round(previewScale * 100)}%</span>
+                <span>{t('preview.zoom', { percent: Math.round(previewScale * 100) })}</span>
                 <input
                   type="range"
                   min="0.15"
@@ -348,10 +352,10 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
               >
                 <div className="flex items-center justify-between">
                   <h2 className="text-base sm:text-lg font-serif font-bold text-stone-900 dark:text-stone-100 capitalize">
-                    {type} Slide
+                    {t('preview.slideHeading', { type })}
                   </h2>
                   <span className="text-xs text-stone-500">
-                    {aspectsToRender.length} layout variants
+                    {t('preview.variantsCount', { count: aspectsToRender.length })}
                   </span>
                 </div>
 

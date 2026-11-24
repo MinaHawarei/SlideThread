@@ -3,6 +3,8 @@ import { useT } from '../../i18n';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useAvatarUpload } from '../common/useAvatarUpload';
 import { Footer } from '../common/Footer';
+import { LogoMark } from '../brand/LogoMark';
+import { MobileNavDrawer } from '../common/MobileNavDrawer';
 import { SocialIcon } from '../../slides/SignatureBar';
 import { getAllTemplates } from '../../templates';
 import {
@@ -135,16 +137,17 @@ export const SettingsPage: React.FC = () => {
       {/* Header Navigation */}
       <header className="settings-header">
         <a className="settings-brand" href="/" aria-label={t('nav.home')}>
-          <span className="settings-mark">S</span>
+          <LogoMark size={24} />
           <span>SlideThread</span>
         </a>
-        <nav aria-label={t('nav.primary')} dir={dir}>
+        <nav aria-label={t('nav.primary')} dir={dir} className="hidden md:flex">
           <a href="/">{t('nav.home')}</a>
           <a href="/gallery">{t('nav.gallery')}</a>
           <a href="/settings" aria-current="page">
             {t('nav.settings')}
           </a>
         </nav>
+        <MobileNavDrawer currentPath="/settings" />
       </header>
 
       {/* Main Content */}

@@ -11,6 +11,8 @@ import type { Project, PlatformId } from '../../core/schema';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 import { HeroCarousel } from './HeroCarousel';
 import { EmptyIllustration } from '../common/EmptyIllustration';
+import { LogoMark } from '../brand/LogoMark';
+import { MobileNavDrawer } from '../common/MobileNavDrawer';
 
 export interface StartScreenProps {
   onStartWizard?: () => void;
@@ -208,9 +210,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-6 py-4">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-              S
-            </div>
+            <LogoMark size={36} />
             <div>
               <h1
                 data-testid="start-app-title"
@@ -224,7 +224,8 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex items-center gap-3">
             <button
               onClick={() => handleNavigate('/gallery')}
               className="text-xs bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-medium px-3 py-1.5 rounded-lg border border-stone-300/50 dark:border-stone-700/50 transition-colors"
@@ -249,6 +250,9 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               <LanguageSwitcher />
             </div>
           </div>
+
+          {/* Mobile Side Drawer Navigation */}
+          <MobileNavDrawer currentPath="/" onNavigate={handleNavigate} />
         </div>
       </header>
 

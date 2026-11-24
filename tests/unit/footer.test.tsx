@@ -9,12 +9,13 @@ describe('Footer Component (Spec §10.3, §10.4, Task P3-9)', () => {
     useI18nStore.getState().setLocale('en');
   });
 
-  it('renders owner name, handle, and social links from site.ts', () => {
+  it('renders owner name, handle, and social links from site.ts, and centered version', () => {
     render(<Footer />);
 
     expect(screen.getByTestId('app-footer')).toBeInTheDocument();
     expect(screen.getByTestId('footer-owner-link')).toHaveTextContent(OWNER.name);
     expect(screen.queryByText(`(${OWNER.handle})`)).not.toBeInTheDocument();
+    expect(screen.getByTestId('footer-version')).toHaveTextContent('v1.0.0');
 
     // Owner social profile link
     expect(screen.getByTestId('footer-owner-link')).toHaveAttribute(

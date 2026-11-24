@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { GalleryPage } from '../../src/gallery/GalleryPage';
 import { useI18nStore } from '../../src/i18n';
 import { useSettingsStore } from '../../src/store/settingsStore';
@@ -103,5 +103,31 @@ describe('GalleryPage component (Task R8-2)', () => {
     // Switch back to Templates
     fireEvent.click(screen.getByRole('button', { name: /^templates$/i }));
     expect(screen.getByTestId('gallery-template-choices')).toBeInTheDocument();
+  });
+
+  it('R1: clicking template card directly uses it, and only Preview button opens preview', () => {
+    const onNavigate = vi.fn();
+    render(<GalleryPage onNavigate={onNavigate} />);
+
+    // Click the card directly
+    const techMeshCard = screen.getAllByTestId('gallery-template-card').find(
+      (c) => c.getAttribute('data-template-id') === 'tech-mesh'
+    )!;
+    fireEvent.click(techMeshCard);
+    expect(onNavigate).toHaveBeenCalledWith('/editor');
+
+    onNavigate.mockClear();
+
+    // Click the Preview button specifically
+    const previewBtn = screen.getByTestId('preview-template-tech-mesh');
+    expect(previewBtn).toHaveTextContent('Preview');
+    fireEvent.click(previewBtn);
+    expect(onNavigate).toHaveBeenCalledWith('/preview?template=tech-mesh');
+
+    // In Arabic
+    act(() => {
+      useI18nStore.getState().setLocale('ar');
+    });
+    expect(screen.getByTestId('preview-template-tech-mesh')).toHaveTextContent('معاينة');
   });
 });

@@ -306,7 +306,9 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         target.closest('.brand-override-popover') ||
         target.closest('[data-testid="canvas-layers-panel"]') ||
         target.closest('[data-testid="layers-toggle"]') ||
-        target.closest('[data-testid="element-menu-toggle"]')
+        target.closest('[data-testid="element-menu-toggle"]') ||
+        target.closest('[data-testid="inspector"]') ||
+        target.closest('[data-testid="element-properties-panel"]')
       ) {
         return;
       }
@@ -849,7 +851,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            transform: `scale(${1 / zoom})`,
+                            transform: `scale(${1 / zoom}) rotate(-${shown.rotation}deg)`,
                             transformOrigin: placeAbove ? 'bottom left' : 'top left',
                           }}
                         >
@@ -882,7 +884,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                                 boxShadow: '0 4px 18px rgba(0,0,0,0.15)',
                                 border: '1px solid #cbd5e1',
                                 pointerEvents: 'auto',
-                                transform: `scale(${1 / zoom})`,
+                                transform: `scale(${1 / zoom}) rotate(-${shown.rotation}deg)`,
                                 transformOrigin: placeAbove ? 'bottom left' : 'top left',
                               }}
                             >
@@ -996,6 +998,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                                 position: 'absolute',
                                 top: placeAbove ? -148 : 'calc(100% + 56px)',
                                 insetInlineStart: 0,
+                                transform: `scale(${1 / zoom}) rotate(-${shown.rotation}deg)`,
+                                transformOrigin: placeAbove ? 'bottom left' : 'top left',
                               }}
                             />
                           </>
@@ -1028,6 +1032,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      transform: `rotate(-${shown.rotation}deg)`,
+                      transformOrigin: 'center',
                     }}
                   >
                     <svg style={{ width: 14, height: 14, color: 'white' }} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -1050,7 +1056,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                         position: 'absolute',
                         left: '50%',
                         top: -36,
-                        transform: 'translateX(-50%)',
+                        transform: `translateX(-50%) rotate(-${shown.rotation}deg)`,
+                        transformOrigin: 'center',
                         width: 32,
                         height: 32,
                         padding: 0,

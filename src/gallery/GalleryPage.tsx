@@ -6,6 +6,8 @@ import { useSettingsStore } from '../store/settingsStore';
 import { useProjectStore } from '../store/projectStore';
 import { useRecentStore } from '../store/recentStore';
 import { Footer } from '../ui/common/Footer';
+import { LogoMark } from '../ui/brand/LogoMark';
+import { MobileNavDrawer } from '../ui/common/MobileNavDrawer';
 import {
   filterGalleryTemplates,
   getTemplatePreviewUrl,
@@ -128,9 +130,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
       <header className="border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur sticky top-0 z-30 px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-              S
-            </div>
+            <LogoMark size={36} />
             <div>
               <h1 className="text-xl font-bold tracking-tight text-stone-900 dark:text-white font-serif">
                 SlideThread Component Gallery
@@ -141,7 +141,8 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex items-center gap-3">
             <button
               type="button"
               onClick={() => navigateTo('/')}
@@ -157,6 +158,9 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
               {t('nav.settings')}
             </button>
           </div>
+
+          {/* Mobile Side Drawer Navigation */}
+          <MobileNavDrawer currentPath="/gallery" onNavigate={navigateTo} />
         </div>
       </header>
 
@@ -438,12 +442,20 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                         key={item.id}
                         data-testid="gallery-template-card"
                         data-template-id={item.id}
-                        className="group relative rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 bg-white dark:bg-stone-900 transition-all duration-300 hover:shadow-xl flex flex-col justify-between"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleUseTemplate(item.id)}
+                        onKeyDown={(e) => {
+                          if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+                            e.preventDefault();
+                            handleUseTemplate(item.id);
+                          }
+                        }}
+                        className="group relative rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 bg-white dark:bg-stone-900 transition-all duration-300 hover:shadow-xl flex flex-col justify-between cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
                       >
-                        {/* Preview Image with click to preview */}
+                        {/* Preview Image with click to use template */}
                         <div
-                          className="relative aspect-[4/3] bg-stone-100 dark:bg-stone-800 overflow-hidden cursor-pointer"
-                          onClick={() => handlePreviewTemplate(item.id)}
+                          className="relative aspect-[4/3] bg-stone-100 dark:bg-stone-800 overflow-hidden"
                         >
                           <img
                             src={previewUrl}
@@ -455,12 +467,12 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                           {/* Top Badges */}
                           <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none">
                             <span className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono font-bold">
-                              5 slides
+                              {t('ux.template.slides', { count: 5 })}
                             </span>
 
                             {item.colorFlexible && (
                               <span className="px-2 py-0.5 rounded-full bg-amber-600/90 text-white text-[10px] font-bold">
-                                {previewWithBrand ? 'Brand applied' : 'Color Flexible'}
+                                {previewWithBrand ? t('gallery.brandApplied') : t('gallery.colorFlexible')}
                               </span>
                             )}
                           </div>
@@ -510,17 +522,23 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                             <button
                               type="button"
                               data-testid={`preview-template-${item.id}`}
-                              onClick={() => handlePreviewTemplate(item.id)}
-                              className="text-xs font-semibold text-stone-600 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePreviewTemplate(item.id);
+                              }}
+                              className="text-xs font-semibold text-stone-600 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors focus-visible:outline-none focus-visible:underline"
                             >
-                              Preview
+                              {t('common.preview')}
                             </button>
 
                             <button
                               type="button"
                               data-testid={`use-template-${item.id}`}
-                              onClick={() => handleUseTemplate(item.id)}
-                              className="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-amber-600 hover:text-white dark:bg-stone-800 dark:hover:bg-amber-600 text-stone-800 dark:text-stone-200 text-xs font-bold transition-all"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUseTemplate(item.id);
+                              }}
+                              className="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-amber-600 hover:text-white dark:bg-stone-800 dark:hover:bg-amber-600 text-stone-800 dark:text-stone-200 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                             >
                               {t('ux.gallery.use')}
                             </button>
