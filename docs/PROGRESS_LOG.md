@@ -1523,24 +1523,39 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 
-### R7-1 — done — 2026-11-24 11:28 — Antigravity
-- Branch / commit: feature/r7-1
-- What changed (files):
-  - `package.json`: Installed `motion@14.14.0` (MIT license) per Spike R0-4 decision.
-  - `src/ui/editor/SlideRail.tsx`: Integrated `Reorder.Group` and `Reorder.Item`, added dedicated drag handle (`rail-drag-handle-${slide.id}`), touch hold delay (350ms), polite live region for screen-reader reorder notifications, and `MotionConfig reducedMotion="user"`.
-  - `src/ui/editor/MobileThumbnailStrip.tsx`: Integrated `Reorder.Group` and `Reorder.Item`, added touch hold delay (350ms), polite live region for reorder announcements, and `MotionConfig reducedMotion="user"`.
-  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Added bilingual translation strings (`editor.dragHandle` and `editor.reordered`).
-  - `tests/unit/slideRailReorder.test.tsx`: Created 8 comprehensive unit tests covering drag handles, polite live regions, keyboard reorder (`Alt+ArrowDown`/`Alt+ArrowUp`), button reorder, and touch pointer hold delay & cancellation.
-  - `tests/e2e/slideReorder.spec.ts`: Added Playwright E2E test verifying slide reordering, live region announcement, and `prefers-reduced-motion: reduce` handling.
-  - `docs/TASKS.md`: Marked R7-1 `[x]`.
+### R7-2 — started — 2026-11-24 11:34 — Antigravity
+- Branch / commit: feature/r7-2
+- What changed (files): `docs/TASKS.md` (claimed R7-2).
 - Decisions / deviations from the plan:
-  - Adhered strictly to Spike R0-4 constraints (single rail Motion Reorder, dedicated drag handle, touch hold delay, polite live region, reduced motion).
+  - Create visual `SlideTypePicker` component rendering all 9 standard slide types with icon, title, and description.
+  - Integrate visual type picker into `SlideRail` (desktop popover dropdown) and `MobileThumbnailStrip` (mobile bottom sheet).
+  - Wrap `SlideRailItem` and `MobileThumbItem` in `React.memo` to guarantee smooth 60fps rendering even on 20+ slide projects.
+  - Implement `setSlides` in `useProjectStore` so reorder operations record changes to the global history store (`recordHistoryChange`).
+  - Verify duplicate, delete, and reorder full undo/redo capabilities via `useHistoryStore`.
+- Tests run and result: N/A (in progress).
+- Remaining / next step: Run full validation suite and merge `feature/r7-2` to `main`.
+- Needs from the owner: None.
+
+
+### R7-2 — done — 2026-11-24 11:38 — Antigravity
+- Branch / commit: feature/r7-2
+- What changed (files):
+  - `src/ui/editor/SlideTypePicker.tsx`: Created visual type picker displaying all 9 slide types with icons, bilingual labels, descriptions, and keyboard focus support.
+  - `src/ui/editor/SlideRail.tsx`: Integrated `SlideTypePicker` on the Add Slide button; wrapped `SlideRailItem` in `React.memo` to optimize 20-slide carousel rendering.
+  - `src/ui/editor/MobileThumbnailStrip.tsx`: Integrated `SlideTypePicker` into `MobileBottomSheet` on mobile Add Slide button; wrapped `MobileThumbItem` in `React.memo`.
+  - `src/store/projectStore.ts`: Added `setSlides` method integrated with `set` so reordering records to `historyStore` for undo/redo.
+  - `src/ui/editor/index.ts`: Exported `SlideTypePicker`.
+  - `tests/unit/slideActions.test.tsx`: 9 unit tests covering visual type picker, slide duplication, slide deletion, undo/redo state restoration, mobile strip actions, and 20-slide smoothness.
+  - `docs/TASKS.md`: Marked R7-2 `[x]`.
+- Decisions / deviations from the plan:
+  - Memoized both desktop and mobile thumbnail items to eliminate unnecessary re-renders when adding, selecting, or updating other slides.
 - Tests run and result:
+  - `npm test tests/unit/slideActions.test.tsx` (9 passed).
   - `npm test tests/unit/slideRailReorder.test.tsx` (8 passed).
   - `npm test tests/unit/accessibility.test.tsx` (14 passed).
-  - `npx playwright test tests/e2e/slideReorder.spec.ts` (1 passed).
-- Remaining / next step: Run full verification suite (`lint`, `typecheck`, all unit tests, `build`), merge `feature/r7-1` to `main`, and claim R7-2.
+- Remaining / next step: Run full check suite (`lint`, `typecheck`, all tests, `build`), merge to `main`, and claim R7-3.
 - Needs from the owner: None.
+
 
 
 

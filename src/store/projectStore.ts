@@ -184,6 +184,7 @@ export interface ProjectState {
   duplicateSlide: (id: string) => Slide | undefined;
   deleteSlide: (id: string) => void;
   reorderSlides: (startIndex: number, endIndex: number) => void;
+  setSlides: (slides: Slide[]) => void;
   updateSlideFields: (id: string, fields: Record<string, string | RichText>) => void;
   updateSlideMedia: (id: string, media?: MediaRef) => void;
   updateSlotOverride: (slideId: string, aspect: AspectClass, elementId: string, override?: ElementOverride) => void;
@@ -433,6 +434,16 @@ export const useProjectStore = create<ProjectState>()(
           if (!removed) return;
           slides.splice(endIndex, 0, removed);
 
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides,
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        setSlides: (slides: Slide[]) => {
           set((state) => ({
             project: {
               ...state.project,
