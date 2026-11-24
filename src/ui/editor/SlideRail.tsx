@@ -191,6 +191,7 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
               templateId={useProjectStore.getState().project.templateId}
               themeMode={useProjectStore.getState().project.theme}
               dimensions={dims}
+              projectBackground={useProjectStore((state) => state.project.background)}
             />
           </div>
         </div>
@@ -356,7 +357,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
     <MotionConfig reducedMotion="user">
       <aside
         data-testid="slide-rail"
-        aria-label="Slide thumbnails"
+        aria-label={t('editor.slideThumbnails')}
         className={`w-64 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col h-full shrink-0 select-none ${className}`}
       >
         {/* Polite Live Region for screen reader announcements */}
@@ -406,8 +407,8 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                   data-testid="rail-add-slide-type-btn"
                   onClick={() => setIsPickerOpen((prev) => !prev)}
                   className="text-xs font-semibold px-1.5 py-1.5 rounded-r-lg bg-amber-700 hover:bg-amber-600 text-white transition-colors border-l border-amber-800 flex items-center justify-center shadow-sm focus-visible:ring-2 focus-visible:ring-amber-500"
-                  aria-label="Choose slide type"
-                  title="Choose slide type"
+                  aria-label={t('editor.chooseSlideType')}
+                  title={t('editor.chooseSlideType')}
                 >
                   <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
                     <path d="M8 11L3 6h10l-5 5z" />

@@ -5,6 +5,7 @@ import { SlideRenderer } from '../../slides/SlideRenderer';
 import { generatePalette } from '../../core/palette';
 import { getDimensions, aspectClass as calcAspectClass } from '../../core/formats';
 import type { Project } from '../../core/schema';
+import { DirectionalNavButton } from '../common/SlideNavControls';
 
 export interface HeroCarouselProps {
   onOpenProject?: (project: Project) => void;
@@ -25,8 +26,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   const aspect = calcAspectClass(dims.width, dims.height);
   const palette = generatePalette(demoProject.primaryColor, demoProject.theme);
 
-  // Scaled dimensions to fit hero card (around 320x400)
-  const previewScale = 320 / dims.width;
+  // Scaled dimensions to fit hero card (around 320x400, capped on 320px viewports)
+  const targetWidth = typeof window !== 'undefined' && window.innerWidth < 360 ? 272 : 320;
+  const previewScale = targetWidth / dims.width;
   const scaledWidth = dims.width * previewScale;
   const scaledHeight = dims.height * previewScale;
 
@@ -45,7 +47,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   return (
     <div
       data-testid="hero-carousel"
-      className={`relative flex flex-col items-center select-none ${className}`}
+      className={`relative flex flex-col items-center select-none max-w-full ${className}`}
     >
       {/* Decorative Orbits & Highlights */}
       <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/20 via-indigo-500/10 to-transparent rounded-3xl blur-xl -z-10" />
@@ -89,12 +91,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             templateId={demoProject.templateId}
             themeMode={demoProject.theme}
             dimensions={dims}
+            projectBackground={demoProject.background}
           />
         </div>
 
         {/* Floating badge */}
         <div className="absolute top-3 end-3 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono font-bold">
-          {activeIndex + 1} / {slides.length}
+          <bdi dir="ltr">{activeIndex + 1} / {slides.length}</bdi>
         </div>
 
         {/* Hover Click affordance */}
@@ -106,16 +109,15 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       </div>
 
       {/* Swipe & Navigation Controls */}
-      <div className="flex items-center gap-4 mt-4" dir="ltr">
-        <button
-          type="button"
+      <div className="flex items-center gap-4 mt-4">
+        <DirectionalNavButton
+          roleType="prev"
+          variant="arrow"
           data-testid="hero-prev-btn"
           onClick={handlePrev}
           aria-label={t('editor.prevSlide')}
           className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all focus-visible:ring-2 focus-visible:ring-cyan-500"
-        >
-          {locale === 'ar' ? '→' : '←'}
-        </button>
+        />
 
         {/* Slide Dots Indicator */}
         <div className="flex items-center gap-1.5" data-testid="hero-dots">
@@ -138,15 +140,14 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           ))}
         </div>
 
-        <button
-          type="button"
+        <DirectionalNavButton
+          roleType="next"
+          variant="arrow"
           data-testid="hero-next-btn"
           onClick={handleNext}
           aria-label={t('editor.nextSlide')}
           className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all focus-visible:ring-2 focus-visible:ring-cyan-500"
-        >
-          {locale === 'ar' ? '←' : '→'}
-        </button>
+        />
       </div>
     </div>
   );

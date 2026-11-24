@@ -24,7 +24,11 @@ interface UnifiedAssetItem extends AssetItem {
   packId: 'shapes' | 'icons' | 'emoji' | 'stickers';
 }
 
-export const AssetsPanel: React.FC = () => {
+export interface AssetsPanelProps {
+  onAssetAdded?: () => void;
+}
+
+export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
   const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const activeSlide = useActiveSlide();
@@ -54,6 +58,7 @@ export const AssetsPanel: React.FC = () => {
     };
     addExtraElement(activeSlide.id, newExtra);
     selectElement(newExtra.id);
+    onAssetAdded?.();
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +89,7 @@ export const AssetsPanel: React.FC = () => {
 
       addExtraElement(activeSlide.id, newExtra);
       selectElement(newExtra.id);
+      onAssetAdded?.();
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
@@ -183,6 +189,7 @@ export const AssetsPanel: React.FC = () => {
     addExtraElement(activeSlide.id, newExtra);
     selectElement(newExtra.id);
     addRecent(packId, assetId);
+    onAssetAdded?.();
   };
 
   const handleDragStart = (

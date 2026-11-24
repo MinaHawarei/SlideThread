@@ -8,6 +8,7 @@ import { SlideRenderer } from '../../slides/SlideRenderer';
 import { PasteSlidesDialog } from './PasteSlidesDialog';
 import { SlideTypePicker } from './SlideTypePicker';
 import { MobileBottomSheet } from './MobileBottomSheet';
+import { DirectionalNavButton } from '../common/SlideNavControls';
 import type { SlideType, Slide, CounterConfig, SignatureConfig, ThemeMode, AspectClass } from '../../core/schema';
 
 export interface MobileThumbnailStripProps {
@@ -164,6 +165,7 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
             templateId={templateId}
             themeMode={themeMode}
             dimensions={dims}
+            projectBackground={useProjectStore((state) => state.project.background)}
           />
         </div>
       </div>
@@ -341,8 +343,8 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 type="button"
                 data-testid="mobile-add-slide-type-btn"
                 onClick={() => setIsPickerOpen(true)}
-                aria-label="Choose slide type"
-                title="Choose slide type"
+                aria-label={t('editor.chooseSlideType')}
+                title={t('editor.chooseSlideType')}
                 className="shrink-0 min-h-[44px] min-w-[36px] h-[60px] w-9 rounded-xl border-2 border-dashed border-amber-400/60 dark:border-amber-700/60 bg-amber-500/5 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 flex flex-col items-center justify-center text-xs hover:bg-amber-500/15 transition-colors"
               >
                 <span>✨</span>
@@ -364,38 +366,36 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
         {/* Slide Operations Toolbar (Duplicate, Delete, Move Earlier, Move Later) */}
         <div className="flex items-center justify-between px-1 text-xs text-stone-500 dark:text-stone-400">
           <span className="font-semibold text-[11px] font-mono text-stone-600 dark:text-stone-300">
-            {validIndex + 1} / {slides.length}
+            <bdi dir="ltr">{validIndex + 1} / {slides.length}</bdi>
           </span>
 
           <div className="flex items-center gap-1">
             {/* Accessible Reorder Earlier */}
             {!isPost && (
-              <button
-                type="button"
+              <DirectionalNavButton
+                roleType="prev"
+                variant="arrow"
                 data-testid="mobile-move-earlier-btn"
                 disabled={validIndex === 0}
                 onClick={handleMoveEarlier}
                 aria-label={t('editor.moveUp')}
                 title={t('editor.moveUp')}
                 className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-              >
-                ←
-              </button>
+              />
             )}
 
             {/* Accessible Reorder Later */}
             {!isPost && (
-              <button
-                type="button"
+              <DirectionalNavButton
+                roleType="next"
+                variant="arrow"
                 data-testid="mobile-move-later-btn"
                 disabled={validIndex === slides.length - 1}
                 onClick={handleMoveLater}
                 aria-label={t('editor.moveDown')}
                 title={t('editor.moveDown')}
                 className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-              >
-                →
-              </button>
+              />
             )}
 
             {/* Duplicate Slide */}

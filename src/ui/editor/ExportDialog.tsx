@@ -472,6 +472,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               templateId={project.templateId}
               themeMode={project.theme}
               dimensions={dims}
+              projectBackground={project.background}
             />
           </div>
         )}

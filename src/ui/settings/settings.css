@@ -15,7 +15,10 @@
 }
 .settings-brand { display: flex; align-items: center; gap: .65rem; color: inherit; font-weight: 700; text-decoration: none; }
 .settings-mark { display: grid; width: 2rem; aspect-ratio: 1; place-items: center; border-radius: .65rem; background: hsl(var(--atelier-accent)); color: white; }
-.settings-header nav { display: flex; gap: .5rem; }
+.settings-header nav { gap: .5rem; }
+@media (min-width: 768px) {
+  .settings-header nav { display: flex; }
+}
 .settings-header nav a { padding: .55rem .8rem; border-radius: .75rem; color: hsl(var(--atelier-muted)); text-decoration: none; }
 .settings-header nav a[aria-current='page'] { color: hsl(var(--atelier-ink)); background: hsl(var(--atelier-paper)); }
 .settings-main { width: min(100% - 2rem, 48rem); margin-inline: auto; padding-block: clamp(3rem, 10vh, 6rem); }
@@ -64,6 +67,5 @@
 }
 .route-loading { display: grid; min-height: 100vh; place-items: center; color: hsl(var(--atelier-muted)); background: hsl(var(--atelier-paper)); font-family: 'IBM Plex Sans', sans-serif; }
 @media (max-width: 600px) {
-  .settings-header { flex-wrap: wrap; }
-  .settings-header nav { order: 3; width: 100%; }
+  .settings-header { flex-wrap: nowrap; }
 }

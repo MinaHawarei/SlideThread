@@ -279,6 +279,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                     templateId={project.templateId}
                     themeMode={project.theme}
                     dimensions={dims}
+                    projectBackground={project.background}
                   />
                 </div>
               </div>

@@ -77,7 +77,9 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         target.closest('.brand-override-popover') ||
         target.closest('[data-testid="inspector"]') ||
         target.closest('[data-testid="element-properties-panel"]') ||
-        target.closest('[data-testid="layers-panel"]')
+        target.closest('[data-testid="layers-panel"]') ||
+        target.closest('[data-testid="mobile-bottom-tabs"]') ||
+        target.closest('[data-testid="mobile-bottom-sheet"]')
       ) {
         return;
       }

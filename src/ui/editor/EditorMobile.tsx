@@ -18,6 +18,7 @@ import { CanvasManipulationLayer } from './CanvasManipulationLayer';
 import { ElementPropertiesPanel } from './ElementPropertiesPanel';
 import { LayersPanel } from './LayersPanel';
 import { LogoMark } from '../brand/LogoMark';
+import { DirectionalNavButton } from '../common/SlideNavControls';
 
 export type MobileTab = 'slides' | 'edit' | 'assets' | 'layers' | 'design' | 'export';
 
@@ -57,7 +58,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
   }>({
     isOpen: false,
     sizeMB: '0',
-    proceed: () => {},
+    proceed: () => { },
   });
 
   const handleExportJson = async () => {
@@ -197,7 +198,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
             type="button"
             data-testid="mobile-editor-home-btn"
             onClick={onHome}
-            aria-label="Return to Start Screen"
+            aria-label={t('editor.returnHome')}
             className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors shrink-0"
           >
             <LogoMark size={28} />
@@ -223,11 +224,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               onClick={() => setShowSafeZones(!showSafeZones)}
               aria-label="Toggle story safe zones"
               title="Safe Zones (14%)"
-              className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border text-xs transition-colors ${
-                showSafeZones
-                  ? 'bg-red-500/10 border-red-500 text-red-600 dark:text-red-400'
-                  : 'border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400'
-              }`}
+              className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border text-xs transition-colors ${showSafeZones
+                ? 'bg-red-500/10 border-red-500 text-red-600 dark:text-red-400'
+                : 'border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400'
+                }`}
             >
               🛡️
             </button>
@@ -296,6 +296,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 templateId={project.templateId}
                 themeMode={project.theme}
                 dimensions={dims}
+                projectBackground={project.background}
               />
             </div>
             <CanvasManipulationLayer slide={currentSlide} aspect={aspect} width={scaledWidth} height={scaledHeight} zoom={scale} />
@@ -305,34 +306,32 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
         {/* Floating Bottom Canvas Nav Pill (Previous / Counter / Next) */}
         {!selectedElementId && <div className="absolute bottom-3 inset-x-0 flex justify-center pointer-events-none">
           <div className="bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur-md px-2 py-1 rounded-full shadow-lg border border-stone-200/80 dark:border-stone-800 flex items-center gap-1.5 pointer-events-auto">
-            <button
-              type="button"
+            <DirectionalNavButton
+              roleType="prev"
+              variant="chevron"
               data-testid="mobile-prev-slide-btn"
               disabled={validIndex === 0}
               onClick={prevSlide}
-              aria-label="Previous Slide"
+              aria-label={t('editor.prevSlide')}
               className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors font-bold text-sm text-stone-700 dark:text-stone-300"
-            >
-              ‹
-            </button>
+            />
 
             <span
               data-testid="mobile-slide-counter"
               className="font-mono text-xs font-semibold px-2 text-stone-700 dark:text-stone-300"
             >
-              {validIndex + 1} / {slides.length}
+              <bdi dir="ltr">{validIndex + 1} / {slides.length}</bdi>
             </span>
 
-            <button
-              type="button"
+            <DirectionalNavButton
+              roleType="next"
+              variant="chevron"
               data-testid="mobile-next-slide-btn"
               disabled={validIndex >= slides.length - 1}
               onClick={nextSlide}
-              aria-label="Next Slide"
+              aria-label={t('editor.nextSlide')}
               className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors font-bold text-sm text-stone-700 dark:text-stone-300"
-            >
-              ›
-            </button>
+            />
           </div>
         </div>}
       </main>
@@ -351,11 +350,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           aria-selected={activeTab === 'slides'}
           data-testid="mobile-tab-slides"
           onClick={() => handleTabClick('slides')}
-          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
-            activeTab === 'slides'
-              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
-          }`}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${activeTab === 'slides'
+            ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+            }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -370,11 +368,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           aria-selected={activeTab === 'edit'}
           data-testid="mobile-tab-edit"
           onClick={() => handleTabClick('edit')}
-          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
-            activeTab === 'edit'
-              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
-          }`}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${activeTab === 'edit'
+            ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+            }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -389,11 +386,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           aria-selected={activeTab === 'assets'}
           data-testid="mobile-tab-assets"
           onClick={() => handleTabClick('assets')}
-          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
-            activeTab === 'assets'
-              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
-          }`}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${activeTab === 'assets'
+            ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+            }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -408,11 +404,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           aria-selected={activeTab === 'layers'}
           data-testid="mobile-tab-layers"
           onClick={() => handleTabClick('layers')}
-          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
-            activeTab === 'layers'
-              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
-          }`}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${activeTab === 'layers'
+            ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+            }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -427,11 +422,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           aria-selected={activeTab === 'design'}
           data-testid="mobile-tab-design"
           onClick={() => handleTabClick('design')}
-          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
-            activeTab === 'design'
-              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
-          }`}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${activeTab === 'design'
+            ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+            }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4 4 4 0 014-4c.772 0 1.5.216 2.118.59l6.293-6.293a3 3 0 114.242 4.242l-6.293 6.293A4 4 0 017 21z" />
@@ -446,11 +440,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           aria-selected={activeTab === 'export'}
           data-testid="mobile-tab-export"
           onClick={() => handleTabClick('export')}
-          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${
-            activeTab === 'export'
-              ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
-          }`}
+          className={`flex-1 flex flex-col items-center justify-center min-h-[44px] min-w-[44px] gap-0.5 text-xs transition-colors ${activeTab === 'export'
+            ? 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+            }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -468,14 +461,14 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           selectedElementId && (activeTab === 'edit' || activeTab === 'layers')
             ? t('editor.elementProperties')
             : activeTab === 'layers'
-            ? t('editor.tabLayers')
-            : activeTab === 'edit'
-            ? t('editor.tabSlide')
-            : activeTab === 'assets'
-            ? t('editor.tabAssets')
-            : activeTab === 'design'
-            ? t('editor.tabDesign')
-            : t('editor.mobileTabExport')
+              ? t('editor.tabLayers')
+              : activeTab === 'edit'
+                ? t('editor.tabSlide')
+                : activeTab === 'assets'
+                  ? t('editor.tabAssets')
+                  : activeTab === 'design'
+                    ? t('editor.tabDesign')
+                    : t('editor.mobileTabExport')
         }
       >
         {activeTab === 'edit' && (
@@ -486,14 +479,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
           )
         )}
 
-        {activeTab === 'assets' && <AssetsPanel />}
+        {activeTab === 'assets' && <AssetsPanel onAssetAdded={handleCloseSheet} />}
 
         {activeTab === 'layers' && (
-          selectedElementId ? (
-            <ElementPropertiesPanel onClose={handleCloseSheet} />
-          ) : (
-            <LayersPanel />
-          )
+          <LayersPanel onSelectLayer={() => setActiveTab('edit')} />
         )}
 
         {activeTab === 'design' && (
@@ -505,11 +494,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                   type="button"
                   data-testid="mobile-design-subtab-design"
                   onClick={() => setDesignSubTab('design')}
-                  className={`min-h-[44px] py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
-                    designSubTab === 'design'
-                      ? 'bg-stone-50 dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-xs'
-                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
-                  }`}
+                  className={`min-h-[44px] py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${designSubTab === 'design'
+                    ? 'bg-stone-50 dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-xs'
+                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                    }`}
                 >
                   {t('editor.tabDesign')}
                 </button>
@@ -517,11 +505,10 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                   type="button"
                   data-testid="mobile-design-subtab-brand"
                   onClick={() => setDesignSubTab('brand')}
-                  className={`min-h-[44px] py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
-                    designSubTab === 'brand'
-                      ? 'bg-stone-50 dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-xs'
-                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
-                  }`}
+                  className={`min-h-[44px] py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${designSubTab === 'brand'
+                    ? 'bg-stone-50 dark:bg-stone-900 text-amber-600 dark:text-amber-400 shadow-xs'
+                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                    }`}
                 >
                   {t('editor.tabBrand')}
                 </button>

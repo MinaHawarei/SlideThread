@@ -315,7 +315,7 @@ export const ar: Record<TranslationKey, string> = {
   'editor.elementWidth': 'العرض (%)',
   'editor.elementScale': 'المقياس (%)',
   'editor.elementRotation': 'الدوران (°)',
-  'editor.elementOpacity': 'الشفافية (%)',
+  'editor.elementOpacity': 'الشفافية',
   'editor.background': 'الخلفية',
   'editor.background.slide': 'هذه الشريحة',
   'editor.background.all': 'كل الشرائح',
@@ -387,6 +387,9 @@ export const ar: Record<TranslationKey, string> = {
   'editor.mobileTabExport': 'تصدير',
   'editor.closeInspector': 'إغلاق',
   'editor.swipeHint': 'اسحب للتنقل بين الشرائح',
+  'editor.returnHome': 'العودة إلى الشاشة الرئيسية',
+  'editor.slideThumbnails': 'مصغرات الشرائح',
+  'editor.chooseSlideType': 'اختر نوع الشريحة',
 
   // Export Dialog
   'export.title': 'تصدير العرض',

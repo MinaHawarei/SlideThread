@@ -313,7 +313,7 @@ export const en = {
   'editor.elementWidth': 'Width (%)',
   'editor.elementScale': 'Scale (%)',
   'editor.elementRotation': 'Rotation (°)',
-  'editor.elementOpacity': 'Opacity (%)',
+  'editor.elementOpacity': 'Opacity',
   'editor.background': 'Background',
   'editor.background.slide': 'This slide',
   'editor.background.all': 'All slides',
@@ -385,6 +385,9 @@ export const en = {
   'editor.mobileTabExport': 'Export',
   'editor.closeInspector': 'Close',
   'editor.swipeHint': 'Swipe to change slide',
+  'editor.returnHome': 'Return to Start Screen',
+  'editor.slideThumbnails': 'Slide thumbnails',
+  'editor.chooseSlideType': 'Choose slide type',
 
   // Export Dialog
   'export.title': 'Export Presentation',

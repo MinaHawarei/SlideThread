@@ -22,17 +22,19 @@ export const MediaRenderer: React.FC<MediaRendererProps> = ({
       setResolvedUrl(imageUrl);
       return;
     }
-    if (media?.assetId) {
-      let isMounted = true;
-      getAssetUrl(media.assetId).then((url) => {
-        if (isMounted && url) {
-          setResolvedUrl(url);
-        }
-      });
-      return () => {
-        isMounted = false;
-      };
+    if (!media?.assetId) {
+      setResolvedUrl(undefined);
+      return;
     }
+    let isMounted = true;
+    getAssetUrl(media.assetId).then((url) => {
+      if (isMounted) {
+        setResolvedUrl(url ?? undefined);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
   }, [media?.assetId, imageUrl]);
 
   if (!media && !resolvedUrl) {

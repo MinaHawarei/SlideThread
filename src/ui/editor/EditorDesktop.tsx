@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { handleExportProject } from '../../core/projectIO';
-import { undo, redo } from '../../store/history';
+import { undo, redo, useHistoryStore } from '../../store/history';
 import { SizeWarningModal } from '../common/SizeWarningModal';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import { SlideRail } from './SlideRail';
@@ -27,6 +27,8 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   const { t } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
+  const canUndo = useHistoryStore((state) => state.canUndo);
+  const canRedo = useHistoryStore((state) => state.canRedo);
 
   const [activeTab, setActiveTab] = useState<InspectorTab>('slide');
   const [isSlideRailVisible, setIsSlideRailVisible] = useState(true);
@@ -77,7 +79,8 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             data-testid="editor-home-btn"
             onClick={onHome}
             className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-            title="Return to Start Screen"
+            aria-label={t('editor.returnHome')}
+            title={t('editor.returnHome')}
           >
             <LogoMark size={28} />
             <span className="font-serif font-bold text-sm hidden sm:inline-block text-stone-900 dark:text-white">
@@ -122,8 +125,9 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
           <button
             type="button"
             data-testid="editor-undo-btn"
+            disabled={!canUndo}
             onClick={() => undo()}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
             title={`${t('editor.undo')} (Ctrl+Z)`}
             aria-label={t('editor.undo')}
           >
@@ -132,8 +136,9 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
           <button
             type="button"
             data-testid="editor-redo-btn"
+            disabled={!canRedo}
             onClick={() => redo()}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
             title={`${t('editor.redo')} (Ctrl+Shift+Z)`}
             aria-label={t('editor.redo')}
           >

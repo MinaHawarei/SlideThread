@@ -253,7 +253,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-6xl mx-auto w-full px-6 py-10 flex-1 space-y-12">
+      <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-10 flex-1 space-y-12 overflow-x-clip">
         {/* Active Project Resume Banner */}
         {hasActiveProject && (
           <section

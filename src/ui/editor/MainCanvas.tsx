@@ -332,6 +332,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
               templateId={project.templateId}
               themeMode={project.theme}
               dimensions={dims}
+              projectBackground={project.background}
             />
             <CanvasManipulationLayer slide={currentSlide} aspect={aspect} width={dims.width} height={dims.height} zoom={zoomLevel} />
           </div>
