@@ -16,7 +16,8 @@
   --atelier-ring: 12 56% 50%;
 }
 
-[data-theme='dark'] {
+[data-theme='dark'],
+.dark {
   color-scheme: dark;
   --atelier-paper: 180 10% 9%;
   --atelier-panel: 180 9% 13%;

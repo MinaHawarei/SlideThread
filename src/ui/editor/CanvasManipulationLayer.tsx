@@ -32,7 +32,7 @@ interface NumericInspectorProps {
   element: ResolvedElement;
   zoom: number;
   t: (key: TranslationKey, params?: Record<string, string | number>) => string;
-  onCommit: (field: 'x' | 'y' | 'w' | 'scale' | 'rotation', value: number) => void;
+  onCommit: (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', value: number) => void;
   style?: React.CSSProperties;
 }
 
@@ -42,6 +42,7 @@ const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, o
       ? (element.w / (element.frame?.inlineSize ?? element.w)) * 100
       : 100
   );
+  const currentOpacity = Math.round((element.opacity ?? 1) * 100);
 
   const [localValues, setLocalValues] = useState<{
     x: string;
@@ -49,12 +50,14 @@ const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, o
     w: string;
     scale: string;
     rotation: string;
+    opacity: string;
   }>({
     x: String(Math.round(element.x * 100)),
     y: String(Math.round(element.y * 100)),
     w: String(Math.round(element.w * 100)),
     scale: String(currentScale || 100),
     rotation: String(Math.round(element.rotation || 0)),
+    opacity: String(currentOpacity),
   });
 
   const [activeField, setActiveField] = useState<string | null>(null);
@@ -67,11 +70,12 @@ const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, o
         w: String(Math.round(element.w * 100)),
         scale: String(currentScale || 100),
         rotation: String(Math.round(element.rotation || 0)),
+        opacity: String(Math.round((element.opacity ?? 1) * 100)),
       });
     }
-  }, [element.x, element.y, element.w, element.rotation, currentScale, activeField]);
+  }, [element.x, element.y, element.w, element.rotation, element.opacity, currentScale, activeField]);
 
-  const handleFieldChange = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation', val: string) => {
+  const handleFieldChange = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', val: string) => {
     setLocalValues((prev) => ({ ...prev, [field]: val }));
     const num = parseFloat(val);
     if (Number.isFinite(num)) {
@@ -80,11 +84,12 @@ const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, o
       if (field === 'w') clamped = Math.max(2, Math.min(100, num));
       if (field === 'scale') clamped = Math.max(20, Math.min(500, num));
       if (field === 'rotation') clamped = ((num % 360) + 360) % 360;
+      if (field === 'opacity') clamped = Math.max(0, Math.min(100, num));
       onCommit(field, clamped);
     }
   };
 
-  const commitField = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation') => {
+  const commitField = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity') => {
     setActiveField(null);
     const num = parseFloat(localValues[field]);
     if (!Number.isFinite(num)) {
@@ -98,6 +103,8 @@ const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, o
           ? Math.round(element.w * 100)
           : field === 'scale'
           ? currentScale
+          : field === 'opacity'
+          ? Math.round((element.opacity ?? 1) * 100)
           : Math.round(element.rotation);
       setLocalValues((prev) => ({ ...prev, [field]: String(fallback) }));
       return;
@@ -108,6 +115,7 @@ const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, o
     if (field === 'w') clamped = Math.max(2, Math.min(100, num));
     if (field === 'scale') clamped = Math.max(20, Math.min(500, num));
     if (field === 'rotation') clamped = ((num % 360) + 360) % 360;
+    if (field === 'opacity') clamped = Math.max(0, Math.min(100, num));
 
     setLocalValues((prev) => ({ ...prev, [field]: String(Math.round(clamped)) }));
     onCommit(field, clamped);
@@ -179,38 +187,68 @@ const NumericInspector: React.FC<NumericInspectorProps> = ({ element, zoom, t, o
           </label>
         );
       })}
-      {element.kind !== 'slot' && (
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 600 }}>
-          <span style={{ color: '#475569' }}>{t('editor.elementRotation')} (°)</span>
-          <input
-            aria-label={t('editor.elementRotation')}
-            type="number"
-            step="1"
-            value={localValues.rotation}
-            onFocus={() => setActiveField('rotation')}
-            onChange={(e) => handleFieldChange('rotation', e.target.value)}
-            onBlur={() => commitField('rotation')}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.currentTarget.blur();
-              } else if (e.key === 'Escape') {
-                setActiveField(null);
-                e.currentTarget.blur();
-              }
-            }}
-            style={{
-              width: 64,
-              minHeight: 32,
-              border: '1px solid #94a3b8',
-              borderRadius: 6,
-              padding: '3px 6px',
-              fontSize: 13,
-              fontFamily: 'monospace',
-              background: '#f8fafc',
-            }}
-          />
-        </label>
-      )}
+      <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 600 }}>
+        <span style={{ color: '#475569' }}>{t('editor.elementRotation')} (°)</span>
+        <input
+          aria-label={t('editor.elementRotation')}
+          type="number"
+          step="1"
+          value={localValues.rotation}
+          onFocus={() => setActiveField('rotation')}
+          onChange={(e) => handleFieldChange('rotation', e.target.value)}
+          onBlur={() => commitField('rotation')}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.currentTarget.blur();
+            } else if (e.key === 'Escape') {
+              setActiveField(null);
+              e.currentTarget.blur();
+            }
+          }}
+          style={{
+            width: 64,
+            minHeight: 32,
+            border: '1px solid #94a3b8',
+            borderRadius: 6,
+            padding: '3px 6px',
+            fontSize: 13,
+            fontFamily: 'monospace',
+            background: '#f8fafc',
+          }}
+        />
+      </label>
+      <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 600 }}>
+        <span style={{ color: '#475569' }}>{t('editor.elementOpacity')}</span>
+        <input
+          aria-label={t('editor.elementOpacity')}
+          type="number"
+          min="0"
+          max="100"
+          step="5"
+          value={localValues.opacity}
+          onFocus={() => setActiveField('opacity')}
+          onChange={(e) => handleFieldChange('opacity', e.target.value)}
+          onBlur={() => commitField('opacity')}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.currentTarget.blur();
+            } else if (e.key === 'Escape') {
+              setActiveField(null);
+              e.currentTarget.blur();
+            }
+          }}
+          style={{
+            width: 64,
+            minHeight: 32,
+            border: '1px solid #94a3b8',
+            borderRadius: 6,
+            padding: '3px 6px',
+            fontSize: 13,
+            fontFamily: 'monospace',
+            background: '#f8fafc',
+          }}
+        />
+      </label>
     </div>
   );
 };
@@ -232,6 +270,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const [touchLayout, setTouchLayout] = useState(false);
   const [layersOpen, setLayersOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const gesture = useRef<Gesture>();
   const activePointers = useRef(new Map<number, { x: number; y: number }>());
   const layerRef = useRef<HTMLDivElement>(null);
@@ -266,18 +305,22 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         target.closest('[data-testid="brand-override-popover"]') ||
         target.closest('.brand-override-popover') ||
         target.closest('[data-testid="canvas-layers-panel"]') ||
-        target.closest('[data-testid="layers-toggle"]')
+        target.closest('[data-testid="layers-toggle"]') ||
+        target.closest('[data-testid="element-menu-toggle"]')
       ) {
         return;
       }
       selectElement(undefined);
       setEditingId(null);
+      setMenuOpenId(null);
     };
 
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         if (editingId) {
           setEditingId(null);
+        } else if (menuOpenId) {
+          setMenuOpenId(null);
         } else {
           selectElement(undefined);
         }
@@ -290,7 +333,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       window.removeEventListener('pointerdown', handleGlobalPointerDown);
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, [selectedId, editingId, selectElement]);
+  }, [selectedId, editingId, menuOpenId, selectElement]);
 
   useLayoutEffect(() => {
     const stage = layerRef.current?.parentElement;
@@ -349,6 +392,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         scale: prior?.scale ?? 1,
         w: geometry.w,
         h: geometry.h,
+        rotation: geometry.rotation,
       });
     } else if (element.extra) {
       updateExtraElement(slide.id, {
@@ -362,7 +406,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     }
   };
 
-  const applyNumericGeometry = (element: ResolvedElement, field: 'x' | 'y' | 'w' | 'scale' | 'rotation', value: number) => {
+  const applyNumericGeometry = (element: ResolvedElement, field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', value: number) => {
     const prior = slide.overrides?.[aspect]?.[element.id];
     if (element.kind === 'slot') {
       const baseOverride = {
@@ -385,6 +429,10 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       } else if (field === 'scale') {
         const newScale = Math.max(0.2, Math.min(5, value / 100));
         updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, scale: newScale });
+      } else if (field === 'rotation') {
+        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, rotation: ((value % 360) + 360) % 360 });
+      } else if (field === 'opacity') {
+        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, opacity: Math.max(0, Math.min(1, value / 100)) });
       }
     } else if (element.extra) {
       if (field === 'x') updateExtraElement(slide.id, { ...element.extra, x: Math.max(0, Math.min(0.98, value / 100)) });
@@ -397,6 +445,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         updateExtraElement(slide.id, { ...element.extra, w: targetW, h: Math.max(0.02, Math.min(1, (element.extra.h || 0.2) * ratio)) });
       } else if (field === 'rotation') {
         updateExtraElement(slide.id, { ...element.extra, rotation: ((value % 360) + 360) % 360 });
+      } else if (field === 'opacity') {
+        updateExtraElement(slide.id, { ...element.extra, opacity: Math.max(0, Math.min(1, value / 100)) });
       }
     }
     setAnnouncement(t('editor.movedAnnouncement', { id: element.id }));
@@ -539,7 +589,11 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     if (active.mode === 'resize') geometry = resizeElementGeometry(active.initial, dx, dy, element.kind === 'image' || element.kind === 'sticker');
     if (active.mode === 'rotate') {
       const angle = Math.atan2((event.clientY - rect.top) / rect.height - active.initial.y - active.initial.h / 2, (event.clientX - rect.left) / rect.width - active.initial.x - active.initial.w / 2);
-      geometry = rotateElementGeometry(active.initial, active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI);
+      let newAngle = active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI;
+      if (event.shiftKey) {
+        newAngle = Math.round(newAngle / 15) * 15;
+      }
+      geometry = rotateElementGeometry(active.initial, newAngle);
     }
     const snapped = active.mode === 'move' ? snapElementGeometry(geometry, 6 / Math.max(width, height)) : { geometry, guides: [] };
     setPreview({ id: element.id, ...snapped });
@@ -577,7 +631,11 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       if (active.mode === 'resize') geometry = resizeElementGeometry(active.initial, dx, dy, element.kind === 'image' || element.kind === 'sticker');
       if (active.mode === 'rotate') {
         const angle = Math.atan2((event.clientY - rect.top) / rect.height - active.initial.y - active.initial.h / 2, (event.clientX - rect.left) / rect.width - active.initial.x - active.initial.w / 2);
-        geometry = rotateElementGeometry(active.initial, active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI);
+        let newAngle = active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI;
+        if (event.shiftKey) {
+          newAngle = Math.round(newAngle / 15) * 15;
+        }
+        geometry = rotateElementGeometry(active.initial, newAngle);
       }
       if (active.mode === 'move') geometry = snapElementGeometry(geometry, 6 / Math.max(width, height)).geometry;
       persistGeometry(element, geometry);
@@ -605,13 +663,15 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
           scale: 1,
           w: undefined,
           h: undefined,
+          rotation: 0,
+          opacity: 1,
           ...(prior?.z !== undefined ? { z: prior.z } : {}),
           ...(prior?.locked !== undefined ? { locked: prior.locked } : {}),
           ...(prior?.hidden !== undefined ? { hidden: prior.hidden } : {}),
         });
       }
     } else if (element.extra) {
-      updateExtraElement(slide.id, { ...element.extra, rotation: 0 });
+      updateExtraElement(slide.id, { ...element.extra, rotation: 0, opacity: 1 });
     }
   };
 
@@ -659,8 +719,12 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         </section>}
       </div>
       {elements.filter((item) => !item.hidden).map((modelElement) => {
-        const element = measuredGeometry[modelElement.id] && !slide.overrides?.[aspect]?.[modelElement.id]
-          ? { ...modelElement, ...measuredGeometry[modelElement.id] }
+        const element = measuredGeometry[modelElement.id]
+          ? {
+              ...modelElement,
+              ...measuredGeometry[modelElement.id],
+              rotation: slide.overrides?.[aspect]?.[modelElement.id]?.rotation ?? modelElement.rotation ?? 0,
+            }
           : modelElement;
         const shown = preview?.id === element.id ? preview.geometry : element;
         const isSelected = selectedId === element.id;
@@ -709,7 +773,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
             onPointerUp={(event) => end(event, element)}
             onPointerCancel={(event) => end(event, element)}
             onClick={() => selectElement(element.id)}
-            style={{ position: 'absolute', zIndex: isCurrentlyEditing ? 35 : isSelected ? 25 : 20, left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.w * 100}%`, height: `${shown.h * 100}%`, transform: `rotate(${shown.rotation}deg)`, transformOrigin: 'center', border: isSelected ? '2px solid #0891b2' : '1px solid transparent', background: isSelected ? '#06b6d40d' : 'transparent', pointerEvents: 'auto', touchAction: touchLayout ? 'none' : undefined, cursor: element.locked ? 'default' : isCurrentlyEditing ? 'text' : 'move', boxSizing: 'border-box' }}
+            style={{ position: 'absolute', zIndex: isCurrentlyEditing ? 35 : isSelected ? 25 : 20, left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.w * 100}%`, height: `${shown.h * 100}%`, minWidth: 24, minHeight: 24, transform: `rotate(${shown.rotation}deg)`, transformOrigin: 'center', border: isSelected ? '2px solid #0891b2' : '1px solid transparent', background: isSelected ? '#06b6d40d' : 'transparent', pointerEvents: 'auto', touchAction: touchLayout ? 'none' : undefined, cursor: element.locked ? 'default' : isCurrentlyEditing ? 'text' : 'move', boxSizing: 'border-box' }}
           >
             {isCurrentlyEditing ? (
               <RichTextEditor
@@ -727,6 +791,16 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                 }}
                 onDone={() => setEditingId(null)}
                 touchLayout={touchLayout}
+                style={{
+                  // D3: scale the editor back up by 1/zoom so text is always readable regardless of canvas zoom
+                  transform: `scale(${1 / zoom})`,
+                  transformOrigin: 'top left',
+                  width: `${zoom * 100}%`,
+                  height: `${zoom * 100}%`,
+                  minWidth: `min(${zoom * 100}%, calc(100vw - 32px))`,
+                  minHeight: `${Math.max(80, 80 * zoom)}px`,
+                  fontSize: `${Math.max(16, 16 * zoom)}px`,
+                }}
               />
             ) : (
               isSelected && !element.locked && <>
@@ -741,145 +815,191 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                 </>
               ) : (
                 <>
+                  {/* D4: Small icon button to open/close the element menu. Menu does NOT open automatically. */}
                   {!touchLayout && (() => {
                     const placeAbove = shown.y > 0.35;
+                    const isMenuOpen = menuOpenId === element.id;
                     return (
                       <>
-                        <div
-                          data-testid="element-context-toolbar"
-                          role="toolbar"
+                        {/* Menu toggle icon — always visible when selected, opens menu on click */}
+                        <button
+                          type="button"
+                          data-testid="element-menu-toggle"
                           aria-label={t('editor.selectionToolbar')}
-                          onPointerDown={(event) => event.stopPropagation()}
+                          title={t('editor.selectionToolbar')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setMenuOpenId(isMenuOpen ? null : element.id);
+                          }}
+                          onPointerDown={(e) => e.stopPropagation()}
                           style={{
                             position: 'absolute',
-                            top: placeAbove ? -48 : 'calc(100% + 8px)',
+                            top: placeAbove ? -40 : 'calc(100% + 4px)',
                             insetInlineStart: 0,
-                            zIndex: 55,
+                            zIndex: 56,
+                            width: 36,
+                            height: 36,
+                            borderRadius: 8,
+                            background: isMenuOpen ? '#0891b2' : 'white',
+                            color: isMenuOpen ? 'white' : '#0f172a',
+                            border: '1px solid #cbd5e1',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                            cursor: 'pointer',
+                            pointerEvents: 'auto',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 4,
-                            padding: 4,
-                            borderRadius: 10,
-                            background: 'white',
-                            color: '#0f172a',
-                            boxShadow: '0 4px 18px rgba(0,0,0,0.15)',
-                            border: '1px solid #cbd5e1',
-                            pointerEvents: 'auto',
+                            justifyContent: 'center',
                             transform: `scale(${1 / zoom})`,
                             transformOrigin: placeAbove ? 'bottom left' : 'top left',
                           }}
                         >
-                          {/* Lock / Unlock button */}
-                          <button
-                            type="button"
-                            aria-label={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })}
-                            title={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })}
-                            onClick={() => setLayerState(element, { locked: !element.locked })}
-                            style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
-                          >
-                            {element.locked ? (
-                              <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                              </svg>
-                            ) : (
-                              <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-                              </svg>
-                            )}
-                          </button>
+                          <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+                            <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                            <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+                          </svg>
+                        </button>
 
-                          {/* Hide / Show (Eye) button */}
-                          <button
-                            type="button"
-                            aria-label={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })}
-                            title={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })}
-                            onClick={() => setLayerState(element, { hidden: !element.hidden })}
-                            style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
-                          >
-                            {element.hidden ? (
-                              <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                                <line x1="1" y1="1" x2="23" y2="23" />
-                              </svg>
-                            ) : (
-                              <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                <circle cx="12" cy="12" r="3" />
-                              </svg>
-                            )}
-                          </button>
-
-                          {/* Edit Text (Pencil) button */}
-                          {isTextElement && (
-                            <button
-                              type="button"
-                              aria-label={t('editor.editText')}
-                              title={t('editor.editText')}
-                              data-testid={`edit-text-btn-${element.id}`}
-                              onClick={(e) => { e.stopPropagation(); setEditingId(element.id); }}
-                              style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
+                        {isMenuOpen && (
+                          <>
+                            <div
+                              data-testid="element-context-toolbar"
+                              role="toolbar"
+                              aria-label={t('editor.selectionToolbar')}
+                              onPointerDown={(event) => event.stopPropagation()}
+                              style={{
+                                position: 'absolute',
+                                top: placeAbove ? -48 : 'calc(100% + 8px)',
+                                insetInlineStart: 40,
+                                zIndex: 55,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                padding: 4,
+                                borderRadius: 10,
+                                background: 'white',
+                                color: '#0f172a',
+                                boxShadow: '0 4px 18px rgba(0,0,0,0.15)',
+                                border: '1px solid #cbd5e1',
+                                pointerEvents: 'auto',
+                                transform: `scale(${1 / zoom})`,
+                                transformOrigin: placeAbove ? 'bottom left' : 'top left',
+                              }}
                             >
-                              <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                              </svg>
-                            </button>
-                          )}
-
-                          {element.extra && (
-                            <>
+                              {/* Lock / Unlock button */}
                               <button
                                 type="button"
-                                aria-label={t('editor.duplicateElement')}
-                                title={t('editor.duplicateElement')}
-                                onClick={() => {
-                                  const duplicate = { ...element.extra!, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.extra!.z + 1 };
-                                  addExtraElement(slide.id, duplicate);
-                                  selectElement(duplicate.id);
-                                }}
-                                style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155', fontSize: 16, fontWeight: 700 }}
+                                aria-label={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })}
+                                title={t(element.locked ? 'editor.unlockLayer' : 'editor.lockLayer', { id: element.id })}
+                                onClick={() => setLayerState(element, { locked: !element.locked })}
+                                style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
                               >
-                                ＋
+                                {element.locked ? (
+                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                  </svg>
+                                ) : (
+                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                                  </svg>
+                                )}
                               </button>
+
+                              {/* Hide / Show (Eye) button */}
                               <button
                                 type="button"
-                                aria-label={t('editor.deleteElement')}
-                                title={t('editor.deleteElement')}
-                                onClick={() => { deleteExtraElement(slide.id, element.id); selectElement(); }}
-                                style={{ width: 36, height: 36, borderRadius: 8, background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#b91c1c', fontSize: 16, fontWeight: 700 }}
+                                aria-label={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })}
+                                title={t(element.hidden ? 'editor.showLayer' : 'editor.hideLayer', { id: element.id })}
+                                onClick={() => setLayerState(element, { hidden: !element.hidden })}
+                                style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
                               >
-                                ×
+                                {element.hidden ? (
+                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                    <line x1="1" y1="1" x2="23" y2="23" />
+                                  </svg>
+                                ) : (
+                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                  </svg>
+                                )}
                               </button>
-                            </>
-                          )}
 
-                          <button
-                            type="button"
-                            aria-label={t('editor.resetElement')}
-                            title={t('editor.resetElement')}
-                            data-testid={`reset-${element.id}`}
-                            onPointerDown={(event) => event.stopPropagation()}
-                            onClick={(event) => { event.stopPropagation(); reset(element); }}
-                            style={{ minHeight: 32, padding: '0 8px', borderRadius: 6, background: '#0e7490', color: 'white', fontSize: 11, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
-                          >
-                            <span>↺</span>
-                            <span>{t('editor.resetElement')}</span>
-                          </button>
-                        </div>
+                              {/* Edit Text (Pencil) button */}
+                              {isTextElement && (
+                                <button
+                                  type="button"
+                                  aria-label={t('editor.editText')}
+                                  title={t('editor.editText')}
+                                  data-testid={`edit-text-btn-${element.id}`}
+                                  onClick={(e) => { e.stopPropagation(); setEditingId(element.id); setMenuOpenId(null); }}
+                                  style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155' }}
+                                >
+                                  <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                  </svg>
+                                </button>
+                              )}
 
-                        <NumericInspector
-                          element={element}
-                          zoom={zoom}
-                          t={t}
-                          onCommit={(field, value) => applyNumericGeometry(element, field, value)}
-                          style={{
-                            position: 'absolute',
-                            top: placeAbove ? -148 : 'calc(100% + 56px)',
-                            insetInlineStart: 0,
-                          }}
-                        />
+                              {element.extra && (
+                                <>
+                                  <button
+                                    type="button"
+                                    aria-label={t('editor.duplicateElement')}
+                                    title={t('editor.duplicateElement')}
+                                    onClick={() => {
+                                      const duplicate = { ...element.extra!, id: `${element.id}_copy_${Date.now().toString(36)}`, x: Math.min(1 - element.w, element.x + 0.02), y: Math.min(1 - element.h, element.y + 0.02), z: element.extra!.z + 1 };
+                                      addExtraElement(slide.id, duplicate);
+                                      selectElement(duplicate.id);
+                                      setMenuOpenId(null);
+                                    }}
+                                    style={{ width: 36, height: 36, borderRadius: 8, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#334155', fontSize: 16, fontWeight: 700 }}
+                                  >
+                                    ＋
+                                  </button>
+                                  <button
+                                    type="button"
+                                    aria-label={t('editor.deleteElement')}
+                                    title={t('editor.deleteElement')}
+                                    onClick={() => { deleteExtraElement(slide.id, element.id); selectElement(); setMenuOpenId(null); }}
+                                    style={{ width: 36, height: 36, borderRadius: 8, background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#b91c1c', fontSize: 16, fontWeight: 700 }}
+                                  >
+                                    ×
+                                  </button>
+                                </>
+                              )}
+
+                              <button
+                                type="button"
+                                aria-label={t('editor.resetElement')}
+                                title={t('editor.resetElement')}
+                                data-testid={`reset-${element.id}`}
+                                onPointerDown={(event) => event.stopPropagation()}
+                                onClick={(event) => { event.stopPropagation(); reset(element); setMenuOpenId(null); }}
+                                style={{ minHeight: 32, padding: '0 8px', borderRadius: 6, background: '#0e7490', color: 'white', fontSize: 11, fontWeight: 600, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+                              >
+                                <span>↺</span>
+                                <span>{t('editor.resetElement')}</span>
+                              </button>
+                            </div>
+
+                            <NumericInspector
+                              element={element}
+                              zoom={zoom}
+                              t={t}
+                              onCommit={(field, value) => applyNumericGeometry(element, field, value)}
+                              style={{
+                                position: 'absolute',
+                                top: placeAbove ? -148 : 'calc(100% + 56px)',
+                                insetInlineStart: 0,
+                              }}
+                            />
+                          </>
+                        )}
                       </>
                     );
                   })()}
@@ -919,7 +1039,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                   </button>
 
                   {/* Top Rotation Handle for elements that support rotation */}
-                  {element.kind !== 'slot' && (
+                  {!element.locked && (
                     <button
                       aria-label={t('editor.rotateElement')}
                       title={t('editor.rotateElement')}

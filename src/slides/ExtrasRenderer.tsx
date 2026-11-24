@@ -41,6 +41,7 @@ export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras }) => {
               height: `${extra.h * 100}%`,
               transform: `rotate(${extra.rotation}deg)`,
               transformOrigin: 'center',
+              opacity: extra.opacity !== undefined ? extra.opacity : 1,
               zIndex: extra.z,
               boxSizing: 'border-box',
               overflow: 'hidden',

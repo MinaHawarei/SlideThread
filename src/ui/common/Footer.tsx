@@ -16,7 +16,7 @@ export const Footer: React.FC<FooterProps> = ({
   const feedbackHref =
     FEEDBACK_URL && FEEDBACK_URL.trim().length > 0
       ? FEEDBACK_URL
-      : 'mailto:hello@slidethread.app?subject=SlideThread%20Feedback';
+      : 'mailto:mina.hawarei@gmail.com?subject=SlideThread%20Feedback';
 
   const isExternalFeedback = FEEDBACK_URL && FEEDBACK_URL.trim().length > 0;
 
@@ -36,7 +36,6 @@ export const Footer: React.FC<FooterProps> = ({
           >
             {OWNER.name}
           </a>
-          <span className="text-stone-400">({OWNER.handle})</span>
           <span className="text-stone-400 font-mono text-[10px]">v{APP_VERSION}</span>
         </div>
 
@@ -83,7 +82,6 @@ export const Footer: React.FC<FooterProps> = ({
           >
             {OWNER.name}
           </a>
-          <span className="text-stone-400">({OWNER.handle})</span>
           <span className="font-mono text-[11px] text-stone-400 bg-stone-200/50 dark:bg-stone-800/50 px-2 py-0.5 rounded-md">v{APP_VERSION}</span>
 
           <span className="hidden sm:inline text-stone-300 dark:text-stone-700">•</span>

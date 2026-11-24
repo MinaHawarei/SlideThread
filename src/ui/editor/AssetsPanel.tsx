@@ -4,6 +4,7 @@ import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { useRecentAssetsStore } from '../../store/recentAssetsStore';
 import { processUserUpload } from '../../core/uploads';
+import { plainTextToRichText } from '../../core/schema';
 import {
   SHAPES_ITEMS,
   getShapeSvg,
@@ -35,6 +36,25 @@ export const AssetsPanel: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAddText = () => {
+    if (!activeSlide) return;
+    const newExtra: ExtraElement = {
+      id: `text_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      kind: 'text',
+      text: plainTextToRichText('Text'),
+      fill: project.primaryColor || '#0f172a',
+      x: 0.3,
+      y: 0.4,
+      w: 0.4,
+      h: 0.12,
+      rotation: 0,
+      z: (activeSlide.extras?.length ?? 0) + 1,
+      locked: false,
+    };
+    addExtraElement(activeSlide.id, newExtra);
+    selectElement(newExtra.id);
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -214,6 +234,18 @@ export const AssetsPanel: React.FC = () => {
           accept="image/png,image/jpeg,image/webp,image/svg+xml"
           className="hidden"
         />
+
+        <button
+          type="button"
+          data-testid="add-text-btn"
+          onClick={handleAddText}
+          disabled={!activeSlide}
+          title={t('assets.addText')}
+          className="px-3 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap disabled:opacity-50"
+        >
+          <span>T</span>
+          <span>{t('assets.addText')}</span>
+        </button>
 
         <button
           type="button"

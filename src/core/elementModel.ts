@@ -9,6 +9,7 @@ export interface ResolvedElement {
   w: number;
   h: number;
   rotation: number;
+  opacity?: number;
   z: number;
   locked: boolean;
   hidden: boolean;
@@ -86,7 +87,8 @@ function resolveFrame(frame: LayoutFrame, override?: ElementOverride, order = 0)
     y: frame.blockStart + (override?.dy ?? 0),
     w: override?.w ?? frame.inlineSize * (override?.scale ?? 1),
     h: override?.h ?? frame.blockSize * (override?.scale ?? 1),
-    rotation: 0,
+    rotation: override?.rotation ?? 0,
+    opacity: override?.opacity,
     z: override?.z ?? order,
     locked: override?.locked ?? false,
     hidden: override?.hidden ?? false,
@@ -106,6 +108,7 @@ export function resolveSlideElements(slide: Slide, variant: LayoutVariant, aspec
     w: extra.w,
     h: extra.h,
     rotation: extra.rotation,
+    opacity: extra.opacity,
     z: variant.elements.length + extra.z,
     locked: extra.locked,
     hidden: extra.hidden ?? false,

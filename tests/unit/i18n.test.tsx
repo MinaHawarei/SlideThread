@@ -35,7 +35,7 @@ describe('i18n Module & Typed Dictionaries (Spec §5.5, §14, Task P3-1)', () =>
     expect(translate('ar', 'app.name')).toBe('SlideThread');
 
     expect(translate('en', 'wizard.platform.instagram')).toBe('Instagram');
-    expect(translate('ar', 'wizard.platform.instagram')).toBe('إنستغرام');
+    expect(translate('ar', 'wizard.platform.instagram')).toBe('إنستجرام');
 
     expect(translate('en', 'design.theme.dark')).toBe('Dark');
     expect(translate('ar', 'design.theme.dark')).toBe('داكن');

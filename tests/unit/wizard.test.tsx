@@ -190,7 +190,7 @@ describe('Wizard component (Task P3-4)', () => {
     render(<Wizard />);
 
     expect(screen.getByTestId('wizard-step-indicator')).toHaveTextContent(/الخطوة 1 من 4/i);
-    expect(screen.getByTestId('platform-instagram')).toHaveTextContent('إنستغرام');
+    expect(screen.getByTestId('platform-instagram')).toHaveTextContent('إنستجرام');
     expect(screen.getByTestId('wizard-next-btn')).toHaveTextContent('التالي');
   });
 });

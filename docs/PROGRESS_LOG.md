@@ -593,7 +593,7 @@ Agent name: Antigravity
 ### P3-9 — done — 2026-11-22 21:43 — Antigravity
 - Branch / commit: feature/p3-9 / 93e3e5e
 - What changed (files): `package.json`, `package-lock.json`, `src/App.tsx`, `src/config/site.ts`, `src/ui/common/Footer.tsx`, `src/ui/start/StartScreen.tsx`, `src/ui/wizard/Wizard.tsx`, `src/i18n/en.ts`, `src/i18n/ar.ts`, `tests/unit/footer.test.tsx`, `docs/TASKS.md`, `docs/PROGRESS_LOG.md`.
-- Decisions / deviations from the plan: Implemented Footer component per Spec §10.4 & §10.5 with owner name and social links from `site.ts -> OWNER`, GitHub star link (`GITHUB_URL`), feedback link (`FEEDBACK_URL` with mailto fallback `mailto:hello@slidethread.app?subject=SlideThread%20Feedback`), and cookieless privacy note (`t('app.privacy')`). Integrated `@vercel/analytics` in `App.tsx`. All footer interactive touch targets >= 44px.
+- Decisions / deviations from the plan: Implemented Footer component per Spec §10.4 & §10.5 with owner name and social links from `site.ts -> OWNER`, GitHub star link (`GITHUB_URL`), feedback link (`FEEDBACK_URL` with mailto fallback `mailto:mina.hawarei@gmail.com?subject=SlideThread%20Feedback`), and cookieless privacy note (`t('app.privacy')`). Integrated `@vercel/analytics` in `App.tsx`. All footer interactive touch targets >= 44px.
 - Tests run and result: Vitest 268 passed (32 files), Playwright 7 passed (all E2E), ESLint 0 errors 0 warnings, typecheck clean, build clean.
 - Remaining / next step: Merge to main, proceed to P3-10 (Accessibility pass).
 - Needs from the owner: None.

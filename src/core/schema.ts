@@ -119,6 +119,8 @@ export const ElementOverrideSchema = z.object({
   z: z.number().int().optional(),
   locked: z.boolean().optional(),
   hidden: z.boolean().optional(),
+  rotation: z.number().finite().optional(),
+  opacity: z.number().min(0).max(1).optional(),
 }).strict();
 export type ElementOverride = z.infer<typeof ElementOverrideSchema>;
 
@@ -141,14 +143,29 @@ export const ExtraElementSchema = z.object({
   assetId: z.string().min(1).optional(),
   shape: z.enum(['rectangle', 'ellipse', 'line', 'arrow']).optional(),
   fill: SafeColorValueSchema.optional(),
+  opacity: z.number().min(0).max(1).optional(),
 }).strict();
 export type ExtraElement = z.infer<typeof ExtraElementSchema>;
+
+export const SlideBackgroundSchema = z.object({
+  assetId: z.string().optional(),
+  symbolId: z.string().optional(),
+  symbolPack: z.enum(['shapes', 'icons', 'emoji', 'stickers']).optional(),
+  mode: z.enum(['fill', 'fit', 'repeat']).default('fill'),
+  focal: z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) }).optional(),
+  opacity: z.number().min(0).max(1).default(1),
+  fillColor: z.string().optional(),
+  tileSize: z.number().min(10).max(1000).optional(),
+}).strict();
+export type SlideBackground = z.input<typeof SlideBackgroundSchema>;
+export type ValidatedSlideBackground = z.output<typeof SlideBackgroundSchema>;
 
 export const SlideSchema = z.object({
   id: z.string(),
   type: SlideTypeSchema,
   fields: z.record(z.string(), RichTextSchema),
   media: MediaRefSchema.optional(),
+  background: SlideBackgroundSchema.optional(),
   hideSignature: z.boolean().optional(),
   overrides: ElementOverridesSchema.default({}),
   extras: z.array(ExtraElementSchema).default([]),
@@ -223,6 +240,7 @@ export const ProjectSchema = z.object({
   theme: ThemeModeSchema,
   textDir: TextDirSchema,
   slides: z.array(SlideSchema),
+  background: SlideBackgroundSchema.optional(),
   counter: CounterConfigSchema.default(DEFAULT_COUNTER_CONFIG),
   signature: SignatureConfigSchema.default(DEFAULT_SIGNATURE_CONFIG),
   brandOverride: z.object({

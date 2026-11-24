@@ -11,6 +11,7 @@ import type {
   AspectClass,
   ElementOverride,
   ExtraElement,
+  SlideBackground,
   RichText,
   CounterConfig,
   SignatureConfig,
@@ -192,6 +193,9 @@ export interface ProjectState {
   updateExtraElement: (slideId: string, extra: ExtraElement) => void;
   addExtraElement: (slideId: string, extra: ExtraElement) => void;
   deleteExtraElement: (slideId: string, extraId: string) => void;
+  setSlideBackground: (slideId: string, background?: SlideBackground) => void;
+  setProjectBackground: (background?: SlideBackground) => void;
+  applyBackgroundToAll: (background: SlideBackground, overwriteExisting: boolean) => void;
   setSlideType: (id: string, nextType: SlideType) => void;
   toggleHideSignature: (id: string) => void;
   splitSlide: (id: string) => void;
@@ -558,6 +562,46 @@ export const useProjectStore = create<ProjectState>()(
             project: {
               ...state.project,
               slides: state.project.slides.map((slide) => slide.id === slideId ? { ...slide, extras: (slide.extras ?? []).filter((extra) => extra.id !== extraId) } : slide),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        setSlideBackground: (slideId, background) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              slides: state.project.slides.map((slide) =>
+                slide.id === slideId ? { ...slide, background } : slide
+              ),
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        setProjectBackground: (background) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              background,
+              updatedAt: Date.now(),
+            },
+          }));
+        },
+
+        applyBackgroundToAll: (background, overwriteExisting) => {
+          set((state) => ({
+            project: {
+              ...state.project,
+              background,
+              slides: state.project.slides.map((slide) => {
+                if (overwriteExisting || !slide.background) {
+                  const s = { ...slide };
+                  delete s.background;
+                  return s;
+                }
+                return slide;
+              }),
               updatedAt: Date.now(),
             },
           }));

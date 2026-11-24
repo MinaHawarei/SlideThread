@@ -103,6 +103,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
   it('selects a layout element in the canvas overlay', () => {
     render(<EditorDesktop />);
     fireEvent.click(screen.getByTestId('element-hit-title'));
+    fireEvent.click(screen.getByTestId('element-menu-toggle'));
     expect(screen.getByTestId('reset-title')).toBeInTheDocument();
   });
 
@@ -151,6 +152,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
   it('exposes numeric geometry fields for the selected element', () => {
     render(<EditorDesktop />);
     fireEvent.click(screen.getByTestId('element-hit-title'));
+    fireEvent.click(screen.getByTestId('element-menu-toggle'));
     act(() => fireEvent.change(screen.getByRole('spinbutton', { name: 'X position (%)' }), { target: { value: '20' } }));
     expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.dx).toBeCloseTo(0.12);
   });

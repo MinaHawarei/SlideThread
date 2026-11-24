@@ -8,6 +8,7 @@ import { ShapesPicker } from './ShapesPicker';
 import { IconsPicker } from './IconsPicker';
 import { EmojiStickersPicker } from './EmojiStickersPicker';
 import { ImageExtraControls } from './ImageExtraControls';
+import { BackgroundControls } from './BackgroundControls';
 
 const ALL_SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -551,6 +552,9 @@ export const SlideInspector: React.FC = () => {
 
       {/* Emoji and Stickers Pack (R6-4) */}
       <EmojiStickersPicker />
+
+      {/* Background Settings: Image or Symbol, per-slide or presentation-wide (F3) */}
+      <BackgroundControls />
 
       {/* Slide-Level Signature Visibility Override */}
       <div className="pt-4 border-t border-slate-200 dark:border-slate-800">

@@ -14,6 +14,7 @@ import { SignatureBar } from './SignatureBar';
 import { SlideCounter } from './SlideCounter';
 import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
 import { ExtrasRenderer } from './ExtrasRenderer';
+import { SlideBackgroundRenderer } from './SlideBackgroundRenderer';
 import { getTemplate } from '../templates';
 import type { TemplateDef } from '../templates';
 import {
@@ -22,6 +23,7 @@ import {
   DEFAULT_SIGNATURE_CONFIG,
   type AspectClass,
   type Slide,
+  type SlideBackground,
   type CounterConfig,
   type SignatureConfig,
 } from '../core/schema';
@@ -41,6 +43,7 @@ export interface SlideRendererProps extends Omit<SlideProps, 'slide'> {
   templateOverride?: TemplateDef;
   counterConfig?: CounterConfig;
   signatureConfig?: SignatureConfig;
+  projectBackground?: SlideBackground;
 }
 
 export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) => {
@@ -197,6 +200,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
       position: string;
       transform: string;
       transformOrigin: string;
+      opacity: string;
     }> = [];
 
     if (overrides) {
@@ -212,10 +216,14 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
             position: node.style.position,
             transform: node.style.transform,
             transformOrigin: node.style.transformOrigin,
+            opacity: node.style.opacity,
           });
 
           if (override.hidden !== undefined) {
             node.style.visibility = override.hidden ? 'hidden' : 'visible';
+          }
+          if (override.opacity !== undefined) {
+            node.style.opacity = String(override.opacity);
           }
           if (override.z !== undefined) {
             node.style.zIndex = String(override.z);
@@ -226,8 +234,10 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
           const tx = (override.dx || 0) * slideDims.width;
           const ty = (override.dy || 0) * slideDims.height;
           const scale = override.scale ?? 1;
-          if (tx !== 0 || ty !== 0 || scale !== 1) {
-            node.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+          const rot = override.rotation ?? 0;
+          if (tx !== 0 || ty !== 0 || scale !== 1 || rot !== 0) {
+            const rotPart = rot !== 0 ? ` rotate(${rot}deg)` : '';
+            node.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})${rotPart}`;
             node.style.transformOrigin = 'center';
             if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
               node.style.position = 'relative';
@@ -244,6 +254,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
         item.el.style.position = item.position;
         item.el.style.transform = item.transform;
         item.el.style.transformOrigin = item.transformOrigin;
+        item.el.style.opacity = item.opacity;
       }
     };
   }, [overrides, aspectClass, slideDims.width, slideDims.height]);
@@ -277,6 +288,12 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
           tokens={templatePalette}
         />
       </div>
+
+      <SlideBackgroundRenderer
+        background={slide.background ?? props.projectBackground}
+        width={slideDims.width}
+        height={slideDims.height}
+      />
 
       {slide.media?.placement === 'background' && (
         <div
