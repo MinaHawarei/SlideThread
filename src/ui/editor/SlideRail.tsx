@@ -110,10 +110,10 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
         zIndex: 50,
       }}
       transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-      className={`group relative p-2.5 rounded-2xl border-2 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:outline-none select-none ${
+      className={`group relative p-2.5 rounded-2xl border-2 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none select-none ${
         isActive
-          ? 'border-cyan-500 bg-cyan-50/40 dark:bg-cyan-950/20 shadow-sm ring-1 ring-cyan-500'
-          : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-950'
+          ? 'border-amber-500 bg-amber-50/40 dark:bg-amber-950/20 shadow-sm ring-1 ring-amber-500'
+          : 'border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 bg-stone-50 dark:bg-stone-950'
       }`}
     >
       {/* Card Meta & Header with Dedicated Drag Handle */}
@@ -357,7 +357,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
       <aside
         data-testid="slide-rail"
         aria-label="Slide thumbnails"
-        className={`w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col h-full shrink-0 select-none ${className}`}
+        className={`w-64 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col h-full shrink-0 select-none ${className}`}
       >
         {/* Polite Live Region for screen reader announcements */}
         <div
@@ -371,8 +371,8 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
         </div>
 
         {/* Rail Header */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <div className="p-4 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between">
+          <span className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
             Slides ({slides.length})
           </span>
 
@@ -383,7 +383,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                 type="button"
                 data-testid="rail-paste-slides-btn"
                 onClick={() => setIsPasteOpen(true)}
-                className="text-xs font-semibold px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-cyan-500"
+                className="text-xs font-semibold px-2 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-amber-500"
                 aria-label={t('paste.title')}
                 title={t('paste.title')}
               >
@@ -394,7 +394,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                   type="button"
                   data-testid="rail-add-slide-btn"
                   onClick={() => handleAddSlide('explain')}
-                  className="text-xs font-semibold px-2 py-1.5 rounded-l-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
+                  className="text-xs font-semibold px-2 py-1.5 rounded-l-lg bg-amber-600 hover:bg-amber-500 text-white transition-colors flex items-center gap-1 shadow-sm focus-visible:ring-2 focus-visible:ring-amber-500"
                   aria-label={t('editor.addSlide')}
                   title={t('editor.addSlide')}
                 >
@@ -405,7 +405,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                   type="button"
                   data-testid="rail-add-slide-type-btn"
                   onClick={() => setIsPickerOpen((prev) => !prev)}
-                  className="text-xs font-semibold px-1.5 py-1.5 rounded-r-lg bg-cyan-700 hover:bg-cyan-600 text-white transition-colors border-l border-cyan-800 flex items-center justify-center shadow-sm focus-visible:ring-2 focus-visible:ring-cyan-500"
+                  className="text-xs font-semibold px-1.5 py-1.5 rounded-r-lg bg-amber-700 hover:bg-amber-600 text-white transition-colors border-l border-amber-800 flex items-center justify-center shadow-sm focus-visible:ring-2 focus-visible:ring-amber-500"
                   aria-label="Choose slide type"
                   title="Choose slide type"
                 >

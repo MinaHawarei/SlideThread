@@ -56,12 +56,48 @@ describe('EditorDesktop component (Task P3-5)', () => {
     render(<EditorDesktop />);
 
     expect(screen.getByTestId('editor-desktop')).toBeInTheDocument();
+    expect(screen.getByTestId('left-tool-rail')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-tool-elements')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-tool-brand')).toBeInTheDocument();
     expect(screen.getByTestId('editor-home-btn')).toBeInTheDocument();
     expect(screen.getByTestId('editor-project-title')).toHaveValue('Architectural Decisions');
+    expect(screen.getByTestId('editor-undo-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('editor-redo-btn')).toBeInTheDocument();
     expect(screen.getByTestId('slide-rail')).toBeInTheDocument();
     expect(screen.getByTestId('main-canvas')).toBeInTheDocument();
+    expect(screen.getByTestId('canvas-fit-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('canvas-100-btn')).toBeInTheDocument();
     expect(screen.getByTestId('inspector')).toBeInTheDocument();
     expect(screen.getByTestId('manipulation-layer')).toBeInTheDocument();
+  });
+
+  it('switches inspector tabs and toggles slide rail using left tool rail', () => {
+    render(<EditorDesktop />);
+
+    // Click Brand in left rail
+    fireEvent.click(screen.getByTestId('rail-tool-brand'));
+    expect(screen.getByTestId('tab-brand')).toHaveAttribute('aria-selected', 'true');
+
+    // Click Elements in left rail
+    fireEvent.click(screen.getByTestId('rail-tool-elements'));
+    expect(screen.getByTestId('tab-assets')).toHaveAttribute('aria-selected', 'true');
+
+    // Toggle slide rail
+    expect(screen.getByTestId('slide-rail')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('rail-tool-slides'));
+    expect(screen.queryByTestId('slide-rail')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('rail-tool-slides'));
+    expect(screen.getByTestId('slide-rail')).toBeInTheDocument();
+  });
+
+  it('handles canvas zoom fit and 100% controls', () => {
+    render(<EditorDesktop />);
+
+    fireEvent.click(screen.getByTestId('canvas-100-btn'));
+    expect(screen.getByTestId('canvas-zoom-label')).toHaveTextContent('100%');
+
+    fireEvent.click(screen.getByTestId('canvas-fit-btn'));
+    expect(screen.getByTestId('canvas-zoom-label')).toHaveTextContent('48%');
   });
 
   it('selects a layout element in the canvas overlay', () => {

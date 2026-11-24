@@ -632,4 +632,7 @@ export const ar: Record<TranslationKey, string> = {
   'common.language': 'اللغة',
   'common.en': 'English',
   'common.ar': 'العربية',
+  'editor.undo': 'تراجع',
+  'editor.redo': 'إعادة',
+  'editor.changeFormat': 'تغيير أبعاد وتنسيق الشريحة',
 };

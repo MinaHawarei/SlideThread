@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { handleExportProject } from '../../core/projectIO';
+import { undo, redo } from '../../store/history';
 import { SizeWarningModal } from '../common/SizeWarningModal';
+import { ChangeFormatDialog } from './ChangeFormatDialog';
 import { SlideRail } from './SlideRail';
 import { MainCanvas } from './MainCanvas';
-import { Inspector } from './Inspector';
+import { Inspector, type InspectorTab } from './Inspector';
 import { LanguageSwitcher } from '../common/LanguageSwitcher';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { APP_NAME } from '../../config/site';
@@ -22,6 +24,10 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   const { t } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
+
+  const [activeTab, setActiveTab] = useState<InspectorTab>('slide');
+  const [isSlideRailVisible, setIsSlideRailVisible] = useState(true);
+  const [isFormatDialogOpen, setIsFormatDialogOpen] = useState(false);
 
   const [sizeWarning, setSizeWarning] = useState<{
     isOpen: boolean;
@@ -53,29 +59,30 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   return (
     <div
       data-testid="editor-desktop"
-      className="h-screen w-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden"
+      className="h-screen w-screen flex flex-col bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 overflow-hidden font-sans select-none"
     >
       <StorageQuotaBanner />
-      {/* Editor Top Navigation Bar */}
-      <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 flex items-center justify-between shrink-0 z-20">
+
+      {/* Editor Top Navigation Bar (Atelier Aesthetic) */}
+      <header className="h-14 border-b border-stone-200 dark:border-stone-800 bg-white/95 dark:bg-stone-900/95 backdrop-blur px-4 flex items-center justify-between shrink-0 z-20">
         {/* Left: Home & Project Title */}
         <div className="flex items-center gap-3">
           <button
             type="button"
             data-testid="editor-home-btn"
             onClick={onHome}
-            className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
             title="Return to Start Screen"
           >
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-xs shadow-sm">
               S
             </div>
-            <span className="font-bold text-sm hidden sm:inline-block">
+            <span className="font-serif font-bold text-sm hidden sm:inline-block text-stone-900 dark:text-white">
               {APP_NAME}
             </span>
           </button>
 
-          <span className="text-slate-300 dark:text-slate-700">/</span>
+          <span className="text-stone-300 dark:text-stone-700">/</span>
 
           {/* Editable Project Title */}
           <input
@@ -84,21 +91,51 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             value={project.title}
             onChange={handleTitleChange}
             placeholder="Untitled Presentation"
-            className="font-semibold text-sm py-1 px-2.5 rounded-lg border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-cyan-500 bg-transparent focus:bg-white dark:focus:bg-slate-800 focus:outline-none transition-colors"
+            className="font-semibold text-sm py-1 px-2.5 rounded-lg border border-transparent hover:border-stone-300 dark:hover:border-stone-700 focus:border-amber-500 bg-transparent focus:bg-white dark:focus:bg-stone-800 focus:outline-none transition-colors"
           />
 
           {/* Platform / Content Type Badge */}
-          <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 uppercase font-mono text-[10px]">
+          <div className="hidden md:flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
+            <span className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 uppercase font-mono text-[10px]">
               {project.platform}
             </span>
-            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 capitalize text-[10px]">
+            <span className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 capitalize text-[10px]">
               {project.contentType}
             </span>
-            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px]">
-              {project.formatId}
-            </span>
+            <button
+              type="button"
+              data-testid="editor-change-format-btn"
+              onClick={() => setIsFormatDialogOpen(true)}
+              className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 hover:bg-amber-500/10 hover:text-amber-600 text-[10px] font-mono font-medium transition-colors cursor-pointer"
+              title={t('editor.changeFormat')}
+            >
+              {project.formatId} ✎
+            </button>
           </div>
+        </div>
+
+        {/* Center: History Quick Actions (Undo / Redo) */}
+        <div className="hidden lg:flex items-center gap-1">
+          <button
+            type="button"
+            data-testid="editor-undo-btn"
+            onClick={() => undo()}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={`${t('editor.undo')} (Ctrl+Z)`}
+            aria-label={t('editor.undo')}
+          >
+            ↺
+          </button>
+          <button
+            type="button"
+            data-testid="editor-redo-btn"
+            onClick={() => redo()}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={`${t('editor.redo')} (Ctrl+Shift+Z)`}
+            aria-label={t('editor.redo')}
+          >
+            ↻
+          </button>
         </div>
 
         {/* Right: Quick Actions */}
@@ -109,7 +146,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             type="button"
             data-testid="editor-export-json-btn"
             onClick={handleExportJson}
-            className="py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors flex items-center gap-1.5"
+            className="py-1.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 font-medium text-xs transition-colors flex items-center gap-1.5"
             title={t('io.exportJson')}
           >
             <span>📄</span>
@@ -120,7 +157,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             type="button"
             data-testid="editor-export-btn"
             onClick={onOpenExport}
-            className="py-1.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5"
+            className="py-1.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5"
           >
             <span>↓</span>
             <span>{t('editor.export')}</span>
@@ -128,12 +165,151 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
         </div>
       </header>
 
-      {/* 3-Column Workspace (Rail | Canvas | Inspector) */}
+      {/* Main Studio Workspace: Tool Rail | Slide Rail | Canvas | Inspector */}
       <div className="flex-1 flex overflow-hidden">
-        <SlideRail />
+        {/* Left Tool Rail (Studio Capabilities) */}
+        <aside
+          data-testid="left-tool-rail"
+          aria-label="Studio tools"
+          className="w-14 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col items-center py-3 gap-2 shrink-0 z-10"
+        >
+          <button
+            type="button"
+            data-testid="rail-tool-template"
+            onClick={() => {
+              setActiveTab('design');
+            }}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
+              activeTab === 'design'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+            }`}
+            title="Templates & Layouts"
+            aria-label="Templates & Layouts"
+          >
+            <span className="text-sm">▧</span>
+            <span className="text-[9px] scale-90">Tmpl</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="rail-tool-elements"
+            onClick={() => {
+              setActiveTab('assets');
+            }}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
+              activeTab === 'assets'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+            }`}
+            title="Shapes & Stickers"
+            aria-label="Shapes & Stickers"
+          >
+            <span className="text-sm">◇</span>
+            <span className="text-[9px] scale-90">Shapes</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="rail-tool-text"
+            onClick={() => {
+              setActiveTab('slide');
+            }}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
+              activeTab === 'slide'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+            }`}
+            title="Slide Text & Fields"
+            aria-label="Slide Text & Fields"
+          >
+            <span className="text-sm font-bold">T</span>
+            <span className="text-[9px] scale-90">Text</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="rail-tool-uploads"
+            onClick={() => {
+              setActiveTab('assets');
+            }}
+            className="w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title="Upload Assets"
+            aria-label="Upload Assets"
+          >
+            <span className="text-sm">↑</span>
+            <span className="text-[9px] scale-90">Upload</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="rail-tool-brand"
+            onClick={() => {
+              setActiveTab('brand');
+            }}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
+              activeTab === 'brand'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+            }`}
+            title="Brand Kit"
+            aria-label="Brand Kit"
+          >
+            <span className="text-sm">◉</span>
+            <span className="text-[9px] scale-90">Brand</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="rail-tool-layout"
+            onClick={() => {
+              setActiveTab('design');
+            }}
+            className="w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title="Layout Design"
+            aria-label="Layout Design"
+          >
+            <span className="text-sm">▦</span>
+            <span className="text-[9px] scale-90">Layout</span>
+          </button>
+
+          <div className="mt-auto pt-2 border-t border-stone-200 dark:border-stone-800 w-full flex justify-center">
+            <button
+              type="button"
+              data-testid="rail-tool-slides"
+              onClick={() => setIsSlideRailVisible((prev) => !prev)}
+              className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${
+                isSlideRailVisible
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-stone-400 hover:text-stone-600'
+              }`}
+              title="Toggle Slide Rail"
+              aria-label="Toggle Slide Rail"
+            >
+              <span className="text-sm">📑</span>
+              <span className="text-[9px] scale-90">Rail</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* Slide Rail */}
+        {isSlideRailVisible && <SlideRail />}
+
+        {/* Main Canvas */}
         <MainCanvas />
-        <Inspector />
+
+        {/* Inspector Panel */}
+        <Inspector
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
       </div>
+
+      {/* Format Changer Dialog */}
+      <ChangeFormatDialog
+        isOpen={isFormatDialogOpen}
+        onClose={() => setIsFormatDialogOpen(false)}
+      />
 
       {/* Size Warning Modal */}
       <SizeWarningModal

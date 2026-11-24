@@ -11,6 +11,7 @@ async function createEditor(page: Page) {
   await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('template-tech-mesh').click();
   await page.getByTestId('wizard-create-btn').click();
+  await expect(page.locator('[data-testid="editor-desktop"], [data-testid="editor-mobile"]')).toBeVisible({ timeout: 15000 });
 }
 
 async function toggleLayers(page: Page) {
