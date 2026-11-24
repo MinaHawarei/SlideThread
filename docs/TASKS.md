@@ -200,7 +200,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 |---|---|---|---|---|
 | P5-1 | README: overview, screenshots, features, quick start, scripts, architecture, contributing | GR9 | [x] | Antigravity 2026-11-22 · feature/p5-1 · f412a88 |
 | P5-2 | Repo hygiene: LICENSE (MIT), NOTICE, issue templates, CONTRIBUTING.md, GitHub Actions CI | GR9 | [x] | Codex 2026-11-23 · feature/p5-2 · 1b6473e |
-| P5-3 | QA pass: execute docs/QA_CHECKLIST.md on matrix, fix blockers, list known issues | GR9 | [ ] | |
+| P5-3 | QA pass: execute docs/QA_CHECKLIST.md on matrix, fix blockers, list known issues | GR9 | [x] | Antigravity 2026-11-24 · feature/p5-3 · 929319f |
 | P5-4 | Lighthouse + accessibility: mobile Accessibility ≥ 90, fix findings | GR9 | [ ] | |
 | P5-5 | Verify name (SlideThread) is applied consistently (APP_NAME, README, page title, OG tags) | GR9 | [ ] | |
 | P5-6 | Release: tag v0.1.0-beta, production deploy on Vercel, verify analytics and feedback (owner-only) | GR9 | [ ] | |
