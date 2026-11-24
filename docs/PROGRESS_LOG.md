@@ -1510,20 +1510,37 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 
-### GR6 — done — 2026-11-24 11:20 — Antigravity
-- Branch / commit: feature/gr6
-- What changed (files): `docs/TASKS.md`, `docs/REVISION_PLAN.md`, `docs/PROGRESS_LOG.md`.
+### R7-1 — started — 2026-11-24 11:22 — Antigravity
+- Branch / commit: feature/r7-1
+- What changed (files): `docs/TASKS.md` (claimed R7-1).
 - Decisions / deviations from the plan:
-  - Verified all requirements of Phase R6 (Assets and stickers):
-    1. Asset pack format & validator: Packs (`shapes`, `icons`, `emoji`, `stickers`) adhere to `AssetPack` schema, lazy loading, bilingual metadata, and license allowlist (CC0, MIT, ISC, Apache-2.0, CC-BY).
-    2. Unlicensed / GPL packs strictly rejected by validator tests (`tests/unit/assetPack.test.ts`).
-    3. Shapes (16 original items), icons (20 Lucide items), emoji (8 Twemoji items), stickers (6 original items) usable in editor and DOM / export capture.
-    4. Assets panel provides bilingual search (EN/AR), category filtering, recent assets memory, click-to-add, and HTML5 drag-and-drop to canvas.
-    5. User uploads: images downscaled to max 2400 px, SVGs strictly sanitized (malicious tags/scripts rejected), stored in IndexedDB, round-trip export support in project JSON, crop masks (`circle`, `rounded`, `square`), and replace asset support.
-    6. Template asset references (`pack:<packId>/<itemId>` and local relative SVGs) validated in template validator and sample template `bold-marketing`.
-    7. Third-party licenses documented and verified in `ASSET_LICENSES.md` and `NOTICE`.
-- Tests run and result: Full unit test suite (70 test files, 611 tests passed), Playwright E2E suites passing, clean lint, clean typecheck, and clean build.
-- Remaining / next step: Claim and begin Phase R7 (Slide management), starting with R7-1.
+  - Integrate Motion React `Reorder` (`Reorder.Group`, `Reorder.Item`) in `SlideRail.tsx` and `MobileThumbnailStrip.tsx` with dedicated drag handle, spring layout transition, and touch 350ms hold delay to differentiate scroll/tap from reorder.
+  - Implement polite live region status announcements (`aria-live="polite"`, `role="status"`) in both English and Arabic notifying screen readers when slides change position.
+  - Wrap both desktop and mobile rails in `<MotionConfig reducedMotion="user">` so users with `prefers-reduced-motion: reduce` have motion animations gracefully disabled without sacrificing reorder capability.
+  - Preserve keyboard accessibility (`Alt+ArrowDown`/`Alt+ArrowUp`, Move Earlier/Move Later buttons).
+- Tests run and result: N/A (in progress).
+- Remaining / next step: Run full verification suite and merge to `main`.
 - Needs from the owner: None.
+
+
+### R7-1 — done — 2026-11-24 11:28 — Antigravity
+- Branch / commit: feature/r7-1
+- What changed (files):
+  - `package.json`: Installed `motion@14.14.0` (MIT license) per Spike R0-4 decision.
+  - `src/ui/editor/SlideRail.tsx`: Integrated `Reorder.Group` and `Reorder.Item`, added dedicated drag handle (`rail-drag-handle-${slide.id}`), touch hold delay (350ms), polite live region for screen-reader reorder notifications, and `MotionConfig reducedMotion="user"`.
+  - `src/ui/editor/MobileThumbnailStrip.tsx`: Integrated `Reorder.Group` and `Reorder.Item`, added touch hold delay (350ms), polite live region for reorder announcements, and `MotionConfig reducedMotion="user"`.
+  - `src/i18n/en.ts` & `src/i18n/ar.ts`: Added bilingual translation strings (`editor.dragHandle` and `editor.reordered`).
+  - `tests/unit/slideRailReorder.test.tsx`: Created 8 comprehensive unit tests covering drag handles, polite live regions, keyboard reorder (`Alt+ArrowDown`/`Alt+ArrowUp`), button reorder, and touch pointer hold delay & cancellation.
+  - `tests/e2e/slideReorder.spec.ts`: Added Playwright E2E test verifying slide reordering, live region announcement, and `prefers-reduced-motion: reduce` handling.
+  - `docs/TASKS.md`: Marked R7-1 `[x]`.
+- Decisions / deviations from the plan:
+  - Adhered strictly to Spike R0-4 constraints (single rail Motion Reorder, dedicated drag handle, touch hold delay, polite live region, reduced motion).
+- Tests run and result:
+  - `npm test tests/unit/slideRailReorder.test.tsx` (8 passed).
+  - `npm test tests/unit/accessibility.test.tsx` (14 passed).
+  - `npx playwright test tests/e2e/slideReorder.spec.ts` (1 passed).
+- Remaining / next step: Run full verification suite (`lint`, `typecheck`, all unit tests, `build`), merge `feature/r7-1` to `main`, and claim R7-2.
+- Needs from the owner: None.
+
 
 

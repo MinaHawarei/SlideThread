@@ -105,7 +105,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ### Phase R7 — Slide management (GATE GR7)
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| R7-1 | Animated drag-and-drop rail (§5.7) with keyboard and touch alternatives. | GR6 | [ ] | |
+| R7-1 | Animated drag-and-drop rail (§5.7) with keyboard and touch alternatives. | GR6 | [x] | Antigravity 2026-11-24 · feature/r7-1 |
 | R7-2 | Slide actions: add with a visual type picker, duplicate, delete with undo; memoized thumbnails; mobile strip. | R7-1 | [ ] | |
 | R7-3 | Format/orientation change dialog that explains per-class overrides and offers "reset layout for this format". | R7-2 | [ ] | |
 | GR7 | Gate GR7 verification | R7-1…R7-3 | [ ] | |
