@@ -1,0 +1,78 @@
+{
+  "id": "stickers",
+  "version": "1.0.0",
+  "name": {
+    "en": "Presentation Badges & Stickers",
+    "ar": "شارات وملصقات العرض"
+  },
+  "description": {
+    "en": "Original high-impact presentation badges, callout stickers, and status stamps (MIT License).",
+    "ar": "شارات وملصقات عالية التأثير للعروض والنداءات والتأكيدات (ترخيص MIT)."
+  },
+  "kind": "stickers",
+  "license": "MIT",
+  "sourceUrl": "https://github.com/SlideThread/slidethread",
+  "author": "SlideThread Authors",
+  "items": [
+    {
+      "id": "sticker-pro-tip",
+      "name": { "en": "Pro Tip Badge", "ar": "شارة نصيحة احترافية" },
+      "file": "sticker-pro-tip.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["tip", "advice", "badge", "insight", "guide"],
+        "ar": ["نصيحة", "إرشاد", "شارة", "فكرة", "دليل"]
+      }
+    },
+    {
+      "id": "sticker-verified",
+      "name": { "en": "Verified Stamp", "ar": "ختم موثق ومؤكد" },
+      "file": "sticker-verified.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["verified", "authentic", "official", "check", "stamp"],
+        "ar": ["موثق", "رسمي", "ختم", "تأكيد", "أصلي"]
+      }
+    },
+    {
+      "id": "sticker-dont-miss",
+      "name": { "en": "Don't Miss Callout", "ar": "لا تفوّت هذا" },
+      "file": "sticker-dont-miss.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["urgent", "important", "star", "burst", "attention"],
+        "ar": ["هام", "عاجل", "انتباه", "نجمة", "تنبيه"]
+      }
+    },
+    {
+      "id": "sticker-key-takeaway",
+      "name": { "en": "Key Takeaway Stamp", "ar": "الخلاصة المستفادة" },
+      "file": "sticker-key-takeaway.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["summary", "takeaway", "conclusion", "lesson", "badge"],
+        "ar": ["خلاصة", "نتيجة", "درس", "موجز", "شارة"]
+      }
+    },
+    {
+      "id": "sticker-new-badge",
+      "name": { "en": "NEW Sparkle Pill", "ar": "شارة جديد" },
+      "file": "sticker-new-badge.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["new", "release", "feature", "fresh", "update"],
+        "ar": ["جديد", "إطلاق", "ميزة", "تحديث", "إصدار"]
+      }
+    },
+    {
+      "id": "sticker-swipe-left",
+      "name": { "en": "Swipe Next Pill", "ar": "اسحب للمتابعة" },
+      "file": "sticker-swipe-left.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["swipe", "carousel", "next", "arrow", "action"],
+        "ar": ["اسحب", "كاروسيل", "التالي", "سهم", "حركة"]
+      }
+    }
+  ]
+}

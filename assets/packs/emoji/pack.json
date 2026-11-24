@@ -1,0 +1,99 @@
+{
+  "id": "emoji",
+  "version": "1.0.0",
+  "name": {
+    "en": "Essential Reaction Emoji",
+    "ar": "رموز المشاعر الأساسية"
+  },
+  "description": {
+    "en": "Crisp vector emoji from Twemoji (CC-BY-4.0) for slide callouts, tone, and emphasis.",
+    "ar": "رموز تعبيرية متجهية عالية الجودة من Twemoji (ترخيص CC-BY-4.0) لإبراز المشاعر والتأكيد في الشرائح."
+  },
+  "kind": "emoji",
+  "license": "CC-BY-4.0",
+  "sourceUrl": "https://github.com/twitter/twemoji",
+  "author": "Twemoji Open Source Project / Twitter Inc. & contributors",
+  "attribution": "Twemoji graphics are copyrighted by Twitter, Inc and other contributors, licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/",
+  "items": [
+    {
+      "id": "fire",
+      "name": { "en": "Fire", "ar": "نار وشغف" },
+      "file": "fire.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["hot", "trending", "lit", "popular", "energy"],
+        "ar": ["نار", "شائع", "طاقة", "حماس", "مميز"]
+      }
+    },
+    {
+      "id": "sparkles",
+      "name": { "en": "Sparkles", "ar": "بريق ونقاء" },
+      "file": "sparkles.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["magic", "clean", "shine", "stars", "new"],
+        "ar": ["سحر", "نقاء", "لمعان", "نجوم", "جديد"]
+      }
+    },
+    {
+      "id": "eyes",
+      "name": { "en": "Eyes", "ar": "عيون وترقب" },
+      "file": "eyes.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["look", "see", "attention", "curious", "watch"],
+        "ar": ["انظر", "ترقب", "اهتمام", "فضول", "مشاهدة"]
+      }
+    },
+    {
+      "id": "bullseye",
+      "name": { "en": "Direct Hit", "ar": "إصابة الهدف" },
+      "file": "bullseye.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["target", "accuracy", "goal", "bullseye", "focus"],
+        "ar": ["هدف", "دقة", "إصابة", "تركيز", "نجاح"]
+      }
+    },
+    {
+      "id": "hundred",
+      "name": { "en": "100 Percent", "ar": "100 بالمئة" },
+      "file": "hundred.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["perfect", "score", "full", "hundred", "complete"],
+        "ar": ["كامل", "ممتاز", "مئة", "علامة كاملة", "مؤكد"]
+      }
+    },
+    {
+      "id": "thumbs-up",
+      "name": { "en": "Thumbs Up", "ar": "إعجاب وتأييد" },
+      "file": "thumbs-up.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["approve", "like", "agree", "good", "yes"],
+        "ar": ["موافقة", "إعجاب", "جيد", "نعم", "تأييد"]
+      }
+    },
+    {
+      "id": "clapping-hands",
+      "name": { "en": "Clapping Hands", "ar": "تصفيق وتشجيع" },
+      "file": "clapping-hands.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["applause", "praise", "congrats", "cheer", "bravo"],
+        "ar": ["تصفيق", "ثناء", "تهنئة", "تشجيع", "براvo"]
+      }
+    },
+    {
+      "id": "thinking-face",
+      "name": { "en": "Thinking Face", "ar": "وجه مفكر" },
+      "file": "thinking-face.svg",
+      "recolorable": false,
+      "tags": {
+        "en": ["consider", "reflect", "ponder", "wonder", "hmm"],
+        "ar": ["تفكير", "تأمل", "حيرة", "سؤال", "ملاحظة"]
+      }
+    }
+  ]
+}

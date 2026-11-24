@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50">
+  <rect x="2" y="2" width="156" height="46" rx="23" fill="#0f172a" stroke="#38bdf8" stroke-width="3"/>
+  <path d="M22 25l4-8h6l-5 6h5l-8 12 2-7h-4z" fill="#facc15"/>
+  <text x="52" y="32" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="900" font-size="16" letter-spacing="1">PRO TIP</text>
+</svg>

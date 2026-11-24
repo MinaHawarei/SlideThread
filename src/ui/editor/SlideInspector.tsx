@@ -6,6 +6,7 @@ import { richTextFieldsToPlainText } from '../../core/schema';
 import { hasManualTextSize } from '../../core/richText';
 import { ShapesPicker } from './ShapesPicker';
 import { IconsPicker } from './IconsPicker';
+import { EmojiStickersPicker } from './EmojiStickersPicker';
 
 const ALL_SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -543,6 +544,9 @@ export const SlideInspector: React.FC = () => {
 
       {/* Presentation Icons Pack (R6-3) */}
       <IconsPicker />
+
+      {/* Emoji and Stickers Pack (R6-4) */}
+      <EmojiStickersPicker />
 
       {/* Slide-Level Signature Visibility Override */}
       <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
