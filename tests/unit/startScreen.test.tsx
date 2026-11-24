@@ -28,7 +28,12 @@ describe('StartScreen component', () => {
   it('renders start screen with title, guided path, direct path, and import cards', () => {
     render(<StartScreen />);
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('SlideThread');
+    expect(screen.getByTestId('start-app-title')).toHaveTextContent('SlideThread');
+    expect(screen.getByTestId('hero-carousel')).toBeInTheDocument();
+    expect(screen.getByTestId('quick-platform-linkedin')).toBeInTheDocument();
+    expect(screen.getByTestId('quick-platform-instagram')).toBeInTheDocument();
+    expect(screen.getByTestId('quick-platform-story')).toBeInTheDocument();
+    expect(screen.getByTestId('quick-platform-post')).toBeInTheDocument();
     expect(screen.getByTestId('start-wizard-card')).toBeInTheDocument();
     expect(screen.getByTestId('start-direct-card')).toBeInTheDocument();
     expect(screen.getByTestId('start-import-card')).toBeInTheDocument();
@@ -73,6 +78,24 @@ describe('StartScreen component', () => {
     expect(createdProject.formatId).toBe('r_1_1');
     expect(createdProject.orientation).toBe('portrait');
     expect(useProjectStore.getState().project.formatId).toBe('r_1_1');
+  });
+
+  it('creates project directly when a quick platform tile is clicked', () => {
+    const handleOpenProject = vi.fn();
+    render(<StartScreen onOpenProject={handleOpenProject} />);
+
+    // Click LinkedIn Carousel (4:5)
+    fireEvent.click(screen.getByTestId('quick-platform-linkedin'));
+    expect(handleOpenProject).toHaveBeenCalledTimes(1);
+    const linkedinProj = handleOpenProject.mock.calls[0]![0] as Project;
+    expect(linkedinProj.platform).toBe('linkedin');
+    expect(linkedinProj.formatId).toBe('r_4_5');
+
+    // Click Story (9:16)
+    fireEvent.click(screen.getByTestId('quick-platform-story'));
+    expect(handleOpenProject).toHaveBeenCalledTimes(2);
+    const storyProj = handleOpenProject.mock.calls[1]![0] as Project;
+    expect(storyProj.formatId).toBe('r_9_16');
   });
 
   it('shows resume banner when active project has slides and calls onOpenProject on click', () => {

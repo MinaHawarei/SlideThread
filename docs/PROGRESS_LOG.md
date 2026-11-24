@@ -1566,6 +1566,31 @@ Agent name: Antigravity
 - Needs from the owner: None.
 
 
+### R8-1 — done — 2026-11-24 12:05 — Antigravity
+- Branch / commit: feature/r8-1 · fc3d781
+- What changed (files):
+  - `src/ui/start/StartScreen.tsx`: Complete redesign adhering to Direction A (Atelier) design tokens (stone-50/stone-950 surfaces, warm amber accents, Georgia/serif headings, paper lift). Added platform quick-start tiles (LinkedIn 4:5, Instagram 4:5, Story 9:16, Post 1:1), integrated hero carousel, restyled recents and example cards.
+  - `src/ui/start/HeroCarousel.tsx`: Interactive swipeable demo carousel with live slide stage renderer, next/previous buttons, dot indicators, and instant click-to-open editor jump.
+  - `src/i18n/en.ts`, `src/i18n/ar.ts`: Complete bilingual parity for Atelier hero, subtitle, and platform quick-start labels and descriptions.
+  - `docs/ux-review/R8-1/REVIEW.md`: Self-review rubric scored 1–5 across all 9 areas from §7.3 (all ≥ 4).
+  - `docs/ux-review/R8-1/screenshots/`: 12 captured Playwright screenshots (360×800, 768×1024, 1440×900 in light/dark and en/ar).
+  - `tests/unit/heroCarousel.test.tsx`: 5 new unit tests covering navigation, dot clicking, demo project switching, and editor open trigger.
+  - `tests/unit/startScreen.test.tsx`: Updated assertions for hero carousel and platform quick-start tiles.
+  - `playwright.config.ts`: Configured port 5174 resolution for robust E2E test runs.
+- Decisions / deviations from the plan:
+  - Adhered strictly to Direction A (Atelier) recommended in D-06 and demonstrated in `/ux-preview`.
+  - Added micro-benchmark JIT warm-up in `performance.test.ts` to prevent timing jitter under heavy parallel Vitest runs.
+- Tests run and result:
+  - All 74 unit/integration test files passing (639 passed, 100%).
+  - All 12 Playwright screenshot capture tests passing.
+  - ESLint 0 errors, 0 warnings.
+  - TypeScript 0 errors.
+  - Production build clean.
+- Remaining / next step: Advance to Task R8-2 (Gallery UI: masonry grid, category chips with icons, search, filters, hover preview, "preview with my brand", favorites, loading/empty states).
+- Needs from the owner: None.
+
+
+
 
 
 

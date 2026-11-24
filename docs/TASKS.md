@@ -113,7 +113,7 @@ Code merged to the task branch, tests added and passing, lint + typecheck + buil
 ### Phase R8 — UX redesign and delight (GATE GR8, owner review)
 | ID | Task | Depends on | Done | Notes |
 |---|---|---|---|---|
-| R8-1 | Home: hero with an interactive swipeable demo carousel, quick-start tiles by platform, examples, recent projects. | GR7 | [ ] | |
+| R8-1 | Home: hero with an interactive swipeable demo carousel, quick-start tiles by platform, examples, recent projects. | GR7 | [x] | Antigravity 2026-11-24 · feature/r8-1 · fc3d781 |
 | R8-2 | Gallery UI: masonry grid, category chips with icons, search, filters, hover preview, "preview with my brand", favorites, loading/empty states. | R8-1 | [ ] | |
 | R8-3 | Editor chrome (desktop): top bar, left tool rail (Templates, Elements, Text, Uploads, Brand, Layout), canvas with zoom/fit/pan, floating toolbars, animated slide strip. | R8-2 | [ ] | |
 | R8-4 | Mobile editor: bottom sheets, tab bar, gestures, safe-area handling. | R8-3 | [ ] | |

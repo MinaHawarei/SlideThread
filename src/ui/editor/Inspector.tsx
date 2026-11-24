@@ -40,11 +40,10 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={activeTab === 'slide'}
           data-testid="tab-slide"
           onClick={() => setActiveTab('slide')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${
-            activeTab === 'slide'
-              ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          }`}
+          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${activeTab === 'slide'
+            ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
+            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
         >
           {t('editor.tabSlide')}
         </button>
@@ -57,11 +56,10 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={activeTab === 'assets'}
           data-testid="tab-assets"
           onClick={() => setActiveTab('assets')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${
-            activeTab === 'assets'
-              ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          }`}
+          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${activeTab === 'assets'
+            ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
+            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
         >
           {t('editor.tabAssets')}
         </button>
@@ -74,11 +72,10 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={activeTab === 'design'}
           data-testid="tab-design"
           onClick={() => setActiveTab('design')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${
-            activeTab === 'design'
-              ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          }`}
+          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${activeTab === 'design'
+            ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
+            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
         >
           {t('editor.tabDesign')}
         </button>
@@ -91,11 +88,10 @@ export const Inspector: React.FC<InspectorProps> = ({
           aria-selected={activeTab === 'brand'}
           data-testid="tab-brand"
           onClick={() => setActiveTab('brand')}
-          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${
-            activeTab === 'brand'
-              ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          }`}
+          className={`py-2 text-xs font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-cyan-500 ${activeTab === 'brand'
+            ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm'
+            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
         >
           {t('editor.tabBrand')}
         </button>

@@ -116,11 +116,10 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
         zIndex: 40,
       }}
       transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-      className={`relative shrink-0 rounded-lg overflow-hidden border-2 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center p-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:outline-none select-none ${
-        isActive
-          ? 'border-cyan-500 shadow-md ring-2 ring-cyan-500/30'
-          : 'border-slate-200 dark:border-slate-700 opacity-80 hover:opacity-100'
-      }`}
+      className={`relative shrink-0 rounded-lg overflow-hidden border-2 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center p-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:outline-none select-none ${isActive
+        ? 'border-cyan-500 shadow-md ring-2 ring-cyan-500/30'
+        : 'border-slate-200 dark:border-slate-700 opacity-80 hover:opacity-100'
+        }`}
       style={{
         width: `${Math.max(44, Math.round(thumbWidth) + 6)}px`,
         height: `${thumbHeight + 6}px`,
@@ -171,11 +170,10 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
 
       {/* Number Badge */}
       <span
-        className={`absolute bottom-1 end-1 text-[10px] font-mono font-bold px-1 rounded shadow-xs ${
-          isActive
-            ? 'bg-cyan-600 text-white'
-            : 'bg-black/60 text-white'
-        }`}
+        className={`absolute bottom-1 end-1 text-[10px] font-mono font-bold px-1 rounded shadow-xs ${isActive
+          ? 'bg-cyan-600 text-white'
+          : 'bg-black/60 text-white'
+          }`}
       >
         {slideNumber}
       </span>
