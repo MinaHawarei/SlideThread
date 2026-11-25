@@ -94,6 +94,9 @@ export async function capture(
   const width = dimensions?.width || element.offsetWidth;
   const height = dimensions?.height || element.offsetHeight;
 
+  const excludeNoExport = (node: HTMLElement) =>
+    !(node instanceof HTMLElement && node.dataset?.noExport === 'true');
+
   const htmlToImageOpts = {
     pixelRatio,
     width,
@@ -101,12 +104,15 @@ export async function capture(
     canvasWidth: width,
     canvasHeight: height,
     skipAutoScale: true,
+    filter: excludeNoExport,
   };
 
   const modernScreenshotOpts = {
     scale: pixelRatio,
     width,
     height,
+    filter: (node: Node) =>
+      !(node instanceof HTMLElement && node.dataset?.noExport === 'true'),
   };
 
   // 2. Warm-up capture pass to prevent first-render glitches (especially Safari)

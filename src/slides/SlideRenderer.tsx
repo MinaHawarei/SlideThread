@@ -162,19 +162,94 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     const frames = template?.composition?.[slide.type]?.[aspectClass]?.slots;
     if (!canvas || !template || !frames) return;
     const restored: Array<{ element: HTMLElement; values: Record<string, string> }> = [];
+    const setManagedStyle = (element: HTMLElement, styles: Record<string, string>) => {
+      const values = Object.fromEntries(
+        Object.keys(styles).map((name) => [name, (element.style as unknown as Record<string, string>)[name] ?? ''])
+      );
+      restored.push({ element, values });
+      for (const [name, value] of Object.entries(styles)) {
+        (element.style as unknown as Record<string, string>)[name] = value;
+      }
+    };
     for (const [slotId, frame] of Object.entries(frames)) {
       const selector = SLOT_SELECTORS[slotId];
       if (!selector) continue;
       for (const element of canvas.querySelectorAll<HTMLElement>(selector)) {
-        const names = ['position', 'insetInlineStart', 'insetBlockStart', 'width', 'height', 'textAlign'];
-        const values = Object.fromEntries(names.map((name) => [name, element.style[name as keyof CSSStyleDeclaration] as string]));
-        restored.push({ element, values });
-        element.style.position = 'absolute';
-        element.style.insetInlineStart = `${frame.inlineStart * slideDims.width}px`;
-        element.style.insetBlockStart = `${frame.blockStart * slideDims.height}px`;
-        element.style.width = `${frame.inlineSize * slideDims.width}px`;
-        element.style.height = `${frame.blockSize * slideDims.height}px`;
-        element.style.textAlign = frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center';
+        setManagedStyle(element, {
+          position: 'absolute',
+          insetInlineStart: `${frame.inlineStart * slideDims.width}px`,
+          insetBlockStart: `${frame.blockStart * slideDims.height}px`,
+          width: `${frame.inlineSize * slideDims.width}px`,
+          height: `${frame.blockSize * slideDims.height}px`,
+          textAlign: frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center',
+        });
+      }
+    }
+    if (slide.type === 'cover') {
+      if (frames.title) {
+        for (const el of canvas.querySelectorAll<HTMLElement>('.slide-tag')) {
+          setManagedStyle(el, {
+            position: 'absolute',
+            insetBlockStart: `${Math.max(0.115, frames.title.blockStart - 0.068) * slideDims.height}px`,
+            marginBlockEnd: '0px',
+            ...(frames.title.align === 'center'
+              ? { left: '50%', transform: 'translateX(-50%)' }
+              : { insetInlineStart: `${frames.title.inlineStart * slideDims.width}px` }),
+          });
+        }
+      }
+      if (frames.body) {
+        for (const el of canvas.querySelectorAll<HTMLElement>('.slide-mono-line')) {
+          setManagedStyle(el, {
+            position: 'absolute',
+            insetBlockStart: `${(frames.body.blockStart + frames.body.blockSize + 0.025) * slideDims.height}px`,
+            maxWidth: `${frames.body.inlineSize * slideDims.width}px`,
+            ...(frames.body.align === 'center'
+              ? { left: '50%', transform: 'translateX(-50%)' }
+              : { insetInlineStart: `${frames.body.inlineStart * slideDims.width}px` }),
+          });
+        }
+      }
+    }
+    if (slide.type === 'cta') {
+      if (frames.media) {
+        const mediaAtBottom = frames.media.blockStart >= 0.65;
+        for (const el of canvas.querySelectorAll<HTMLElement>('.cta-profile-meta')) {
+          setManagedStyle(el, mediaAtBottom
+            ? {
+                position: 'absolute',
+                insetBlockStart: `${(frames.media.blockStart + 0.02) * slideDims.height}px`,
+                insetInlineStart: `${(frames.media.inlineStart + frames.media.inlineSize + 0.03) * slideDims.width}px`,
+                width: `${0.26 * slideDims.width}px`,
+                alignItems: 'flex-start',
+                textAlign: textDir === 'rtl' ? 'right' : 'left',
+              }
+            : {
+                position: 'absolute',
+                insetBlockStart: `${(frames.media.blockStart + frames.media.blockSize + 0.015) * slideDims.height}px`,
+                insetInlineStart: `${frames.media.inlineStart * slideDims.width}px`,
+                width: `${frames.media.inlineSize * slideDims.width}px`,
+                alignItems: frames.media.align === 'center' ? 'center' : 'flex-start',
+                textAlign: frames.media.align === 'center' ? 'center' : (textDir === 'rtl' ? 'right' : 'left'),
+              });
+        }
+      }
+      if (frames.body) {
+        const mediaAtBottom = Boolean(frames.media && frames.media.blockStart >= 0.65);
+        for (const el of canvas.querySelectorAll<HTMLElement>('.cta-action-button')) {
+          setManagedStyle(el, {
+            position: 'absolute',
+            marginBlockStart: '0px',
+            insetBlockStart: `${(mediaAtBottom
+              ? Math.max((frames.media?.blockStart ?? 0.72) + 0.02, frames.body.blockStart + frames.body.blockSize + 0.03)
+              : frames.body.blockStart + frames.body.blockSize + 0.03) * slideDims.height}px`,
+            ...(mediaAtBottom
+              ? { insetInlineEnd: `${0.08 * slideDims.width}px` }
+              : frames.body.align === 'center'
+                ? { left: '50%', transform: 'translateX(-50%)' }
+                : { insetInlineStart: `${frames.body.inlineStart * slideDims.width}px` }),
+          });
+        }
       }
     }
     return () => restored.forEach(({ element, values }) => {
@@ -379,7 +454,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
         signatureAnchor={signatureAnchor}
         isSignatureVisible={shouldRenderSignature}
       />
-      {(showSafeZones || isStory) && (aspectClass === 'tall' || isStory) && (
+      {showSafeZones && (aspectClass === 'tall' || isStory) && (
         <StorySafeZoneOverlay height={slideDims.height} />
       )}
     </div>

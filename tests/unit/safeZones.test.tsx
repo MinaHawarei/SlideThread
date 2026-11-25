@@ -96,6 +96,20 @@ describe('SlideRenderer Safe Zone Integration', () => {
     expect(screen.queryByTestId('story-safe-zone-overlay')).not.toBeInTheDocument();
   });
 
+  it('does NOT render StorySafeZoneOverlay when showSafeZones is false even when isStory is true', () => {
+    render(
+      <SlideRenderer
+        slide={slide}
+        palette={palette}
+        aspectClass="tall"
+        isStory={true}
+        showSafeZones={false}
+      />
+    );
+
+    expect(screen.queryByTestId('story-safe-zone-overlay')).not.toBeInTheDocument();
+  });
+
   it('does NOT render StorySafeZoneOverlay on landscape or portrait when not isStory', () => {
     render(
       <SlideRenderer

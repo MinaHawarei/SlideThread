@@ -58,13 +58,19 @@ function positions(slideType: LayoutSlideType, style: 'centered' | 'editorial', 
   const body = isTall ? box(0.34, 0.1, 0.8, 0.17, centered ? 'center' : 'start')
     : isWide ? box(0.43, 0.08, centered ? 0.84 : 0.43, 0.24, centered ? 'center' : 'start')
       : box(0.4, 0.08, 0.84, 0.22, centered ? 'center' : 'start');
+  const coverTitle = isTall ? box(0.2, 0.09, 0.82, 0.14, centered ? 'center' : 'start')
+    : isWide ? box(0.19, 0.08, centered ? 0.84 : 0.48, 0.2, centered ? 'center' : 'start')
+      : box(0.19, 0.08, 0.84, 0.18, centered ? 'center' : 'start');
+  const coverBody = isTall ? box(0.38, 0.1, 0.8, 0.17, centered ? 'center' : 'start')
+    : isWide ? box(0.44, 0.08, centered ? 0.84 : 0.43, 0.24, centered ? 'center' : 'start')
+      : box(0.42, 0.08, 0.84, 0.22, centered ? 'center' : 'start');
   const splitA = isTall ? box(0.52, 0.08, 0.84, 0.15) : isWide ? box(0.4, 0.08, 0.4, 0.34) : box(0.43, 0.08, 0.4, 0.28);
   const splitB = isTall ? box(0.7, 0.08, 0.84, 0.15) : isWide ? box(0.4, 0.52, 0.4, 0.34) : box(0.43, 0.52, 0.4, 0.28);
   const footer = isTall ? box(0.86, 0.08, 0.84, 0.06) : box(0.88, 0.08, 0.84, 0.07);
   const media = isTall ? box(0.52, 0.12, 0.76, 0.28) : isWide ? box(0.22, 0.57, 0.34, 0.57) : box(0.63, 0.18, 0.64, 0.23);
 
   const map: Record<LayoutSlideType, BoxMap> = {
-    cover: { title, body, signature: footer, counter: box(0.07, 0.08, 0.14, 0.04) },
+    cover: { title: coverTitle, body: coverBody, signature: footer, counter: box(0.07, 0.08, 0.14, 0.04) },
     explain: { title: isWide ? box(0.15, 0.08, 0.84, 0.12, centered ? 'center' : 'start') : title, body: isWide ? { ...body, inlineStart: 0.08, inlineSize: 0.43, align: 'start' } : centered ? body : { ...body, inlineSize: 0.84 }, media: isWide ? box(0.32, 0.56, 0.34, 0.47) : media, signature: footer, counter: box(0.07, 0.08, 0.14, 0.04) },
     rule: { title, body: { ...body, blockSize: isTall ? 0.3 : 0.28 }, signature: footer, counter: box(0.07, 0.08, 0.14, 0.04) },
     code: { title, code: isWide ? box(0.4, 0.08, 0.84, 0.38) : box(0.42, 0.08, 0.84, 0.32), body: box(0.78, 0.08, 0.84, 0.08), signature: footer, counter: box(0.07, 0.08, 0.14, 0.04) },

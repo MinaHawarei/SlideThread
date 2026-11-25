@@ -269,7 +269,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
           {userTemplatesLoading ? <p className="text-sm text-stone-500">Loading your templates…</p> : userTemplates.length === 0 ? <p className="text-sm text-stone-500">Imported packages will appear here, separate from shipped templates.</p> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {userTemplates.map((item) => <article key={item.id} data-testid={`user-template-card-${item.id}`} className="rounded-2xl overflow-hidden border border-violet-200 dark:border-violet-900 bg-white dark:bg-stone-900 flex flex-col">
               <button type="button" data-testid={`preview-user-template-${item.id}`} onClick={() => handlePreviewTemplate(item.id)} className="aspect-[4/3] w-full bg-stone-100 dark:bg-stone-800 overflow-hidden text-start">
-                {userPreviewUrls[item.id] ? <img src={userPreviewUrls[item.id]} alt={item.manifest.name[locale]} className="w-full h-full object-cover" /> : <span className="h-full grid place-items-center text-sm text-stone-500">No preview included</span>}
+                {userPreviewUrls[item.id] ? <img src={userPreviewUrls[item.id]} alt={item.manifest.name[locale]} className="w-full h-full object-cover object-top" /> : <span className="h-full grid place-items-center text-sm text-stone-500">No preview included</span>}
               </button>
               <div className="p-4 space-y-3 flex-1">
                 <div><h3 className="font-serif font-bold">{item.manifest.name[locale]}</h3><p className="text-xs font-mono text-stone-500">{item.id} · Imported</p><p className="text-xs text-stone-600 dark:text-stone-300 mt-2">{item.manifest.description?.[locale] ?? item.manifest.author.name}</p></div>
@@ -536,7 +536,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                           <img
                             src={previewUrl}
                             alt={item.name[locale]}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                             loading="lazy"
                           />
 

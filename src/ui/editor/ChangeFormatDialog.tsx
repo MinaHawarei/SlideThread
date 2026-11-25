@@ -274,7 +274,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                     slideIndex={0}
                     totalSlides={project.slides.length}
                     showCounter={project.contentType !== 'post'}
-                    showSafeZones={isStory}
+                    showSafeZones={false}
                     isStory={isStory}
                     templateId={project.templateId}
                     templateSnapshot={project.templateSnapshot}

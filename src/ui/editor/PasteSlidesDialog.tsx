@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useT } from '../../i18n';
 import type { TranslationKey } from '../../i18n/en';
 import { useProjectStore } from '../../store/projectStore';
@@ -87,7 +88,7 @@ export const PasteSlidesDialog: React.FC<PasteSlidesDialogProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  const dialog = (
     <div
       role="dialog"
       aria-modal="true"
@@ -253,4 +254,6 @@ export const PasteSlidesDialog: React.FC<PasteSlidesDialogProps> = ({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(dialog, document.body) : dialog;
 };

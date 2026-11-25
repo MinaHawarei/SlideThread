@@ -225,4 +225,38 @@ describe('Data Management: Export, Import & Clear All Data (Spec §5.5)', () => 
     expect(useRecentStore.getState().recents).toEqual([]);
     expect(useRecentStore.getState().projects).toEqual({});
   });
+
+  it('exportAllUserData/importAllUserData round-trips active UI language and preserves language when omitted', async () => {
+    const { useI18nStore } = await import('../../src/i18n');
+    useI18nStore.getState().setLocale('ar');
+    useSettingsStore.setState({
+      settings: { ...DEFAULT_BRAND_SETTINGS, language: 'en' },
+    });
+
+    const exported = JSON.parse(exportAllUserData());
+    expect(exported.settings.language).toBe('ar');
+
+    useI18nStore.getState().setLocale('en');
+    expect(importAllUserData(JSON.stringify(exported))).toBe(true);
+    expect(useI18nStore.getState().locale).toBe('ar');
+
+    // Old backup without settings.language must not clobber current locale
+    const legacyBackup = {
+      schemaVersion: 1,
+      settings: { displayName: 'Legacy User' },
+      projects: {},
+    };
+    expect(importAllUserData(JSON.stringify(legacyBackup))).toBe(true);
+    expect(useI18nStore.getState().locale).toBe('ar');
+    useI18nStore.getState().setLocale('en');
+  });
+
+  it('importAllUserData rejects meaningless JSON without partial state mutation', () => {
+    useSettingsStore.getState().setDisplayName('Keep Me');
+    expect(importAllUserData(JSON.stringify({ hello: 'world' }))).toBe(false);
+    expect(importAllUserData(JSON.stringify({ schemaVersion: 99, settings: {} }))).toBe(false);
+    expect(importAllUserData(JSON.stringify({ schemaVersion: 2 }))).toBe(false);
+    expect(importAllUserData(JSON.stringify([1, 2, 3]))).toBe(false);
+    expect(useSettingsStore.getState().settings.displayName).toBe('Keep Me');
+  });
 });

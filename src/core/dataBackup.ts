@@ -18,7 +18,11 @@ export interface AllUserDataBackup {
  * into a JSON string for full data backup (Spec §5.5).
  */
 export function exportAllUserData(): string {
-  const settings = useSettingsStore.getState().settings;
+  const activeLanguage = useI18nStore.getState().locale;
+  const settings = {
+    ...useSettingsStore.getState().settings,
+    language: activeLanguage,
+  };
   const recentState = useRecentStore.getState();
   const backup: AllUserDataBackup = {
     schemaVersion: 2,
@@ -45,6 +49,12 @@ export function downloadAllUserData(): void {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
+const SUPPORTED_BACKUP_VERSIONS = new Set([1, 2]);
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
 /**
  * Parses and restores all user data from a backup JSON string.
  * Validates and migrates projects if needed, restores settings and UI language.
@@ -52,30 +62,67 @@ export function downloadAllUserData(): void {
 export function importAllUserData(jsonString: string): boolean {
   try {
     const parsed = JSON.parse(jsonString) as Partial<AllUserDataBackup>;
-    if (!parsed || typeof parsed !== 'object') {
+    if (!isPlainRecord(parsed)) {
       return false;
     }
 
-    if (parsed.settings && typeof parsed.settings === 'object') {
-      useSettingsStore.setState({ settings: { ...DEFAULT_BRAND_SETTINGS, ...parsed.settings } });
-      if (parsed.settings.language) {
-        useI18nStore.getState().setLocale(parsed.settings.language);
+    if (typeof parsed.schemaVersion !== 'number' || !SUPPORTED_BACKUP_VERSIONS.has(parsed.schemaVersion)) {
+      return false;
+    }
+
+    const hasSettings = parsed.settings !== undefined;
+    const hasProjects = parsed.projects !== undefined;
+    if (!hasSettings && !hasProjects) {
+      return false;
+    }
+    if (hasSettings && !isPlainRecord(parsed.settings)) {
+      return false;
+    }
+    if (hasProjects && !isPlainRecord(parsed.projects)) {
+      return false;
+    }
+    if (parsed.recents !== undefined && !Array.isArray(parsed.recents)) {
+      return false;
+    }
+
+    let nextProjects: Record<string, Project> | undefined;
+    if (hasProjects && isPlainRecord(parsed.projects)) {
+      const migratedProjects: Record<string, Project> = {};
+      for (const [id, proj] of Object.entries(parsed.projects)) {
+        if (!isPlainRecord(proj) || !Array.isArray(proj.slides)) {
+          return false;
+        }
+        try {
+          migratedProjects[id] = migrate(proj);
+        } catch {
+          migratedProjects[id] = proj as unknown as Project;
+        }
+      }
+      nextProjects = migratedProjects;
+    }
+
+    if (hasSettings && isPlainRecord(parsed.settings)) {
+      const currentLocale = useI18nStore.getState().locale;
+      const importedLang =
+        parsed.settings.language === 'en' || parsed.settings.language === 'ar'
+          ? parsed.settings.language
+          : undefined;
+      useSettingsStore.setState({
+        settings: {
+          ...DEFAULT_BRAND_SETTINGS,
+          ...(parsed.settings as Partial<BrandSettings>),
+          language: importedLang ?? currentLocale,
+        },
+      });
+      if (importedLang) {
+        useI18nStore.getState().setLocale(importedLang);
       }
     }
 
-    if (parsed.projects && typeof parsed.projects === 'object') {
-      const migratedProjects: Record<string, Project> = {};
-      for (const [id, proj] of Object.entries(parsed.projects)) {
-        try {
-          const validated = migrate(proj);
-          migratedProjects[id] = validated;
-        } catch {
-          migratedProjects[id] = proj;
-        }
-      }
+    if (nextProjects !== undefined) {
       useRecentStore.setState({
-        projects: migratedProjects,
-        recents: parsed.recents || [],
+        projects: nextProjects,
+        recents: Array.isArray(parsed.recents) ? parsed.recents : [],
       });
     }
 
