@@ -31,9 +31,16 @@ function fail(message: string): never {
   throw new Error(message);
 }
 
+function hasControlCharacter(value: string): boolean {
+  for (let index = 0; index < value.length; index += 1) {
+    if (value.charCodeAt(index) <= 0x1f) return true;
+  }
+  return false;
+}
+
 function normalizeArchivePath(path: string): string {
   const slashPath = path.replaceAll('\\', '/');
-  if (/[\u0000-\u001f]/.test(slashPath)) fail(`ZIP path “${path}” contains a control character.`);
+  if (hasControlCharacter(slashPath)) fail(`ZIP path “${path}” contains a control character.`);
   if (slashPath.startsWith('/') || /^[a-zA-Z]:/.test(slashPath)) fail(`ZIP path “${path}” is absolute.`);
   const segments = slashPath.split('/');
   if (segments.some((part) => part === '..')) fail(`ZIP path “${path}” contains a parent-directory segment.`);

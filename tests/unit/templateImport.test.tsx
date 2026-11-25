@@ -162,6 +162,31 @@ describe('browser template ZIP import', () => {
     expect(await listUserTemplatePackages()).toHaveLength(0);
   });
 
+  it('rejects control characters (0x00–0x1f) in ZIP entry names and allows adjacent 0x20 space', async () => {
+    const nullByteZip = await makeZip(importedId(), { 'assets/a.json': '{}' });
+    await expect(
+      importTemplateZip(await replaceBytes(nullByteZip, 'assets/a.json', `assets/${String.fromCharCode(0x00)}.json`))
+    ).rejects.toThrow('control character');
+
+    const newlineZip = await makeZip(importedId(), { 'assets/b.json': '{}' });
+    await expect(
+      importTemplateZip(await replaceBytes(newlineZip, 'assets/b.json', `assets/${String.fromCharCode(0x0a)}.json`))
+    ).rejects.toThrow('control character');
+
+    const unitSepZip = await makeZip(importedId(), { 'assets/c.json': '{}' });
+    await expect(
+      importTemplateZip(await replaceBytes(unitSepZip, 'assets/c.json', `assets/${String.fromCharCode(0x1f)}.json`))
+    ).rejects.toThrow('control character');
+
+    expect(await listUserTemplatePackages()).toHaveLength(0);
+
+    const spaceId = importedId();
+    const spaceZip = await makeZip(spaceId, { [`assets/${String.fromCharCode(0x20)}.svg`]: svgAsset });
+    const imported = await importTemplateZip(spaceZip);
+    expect(imported.id).toBe(spaceId);
+    expect(await getUserTemplatePackage(spaceId)).toBeDefined();
+  });
+
   it('rejects a package root that does not match the manifest ID', async () => {
     await expect(importTemplateZip(await makeZip(importedId(), {}, { id: importedId() }))).rejects.toThrow('must match template.json id');
     expect(await listUserTemplatePackages()).toHaveLength(0);
