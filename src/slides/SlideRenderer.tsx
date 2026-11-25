@@ -174,40 +174,118 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     for (const [slotId, frame] of Object.entries(frames)) {
       const selector = SLOT_SELECTORS[slotId];
       if (!selector) continue;
+      const isFlowCoverSlot = slide.type === 'cover' && (slotId === 'title' || slotId === 'body');
       for (const element of canvas.querySelectorAll<HTMLElement>(selector)) {
         setManagedStyle(element, {
           position: 'absolute',
           insetInlineStart: `${frame.inlineStart * slideDims.width}px`,
           insetBlockStart: `${frame.blockStart * slideDims.height}px`,
           width: `${frame.inlineSize * slideDims.width}px`,
-          height: `${frame.blockSize * slideDims.height}px`,
+          height: isFlowCoverSlot ? 'auto' : `${frame.blockSize * slideDims.height}px`,
           textAlign: frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center',
         });
       }
     }
     if (slide.type === 'cover') {
-      if (frames.title) {
-        for (const el of canvas.querySelectorAll<HTMLElement>('.slide-tag')) {
-          setManagedStyle(el, {
-            position: 'absolute',
-            insetBlockStart: `${Math.max(0.115, frames.title.blockStart - 0.068) * slideDims.height}px`,
-            marginBlockEnd: '0px',
-            ...(frames.title.align === 'center'
-              ? { left: '50%', transform: 'translateX(-50%)' }
-              : { insetInlineStart: `${frames.title.inlineStart * slideDims.width}px` }),
-          });
+      const W = slideDims.width;
+      const H = slideDims.height;
+      const tallSlide = aspectClass === 'tall' || isStory;
+      const tagEl = canvas.querySelector<HTMLElement>('.slide-tag');
+      const titleEl = canvas.querySelector<HTMLElement>('.slide-title-h1, .slide-title-h2');
+      const bodyEl = canvas.querySelector<HTMLElement>('.slide-sub');
+      const monoEl = canvas.querySelector<HTMLElement>('.slide-mono-line');
+      const sigEl = canvas.querySelector<HTMLElement>('.slide-signature-container');
+
+      const counterBottom = frames.counter ? (frames.counter.blockStart + frames.counter.blockSize) * H : 0.11 * H;
+      const minTop = tallSlide ? 268 + 16 : counterBottom + 0.015 * H;
+      const sigTop = sigEl && sigEl.offsetTop > 0
+        ? sigEl.offsetTop
+        : (frames.signature ? frames.signature.blockStart * H : (tallSlide ? H - 268 : 0.88 * H));
+      const maxBottom = (tallSlide ? Math.min(sigTop, H - 268) : sigTop) - 0.02 * H;
+
+      const tagTitleGap = Math.max(16, Math.round(0.02 * H));
+      const titleBodyGap = Math.max(20, Math.round(0.022 * H));
+      const bodyMonoGap = Math.max(20, Math.round(0.024 * H));
+
+      let titleTop = (frames.title?.blockStart ?? 0.19) * H;
+
+      if (tagEl) {
+        const tagAlignCenter = frames.title?.align === 'center';
+        setManagedStyle(tagEl, {
+          position: 'absolute',
+          width: 'max-content',
+          maxWidth: `${0.88 * W}px`,
+          marginBlockEnd: '0px',
+          ...(tagAlignCenter
+            ? { left: '50%', transform: 'translateX(-50%)' }
+            : { insetInlineStart: `${(frames.title?.inlineStart ?? 0.08) * W}px` }),
+        });
+        const tagH = tagEl.offsetHeight || 48;
+        let tagTop = titleTop - tagH - tagTitleGap;
+        if (tagTop < minTop) {
+          tagTop = minTop;
+          titleTop = tagTop + tagH + tagTitleGap;
         }
+        setManagedStyle(tagEl, { insetBlockStart: `${tagTop}px` });
+      } else {
+        titleTop = Math.max(minTop, titleTop);
       }
-      if (frames.body) {
-        for (const el of canvas.querySelectorAll<HTMLElement>('.slide-mono-line')) {
-          setManagedStyle(el, {
-            position: 'absolute',
-            insetBlockStart: `${(frames.body.blockStart + frames.body.blockSize + 0.025) * slideDims.height}px`,
-            maxWidth: `${frames.body.inlineSize * slideDims.width}px`,
-            ...(frames.body.align === 'center'
-              ? { left: '50%', transform: 'translateX(-50%)' }
-              : { insetInlineStart: `${frames.body.inlineStart * slideDims.width}px` }),
-          });
+
+      if (titleEl) {
+        setManagedStyle(titleEl, { fontSize: '', marginBlockEnd: '0px' });
+      }
+      if (bodyEl) {
+        setManagedStyle(bodyEl, { marginBlockEnd: '0px' });
+      }
+      if (monoEl) {
+        const monoAlignCenter = frames.body?.align === 'center';
+        setManagedStyle(monoEl, {
+          position: 'absolute',
+          insetBlockStart: '',
+          width: 'max-content',
+          maxWidth: monoAlignCenter
+            ? `${0.88 * W}px`
+            : `${Math.max(0.4, 1 - (frames.body?.inlineStart ?? 0.08) - 0.06) * W}px`,
+          marginBlockStart: '0px',
+          marginBlockEnd: '0px',
+          ...(monoAlignCenter
+            ? { left: '50%', transform: 'translateX(-50%)' }
+            : { insetInlineStart: `${(frames.body?.inlineStart ?? 0.08) * W}px` }),
+        });
+      }
+
+      const measureAndPlaceCover = (): number => {
+        let cursorBottom = titleTop;
+        if (titleEl) {
+          titleEl.style.insetBlockStart = `${titleTop}px`;
+          cursorBottom = titleTop + titleEl.offsetHeight;
+        }
+        const preferredBodyTop = (frames.body?.blockStart ?? 0.42) * H;
+        const bodyTop = titleEl
+          ? Math.max(preferredBodyTop, cursorBottom + titleBodyGap)
+          : preferredBodyTop;
+        if (bodyEl) {
+          bodyEl.style.insetBlockStart = `${bodyTop}px`;
+          cursorBottom = bodyTop + bodyEl.offsetHeight;
+        } else if (!titleEl) {
+          cursorBottom = bodyTop;
+        }
+        if (monoEl) {
+          const monoTop = cursorBottom + (bodyEl || titleEl ? bodyMonoGap : 0);
+          monoEl.style.insetBlockStart = `${monoTop}px`;
+          cursorBottom = monoTop + monoEl.offsetHeight;
+        }
+        return cursorBottom;
+      };
+
+      let stackBottom = measureAndPlaceCover();
+      if (stackBottom > maxBottom && titleEl && typeof window !== 'undefined') {
+        const MIN_TITLE_FONT = 44;
+        let currentSize = parseFloat(window.getComputedStyle(titleEl).fontSize) || 80;
+        while (stackBottom > maxBottom && currentSize > MIN_TITLE_FONT) {
+          currentSize = Math.max(MIN_TITLE_FONT, currentSize - 4);
+          titleEl.style.fontSize = `${currentSize}px`;
+          stackBottom = measureAndPlaceCover();
         }
       }
     }
@@ -255,7 +333,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     return () => restored.forEach(({ element, values }) => {
       for (const [name, value] of Object.entries(values)) (element.style as unknown as Record<string, string>)[name] = value;
     });
-  }, [template, slide.type, aspectClass, slideDims.width, slideDims.height, textDir]);
+  }, [template, slide.type, aspectClass, isStory, slideDims.width, slideDims.height, textDir, slide.fields]);
 
   if (!template) return <div className={`slide-canvas aspect-${aspectClass} template-loading ${className}`.trim()} style={{ width: dimensions?.width, height: dimensions?.height, ...style }} aria-busy="true" />;
   const templatePalette = {

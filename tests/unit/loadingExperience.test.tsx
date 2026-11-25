@@ -15,13 +15,17 @@ describe('Loading Experience & LogoMark (R7 & Logo Integration)', () => {
     vi.useRealTimers();
   });
 
-  it('renders LoadingScreen with role="status", animated LogoMark and translated text', () => {
-    render(<LoadingScreen />);
+  it('renders LoadingScreen with role="status", enlarged animated LogoMark and translated text', () => {
+    const { container } = render(<LoadingScreen />);
 
     const status = screen.getByRole('status');
     expect(status).toBeInTheDocument();
     expect(status).toHaveTextContent('Opening your studio…');
     expect(screen.getByTestId('app-loading-screen')).toBeInTheDocument();
+    const svg = container.querySelector('svg');
+    expect(svg).toHaveAttribute('width', '128');
+    expect(svg).toHaveAttribute('height', '128');
+    expect(svg).toHaveClass('animate-pulse');
   });
 
   it('renders LoadingScreen in Arabic with translated status', () => {

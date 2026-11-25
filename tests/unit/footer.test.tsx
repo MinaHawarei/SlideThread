@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Footer } from '../../src/ui/common/Footer';
-import { OWNER, GITHUB_URL, FEEDBACK_URL } from '../../src/config/site';
+import { OWNER, GITHUB_URL, FEEDBACK_URL, APP_NAME } from '../../src/config/site';
 import { useI18nStore } from '../../src/i18n';
 
 describe('Footer Component (Spec §10.3, §10.4, Task P3-9)', () => {
@@ -94,5 +94,19 @@ describe('Footer Component (Spec §10.3, §10.4, Task P3-9)', () => {
     for (const link of links) {
       expect(link).toHaveClass('min-h-[44px]');
     }
+  });
+
+  it('omits visible wordmark while preserving accessible brand identity and enlarged logo', () => {
+    const { container, rerender } = render(<Footer />);
+
+    expect(screen.queryByText(APP_NAME)).not.toBeInTheDocument();
+    expect(screen.getByTestId('footer-brand-version')).toHaveAttribute('aria-label', expect.stringContaining(APP_NAME));
+    expect(container.querySelector('[data-testid="footer-brand-version"] svg')).toHaveAttribute('width', '28');
+
+    rerender(<Footer compact />);
+
+    expect(screen.queryByText(APP_NAME)).not.toBeInTheDocument();
+    expect(screen.getByTestId('footer-brand-version')).toHaveAttribute('aria-label', expect.stringContaining(APP_NAME));
+    expect(container.querySelector('[data-testid="footer-brand-version"] svg')).toHaveAttribute('width', '24');
   });
 });

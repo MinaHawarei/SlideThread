@@ -8,6 +8,9 @@ export interface FooterProps {
   compact?: boolean;
 }
 
+const COMPACT_FOOTER_LOGO_SIZE = 24;
+const FULL_FOOTER_LOGO_SIZE = 28;
+
 export const Footer: React.FC<FooterProps> = ({
   className = '',
   compact = false,
@@ -27,10 +30,8 @@ export const Footer: React.FC<FooterProps> = ({
         data-testid="app-footer"
         className={`w-full py-2.5 px-4 text-[11px] text-stone-500 dark:text-stone-400 flex flex-wrap items-center justify-between gap-3 border-t border-stone-200/80 dark:border-stone-800/80 bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-sm ${className}`}
       >
-        {/* Left: Brand mark & Creator */}
+        {/* Left: Creator */}
         <div className="flex items-center gap-2">
-          <span className="font-serif font-bold text-stone-700 dark:text-stone-300">{APP_NAME}</span>
-          <span className="text-stone-400">•</span>
           <span>{t('footer.createdBy')}</span>
           <a
             data-testid="footer-owner-link"
@@ -46,11 +47,12 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Center: Logo & Version Pair */}
         <div
           data-testid="footer-brand-version"
+          aria-label={`${APP_NAME} V ${APP_VERSION}`}
           className="flex items-center justify-center gap-2 whitespace-nowrap text-stone-600 dark:text-stone-300"
           dir="ltr"
         >
           <span aria-hidden="true" className="inline-flex items-center shrink-0">
-            <LogoMark size={14} />
+            <LogoMark size={COMPACT_FOOTER_LOGO_SIZE} />
           </span>
           <span aria-hidden="true" className="text-stone-300 dark:text-stone-600 font-light select-none text-xs leading-none">
             |
@@ -92,16 +94,9 @@ export const Footer: React.FC<FooterProps> = ({
       className={`w-full border-t border-stone-200/80 dark:border-stone-800 bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur-sm py-8 px-4 sm:px-8 text-xs text-stone-500 dark:text-stone-400 ${className}`}
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Left Side: Brand name & Creator credit */}
+        {/* Left Side: Creator credit */}
         <div className="flex flex-col sm:flex-row items-center md:items-start gap-3 text-center md:text-left">
-          <div className="flex items-center gap-2">
-            <span className="font-serif font-bold text-sm tracking-tight text-stone-900 dark:text-stone-100">
-              {APP_NAME}
-            </span>
-          </div>
-
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-            <span className="hidden sm:inline text-stone-300 dark:text-stone-700">•</span>
             <span>{t('footer.createdBy')}</span>
             <a
               data-testid="footer-owner-link"
@@ -172,11 +167,12 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="flex flex-col items-center justify-center gap-2 text-center order-first md:order-none">
           <div
             data-testid="footer-brand-version"
-            className="flex items-center justify-center gap-2 whitespace-nowrap text-stone-600 dark:text-stone-300"
+            aria-label={`${APP_NAME} V ${APP_VERSION}`}
+            className="flex items-center justify-center gap-2.5 whitespace-nowrap text-stone-600 dark:text-stone-300"
             dir="ltr"
           >
             <span aria-hidden="true" className="inline-flex items-center shrink-0">
-              <LogoMark size={16} />
+              <LogoMark size={FULL_FOOTER_LOGO_SIZE} />
             </span>
             <span aria-hidden="true" className="text-stone-300 dark:text-stone-600 font-light select-none text-xs leading-none">
               |

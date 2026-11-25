@@ -120,7 +120,8 @@
   padding-block: 16px;
   width: fit-content;
   max-width: 100%;
-  word-break: break-all;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 /* 1. Cover Slide */
