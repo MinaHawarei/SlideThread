@@ -75,14 +75,113 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   useEffect(() => {
     if (templateOverride || templateSnapshot) { setResolvedSnapshot(undefined); return; }
     let active = true;
-    loadTemplateProjectSnapshot(templateId, '#35D0E6').then((snapshot) => { if (active) setResolvedSnapshot(snapshot); }).catch((error) => {
+    loadTemplateProjectSnapshot(templateId, palette.acc).then((snapshot) => { if (active) setResolvedSnapshot(snapshot); }).catch((error) => {
       console.error(`Could not load template package ${templateId}`, error);
     });
     return () => { active = false; };
-  }, [templateId, templateOverride, templateSnapshot]);
+  }, [templateId, palette.acc, templateOverride, templateSnapshot]);
 
   const effectiveSnapshot = templateSnapshot ?? resolvedSnapshot;
   const template = templateOverride ?? (effectiveSnapshot ? templateDefinitionFromSnapshot(effectiveSnapshot) : undefined);
+  const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const overrides = slide.overrides?.[aspectClass];
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const manipulated: Array<{
+      el: HTMLElement;
+      visibility: string;
+      zIndex: string;
+      position: string;
+      transform: string;
+      transformOrigin: string;
+      opacity: string;
+    }> = [];
+
+    if (overrides) {
+      for (const [slotId, override] of Object.entries(overrides)) {
+        const selector = SLOT_SELECTORS[slotId];
+        if (!selector) continue;
+        const nodes = canvas.querySelectorAll<HTMLElement>(selector);
+        for (const node of nodes) {
+          manipulated.push({
+            el: node,
+            visibility: node.style.visibility,
+            zIndex: node.style.zIndex,
+            position: node.style.position,
+            transform: node.style.transform,
+            transformOrigin: node.style.transformOrigin,
+            opacity: node.style.opacity,
+          });
+
+          if (override.hidden !== undefined) {
+            node.style.visibility = override.hidden ? 'hidden' : 'visible';
+          }
+          if (override.opacity !== undefined) {
+            node.style.opacity = String(override.opacity);
+          }
+          if (override.z !== undefined) {
+            node.style.zIndex = String(override.z);
+            if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
+              node.style.position = 'relative';
+            }
+          }
+          const tx = (override.dx || 0) * slideDims.width;
+          const ty = (override.dy || 0) * slideDims.height;
+          const scale = override.scale ?? 1;
+          const rot = override.rotation ?? 0;
+          if (tx !== 0 || ty !== 0 || scale !== 1 || rot !== 0) {
+            const rotPart = rot !== 0 ? ` rotate(${rot}deg)` : '';
+            node.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})${rotPart}`;
+            node.style.transformOrigin = 'center';
+            if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
+              node.style.position = 'relative';
+            }
+          }
+        }
+      }
+    }
+
+    return () => {
+      for (const item of manipulated) {
+        item.el.style.visibility = item.visibility;
+        item.el.style.zIndex = item.zIndex;
+        item.el.style.position = item.position;
+        item.el.style.transform = item.transform;
+        item.el.style.transformOrigin = item.transformOrigin;
+        item.el.style.opacity = item.opacity;
+      }
+    };
+  }, [template, overrides, aspectClass, slideDims.width, slideDims.height]);
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    const frames = template?.composition?.[slide.type]?.[aspectClass]?.slots;
+    if (!canvas || !template || !frames) return;
+    const restored: Array<{ element: HTMLElement; values: Record<string, string> }> = [];
+    for (const [slotId, frame] of Object.entries(frames)) {
+      const selector = SLOT_SELECTORS[slotId];
+      if (!selector) continue;
+      for (const element of canvas.querySelectorAll<HTMLElement>(selector)) {
+        const names = ['position', 'insetInlineStart', 'insetBlockStart', 'width', 'height', 'textAlign'];
+        const values = Object.fromEntries(names.map((name) => [name, element.style[name as keyof CSSStyleDeclaration] as string]));
+        restored.push({ element, values });
+        element.style.position = 'absolute';
+        element.style.insetInlineStart = `${frame.inlineStart * slideDims.width}px`;
+        element.style.insetBlockStart = `${frame.blockStart * slideDims.height}px`;
+        element.style.width = `${frame.inlineSize * slideDims.width}px`;
+        element.style.height = `${frame.blockSize * slideDims.height}px`;
+        element.style.textAlign = frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center';
+      }
+    }
+    return () => restored.forEach(({ element, values }) => {
+      for (const [name, value] of Object.entries(values)) (element.style as unknown as Record<string, string>)[name] = value;
+    });
+  }, [template, slide.type, aspectClass, slideDims.width, slideDims.height, textDir]);
+
   if (!template) return <div className={`slide-canvas aspect-${aspectClass} template-loading ${className}`.trim()} style={{ width: dimensions?.width, height: dimensions?.height, ...style }} aria-busy="true" />;
   const templatePalette = {
     ...(template.paletteByMode?.[themeMode] ?? palette),
@@ -107,8 +206,6 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
       richFields: slide.fields,
     },
   };
-  const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
-
   const getSignatureContainerStyle = (): React.CSSProperties => {
     if (signatureAnchor === 'free') {
       return {};
@@ -200,104 +297,6 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
         );
     }
   };
-
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const overrides = slide.overrides?.[aspectClass];
-
-  useLayoutEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const manipulated: Array<{
-      el: HTMLElement;
-      visibility: string;
-      zIndex: string;
-      position: string;
-      transform: string;
-      transformOrigin: string;
-      opacity: string;
-    }> = [];
-
-    if (overrides) {
-      for (const [slotId, override] of Object.entries(overrides)) {
-        const selector = SLOT_SELECTORS[slotId];
-        if (!selector) continue;
-        const nodes = canvas.querySelectorAll<HTMLElement>(selector);
-        for (const node of nodes) {
-          manipulated.push({
-            el: node,
-            visibility: node.style.visibility,
-            zIndex: node.style.zIndex,
-            position: node.style.position,
-            transform: node.style.transform,
-            transformOrigin: node.style.transformOrigin,
-            opacity: node.style.opacity,
-          });
-
-          if (override.hidden !== undefined) {
-            node.style.visibility = override.hidden ? 'hidden' : 'visible';
-          }
-          if (override.opacity !== undefined) {
-            node.style.opacity = String(override.opacity);
-          }
-          if (override.z !== undefined) {
-            node.style.zIndex = String(override.z);
-            if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
-              node.style.position = 'relative';
-            }
-          }
-          const tx = (override.dx || 0) * slideDims.width;
-          const ty = (override.dy || 0) * slideDims.height;
-          const scale = override.scale ?? 1;
-          const rot = override.rotation ?? 0;
-          if (tx !== 0 || ty !== 0 || scale !== 1 || rot !== 0) {
-            const rotPart = rot !== 0 ? ` rotate(${rot}deg)` : '';
-            node.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})${rotPart}`;
-            node.style.transformOrigin = 'center';
-            if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
-              node.style.position = 'relative';
-            }
-          }
-        }
-      }
-    }
-
-    return () => {
-      for (const item of manipulated) {
-        item.el.style.visibility = item.visibility;
-        item.el.style.zIndex = item.zIndex;
-        item.el.style.position = item.position;
-        item.el.style.transform = item.transform;
-        item.el.style.transformOrigin = item.transformOrigin;
-        item.el.style.opacity = item.opacity;
-      }
-    };
-  }, [overrides, aspectClass, slideDims.width, slideDims.height]);
-
-  useLayoutEffect(() => {
-    const canvas = canvasRef.current;
-    const frames = template.composition?.[slide.type]?.[aspectClass]?.slots;
-    if (!canvas || !frames) return;
-    const restored: Array<{ element: HTMLElement; values: Record<string, string> }> = [];
-    for (const [slotId, frame] of Object.entries(frames)) {
-      const selector = SLOT_SELECTORS[slotId];
-      if (!selector) continue;
-      for (const element of canvas.querySelectorAll<HTMLElement>(selector)) {
-        const names = ['position', 'insetInlineStart', 'insetBlockStart', 'width', 'height', 'textAlign'];
-        const values = Object.fromEntries(names.map((name) => [name, element.style[name as keyof CSSStyleDeclaration] as string]));
-        restored.push({ element, values });
-        element.style.position = 'absolute';
-        element.style.insetInlineStart = `${frame.inlineStart * slideDims.width}px`;
-        element.style.insetBlockStart = `${frame.blockStart * slideDims.height}px`;
-        element.style.width = `${frame.inlineSize * slideDims.width}px`;
-        element.style.height = `${frame.blockSize * slideDims.height}px`;
-        element.style.textAlign = frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center';
-      }
-    }
-    return () => restored.forEach(({ element, values }) => {
-      for (const [name, value] of Object.entries(values)) (element.style as unknown as Record<string, string>)[name] = value;
-    });
-  }, [template, slide.type, aspectClass, slideDims.width, slideDims.height, textDir]);
 
   return (
     <div
