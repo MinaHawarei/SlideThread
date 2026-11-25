@@ -176,11 +176,16 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
       if (!selector) continue;
       const isFlowCoverSlot = slide.type === 'cover' && (slotId === 'title' || slotId === 'body');
       for (const element of canvas.querySelectorAll<HTMLElement>(selector)) {
+        // Landscape covers reserve the right grid column for the visual card.
+        const slotWidth =
+          isFlowCoverSlot && slotId === 'body' && aspectClass === 'landscape'
+            ? Math.min(frame.inlineSize, 0.5) * slideDims.width
+            : frame.inlineSize * slideDims.width;
         setManagedStyle(element, {
           position: 'absolute',
           insetInlineStart: `${frame.inlineStart * slideDims.width}px`,
           insetBlockStart: `${frame.blockStart * slideDims.height}px`,
-          width: `${frame.inlineSize * slideDims.width}px`,
+          width: `${slotWidth}px`,
           height: isFlowCoverSlot ? 'auto' : `${frame.blockSize * slideDims.height}px`,
           textAlign: frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center',
         });

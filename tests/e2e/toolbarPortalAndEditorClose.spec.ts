@@ -34,7 +34,19 @@ async function openEditor(page: Page, elementId = 'body') {
     // Fall back to title
     await page.getByTestId('element-hit-title').first().dblclick({ force: true });
   }
-  await expect(page.getByTestId('rich-text-editor-container')).toBeVisible({ timeout: 5000 });
+  await expect(page.getByTestId('element-hit-title').first().getByTestId('rich-text-editor-container')).toBeVisible({ timeout: 5000 });
+}
+
+function inlineTitleEditor(page: Page) {
+  return page.getByTestId('element-hit-title').first().getByTestId('rich-text-editor-container');
+}
+
+function inlineTitleInput(page: Page) {
+  return inlineTitleEditor(page).getByTestId('rich-text-contenteditable');
+}
+
+function renderedTitle(page: Page) {
+  return page.getByTestId('workspace-stage').locator('.slide-title-h1, .slide-title-h2');
 }
 
 // All toolbar button testids that must be visible/clickable
@@ -61,15 +73,13 @@ test.describe('Task 1 — Desktop toolbar portal visibility', () => {
       await bootEditor(page, vpW, vpH);
 
       // Enter edit mode via double-click
-      const titleHit = page.getByTestId('element-hit-title').first();
-      await titleHit.dblclick({ force: true });
-      await expect(page.getByTestId('rich-text-editor-container')).toBeVisible({ timeout: 5000 });
+      await openEditor(page, 'title');
 
-      const toolbar = page.getByTestId('rich-text-floating-toolbar');
+      const toolbar = page.locator('[data-rich-text-toolbar="true"]');
       await expect(toolbar).toBeVisible();
 
       for (const tid of TOOLBAR_BUTTONS) {
-        const btn = page.getByTestId(tid);
+        const btn = toolbar.getByTestId(tid);
         await expect(btn).toBeVisible({ timeout: 5000 });
         const box = await btn.boundingBox();
         expect(box, `${tid} has no bounding box`).not.toBeNull();
@@ -90,8 +100,8 @@ test.describe('Task 1 — Desktop toolbar portal visibility', () => {
       }
 
       // Done closes the editor
-      await page.getByTestId('toolbar-done').click();
-      await expect(page.getByTestId('rich-text-editor-container')).not.toBeVisible({ timeout: 3000 });
+      await toolbar.getByTestId('toolbar-done').click();
+      await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
     });
   }
 });
@@ -100,11 +110,10 @@ test.describe('Task 1 — Editor close paths preserve edits', () => {
   test('Close on workspace click — text is kept', async ({ page }) => {
     test.setTimeout(45000);
     await bootEditor(page, 1280, 800);
-    await page.getByTestId('element-hit-title').first().dblclick({ force: true });
-    await expect(page.getByTestId('rich-text-editor-container')).toBeVisible({ timeout: 5000 });
+    await openEditor(page, 'title');
 
     // Type something
-    await page.getByTestId('rich-text-contenteditable').click();
+    await inlineTitleInput(page).click();
     await page.keyboard.press('ControlOrMeta+a');
     await page.keyboard.type('EDITED_TEXT_WORKSPACE');
 
@@ -117,31 +126,46 @@ test.describe('Task 1 — Editor close paths preserve edits', () => {
     }
 
     // Editor should be gone
-    await expect(page.getByTestId('rich-text-editor-container')).not.toBeVisible({ timeout: 3000 });
+    await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
+    await expect(renderedTitle(page)).toContainText('EDITED_TEXT_WORKSPACE');
   });
 
   test('Close on Escape — text is kept', async ({ page }) => {
     test.setTimeout(45000);
     await bootEditor(page, 1280, 800);
-    await page.getByTestId('element-hit-title').first().dblclick({ force: true });
-    await expect(page.getByTestId('rich-text-editor-container')).toBeVisible({ timeout: 5000 });
+    await openEditor(page, 'title');
 
-    await page.getByTestId('rich-text-contenteditable').click();
+    await inlineTitleInput(page).click();
     await page.keyboard.press('ControlOrMeta+a');
     await page.keyboard.type('EDITED_TEXT_ESCAPE');
 
     await page.keyboard.press('Escape');
-    await expect(page.getByTestId('rich-text-editor-container')).not.toBeVisible({ timeout: 3000 });
+    await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
+    await expect(renderedTitle(page)).toContainText('EDITED_TEXT_ESCAPE');
   });
 
   test('Close on Done button — editor disappears', async ({ page }) => {
     test.setTimeout(45000);
     await bootEditor(page, 1280, 800);
-    await page.getByTestId('element-hit-title').first().dblclick({ force: true });
-    await expect(page.getByTestId('rich-text-editor-container')).toBeVisible({ timeout: 5000 });
+    await openEditor(page, 'title');
 
     await page.getByTestId('toolbar-done').click();
-    await expect(page.getByTestId('rich-text-editor-container')).not.toBeVisible({ timeout: 3000 });
+    await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
+  });
+
+  test('Close on right-side panel click — text is kept', async ({ page }) => {
+    test.setTimeout(45000);
+    await bootEditor(page, 1280, 800);
+    await openEditor(page, 'title');
+    await inlineTitleInput(page).click();
+    await page.keyboard.press('ControlOrMeta+a');
+    await page.keyboard.type('EDITED_TEXT_PANEL');
+
+    const inspector = page.getByTestId('inspector');
+    await expect(inspector).toBeVisible();
+    await inspector.click();
+    await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
+    await expect(renderedTitle(page)).toContainText('EDITED_TEXT_PANEL');
   });
 });
 
@@ -165,7 +189,7 @@ test.describe('Task 1 — Touch layout: fixed bottom bar', () => {
     if (await titleHit.count() === 0) test.skip();
     await titleHit.dblclick({ force: true });
 
-    const toolbar = page.getByTestId('rich-text-floating-toolbar');
+    const toolbar = page.locator('[data-rich-text-toolbar="true"]');
     await expect(toolbar).toBeVisible({ timeout: 5000 });
 
     // Verify fixed positioning at bottom (touch layout)
@@ -179,6 +203,6 @@ test.describe('Task 1 — Touch layout: fixed bottom bar', () => {
 
     // Escape closes
     await page.keyboard.press('Escape');
-    await expect(page.getByTestId('rich-text-editor-container')).not.toBeVisible({ timeout: 3000 });
+    await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
   });
 });

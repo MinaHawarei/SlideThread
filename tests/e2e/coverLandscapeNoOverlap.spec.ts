@@ -53,15 +53,21 @@ async function createLandscapeCover(page: Page, templateId: string, lang: 'en' |
   await page.getByTestId('wizard-next-btn').click();
   // Choose carousel or any type
   const carouselBtn = page.getByTestId('type-carousel');
-  if (await carouselBtn.count() > 0) await carouselBtn.click();
+  await expect(carouselBtn).toBeVisible();
+  await carouselBtn.click();
   await page.getByTestId('wizard-next-btn').click();
   // Pick landscape format (16:9 / r_16_9)
   const fmt169 = page.getByTestId('format-r_16_9');
-  if (await fmt169.count() > 0) await fmt169.click();
+  await expect(fmt169).toBeVisible();
+  await fmt169.click();
+  const landscapeOrientation = page.getByTestId('orientation-landscape');
+  await expect(landscapeOrientation).toBeVisible();
+  await landscapeOrientation.click();
   await page.getByTestId('wizard-next-btn').click();
   // Pick template
   const tmplBtn = page.getByTestId(`template-${templateId}`);
-  if (await tmplBtn.count() > 0) await tmplBtn.click();
+  await expect(tmplBtn).toBeVisible();
+  await tmplBtn.click();
   await page.getByTestId('wizard-create-btn').click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 15000 });
 }
@@ -74,42 +80,43 @@ test.describe('Task 2 — 16:9 cover: title/subtitle does not overlap the side c
         await page.setViewportSize({ width: 1440, height: 900 });
         await createLandscapeCover(page, template, 'en');
 
+        const title = titleKind === 'long' ? LONG_TITLE : SHORT_TITLE;
+        const titleHit = page.getByTestId('element-hit-title').first();
+        await titleHit.dblclick({ force: true });
+        const inlineEditor = titleHit.getByTestId('rich-text-editor-container');
+        await expect(inlineEditor).toBeVisible();
+        const editor = inlineEditor.getByTestId('rich-text-contenteditable');
+        await editor.click();
+        await page.keyboard.press('ControlOrMeta+a');
+        await page.keyboard.type(title);
+        await page.keyboard.press('Escape');
+        await expect(inlineEditor).not.toBeVisible();
+
         // The first slide is the cover; check geometry in-canvas.
         // We look for the slide-card and slide-title-h1 elements within the slide canvas.
-        const slideCanvas = page.locator('.slide-canvas').first();
+        const slideCanvas = page.getByTestId('workspace-stage').locator('.slide-canvas');
         await expect(slideCanvas).toBeVisible({ timeout: 10000 });
 
         const titleEl = slideCanvas.locator('.slide-title-h1').first();
         const subEl = slideCanvas.locator('.slide-sub').first();
         const cardEl = slideCanvas.locator('.slide-card').first();
-
-        // These elements may not all be present — only test if they exist.
-        const hasTitle = (await titleEl.count()) > 0;
-        const hasSub = (await subEl.count()) > 0;
-        const hasCard = (await cardEl.count()) > 0;
-
-        if (!hasCard) {
-          // No card in this template/aspect — nothing to test, pass.
-          return;
-        }
+        await expect(titleEl).toBeVisible();
+        await expect(titleEl).toHaveText(title);
+        await expect(subEl).toBeVisible();
+        await expect(cardEl).toBeVisible();
 
         const cardBox = await cardEl.boundingBox();
 
-        if (hasTitle) {
-          const titleBox = await titleEl.boundingBox();
-          expect(
-            boxesOverlap(titleBox, cardBox),
-            `title overlaps card in template=${template} title=${titleKind}`,
-          ).toBe(false);
-        }
-
-        if (hasSub) {
-          const subBox = await subEl.boundingBox();
-          expect(
-            boxesOverlap(subBox, cardBox),
-            `subtitle overlaps card in template=${template} title=${titleKind}`,
-          ).toBe(false);
-        }
+        const titleBox = await titleEl.boundingBox();
+        expect(
+          boxesOverlap(titleBox, cardBox),
+          `title overlaps card in template=${template} title=${titleKind}`,
+        ).toBe(false);
+        const subBox = await subEl.boundingBox();
+        expect(
+          boxesOverlap(subBox, cardBox),
+          `subtitle overlaps card in template=${template} title=${titleKind}`,
+        ).toBe(false);
       });
     }
   }

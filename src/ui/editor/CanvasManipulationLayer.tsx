@@ -115,16 +115,10 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     const handlePointerDownWhileEditing = (event: PointerEvent) => {
       const target = event.target as HTMLElement | null;
       if (!target) return;
-      // Stay open if the click is on the editor container, any element-hit, or the portal toolbar.
+      // Keep the editable text and floating toolbar active; clicks elsewhere close it.
       if (
-        target.closest('[data-testid="rich-text-editor-container"]') ||
         target.closest('[data-rich-text-toolbar="true"]') ||
-        target.closest('[data-testid^="element-hit-"]') ||
-        target.closest('[data-testid="inspector"]') ||
-        target.closest('[data-testid="element-properties-panel"]') ||
-        target.closest('[data-testid="layers-panel"]') ||
-        target.closest('[data-testid="mobile-bottom-tabs"]') ||
-        target.closest('[data-testid="mobile-bottom-sheet"]')
+        target.closest('[data-testid^="element-hit-"] [data-testid="rich-text-contenteditable"]')
       ) {
         return;
       }
