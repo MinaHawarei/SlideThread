@@ -29,8 +29,8 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({ className = '', onSele
 
   const elements = useMemo(() => {
     if (!slide || !variant) return [];
-    return resolveSlideElements(slide, variant, aspect);
-  }, [slide, variant, aspect]);
+    return resolveSlideElements(slide, variant, aspect, project.templateSnapshot?.composition[slide.type]?.[aspect]?.hiddenSlots);
+  }, [slide, variant, aspect, project.templateSnapshot]);
 
   const setLayerState = (
     element: ResolvedElement,

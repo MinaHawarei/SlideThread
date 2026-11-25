@@ -427,6 +427,11 @@
             "$ref": "#/$defs/frame"
           }
         },
+        "hiddenSlots": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["tag", "title", "sub", "rule", "body", "media", "counter", "signature", "code", "value", "left", "right", "source"] }
+        },
         "elements": {
           "type": "array",
           "items": {

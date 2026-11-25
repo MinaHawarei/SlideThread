@@ -215,6 +215,7 @@ const TemplateSlotFrameSchema = z.object({
 }).strict();
 const TemplateAspectCompositionSchema = z.object({
   slots: z.record(z.string(), TemplateSlotFrameSchema).optional(),
+  hiddenSlots: z.array(z.enum(['tag', 'title', 'sub', 'rule', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source'])).optional(),
   elements: z.array(ExtraElementSchema).optional(),
 }).strict();
 export const TemplateProjectSnapshotSchema = z.object({

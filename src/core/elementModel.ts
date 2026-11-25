@@ -45,6 +45,8 @@ export function mergeTemplateSlotFrames(
 export const SLOT_SELECTORS: Record<string, string> = {
   tag: '.slide-tag',
   title: '.slide-title-h1, .slide-title-h2',
+  sub: '.slide-sub',
+  rule: '.slide-mono-line',
   body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',
   media: '.slide-media-element, .slide-bg-media, .cta-avatar-ring, .media-placeholder',
   counter: '.sig-counter-badge',
@@ -166,10 +168,10 @@ function resolveFrame(frame: LayoutFrame, override?: ElementOverride, order = 0)
 }
 
 /** Resolve template slots and user extras into one stable, bottom-to-top layer list. */
-export function resolveSlideElements(slide: Slide, variant: LayoutVariant, aspect: AspectClass): ResolvedElement[] {
+export function resolveSlideElements(slide: Slide, variant: LayoutVariant, aspect: AspectClass, hiddenSlots: readonly string[] = []): ResolvedElement[] {
   const overrides = slide.overrides?.[aspect] ?? {};
   const boundSlots = new Set((slide.extras ?? []).flatMap((extra) => extra.binding === 'tag' ? ['tag'] : extra.binding === 'title' ? ['title'] : extra.binding === 'sub' ? ['body'] : []));
-  const slots = variant.elements.filter((frame) => !boundSlots.has(frame.id)).map((frame, index) => resolveFrame(frame, overrides[frame.id], index));
+  const slots = variant.elements.filter((frame) => !boundSlots.has(frame.id) && !hiddenSlots.includes(frame.id)).map((frame, index) => resolveFrame(frame, overrides[frame.id], index));
   const extras: ResolvedElement[] = (slide.extras ?? []).map((extra) => ({
     id: extra.id,
     kind: extra.kind,

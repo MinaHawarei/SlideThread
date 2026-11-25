@@ -8,6 +8,7 @@ export interface RichTextRendererProps {
   style?: React.CSSProperties;
   dir?: 'ltr' | 'rtl' | 'auto';
   inline?: boolean;
+  inheritBlockTypography?: boolean;
 }
 
 export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
@@ -16,6 +17,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
   style = {},
   dir = 'auto',
   inline = false,
+  inheritBlockTypography = false,
 }) => {
   if (!content) return null;
   const doc: RichText = typeof content === 'string' ? parsePlainTextToRichText(content) : content;
@@ -101,6 +103,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
                 margin: 0,
                 padding: 0,
                 textAlign: seg.block.align,
+                ...(inheritBlockTypography ? { fontSize: 'inherit', lineHeight: 'inherit' } : {}),
               }}
               dir={seg.block.dir || 'auto'}
             >

@@ -77,6 +77,7 @@ describe('browser template ZIP import', () => {
       composition: {
         cover: {
           portrait: {
+            hiddenSlots: ['tag', 'title', 'sub', 'rule', 'body'],
             slots: { title: { blockStart: 0.2, inlineStart: 0.1, inlineSize: 0.8, blockSize: 0.2, align: 'start' } },
             elements: [
               { id: 'custom-tag', kind: 'text', binding: 'tag', x: 0.1, y: 0.65, w: 0.2, h: 0.06, rotation: 0, z: 4, locked: false, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'ARCHITECTURE' }] }] } },
@@ -113,6 +114,7 @@ describe('browser template ZIP import', () => {
     expect(snapshot.composition.cover?.portrait?.elements?.[1]?.text?.blocks[0]?.runs[0]?.text).toBe('npm run build');
     const projectRoundTrip = await exportProjectToJSON(projectA);
     const restored = await importProjectFromJSON(projectRoundTrip.json);
+    expect(restored.templateSnapshot?.composition.cover?.portrait?.hiddenSlots).toEqual(['tag', 'title', 'sub', 'rule', 'body']);
     expect(restored.templateSnapshot?.assets['assets/mark.svg']).toMatch(/^data:image\/svg\+xml;base64,/);
     expect(restored.slides[0]?.extras?.find((element) => element.id === 'custom-chip')?.text?.blocks[0]?.runs[0]?.text).toBe('Changed in project A');
 
@@ -136,8 +138,14 @@ describe('browser template ZIP import', () => {
       fields: plainTextFieldsToRichText({ title: 'Project copy' }),
       extras: composition?.elements ?? [],
     };
-    render(<SlideRenderer slide={slide} palette={generatePalette('#35D0E6', 'dark')} aspectClass="portrait" templateId={id} templateSnapshot={snapshot} />);
+    const rendered = render(<SlideRenderer slide={slide} palette={generatePalette('#35D0E6', 'dark')} aspectClass="portrait" templateId={id} templateSnapshot={snapshot} />);
     expect(screen.getByTestId('extra-element-custom-image')).toBeInTheDocument();
+    expect(document.querySelector('.slide-title-h1')).toBeNull();
+    const legacySnapshot = structuredClone(snapshot);
+    delete legacySnapshot.composition.cover!.portrait!.hiddenSlots;
+    rendered.rerender(<SlideRenderer slide={slide} palette={generatePalette('#35D0E6', 'dark')} aspectClass="portrait" templateId={id} templateSnapshot={legacySnapshot} />);
+    // Removing this optional field restores the original legacy slot with its stored text.
+    expect(document.querySelector('.slide-title-h1')).toBeInTheDocument();
   });
 
   it('allows a missing preview and rejects a shipped ID collision without storing anything', async () => {

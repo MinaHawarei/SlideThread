@@ -31,6 +31,7 @@ export interface SlideProps {
   templateId?: TemplateId;
   themeMode?: ThemeMode;
   dimensions?: { width: number; height: number };
+  hiddenSlots?: readonly string[];
 }
 
 export type SchemaSlide = Slide;

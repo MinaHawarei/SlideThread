@@ -40,6 +40,7 @@ const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }>
   portrait: { width: 1080, height: 1350 },
   tall: { width: 1080, height: 1920 },
 };
+const NO_HIDDEN_SLOTS: readonly string[] = [];
 
 export interface SlideRendererProps extends Omit<SlideProps, 'slide'> {
   slide: Slide;
@@ -86,9 +87,25 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
 
   const effectiveSnapshot = templateSnapshot ?? resolvedSnapshot;
   const template = templateOverride ?? (effectiveSnapshot ? templateDefinitionFromSnapshot(effectiveSnapshot) : undefined);
+  const hiddenSlots = template?.composition?.[slide.type]?.[aspectClass]?.hiddenSlots ?? NO_HIDDEN_SLOTS;
   const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
   const canvasRef = useRef<HTMLDivElement>(null);
   const overrides = slide.overrides?.[aspectClass];
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const managed: Array<{ node: HTMLElement; display: string }> = [];
+    for (const slotId of hiddenSlots) {
+      const selector = SLOT_SELECTORS[slotId];
+      if (!selector) continue;
+      for (const node of canvas.querySelectorAll<HTMLElement>(selector)) {
+        managed.push({ node, display: node.style.display });
+        node.style.display = 'none';
+      }
+    }
+    return () => managed.forEach(({ node, display }) => { node.style.display = display; });
+  }, [hiddenSlots, template, slide.type, aspectClass]);
 
   useEffect(() => {
     const required: Array<{ id: FontId; weight: number; italic: boolean; selector?: string }> = [];
@@ -432,6 +449,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
 
   const renderProps: SlideProps = {
     ...props,
+    hiddenSlots,
     signatureConfig: effectiveSignatureConfig,
     slide: {
       ...slide,

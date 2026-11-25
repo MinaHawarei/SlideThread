@@ -5,6 +5,7 @@ import sharp from 'sharp';
 
 const id = `composition-fixture-${Date.now().toString(36)}`;
 const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" fill="#ff6b35"/><circle cx="20" cy="20" r="9" fill="#ffffff"/></svg>';
+const hiddenCoverSlots = ['tag', 'title', 'sub', 'rule', 'body'];
 
 async function fixtureZip(): Promise<Buffer> {
   const zip = new JSZip();
@@ -13,13 +14,16 @@ async function fixtureZip(): Promise<Buffer> {
     categories: ['general'], tags: ['fixture'], colorFlexible: true,
     theme: { fonts: { display: 'ibm-plex-sans', body: 'ibm-plex-sans-arabic', mono: 'jetbrains-mono' } },
     layouts: { cover: 'cover-centered' }, assets: { mark: 'assets/mark.svg' },
-    composition: { cover: { portrait: { elements: [
+    composition: { cover: {
+      portrait: { hiddenSlots: hiddenCoverSlots, elements: [
       { id: 'fixture-tag', kind: 'text', binding: 'tag', x: 0.08, y: 0.08, w: 0.45, h: 0.06, rotation: 0, z: 2, locked: false, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'EDITABLE TAG' }] }] } },
       { id: 'fixture-chip', kind: 'text', x: 0.08, y: 0.65, w: 0.40, h: 0.08, rotation: 0, z: 3, locked: false, backgroundColor: '#123456', cornerRadius: 12, textStyle: { font: 'ibm-plex-serif', size: 22, weight: 600, italic: true, color: '#ffffff' }, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'npm run build' }] }] } },
-      { id: 'fixture-text', kind: 'text', x: 0.08, y: 0.82, w: 0.84, h: 0.13, rotation: 0, z: 4, locked: false, textStyle: { font: 'ibm-plex-sans-arabic', size: 20, color: '#ff00aa' }, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'مرحبا mixed Arabic and English — this is a long composition text for wrapping and RTL verification.' }] }] } },
+      { id: 'fixture-text', kind: 'text', x: 0.08, y: 0.82, w: 0.84, h: 0.13, rotation: 0, z: 4, locked: false, textStyle: { font: 'ibm-plex-sans-arabic', size: 20, lineHeight: 1.2, color: '#ff00aa' }, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'مرحبا mixed Arabic and English — this is a long composition text for wrapping and RTL verification.' }] }, { type: 'p', runs: [{ text: 'Second paragraph must inherit the element size and line height.' }] }] } },
       { id: 'fixture-image', kind: 'image', x: 0.76, y: 0.65, w: 0.16, h: 0.16, rotation: 0, z: 5, locked: false, assetId: 'mark', filters: { grayscale: 0 } },
       { id: 'fixture-shape', kind: 'shape', shape: 'rectangle', x: 0.54, y: 0.65, w: 0.16, h: 0.08, rotation: 0, z: 6, locked: false, fill: '#ff6b35', cornerRadius: 8, strokeColor: '#ffffff', strokeWidth: 2 },
-    ] } } },
+      ] },
+      square: { hiddenSlots: hiddenCoverSlots }, landscape: { hiddenSlots: hiddenCoverSlots }, tall: { hiddenSlots: hiddenCoverSlots },
+    } },
   };
   zip.file(`${id}/template.json`, JSON.stringify(manifest));
   zip.file(`${id}/assets/mark.svg`, svg);
@@ -35,18 +39,24 @@ test('ZIP composition creates isolated editable native layers that persist after
   await expect(page.getByTestId('template-import-notice')).toBeVisible({ timeout: 30000 });
   await page.getByTestId(`use-user-template-${id}`).click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible();
+  for (const selector of ['.slide-tag', '.slide-title-h1', '.slide-sub', '.slide-mono-line']) await expect(page.getByTestId('main-canvas').locator(selector)).toHaveCount(0);
   await page.getByTestId('tab-layers').click();
 
   for (const elementId of ['fixture-tag', 'fixture-chip', 'fixture-text', 'fixture-image', 'fixture-shape']) {
     await expect(page.getByTestId(`layer-row-${elementId}`)).toBeVisible();
   }
   await expect(page.getByTestId('layer-row-tag')).toHaveCount(0); // semantic tag field is represented by the bound native text layer
+  await expect(page.getByTestId('layer-row-title')).toHaveCount(0);
+  await expect(page.getByTestId('layer-row-body')).toHaveCount(0);
 
   await page.getByTestId('layer-row-fixture-tag').getByRole('button').first().click();
   const tagEditor = page.getByTestId('rich-text-contenteditable');
   await expect(tagEditor).toBeVisible();
   await tagEditor.fill('UPDATED TAG');
   await page.getByTestId('tab-layers').click();
+  const fixtureText = page.getByTestId('main-canvas').getByTestId('text-extra-fixture-text');
+  const paragraphStyles = await fixtureText.locator('.rich-text-paragraph').evaluateAll((nodes) => nodes.map((node) => ({ size: getComputedStyle(node).fontSize, lineHeight: getComputedStyle(node).lineHeight })));
+  expect(paragraphStyles).toEqual([{ size: '20px', lineHeight: '24px' }, { size: '20px', lineHeight: '24px' }]);
   await page.getByTestId('layer-row-fixture-chip').getByRole('button').first().click();
   await page.getByTestId('sidebar-typography-font').selectOption('ibm-plex-serif');
   await page.getByTestId('sidebar-typography-weight').selectOption('700');

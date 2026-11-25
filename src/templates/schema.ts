@@ -19,6 +19,7 @@ const SlotFrameSchema = z.object({
 }).strict();
 const CompositionAspectSchema = z.object({
   slots: z.partialRecord(z.enum(['title', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source']), SlotFrameSchema).optional(),
+  hiddenSlots: z.array(z.enum(['tag', 'title', 'sub', 'rule', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source'])).optional(),
   elements: z.array(ExtraElementSchema).optional(),
 }).strict();
 
@@ -122,6 +123,7 @@ export function resolveTemplate(id: string, templates: readonly unknown[]): Vali
           ...prior,
           ...definition,
           slots: { ...prior?.slots, ...definition?.slots },
+          hiddenSlots: definition?.hiddenSlots ?? prior?.hiddenSlots,
           elements: definition?.elements ?? prior?.elements,
         };
       }

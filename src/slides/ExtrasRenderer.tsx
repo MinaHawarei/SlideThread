@@ -162,7 +162,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             alignItems: 'center',
           }}
         >
-          {extra.text ? <RichTextRenderer content={extra.text} inline={true} /> : null}
+          {extra.text ? <RichTextRenderer content={extra.text} inline={true} inheritBlockTypography /> : null}
         </div>
       );
     }

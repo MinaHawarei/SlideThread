@@ -104,6 +104,7 @@ export async function loadTemplateProjectSnapshot(templateId: string, primaryCol
         slots: Object.fromEntries(runtime.layoutVariant.elements.map((frame) => [frame.id, {
           blockStart: frame.blockStart, inlineStart: frame.inlineStart, inlineSize: frame.inlineSize, blockSize: frame.blockSize, align: frame.align,
         }])),
+        hiddenSlots: runtime.composition?.hiddenSlots,
         elements,
       };
     }

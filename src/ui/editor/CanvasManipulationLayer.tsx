@@ -35,7 +35,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const project = useProjectStore((state) => state.project);
   const layout = getLayoutArchetype(`${slide.type}-centered`);
   const variant = mergeTemplateSlotFrames(layout?.variants[aspect], project.templateSnapshot?.composition[slide.type]?.[aspect]?.slots);
-  const elements = useMemo(() => variant ? resolveSlideElements(slide, variant, aspect) : [], [slide, variant, aspect]);
+  const hiddenSlots = project.templateSnapshot?.composition[slide.type]?.[aspect]?.hiddenSlots;
+  const elements = useMemo(() => variant ? resolveSlideElements(slide, variant, aspect, hiddenSlots) : [], [slide, variant, aspect, hiddenSlots]);
   const selectedId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);
   const updateSlotOverride = useProjectStore((state) => state.updateSlotOverride);

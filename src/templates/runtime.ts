@@ -35,7 +35,7 @@ export interface ResolvedTemplateRuntime {
   layout: LayoutArchetype;
   layoutVariant: LayoutArchetype['variants'][AspectClass];
   layoutFallback: boolean;
-  composition?: { slots?: Record<string, { blockStart: number; inlineStart: number; inlineSize: number; blockSize: number; align: 'start' | 'center' | 'end' }>; elements?: ExtraElement[] };
+  composition?: { slots?: Record<string, { blockStart: number; inlineStart: number; inlineSize: number; blockSize: number; align: 'start' | 'center' | 'end' }>; hiddenSlots?: Array<'tag'|'title'|'sub'|'rule'|'body'|'media'|'counter'|'signature'|'code'|'value'|'left'|'right'|'source'>; elements?: ExtraElement[] };
   decoration: SvgFragment;
   customCss?: string;
 }
