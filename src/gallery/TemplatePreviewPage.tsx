@@ -13,6 +13,7 @@ import { LogoMark } from '../ui/brand/LogoMark';
 import { MobileNavDrawer } from '../ui/common/MobileNavDrawer';
 import { FORMAT_REGISTRY, type FormatId } from '../core/formats';
 import { loadTemplateProjectSnapshot, templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
+import { useUserTemplateLibrary } from '../templates/useUserTemplateLibrary';
 
 const SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -40,9 +41,10 @@ export interface TemplatePreviewPageProps {
 }
 
 export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavigate }) => {
-  const { t, dir } = useT();
+  const { t, dir, locale } = useT();
   const brandSettings = useSettingsStore((state) => state.settings);
   const saveProject = useRecentStore((state) => state.saveProject);
+  const { templates: importedTemplates } = useUserTemplateLibrary();
 
   const getInitialTemplateId = (): string => {
     if (typeof window === 'undefined') return 'tech-mesh';
@@ -77,13 +79,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
   }, []);
 
   const allTemplates = getAllTemplates();
-  const isLegacyTemplate = false;
   useEffect(() => {
-    if (isLegacyTemplate) {
-      setPackageSnapshot(undefined);
-      setPackageLoadError(false);
-      return;
-    }
     let cancelled = false;
     setPackageSnapshot(undefined);
     setPackageLoadError(false);
@@ -91,8 +87,8 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
       .then((snapshot) => { if (!cancelled) setPackageSnapshot(snapshot); })
       .catch(() => { if (!cancelled) setPackageLoadError(true); });
     return () => { cancelled = true; };
-  }, [templateId, isLegacyTemplate, brandSettings.defaultPrimaryColor]);
-  const isKnownTemplate = isLegacyTemplate || packageSnapshot?.id === templateId;
+  }, [templateId, brandSettings.defaultPrimaryColor]);
+  const isKnownTemplate = packageSnapshot?.id === templateId;
 
   const navigateTo = (path: string) => {
     if (onNavigate) {
@@ -181,6 +177,9 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
   }
 
   const selectedTemplate = packageSnapshot ? templateDefinitionFromSnapshot(packageSnapshot) : undefined;
+  const selectedTemplateName = allTemplates.find((template) => template.id === templateId)
+    ? t(selectedTemplate!.nameKey as Parameters<typeof t>[0])
+    : importedTemplates.find((template) => template.id === templateId)?.manifest.name[locale] ?? packageSnapshot?.name?.[locale] ?? templateId;
   const effectivePrimaryColor =
     brandSettings.defaultPrimaryColor || (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
   const palette = packageSnapshot
@@ -240,7 +239,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
 
             <div className="min-w-0">
               <h1 className="text-base sm:text-lg font-bold font-serif text-stone-900 dark:text-white flex items-center gap-2 truncate">
-                <span>{t(selectedTemplate!.nameKey as Parameters<typeof t>[0])}</span>
+                <span>{selectedTemplateName}</span>
                 <span className="text-xs font-mono font-normal text-stone-400">({selectedTemplate!.id})</span>
               </h1>
             </div>
@@ -283,7 +282,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
                       {t(tmpl.nameKey as Parameters<typeof t>[0])} ({tmpl.id})
                     </option>
                   ))}
-                  {packageSnapshot && !isLegacyTemplate && <option value={templateId}>{templateId} (package)</option>}
+                  {importedTemplates.map((tmpl) => <option key={tmpl.id} value={tmpl.id}>{tmpl.manifest.name[locale]} ({tmpl.id})</option>)}
                 </select>
               </label>
 

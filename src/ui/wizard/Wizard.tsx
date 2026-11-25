@@ -17,6 +17,7 @@ import {
 import { getAllTemplates } from '../../templates';
 import { generatePalette } from '../../core/palette';
 import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
+import { useUserTemplateLibrary } from '../../templates/useUserTemplateLibrary';
 import { SlideRenderer } from '../../slides/SlideRenderer';
 import { Footer } from '../common/Footer';
 import { APP_NAME } from '../../config/site';
@@ -51,6 +52,7 @@ export const Wizard: React.FC<WizardProps> = ({
   const settings = useSettingsStore((state) => state.settings);
   const setProject = useProjectStore((state) => state.setProject);
   const saveProject = useRecentStore((state) => state.saveProject);
+  const { templates: importedTemplates } = useUserTemplateLibrary();
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [platform, setPlatform] = useState<PlatformId>(initialPlatform);
@@ -74,6 +76,10 @@ export const Wizard: React.FC<WizardProps> = ({
     const preferred = String(settings.defaultTemplateId || initialTemplateId || 'tech-mesh');
     return getAllTemplates().some((template) => template.id === preferred) ? preferred as TemplateId : 'tech-mesh';
   });
+  React.useEffect(() => {
+    const preferred = String(settings.defaultTemplateId || initialTemplateId || 'tech-mesh');
+    if (importedTemplates.some((template) => template.id === preferred)) setTemplateId(preferred);
+  }, [settings.defaultTemplateId, initialTemplateId, importedTemplates]);
 
   // Platform selection handler with matrix reconciliation
   const handleSelectPlatform = (nextPlatform: PlatformId) => {
@@ -224,7 +230,10 @@ export const Wizard: React.FC<WizardProps> = ({
   const allowedFormats = getAllowedFormats(platform, contentType);
 
   // All 3 templates
-  const allTemplates = getAllTemplates();
+  const allTemplates = [
+    ...getAllTemplates().map((template) => ({ id: template.id, name: undefined as string | undefined, description: undefined as string | undefined })),
+    ...importedTemplates.map((template) => ({ id: template.id, name: template.manifest.name[locale], description: template.manifest.description?.[locale] })),
+  ];
 
   // Create button label
   const createButtonLabel =
@@ -540,14 +549,14 @@ export const Wizard: React.FC<WizardProps> = ({
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-base text-slate-900 dark:text-white capitalize">
-                            {t(templateNameKey as Parameters<typeof t>[0])}
+                            {tmpl.name ?? t(templateNameKey as Parameters<typeof t>[0])}
                           </span>
                           <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {tmpl.id}
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {t(templateDescKey as Parameters<typeof t>[0])}
+                          {tmpl.description ?? t(templateDescKey as Parameters<typeof t>[0])}
                         </p>
                       </div>
                       {isSelected && (

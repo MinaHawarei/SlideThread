@@ -1,10 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { ThemeMode } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { useT } from '../i18n';
 import { useSettingsStore } from '../store/settingsStore';
 import { createProjectFromTemplate } from '../store/projectStore';
 import { useRecentStore } from '../store/recentStore';
+import { deleteUserTemplatePackage } from '../templates/userLibrary';
+import { useUserTemplateLibrary } from '../templates/useUserTemplateLibrary';
+import { importTemplateZip } from '../templates/importZip';
+import { invalidateTemplatePackage } from '../templates/starters';
 import { Footer } from '../ui/common/Footer';
 import { LogoMark } from '../ui/brand/LogoMark';
 import { MobileNavDrawer } from '../ui/common/MobileNavDrawer';
@@ -50,6 +54,50 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   const [previewWithBrand, setPreviewWithBrand] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [simulatedState, setSimulatedState] = useState<'templates' | 'empty' | 'loading' | 'error'>('templates');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { templates: userTemplates, loading: userTemplatesLoading, error: userLibraryError } = useUserTemplateLibrary();
+  const [packageError, setPackageError] = useState<string>();
+  const [packageNotice, setPackageNotice] = useState<string>();
+  const [packageAction, setPackageAction] = useState(false);
+  const [userPreviewUrls, setUserPreviewUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const urls: Record<string, string> = {};
+    if (typeof URL.createObjectURL === 'function') {
+      for (const template of userTemplates) if (template.preview) urls[template.id] = URL.createObjectURL(template.preview);
+    }
+    setUserPreviewUrls(urls);
+    return () => Object.values(urls).forEach((url) => URL.revokeObjectURL(url));
+  }, [userTemplates]);
+
+  const handleImportPackage = async (file?: File) => {
+    if (!file) return;
+    setPackageAction(true);
+    setPackageError(undefined);
+    setPackageNotice(undefined);
+    try {
+      const manifest = await importTemplateZip(file);
+      setPackageNotice(`“${manifest.name[locale]}” was added to Your templates.`);
+    } catch (reason) {
+      setPackageError(reason instanceof Error ? reason.message : String(reason));
+    } finally {
+      setPackageAction(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleDeletePackage = async (id: string) => {
+    const template = userTemplates.find((item) => item.id === id);
+    if (!template || !window.confirm(`Delete “${template.manifest.name[locale]}” from your template library? Existing projects keep their own snapshot.`)) return;
+    setPackageError(undefined);
+    try {
+      await deleteUserTemplatePackage(id);
+      invalidateTemplatePackage(id);
+      setPackageNotice(`“${template.manifest.name[locale]}” was deleted from Your templates.`);
+    } catch (reason) {
+      setPackageError(reason instanceof Error ? reason.message : String(reason));
+    }
+  };
 
   useEffect(() => {
     const syncFavorites = (event: StorageEvent) => {
@@ -96,15 +144,19 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   };
 
   const handleUseTemplate = async (tmplId: string) => {
-    const newProj = await createProjectFromTemplate({
-      title: 'Untitled Presentation',
-      templateId: tmplId,
-      primaryColor: effectivePrimaryColor,
-      theme,
-      textDir: locale === 'ar' ? 'rtl' : 'ltr',
-    });
-    saveProject(newProj);
-    navigateTo('/editor');
+    try {
+      const newProj = await createProjectFromTemplate({
+        title: 'Untitled Presentation',
+        templateId: tmplId,
+        primaryColor: effectivePrimaryColor,
+        theme,
+        textDir: locale === 'ar' ? 'rtl' : 'ltr',
+      });
+      saveProject(newProj);
+      navigateTo('/editor');
+    } catch (reason) {
+      setPackageError(reason instanceof Error ? reason.message : String(reason));
+    }
   };
 
   const handlePreviewTemplate = (tmplId: string) => {
@@ -184,6 +236,10 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <input ref={fileInputRef} type="file" accept=".zip,application/zip" className="hidden" data-testid="template-zip-input" onChange={(event) => void handleImportPackage(event.currentTarget.files?.[0])} />
+            <button type="button" data-testid="import-template-zip" disabled={packageAction} onClick={() => fileInputRef.current?.click()} className="px-4 py-2 rounded-xl text-xs font-semibold border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-amber-500 disabled:opacity-50">
+              {packageAction ? 'Validating ZIP…' : 'Import template ZIP'}
+            </button>
             <button
               type="button"
               data-testid="preview-brand-toggle"
@@ -201,6 +257,29 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
               )}
             </button>
           </div>
+        </section>
+
+        {(packageError || userLibraryError) && <p role="alert" data-testid="template-import-error" className="rounded-xl border border-red-300 bg-red-50 dark:bg-red-950/30 dark:border-red-900 p-3 text-sm text-red-800 dark:text-red-200">{packageError ?? userLibraryError}</p>}
+        {packageNotice && <p role="status" data-testid="template-import-notice" className="rounded-xl border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-900 p-3 text-sm text-emerald-800 dark:text-emerald-200">{packageNotice}</p>}
+        <section aria-label="Your imported templates" data-testid="user-template-library" className="space-y-4">
+          <div className="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3">
+            <div><h2 className="text-xl font-serif font-bold">Your templates</h2><p className="text-xs text-stone-500 dark:text-stone-400">Private to this browser</p></div>
+            <span className="text-xs font-mono text-stone-500">{userTemplates.length}</span>
+          </div>
+          {userTemplatesLoading ? <p className="text-sm text-stone-500">Loading your templates…</p> : userTemplates.length === 0 ? <p className="text-sm text-stone-500">Imported packages will appear here, separate from shipped templates.</p> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {userTemplates.map((item) => <article key={item.id} data-testid={`user-template-card-${item.id}`} className="rounded-2xl overflow-hidden border border-violet-200 dark:border-violet-900 bg-white dark:bg-stone-900 flex flex-col">
+              <button type="button" data-testid={`preview-user-template-${item.id}`} onClick={() => handlePreviewTemplate(item.id)} className="aspect-[4/3] w-full bg-stone-100 dark:bg-stone-800 overflow-hidden text-start">
+                {userPreviewUrls[item.id] ? <img src={userPreviewUrls[item.id]} alt={item.manifest.name[locale]} className="w-full h-full object-cover" /> : <span className="h-full grid place-items-center text-sm text-stone-500">No preview included</span>}
+              </button>
+              <div className="p-4 space-y-3 flex-1">
+                <div><h3 className="font-serif font-bold">{item.manifest.name[locale]}</h3><p className="text-xs font-mono text-stone-500">{item.id} · Imported</p><p className="text-xs text-stone-600 dark:text-stone-300 mt-2">{item.manifest.description?.[locale] ?? item.manifest.author.name}</p></div>
+                <div className="flex items-center justify-between border-t border-stone-100 dark:border-stone-800 pt-3">
+                  <button type="button" data-testid={`use-user-template-${item.id}`} onClick={() => void handleUseTemplate(item.id)} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-violet-600 text-white hover:bg-violet-500">Use template</button>
+                  <button type="button" data-testid={`delete-user-template-${item.id}`} onClick={() => void handleDeletePackage(item.id)} className="text-xs text-red-600 hover:text-red-500">Delete</button>
+                </div>
+              </div>
+            </article>)}
+          </div>}
         </section>
 
         {/* Search & Category Filter Chips */}

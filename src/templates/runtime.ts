@@ -150,5 +150,10 @@ export function createTemplateRuntime(loaders: TemplateDataLoaders) {
     };
   };
 
-  return { load, resolve };
+  const invalidate = (id: string) => {
+    loadCache.delete(id);
+    dataCache.delete(id);
+  };
+
+  return { load, resolve, invalidate };
 }

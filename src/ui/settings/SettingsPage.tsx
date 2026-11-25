@@ -7,6 +7,7 @@ import { LogoMark } from '../brand/LogoMark';
 import { MobileNavDrawer } from '../common/MobileNavDrawer';
 import { SocialIcon } from '../../slides/SignatureBar';
 import { getAllTemplates } from '../../templates';
+import { useUserTemplateLibrary } from '../../templates/useUserTemplateLibrary';
 import {
   downloadAllUserData,
   importAllUserData,
@@ -80,7 +81,11 @@ export const SettingsPage: React.FC = () => {
     type: 'success' | 'error';
   } | null>(null);
 
-  const templates = getAllTemplates();
+  const { templates: importedTemplates } = useUserTemplateLibrary();
+  const templates = [
+    ...getAllTemplates().map((template) => ({ id: template.id, nameKey: template.nameKey, name: undefined as string | undefined })),
+    ...importedTemplates.map((template) => ({ id: template.id, nameKey: template.id, name: template.manifest.name[locale] })),
+  ];
   const defaultCounter: CounterConfig = settings.defaultCounter ?? DEFAULT_COUNTER_CONFIG;
   const defaultSignature: SignatureConfig =
     settings.defaultSignature ?? DEFAULT_SIGNATURE_CONFIG;
@@ -405,7 +410,7 @@ export const SettingsPage: React.FC = () => {
               >
                 {templates.map((tmpl) => (
                   <option key={tmpl.id} value={tmpl.id}>
-                    {t(tmpl.nameKey as Parameters<typeof t>[0]) || tmpl.id} ({tmpl.id})
+                    {tmpl.name ?? (t(tmpl.nameKey as Parameters<typeof t>[0]) || tmpl.id)} ({tmpl.id})
                   </option>
                 ))}
               </select>

@@ -4,6 +4,7 @@ import { useProjectStore } from '../../store/projectStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { getAllTemplates } from '../../templates';
 import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
+import { useUserTemplateLibrary } from '../../templates/useUserTemplateLibrary';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import type { TemplateId, ThemeMode, TextDir, Anchor } from '../../core/schema';
 
@@ -19,14 +20,18 @@ const PRESET_COLORS = [
 ];
 
 export const DesignInspector: React.FC = () => {
-  const { t } = useT();
+  const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
   const updateCounterConfig = useProjectStore((state) => state.updateCounterConfig);
   const settings = useSettingsStore((state) => state.settings);
+  const { templates: importedTemplates } = useUserTemplateLibrary();
   const [isChangeFormatOpen, setIsChangeFormatOpen] = useState(false);
 
-  const allTemplates = getAllTemplates();
+  const allTemplates = [
+    ...getAllTemplates().map((template) => ({ id: template.id, nameKey: template.nameKey, name: undefined as string | undefined })),
+    ...importedTemplates.map((template) => ({ id: template.id, nameKey: template.id, name: template.manifest.name[locale] })),
+  ];
   const allowedStyles = project.templateSnapshot?.counter?.styles ?? ['number', 'bar', 'dots'];
   const counter = project.counter ?? {
     show: true,
@@ -81,7 +86,7 @@ export const DesignInspector: React.FC = () => {
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750'
                 }`}
               >
-                {t(nameKey as Parameters<typeof t>[0])}
+                {tmpl.name ?? t(nameKey as Parameters<typeof t>[0])}
               </button>
             );
           })}

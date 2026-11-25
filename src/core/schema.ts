@@ -159,6 +159,7 @@ const TemplateAspectCompositionSchema = z.object({
 export const TemplateProjectSnapshotSchema = z.object({
   version: z.literal(1),
   id: z.string().min(1),
+  name: z.object({ en: z.string().min(1), ar: z.string().min(1) }).optional(),
   paletteByMode: z.record(ThemeModeSchema, z.record(z.string(), z.string())),
   fonts: z.object({ display: z.string(), body: z.string(), mono: z.string() }).strict(),
   typeScale: z.object({ h1: z.number(), h2: z.number(), body: z.number(), small: z.number(), mono: z.number() }).strict(),

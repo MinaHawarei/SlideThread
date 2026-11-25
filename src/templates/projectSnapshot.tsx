@@ -3,8 +3,9 @@ import { FONT_REGISTRY } from '../fonts/registry';
 import { getTemplate } from './index';
 import type { TemplateDef } from './types';
 import { DECORATION_GENERATORS, generateDecoration, type DecorationId } from './decorations/generators';
-import { starterTemplateRuntime } from './starters';
+import { STARTER_TEMPLATE_IDS, templatePackageRuntime } from './starters';
 import { sanitizeSvg } from './security/sanitizers';
+import { getUserTemplatePackage } from './userLibrary';
 
 const packageSvgSources = import.meta.glob<string>('./starters/*/assets/**/*.svg', { query: '?raw', import: 'default' });
 const packageAssetUrls = import.meta.glob<string>('./starters/*/assets/**/*.{png,webp}', { query: '?inline', import: 'default' });
@@ -19,6 +20,21 @@ function freezeSnapshot<T>(value: T): T {
 }
 
 async function readAssetDataUrl(templateId: string, assetPath: string): Promise<string> {
+  const imported = STARTER_TEMPLATE_IDS.includes(templateId) ? undefined : await getUserTemplatePackage(templateId);
+  if (imported) {
+    const blob = imported.files[assetPath.replace(/^\.\//, '')];
+    if (!blob) throw new Error(`Template ${templateId} declares an unavailable asset: ${assetPath}`);
+    if (blob.type === 'image/svg+xml' || assetPath.toLowerCase().endsWith('.svg')) {
+      const safeSvg = sanitizeSvg(await blob.text());
+      return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(safeSvg)))}`;
+    }
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(reader.error ?? new Error(`Could not encode ${assetPath}`));
+      reader.onload = () => typeof reader.result === 'string' ? resolve(reader.result) : reject(new Error(`Could not encode ${assetPath}`));
+      reader.readAsDataURL(blob);
+    });
+  }
   const key = `./starters/${templateId}/${assetPath.replace(/^\.\//, '')}`;
   const isSvg = assetPath.toLowerCase().endsWith('.svg');
   const loader = isSvg ? packageSvgSources[key] : packageAssetUrls[key];
@@ -42,9 +58,9 @@ async function readAssetDataUrl(templateId: string, assetPath: string): Promise<
 }
 
 export async function loadTemplateProjectSnapshot(templateId: string, primaryColor: string): Promise<TemplateProjectSnapshot> {
-  const template = await starterTemplateRuntime.load(templateId);
+  const template = await templatePackageRuntime.load(templateId);
   const paletteEntries = await Promise.all((['light', 'dark'] as const).map(async (mode) => {
-    const runtime = await starterTemplateRuntime.resolve({
+    const runtime = await templatePackageRuntime.resolve({
       templateId, mode, primaryColor, slideType: 'cover', aspectClass: 'portrait',
       decorationContext: { tileIndex: 0, tileCount: 1, tileWidth: 1080, height: 1350, seed: 7 },
     });
@@ -71,7 +87,7 @@ export async function loadTemplateProjectSnapshot(templateId: string, primaryCol
   for (const slideType of ['cover', 'explain', 'rule', 'code', 'compare', 'stat', 'quote', 'image', 'cta'] as const) {
     const aspects: Partial<Record<AspectClass, NonNullable<TemplateProjectSnapshot['composition'][typeof slideType]>[AspectClass]>> = {};
     for (const aspectClass of ['landscape', 'square', 'portrait', 'tall'] as const) {
-      const runtime = await starterTemplateRuntime.resolve({
+      const runtime = await templatePackageRuntime.resolve({
         templateId, mode: 'light', primaryColor, slideType, aspectClass,
         decorationContext: { tileIndex: 0, tileCount: 1, tileWidth: 1080, height: 1350, seed: 7 },
       });
@@ -101,6 +117,7 @@ export async function loadTemplateProjectSnapshot(templateId: string, primaryCol
   return freezeSnapshot({
     version: 1,
     id: template.id,
+    name: template.name,
     className: template.className,
     paletteByMode,
     fonts: {
@@ -127,7 +144,8 @@ export function templateDefinitionFromSnapshot(sourceSnapshot: TemplateProjectSn
   const cached = templateDefinitionCache.get(sourceSnapshot as object);
   if (cached) return cached;
   const snapshot = TemplateProjectSnapshotSchema.parse(sourceSnapshot);
-  const metadata = getTemplate(snapshot.id);
+  let metadata: TemplateDef | undefined;
+  try { metadata = getTemplate(snapshot.id); } catch { metadata = undefined; }
   const Background: TemplateDef['Background'] = (({ index, count, width, height, tokens }) => {
     const ref = snapshot.decoration;
     const fragments = ref ? generateDecoration(ref.id as DecorationId, {
@@ -152,9 +170,9 @@ export function templateDefinitionFromSnapshot(sourceSnapshot: TemplateProjectSn
   });
   const definition: TemplateDef = {
     id: snapshot.id,
-    className: snapshot.className ?? metadata.className,
-    nameKey: metadata.nameKey,
-    previewUrl: metadata.previewUrl,
+    className: snapshot.className ?? metadata?.className ?? `user-${snapshot.id}`,
+    nameKey: metadata?.nameKey ?? snapshot.name?.en ?? snapshot.id,
+    previewUrl: metadata?.previewUrl ?? '',
     fonts: snapshot.fonts,
     typeScale: snapshot.typeScale,
     radius: snapshot.radius,
