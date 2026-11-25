@@ -1,0 +1,229 @@
+{
+  "phase1Commit": "acc2f66",
+  "capturedAt": "2026-11-25",
+  "source": "App route /preview; TemplatePreviewPage renders SlideRenderer without templateSnapshot for these five IDs, so SlideRenderer resolves getTemplate() from the legacy registry.",
+  "viewport": {
+    "width": 1600,
+    "height": 1000,
+    "deviceScaleFactor": 1
+  },
+  "rendersPerImage": {
+    "slideTypes": 9,
+    "aspectClasses": 4,
+    "canvasCount": 36
+  },
+  "captures": [
+    {
+      "template": "tech-mesh",
+      "locale": "en",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/tech-mesh_en_dark.png",
+      "sha256": "c3f3b0f504578061b06d1729878eaeec40a04f8bc7f4aa558d28ad314a41224f"
+    },
+    {
+      "template": "tech-mesh",
+      "locale": "en",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/tech-mesh_en_light.png",
+      "sha256": "180e16f1c4329fa45f4850b7307a49bbdd89c96a35130c9e108000291082d1ee"
+    },
+    {
+      "template": "tech-mesh",
+      "locale": "ar",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/tech-mesh_ar_dark.png",
+      "sha256": "db7c05df46d530a5f05e61a64459976dc612c537e7756ec6841b90c330499431"
+    },
+    {
+      "template": "tech-mesh",
+      "locale": "ar",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/tech-mesh_ar_light.png",
+      "sha256": "f77e034a7009240fcc4be3bf4ebd50bbfccbc9b7a73c5e18c10e064d8c7f934b"
+    },
+    {
+      "template": "clean-minimal",
+      "locale": "en",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/clean-minimal_en_dark.png",
+      "sha256": "7885ed7909893d2b2a85bcfccd00accf71251ddc424a3b0e3f7614870383355e"
+    },
+    {
+      "template": "clean-minimal",
+      "locale": "en",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/clean-minimal_en_light.png",
+      "sha256": "63f7768f484e381d87ae4dac1d68f5d88b2dff803b3040cd17a9ee27fe7dd7c8"
+    },
+    {
+      "template": "clean-minimal",
+      "locale": "ar",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/clean-minimal_ar_dark.png",
+      "sha256": "0fccf2269bea42e736f30053410f34f95025585988a20f104eb49d978c71cadf"
+    },
+    {
+      "template": "clean-minimal",
+      "locale": "ar",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/clean-minimal_ar_light.png",
+      "sha256": "2592d37cfaea262472813bc5c7778d00178465265d00203c162a65058e1c1639"
+    },
+    {
+      "template": "bold-marketing",
+      "locale": "en",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/bold-marketing_en_dark.png",
+      "sha256": "9cf254298fe855ed4b479e8bf8f10fe592adf7c751ed7c5d34fa50f350f8b8f0"
+    },
+    {
+      "template": "bold-marketing",
+      "locale": "en",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/bold-marketing_en_light.png",
+      "sha256": "3a57735b1274168163877db48469326f048ca6fa4a265899cf8ebc83121c9e93"
+    },
+    {
+      "template": "bold-marketing",
+      "locale": "ar",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/bold-marketing_ar_dark.png",
+      "sha256": "ceeefc65af988a39e32467644ba7c5dc7c59f3e59204fbe52a7aba2121144923"
+    },
+    {
+      "template": "bold-marketing",
+      "locale": "ar",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/bold-marketing_ar_light.png",
+      "sha256": "1e92cec0767fdd7004eb914fcdcf269180477109bda3e032faea7eff2ee88a3a"
+    },
+    {
+      "template": "soft-gradient",
+      "locale": "en",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/soft-gradient_en_dark.png",
+      "sha256": "082df7916669f96caea5e2d8a30023bc05c4d5e970dbda18fdab65396ea99766"
+    },
+    {
+      "template": "soft-gradient",
+      "locale": "en",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/soft-gradient_en_light.png",
+      "sha256": "bb6bb0f2a849275de522a329f3cdc6782b1ea3c495d47f78d7ac9a4023cea301"
+    },
+    {
+      "template": "soft-gradient",
+      "locale": "ar",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/soft-gradient_ar_dark.png",
+      "sha256": "3394b08f674c6c493571a15dcf65b04868bd8e700a9b36316a63f57ce2cc4a34"
+    },
+    {
+      "template": "soft-gradient",
+      "locale": "ar",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/soft-gradient_ar_light.png",
+      "sha256": "427dbbf88bfb6e9cfe640b3ae9a1911fbb64294ae4f4b2851c6a4d51eca2ca5c"
+    },
+    {
+      "template": "heritage-geometric",
+      "locale": "en",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/heritage-geometric_en_dark.png",
+      "sha256": "78d8c46bb2ac7dedbd31d48c68e5199320cd2e8e1c9943468414aadac48f57e8"
+    },
+    {
+      "template": "heritage-geometric",
+      "locale": "en",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/heritage-geometric_en_light.png",
+      "sha256": "3f70e8d246dab253f0bc062e6477fa3a3914e7f7ddc3ae7ae2975d8413764c6f"
+    },
+    {
+      "template": "heritage-geometric",
+      "locale": "ar",
+      "theme": "dark",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/heritage-geometric_ar_dark.png",
+      "sha256": "07501318ddc21649e5714f98f3da3264c7faeaf615ba09b59688ac9b75dff3eb"
+    },
+    {
+      "template": "heritage-geometric",
+      "locale": "ar",
+      "theme": "light",
+      "canvasCount": 36,
+      "path": "docs/template-baselines/phase2-legacy/heritage-geometric_ar_light.png",
+      "sha256": "1e8f1ec0eba7818a5d4fe3746ed87433784cfe42ecca4c6b2a4e93441adcee52"
+    }
+  ],
+  "exportSamples": [
+    {
+      "template": "tech-mesh",
+      "locale": "en",
+      "theme": "dark",
+      "aspect": "portrait",
+      "slideType": "cover",
+      "path": "tech-mesh_export_dark_portrait.png",
+      "capturedFrom": "editor Export Presentation → Single PNG Image → Current Slide Only",
+      "sha256": "64cf10428bd53936bd0d36568a65d61b3f69b3f724a6893af1b5c9451b4cbe9e"
+    },
+    {
+      "template": "clean-minimal",
+      "locale": "en",
+      "theme": "dark",
+      "aspect": "portrait",
+      "slideType": "cover",
+      "path": "clean-minimal_export_dark_portrait.png",
+      "capturedFrom": "editor Export Presentation → Single PNG Image → Current Slide Only",
+      "sha256": "97bf8d0ab683431435dcbc74c2d417c9d4f63cdb85db295acb0c831ff475763e"
+    },
+    {
+      "template": "bold-marketing",
+      "locale": "en",
+      "theme": "dark",
+      "aspect": "portrait",
+      "slideType": "cover",
+      "path": "bold-marketing_export_dark_portrait.png",
+      "capturedFrom": "editor Export Presentation → Single PNG Image → Current Slide Only",
+      "sha256": "045aca9f1c0c7af44a29839dc0bd0e0467a3c3435dc6df1c4ac04280d29d6183"
+    },
+    {
+      "template": "soft-gradient",
+      "locale": "en",
+      "theme": "dark",
+      "aspect": "portrait",
+      "slideType": "cover",
+      "path": "soft-gradient_export_dark_portrait.png",
+      "capturedFrom": "editor Export Presentation → Single PNG Image → Current Slide Only",
+      "sha256": "1feb784da5494ff47bd8a4e9810fdebf4c07c5db1e446e7947101b68a68e7b58"
+    },
+    {
+      "template": "heritage-geometric",
+      "locale": "en",
+      "theme": "dark",
+      "aspect": "portrait",
+      "slideType": "cover",
+      "path": "heritage-geometric_export_dark_portrait.png",
+      "capturedFrom": "editor Export Presentation → Single PNG Image → Current Slide Only",
+      "sha256": "3a5e0d6d7b31853f699ba016b66c1355149c72e7e8c89f2ccb0a6d9cc85503d7"
+    }
+  ]
+}

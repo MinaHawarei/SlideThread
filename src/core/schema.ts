@@ -147,6 +147,34 @@ export const ExtraElementSchema = z.object({
 }).strict();
 export type ExtraElement = z.infer<typeof ExtraElementSchema>;
 
+const TemplateSlotFrameSchema = z.object({
+  blockStart: z.number().min(0).max(1), inlineStart: z.number().min(0).max(1),
+  inlineSize: z.number().positive().max(1), blockSize: z.number().positive().max(1),
+  align: z.enum(['start', 'center', 'end']),
+}).strict();
+const TemplateAspectCompositionSchema = z.object({
+  slots: z.record(z.string(), TemplateSlotFrameSchema).optional(),
+  elements: z.array(ExtraElementSchema).optional(),
+}).strict();
+export const TemplateProjectSnapshotSchema = z.object({
+  version: z.literal(1),
+  id: z.string().min(1),
+  name: z.object({ en: z.string().min(1), ar: z.string().min(1) }).optional(),
+  paletteByMode: z.record(ThemeModeSchema, z.record(z.string(), z.string())),
+  fonts: z.object({ display: z.string(), body: z.string(), mono: z.string() }).strict(),
+  typeScale: z.object({ h1: z.number(), h2: z.number(), body: z.number(), small: z.number(), mono: z.number() }).strict(),
+  radius: z.object({ card: z.number(), chip: z.number() }).strict(),
+  counter: z.object({ styles: z.array(z.enum(['number', 'bar', 'dots'])), defaultStyle: z.enum(['number', 'bar', 'dots']) }).strict().optional(),
+  composition: z.record(z.string(), z.record(z.string(), TemplateAspectCompositionSchema)),
+  assets: z.record(z.string(), z.string()),
+  className: z.string().optional(),
+  gradientBackground: z.object({ from: z.string(), to: z.string(), x1: z.number(), y1: z.number(), x2: z.number(), y2: z.number() }).strict().optional(),
+  decorationAssets: z.array(z.object({ asset: z.string(), x: z.number().min(0).max(1), y: z.number().min(0).max(1), w: z.number().positive().max(1), h: z.number().positive().max(1), opacity: z.number().min(0).max(1) }).strict()).optional(),
+  decoration: z.object({ id: z.string(), params: z.record(z.string(), z.unknown()), intensity: z.number().min(0).max(1) }).optional(),
+}).strict();
+export type TemplateProjectSnapshot = z.infer<typeof TemplateProjectSnapshotSchema>;
+export type TemplateProjectSnapshotInput = z.input<typeof TemplateProjectSnapshotSchema>;
+
 export const SlideBackgroundSchema = z.object({
   assetId: z.string().optional(),
   symbolId: z.string().optional(),
@@ -236,6 +264,7 @@ export const ProjectSchema = z.object({
   formatId: z.string(),
   orientation: OrientationSchema,
   templateId: TemplateIdSchema,
+  templateSnapshot: TemplateProjectSnapshotSchema.optional(),
   primaryColor: z.string().regex(/^#[\da-fA-F]{6}$/),
   theme: ThemeModeSchema,
   textDir: TextDirSchema,

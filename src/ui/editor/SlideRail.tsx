@@ -189,6 +189,7 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
               showSafeZones={false}
               isStory={useProjectStore.getState().project.contentType === 'story'}
               templateId={useProjectStore.getState().project.templateId}
+              templateSnapshot={useProjectStore.getState().project.templateSnapshot}
               themeMode={useProjectStore.getState().project.theme}
               dimensions={dims}
               projectBackground={useProjectStore((state) => state.project.background)}

@@ -59,7 +59,7 @@ test.describe('Settings Page Persistence & Data Management E2E (Spec §5.5)', ()
         showCounter: true,
         socials: [],
         language: 'en',
-        defaultTemplateId: 'clean',
+        defaultTemplateId: 'clean-minimal',
         defaultPrimaryColor: '#7c3aed',
         defaultTheme: 'light',
       },

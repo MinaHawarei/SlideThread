@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { TemplateSchema } from '../../src/templates/schema';
 import boldTemplateJson from '../../src/templates/starters/bold-marketing/template.json';
+import heritageTemplateJson from '../../src/templates/starters/heritage-geometric/template.json';
 import { getStickerSvg } from '../../src/assets';
 import { sanitizeSvg } from '../../src/templates/security/sanitizers';
 import fs from 'node:fs';
@@ -14,7 +15,7 @@ describe('Template Asset References (§5.6, Task R6-7)', () => {
 
     expect(parsed.data.assets).toBeDefined();
     expect(parsed.data.assets?.badge).toBe('pack:stickers/sticker-new-badge');
-    expect(parsed.data.assets?.cornerAccent).toBe('assets/flourish-corner.svg');
+    expect(heritageTemplateJson.assets.cornerAccent).toBe('assets/flourish-corner.svg');
   });
 
   it('resolves pack asset reference successfully from the stickers pack', () => {
@@ -33,8 +34,8 @@ describe('Template Asset References (§5.6, Task R6-7)', () => {
   });
 
   it('loads and sanitizes local relative SVG file from template assets directory', () => {
-    const localRef = boldTemplateJson.assets.cornerAccent;
-    const templateDir = path.resolve(__dirname, '../../src/templates/starters/bold-marketing');
+    const localRef = heritageTemplateJson.assets.cornerAccent;
+    const templateDir = path.resolve(__dirname, '../../src/templates/starters/heritage-geometric');
     const fullPath = path.resolve(templateDir, localRef);
 
     expect(fs.existsSync(fullPath)).toBe(true);

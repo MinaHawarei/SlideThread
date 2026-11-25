@@ -3,7 +3,7 @@ import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
-import { resolveSlideElements } from '../../core/elementModel';
+import { mergeTemplateSlotFrames, resolveSlideElements } from '../../core/elementModel';
 import { aspectClass as calcAspectClass, getDimensions } from '../../core/formats';
 import { RichTextEditor } from './RichTextEditor';
 import { parsePlainTextToRichText } from '../../core/richText';
@@ -45,7 +45,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   const dims = getDimensions(project.formatId, project.orientation);
   const aspect = calcAspectClass(dims.width, dims.height);
   const layout = getLayoutArchetype(`${slide?.type || 'cover'}-centered`);
-  const variant = layout?.variants[aspect];
+  const variant = mergeTemplateSlotFrames(layout?.variants[aspect], project.templateSnapshot?.composition[slide?.type ?? 'cover']?.[aspect]?.slots);
 
   const elements = useMemo(() => {
     if (!slide || !variant) return [];
@@ -90,9 +90,13 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
     if (element.extra?.kind === 'image') {
       const assetId = element.extra.media?.assetId;
       if (assetId) {
-        getAssetUrl(assetId).then((url) => {
-          if (active) setResolvedImageUrl(url);
-        });
+        if (/^(data:|blob:|https?:)/i.test(assetId)) {
+          setResolvedImageUrl(assetId);
+        } else {
+          getAssetUrl(assetId).then((url) => {
+            if (active) setResolvedImageUrl(url);
+          });
+        }
       } else {
         setResolvedImageUrl(undefined);
       }

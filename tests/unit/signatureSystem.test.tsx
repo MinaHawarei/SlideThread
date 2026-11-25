@@ -145,7 +145,7 @@ describe('Signature System (Spec §5.4 & Revision Plan §3.6)', () => {
       fields: plainTextFieldsToRichText({ title: 'Title', body: 'Body' }),
     };
 
-    it('positions container at physical anchor "tl" (top: 40px, left: 48px)', () => {
+    it('positions container at physical anchor "tl" (top: 40px, left: 48px)', async () => {
       render(
         <SlideRenderer
           slide={slide}
@@ -156,14 +156,14 @@ describe('Signature System (Spec §5.4 & Revision Plan §3.6)', () => {
         />
       );
 
-      const container = screen.getByTestId('signature-bar').closest('.slide-signature-container');
+      const container = (await screen.findByTestId('signature-bar')).closest('.slide-signature-container');
       expect(container).toHaveClass('sig-anchor-tl');
       const style = (container as HTMLElement).style;
       expect(style.top).toBe('40px');
       expect(style.left).toBe('48px');
     });
 
-    it('positions container at physical anchor "br" (bottom: 40px, right: 48px)', () => {
+    it('positions container at physical anchor "br" (bottom: 40px, right: 48px)', async () => {
       render(
         <SlideRenderer
           slide={slide}
@@ -174,14 +174,14 @@ describe('Signature System (Spec §5.4 & Revision Plan §3.6)', () => {
         />
       );
 
-      const container = screen.getByTestId('signature-bar').closest('.slide-signature-container');
+      const container = (await screen.findByTestId('signature-bar')).closest('.slide-signature-container');
       expect(container).toHaveClass('sig-anchor-br');
       const style = (container as HTMLElement).style;
       expect(style.bottom).toBe('40px');
       expect(style.right).toBe('48px');
     });
 
-    it('applies free movement override (dx, dy, scale) when anchor is free', () => {
+    it('applies free movement override (dx, dy, scale) when anchor is free', async () => {
       const slideWithOverride: Slide = {
         ...slide,
         overrides: {
@@ -202,7 +202,7 @@ describe('Signature System (Spec §5.4 & Revision Plan §3.6)', () => {
         />
       );
 
-      const container = screen.getByTestId('signature-bar').closest('.slide-signature-container');
+      const container = (await screen.findByTestId('signature-bar')).closest('.slide-signature-container');
       expect(container).toHaveClass('sig-anchor-free');
       // Overrides apply transform translate and scale
       expect((container as HTMLElement).style.transform).toContain('scale(1.2)');

@@ -30,7 +30,7 @@ const LegacyProjectV1Schema = z.object({
   contentType: z.enum(['post', 'carousel', 'story']),
   formatId: z.string(),
   orientation: z.enum(['landscape', 'portrait']),
-  templateId: z.enum(['network', 'clean', 'bold']),
+  templateId: z.enum(['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric']),
   primaryColor: z.string(),
   theme: z.enum(['dark', 'light']),
   textDir: z.enum(['auto', 'ltr', 'rtl']),
@@ -53,16 +53,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function migrateV1ToV2(project: LegacyProjectV1): ValidatedProject {
-  const templateIds: Record<string, string> = {
-    network: 'tech-mesh',
-    clean: 'clean-minimal',
-    bold: 'bold-marketing',
-  };
-
   return {
     ...project,
     schemaVersion: CURRENT_SCHEMA_VERSION,
-    templateId: templateIds[project.templateId] ?? project.templateId,
     slides: project.slides.map((slide) => ({
       ...slide,
       fields: Object.fromEntries(
@@ -73,7 +66,7 @@ function migrateV1ToV2(project: LegacyProjectV1): ValidatedProject {
     })),
     counter: { ...DEFAULT_COUNTER_CONFIG, show: project.contentType === 'carousel' },
     signature: { ...DEFAULT_SIGNATURE_CONFIG },
-    pattern: { enabled: project.templateId === 'network', intensity: 1 },
+    pattern: { enabled: project.templateId === 'tech-mesh', intensity: 1 },
   };
 }
 
@@ -89,7 +82,7 @@ function normalizeVersionZero(raw: Record<string, unknown>): Record<string, unkn
   if (normalized['contentType'] === undefined) normalized['contentType'] = 'carousel';
   if (normalized['formatId'] === undefined) normalized['formatId'] = 'r_4_5';
   if (normalized['orientation'] === undefined) normalized['orientation'] = 'portrait';
-  if (normalized['templateId'] === undefined) normalized['templateId'] = 'network';
+  if (normalized['templateId'] === undefined) normalized['templateId'] = 'tech-mesh';
   if (normalized['primaryColor'] === undefined) normalized['primaryColor'] = '#35D0E6';
   if (normalized['theme'] === undefined) normalized['theme'] = 'dark';
   if (normalized['textDir'] === undefined) normalized['textDir'] = 'auto';

@@ -1,17 +1,25 @@
 import { plainTextFieldsToRichText, richTextToPlainText } from '../../src/core/schema';
-import { describe, it, expect } from 'vitest';
+import { beforeAll, describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { generatePalette } from '../../src/core/palette';
 import { SAMPLE_BRAND_AR, SAMPLE_BRAND_EN } from '../../src/slides/sampleSlides';
-import type { AspectClass, Slide, TemplateId } from '../../src/core/schema';
+import type { AspectClass, Slide, TemplateId, TemplateProjectSnapshot } from '../../src/core/schema';
 import { getTemplate } from '../../src/templates';
+import { loadTemplateProjectSnapshot } from '../../src/templates/projectSnapshot';
 
 describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1, Task P2-4)', () => {
   const templates: TemplateId[] = ['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric'];
   const aspects: AspectClass[] = ['landscape', 'square', 'portrait', 'tall'];
   const darkPalette = generatePalette('#35D0E6', 'dark');
   const lightPalette = generatePalette('#0B7FA6', 'light');
+  const snapshots: Partial<Record<TemplateId, TemplateProjectSnapshot>> = {};
+
+  beforeAll(async () => {
+    await Promise.all(templates.map(async (id) => {
+      snapshots[id] = await loadTemplateProjectSnapshot(id, '#35D0E6');
+    }));
+  });
 
   describe('Long Arabic Text Handling Across Templates', () => {
     const longArabicSlides: Record<string, Slide> = {
@@ -57,6 +65,7 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
                   palette={palette}
                   aspectClass={aspectClass}
                   templateId={tmpl}
+                  templateSnapshot={snapshots[tmpl]}
                   themeMode={themeMode}
                   brand={SAMPLE_BRAND_AR}
                   textDir="rtl"
@@ -136,6 +145,7 @@ describe('Design Review Pass: Long Arabic Text & Image-Heavy Slides (Spec §7.1,
               palette={lightPalette}
               aspectClass="square"
               templateId={tmpl}
+              templateSnapshot={snapshots[tmpl]}
               brand={SAMPLE_BRAND_EN}
               slideIndex={1}
               totalSlides={6}

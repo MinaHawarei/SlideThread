@@ -277,6 +277,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                     showSafeZones={isStory}
                     isStory={isStory}
                     templateId={project.templateId}
+                    templateSnapshot={project.templateSnapshot}
                     themeMode={project.theme}
                     dimensions={dims}
                     projectBackground={project.background}

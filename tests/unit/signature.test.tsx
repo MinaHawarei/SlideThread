@@ -15,7 +15,7 @@ describe('SignatureBar Component (Spec §6.2)', () => {
     showSocials: false,
     socials: [],
     language: 'en',
-    defaultTemplateId: 'network',
+    defaultTemplateId: 'tech-mesh',
     defaultPrimaryColor: '#0A84FF',
     defaultTheme: 'dark',
   };
@@ -190,12 +190,12 @@ describe('SlideRenderer Signature Integration', () => {
     showSocials: false,
     socials: [],
     language: 'en',
-    defaultTemplateId: 'network',
+    defaultTemplateId: 'tech-mesh',
     defaultPrimaryColor: '#0A84FF',
     defaultTheme: 'dark',
   };
 
-  it('renders signature bar on cover slide', () => {
+  it('renders signature bar on cover slide', async () => {
     const slide: Slide = {
       id: 's_test_cover',
       type: 'cover',
@@ -213,7 +213,7 @@ describe('SlideRenderer Signature Integration', () => {
       />
     );
 
-    expect(screen.getByTestId('signature-bar')).toBeInTheDocument();
+    expect(await screen.findByTestId('signature-bar')).toBeInTheDocument();
     expect(screen.getByText('Mina')).toBeInTheDocument();
     expect(screen.getByTestId('slide-counter')).toHaveTextContent('01/04');
   });

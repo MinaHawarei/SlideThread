@@ -3,7 +3,7 @@ import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
-import { resolveSlideElements, type ResolvedElement } from '../../core/elementModel';
+import { mergeTemplateSlotFrames, resolveSlideElements, type ResolvedElement } from '../../core/elementModel';
 import { aspectClass as calcAspectClass, getDimensions } from '../../core/formats';
 
 export interface LayersPanelProps {
@@ -25,7 +25,7 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({ className = '', onSele
   const dims = getDimensions(project.formatId, project.orientation);
   const aspect = calcAspectClass(dims.width, dims.height);
   const layout = getLayoutArchetype(`${slide?.type || 'cover'}-centered`);
-  const variant = layout?.variants[aspect];
+  const variant = mergeTemplateSlotFrames(layout?.variants[aspect], project.templateSnapshot?.composition[slide?.type ?? 'cover']?.[aspect]?.slots);
 
   const elements = useMemo(() => {
     if (!slide || !variant) return [];

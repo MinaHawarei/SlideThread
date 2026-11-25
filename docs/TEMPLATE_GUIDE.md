@@ -17,7 +17,7 @@ Templates are untrusted data. The CI validator checks the JSON Schema and Zod sc
 
    ```json
    {
-     "schema": 2,
+     "schema": 1,
      "id": "creator-notes",
      "name": { "en": "Creator Notes", "ar": "ملاحظات المبدع" },
      "description": {
@@ -64,7 +64,7 @@ Templates are untrusted data. The CI validator checks the JSON Schema and Zod sc
 
 This example deliberately adds no app code, registered layout, decoration, or asset. The `colorFlexible` flag lets the app generate light and dark palettes from a creator color; fixed palettes should provide complete `theme.modes.dark` and `theme.modes.light` values that pass contrast validation.
 
-The Gallery reads cards and filter metadata from the generated index. Its current slide renderer still uses the application's registered visual adapters; a theme-only manifest can appear in the gallery data without creating a new slide renderer or app layout implementation.
+The Gallery reads cards and filter metadata from the generated index. Full manifests are lazy-loaded as package data, and the shared template engine resolves palette, layout, composition, decoration, and assets for the editor, preview, and export paths.
 
 ## Four contribution levels
 
@@ -92,7 +92,7 @@ Add archetype IDs from `src/templates/layouts/registry.ts` to the manifest's `la
 }
 ```
 
-Only reference IDs already present in the registry. The runtime selects the registered variant for each of the four aspect classes and falls back to the default archetype for a missing or incompatible entry. Layout definitions are engine code and require a code contribution; a new template that only references them stays data-only.
+Only reference IDs already present in the registry. The runtime selects the registered variant for each of the four aspect classes and falls back to the default archetype for a missing or incompatible entry. Layout definitions are engine code and require a code contribution; a new template that only references them stays data-only. Optional `composition` data can override named slot frames (`slots`) and add native editable `elements` per slide type and aspect class. Composition elements use stable IDs and are copied into new project slides; user edits remain instance data.
 
 ### 3. Decorations: generator parameters and sanitized SVG assets
 
@@ -109,7 +109,16 @@ Add a registered generator in `decor.background` or `decor.overlay`. This worked
 }
 ```
 
-Available generator IDs are `mesh`, `dots-grid`, `waves`, `geometric`, `blobs`, and `none`. Generator output is deterministic and should remain prefix-stable across carousel slides. SVG files may be placed in the template's `assets/` folder; the CLI validates them with the SVG sanitizer and enforces the size/type limits. The current runtime resolves registered generator IDs; local SVG placement on a slide is not yet exposed in the template manifest.
+Available generator IDs are `mesh`, `dots-grid`, `waves`, `geometric`, `blobs`, and `none`. Generator output is deterministic and should remain prefix-stable across carousel slides. SVG files may be placed in the template's `assets/` folder; the CLI validates them with the SVG sanitizer and enforces the size/type limits. Declare local assets by relative path in `assets`. Reference one as a decorative overlay using its manifest key and normalized bounds:
+
+```json
+"assets": { "cornerAccent": "assets/corner-accent.svg" },
+"decor": {
+  "overlay": [{ "asset": "cornerAccent", "x": 0.72, "y": 0.02, "w": 0.26, "h": 0.2, "opacity": 0.9 }]
+}
+```
+
+Package snapshots sanitize and resolve the SVG before rendering. Composition image elements can reference declared assets with `assetId` as well.
 
 ### 4. Scoped CSS: advanced and optional
 
@@ -119,7 +128,7 @@ The schema currently accepts CSS text in `customCss` and validates it with the C
 "customCss": ".tpl-creator-notes .slide-tag { border-radius: 8px; color: var(--acc); }"
 ```
 
-This is the current schema representation; the plan's future `style.css` file form is not accepted by the CLI. CSS validation is active, while applying contributed CSS in the application preview is still pending runtime integration. Keep the template usable without custom CSS and disclose this limitation in the pull request.
+This is the current schema representation; the plan's future `style.css` file form is not accepted by the CLI. CSS validation is active. Keep the template usable without custom CSS.
 
 ## Inheritance
 

@@ -1,7 +1,7 @@
-import type { ThemeMode, SlideType, AspectClass } from '../core/schema';
+import type { ThemeMode, SlideType, AspectClass, ExtraElement } from '../core/schema';
 import type { Palette } from '../core/palette';
 import { generateDecoration, DECORATION_GENERATORS, type DecorationContext, type DecorationId, type SvgFragment } from './decorations/generators';
-import { getLayoutArchetype, type LayoutArchetype } from './layouts/registry';
+import { getLayoutArchetype, type LayoutArchetype, type LayoutFrame } from './layouts/registry';
 import { resolveTemplate, resolveTemplatePalette, TemplateSchema, type ValidatedTemplateData } from './schema';
 
 export interface TemplateRuntimeTokens {
@@ -35,6 +35,7 @@ export interface ResolvedTemplateRuntime {
   layout: LayoutArchetype;
   layoutVariant: LayoutArchetype['variants'][AspectClass];
   layoutFallback: boolean;
+  composition?: { slots?: Record<string, { blockStart: number; inlineStart: number; inlineSize: number; blockSize: number; align: 'start' | 'center' | 'end' }>; elements?: ExtraElement[] };
   decoration: SvgFragment;
   customCss?: string;
 }
@@ -116,6 +117,16 @@ export function createTemplateRuntime(loaders: TemplateDataLoaders) {
     const selectedLayout = selectedId ? getLayoutArchetype(selectedId) : undefined;
     const matchingLayout = selectedLayout?.slideType === request.slideType ? selectedLayout : undefined;
     const layout = matchingLayout ?? defaultLayout(request.slideType);
+    const composition = template.composition?.[request.slideType]?.[request.aspectClass];
+    const layoutVariant = composition?.slots
+      ? { ...layout.variants[request.aspectClass], elements: [
+        ...layout.variants[request.aspectClass].elements.map((frame) => {
+        const override = composition.slots?.[frame.id];
+        return override ? { ...frame, ...override } : frame;
+        }),
+        ...Object.entries(composition.slots).flatMap(([id, frame]) => layout.variants[request.aspectClass].elements.some((item) => item.id === id) ? [] : [{ id, ...frame } as LayoutFrame]),
+      ] }
+      : layout.variants[request.aspectClass];
     const decoration = decorationRefs(template).flatMap((decor) => generateDecoration(decor.id, {
         ...request.decorationContext,
         palette,
@@ -131,12 +142,18 @@ export function createTemplateRuntime(loaders: TemplateDataLoaders) {
       palette,
       tokens,
       layout,
-      layoutVariant: layout.variants[request.aspectClass],
+      layoutVariant,
       layoutFallback: !matchingLayout,
+      composition,
       decoration,
       ...(customCss ? { customCss } : {}),
     };
   };
 
-  return { load, resolve };
+  const invalidate = (id: string) => {
+    loadCache.delete(id);
+    dataCache.delete(id);
+  };
+
+  return { load, resolve, invalidate };
 }

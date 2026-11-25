@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "bold-marketing",
+  "className": "bold",
   "name": { "en": "Bold Marketing", "ar": "تسويق جريء" },
   "description": { "en": "High-contrast layouts for launches and campaigns.", "ar": "تخطيطات عالية التباين للإطلاقات والحملات." },
   "author": { "name": "SlideThread" },
@@ -18,10 +19,10 @@
     "radius": { "card": 0, "chip": 0 }
   },
   "layouts": { "cover": "cover-editorial", "explain": "explain-centered", "rule": "rule-centered", "compare": "compare-editorial", "code": "code-editorial", "stat": "stat-centered", "quote": "quote-editorial", "image": "image-centered", "cta": "cta-editorial" },
-  "formats": "all",
+  "decor": { "background": { "id": "none", "intensity": 0 } },
+  "formats": ["post", "carousel"],
   "counter": { "styles": ["number", "bar"], "defaultStyle": "number" },
   "assets": {
-    "badge": "pack:stickers/sticker-new-badge",
-    "cornerAccent": "assets/flourish-corner.svg"
+    "badge": "pack:stickers/sticker-new-badge"
   }
 }

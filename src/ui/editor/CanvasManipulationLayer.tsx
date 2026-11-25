@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
-import { resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotateElementGeometry, scaleElementGeometry, SLOT_SELECTORS, type ElementGeometry, type ResolvedElement } from '../../core/elementModel';
+import { mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotateElementGeometry, scaleElementGeometry, SLOT_SELECTORS, type ElementGeometry, type ResolvedElement } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
@@ -31,8 +31,9 @@ type Gesture = {
 
 export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = ({ slide, aspect, width, height, zoom, hideBrandPopover = false }) => {
   const { t } = useT();
+  const project = useProjectStore((state) => state.project);
   const layout = getLayoutArchetype(`${slide.type}-centered`);
-  const variant = layout?.variants[aspect];
+  const variant = mergeTemplateSlotFrames(layout?.variants[aspect], project.templateSnapshot?.composition[slide.type]?.[aspect]?.slots);
   const elements = useMemo(() => variant ? resolveSlideElements(slide, variant, aspect) : [], [slide, variant, aspect]);
   const selectedId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);

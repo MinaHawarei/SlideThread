@@ -1,5 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeAll, describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { loadTemplateProjectSnapshot } from '../../src/templates/projectSnapshot';
+import type { TemplateProjectSnapshot } from '../../src/core/schema';
 import {
   calculateSquareCrop,
   calculateInteractiveCrop,
@@ -27,7 +29,7 @@ const createMockBrand = (overrides?: Partial<BrandSettings>): BrandSettings => (
   showSocials: false,
   showCounter: false,
   language: 'en',
-  defaultTemplateId: 'network',
+  defaultTemplateId: 'tech-mesh',
   defaultPrimaryColor: '#0284c7',
   defaultTheme: 'dark',
   ...overrides,
@@ -296,6 +298,11 @@ describe('CTA Photo Regression Test (§5.5)', () => {
 
   const allSlideTypes = SlideTypeSchema.options;
   const allAspectClasses = AspectClassSchema.options;
+  let defaultSnapshot: TemplateProjectSnapshot;
+
+  beforeAll(async () => {
+    defaultSnapshot = await loadTemplateProjectSnapshot('tech-mesh', '#0284c7');
+  });
 
   it('asserts photoDataUrl renders in img element for every slide type', () => {
     const palette = generatePalette('#0284c7', 'dark');
@@ -320,6 +327,7 @@ describe('CTA Photo Regression Test (§5.5)', () => {
           slide={slide}
           palette={palette}
           aspectClass="portrait"
+          templateSnapshot={defaultSnapshot}
           brand={brandWithPhoto}
           slideIndex={0}
           totalSlides={5}
@@ -355,6 +363,7 @@ describe('CTA Photo Regression Test (§5.5)', () => {
           slide={ctaSlide}
           palette={palette}
           aspectClass={aspect}
+          templateSnapshot={defaultSnapshot}
           brand={brandWithPhoto}
           slideIndex={4}
           totalSlides={5}

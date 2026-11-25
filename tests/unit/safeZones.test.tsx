@@ -70,7 +70,7 @@ describe('SlideRenderer Safe Zone Integration', () => {
     fields: plainTextFieldsToRichText({ title: 'Story Test' }),
   };
 
-  it('renders StorySafeZoneOverlay when showSafeZones is true on tall aspect slide', () => {
+  it('renders StorySafeZoneOverlay when showSafeZones is true on tall aspect slide', async () => {
     render(
       <SlideRenderer
         slide={slide}
@@ -80,7 +80,7 @@ describe('SlideRenderer Safe Zone Integration', () => {
       />
     );
 
-    expect(screen.getByTestId('story-safe-zone-overlay')).toBeInTheDocument();
+    expect(await screen.findByTestId('story-safe-zone-overlay')).toBeInTheDocument();
   });
 
   it('does NOT render StorySafeZoneOverlay when showSafeZones is false on tall aspect slide', () => {

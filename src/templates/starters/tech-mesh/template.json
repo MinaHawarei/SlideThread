@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "tech-mesh",
+  "className": "network",
   "name": { "en": "Weave", "ar": "نسيج" },
   "description": { "en": "Connected ideas for technical stories.", "ar": "أفكار مترابطة للقصص التقنية." },
   "author": { "name": "SlideThread" },
@@ -14,7 +15,7 @@
     "radius": { "card": 24, "chip": 9999 }
   },
   "layouts": { "cover": "cover-editorial", "explain": "explain-editorial", "rule": "rule-centered", "compare": "compare-editorial", "code": "code-editorial", "stat": "stat-centered", "quote": "quote-centered", "image": "image-editorial", "cta": "cta-editorial" },
-  "decor": { "background": { "id": "mesh", "params": { "nodesPerTile": 9 }, "intensity": 0.7 } },
+  "decor": { "background": { "id": "mesh", "params": { "nodesPerTile": 9 }, "intensity": 0.85 } },
   "counter": { "styles": ["number", "bar", "dots"], "defaultStyle": "number" },
-  "formats": "all"
+  "formats": ["post", "carousel"]
 }

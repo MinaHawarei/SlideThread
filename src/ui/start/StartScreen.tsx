@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react';
 import { useT } from '../../i18n';
 import { Footer } from '../common/Footer';
 import { APP_NAME } from '../../config/site';
-import { useProjectStore } from '../../store/projectStore';
+import { createProjectFromTemplate, useProjectStore } from '../../store/projectStore';
 import { useRecentStore } from '../../store/recentStore';
+import { useSettingsStore } from '../../store/settingsStore';
 import { getDemoProjectEn, getDemoProjectAr } from '../../store/seedProjects';
 import { FORMAT_REGISTRY, type FormatId } from '../../core/formats';
 import type { Project, PlatformId } from '../../core/schema';
@@ -27,7 +28,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   const { t, dir } = useT();
   const currentProject = useProjectStore((state) => state.project);
   const setProject = useProjectStore((state) => state.setProject);
-  const createProject = useProjectStore((state) => state.createProject);
+  const brandSettings = useSettingsStore((state) => state.settings);
 
   const recents = useRecentStore((state) => state.recents);
   const saveProject = useRecentStore((state) => state.saveProject);
@@ -64,13 +65,16 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   };
 
   // Quick start by platform tile
-  const handleQuickPlatform = (platform: PlatformId, formatId: FormatId, contentType: 'carousel' | 'post' | 'story') => {
-    const newProj = createProject({
+  const handleQuickPlatform = async (platform: PlatformId, formatId: FormatId, contentType: 'carousel' | 'post' | 'story') => {
+    const newProj = await createProjectFromTemplate({
       title: `${platform.charAt(0).toUpperCase() + platform.slice(1)} ${contentType.charAt(0).toUpperCase() + contentType.slice(1)}`,
       formatId,
       orientation: formatId === 'r_16_9' ? 'landscape' : 'portrait',
       platform,
       contentType,
+      templateId: brandSettings.defaultTemplateId,
+      primaryColor: brandSettings.defaultPrimaryColor,
+      theme: brandSettings.defaultTheme,
     });
 
     saveProject(newProj);
@@ -80,13 +84,16 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   };
 
   // Direct dimension selection
-  const handleSelectFormat = (formatId: FormatId) => {
-    const newProj = createProject({
+  const handleSelectFormat = async (formatId: FormatId) => {
+    const newProj = await createProjectFromTemplate({
       title: 'Untitled Presentation',
       formatId,
       orientation: formatId === 'r_16_9' ? 'landscape' : 'portrait',
       platform: 'custom',
       contentType: formatId === 'r_9_16' ? 'story' : 'carousel',
+      templateId: brandSettings.defaultTemplateId,
+      primaryColor: brandSettings.defaultPrimaryColor,
+      theme: brandSettings.defaultTheme,
     });
 
     saveProject(newProj);

@@ -17,7 +17,7 @@ export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
   defaultSignature: { ...DEFAULT_SIGNATURE_CONFIG },
   socials: [],
   language: 'en',
-  defaultTemplateId: 'network',
+  defaultTemplateId: 'tech-mesh',
   defaultPrimaryColor: '#35D0E6',
   defaultTheme: 'dark',
   appTheme: 'light',

@@ -3,6 +3,8 @@ import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { getAllTemplates, getTemplate } from '../../templates';
+import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
+import { useUserTemplateLibrary } from '../../templates/useUserTemplateLibrary';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import type { TemplateId, ThemeMode, TextDir, Anchor } from '../../core/schema';
 
@@ -18,16 +20,27 @@ const PRESET_COLORS = [
 ];
 
 export const DesignInspector: React.FC = () => {
-  const { t } = useT();
+  const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
   const updateCounterConfig = useProjectStore((state) => state.updateCounterConfig);
   const settings = useSettingsStore((state) => state.settings);
+  const { templates: importedTemplates } = useUserTemplateLibrary();
   const [isChangeFormatOpen, setIsChangeFormatOpen] = useState(false);
 
-  const allTemplates = getAllTemplates();
-  const currentTemplate = getTemplate(project.templateId);
-  const allowedStyles = currentTemplate.counter?.styles ?? ['number', 'bar', 'dots'];
+  const allTemplates = [
+    ...getAllTemplates().map((template) => ({ id: template.id, nameKey: template.nameKey, name: undefined as string | undefined })),
+    ...importedTemplates.map((template) => ({ id: template.id, nameKey: template.id, name: template.manifest.name[locale] })),
+  ];
+  let starterCounterStyles: ('number' | 'bar' | 'dots')[] | undefined;
+  if (!project.templateSnapshot?.counter?.styles) {
+    try {
+      starterCounterStyles = getTemplate(project.templateId).counter?.styles;
+    } catch {
+      // Unknown or user-imported template without snapshot.
+    }
+  }
+  const allowedStyles = project.templateSnapshot?.counter?.styles ?? starterCounterStyles ?? ['number', 'bar', 'dots'];
   const counter = project.counter ?? {
     show: true,
     anchor: 'br',
@@ -40,8 +53,9 @@ export const DesignInspector: React.FC = () => {
   const isSignatureVisible = (settings.showSignature !== false) && (project.signature?.show !== false);
   const hasCollision = counter.show && isSignatureVisible && counter.anchor === signatureAnchor;
 
-  const handleTemplateChange = (templateId: TemplateId) => {
-    updateProjectMeta({ templateId });
+  const handleTemplateChange = async (templateId: TemplateId) => {
+    const templateSnapshot = await loadTemplateProjectSnapshot(templateId, project.primaryColor);
+    updateProjectMeta({ templateId, templateSnapshot });
   };
 
   const handleColorChange = (primaryColor: string) => {
@@ -65,7 +79,7 @@ export const DesignInspector: React.FC = () => {
         </label>
         <div className="grid grid-cols-3 gap-2">
           {allTemplates.map((tmpl) => {
-            const isSelected = getTemplate(project.templateId).id === tmpl.id;
+            const isSelected = project.templateId === tmpl.id;
             const nameKey = `wizard.template.${tmpl.id}` as const;
 
             return (
@@ -80,7 +94,7 @@ export const DesignInspector: React.FC = () => {
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750'
                 }`}
               >
-                {t(nameKey as Parameters<typeof t>[0])}
+                {tmpl.name ?? t(nameKey as Parameters<typeof t>[0])}
               </button>
             );
           })}

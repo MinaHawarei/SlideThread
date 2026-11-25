@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { useProjectStore, createDefaultProject } from '../../src/store/projectStore';
 import { useSelectionStore } from '../../src/store/selectionStore';
 import { EditorDesktop } from '../../src/ui/editor/EditorDesktop';
@@ -75,7 +75,7 @@ describe('Round 2 Fixes and Features', () => {
       expect(override?.opacity).toBeCloseTo(0.8);
     });
 
-    it('renders rotation and opacity on rendered slot DOM node', () => {
+    it('renders rotation and opacity on rendered slot DOM node', async () => {
       const slide = {
         ...useProjectStore.getState().project.slides[0]!,
         overrides: {
@@ -100,6 +100,7 @@ describe('Round 2 Fixes and Features', () => {
         />
       );
 
+      await waitFor(() => expect(container.querySelector('.slide-title-h1')).toBeTruthy());
       const titleNode = container.querySelector('.slide-title-h1') as HTMLElement;
       expect(titleNode).toBeTruthy();
       expect(titleNode.style.transform).toContain('rotate(30deg)');
@@ -108,7 +109,7 @@ describe('Round 2 Fixes and Features', () => {
   });
 
   describe('F3: Background image / symbol', () => {
-    it('renders custom slide background with mode and opacity', () => {
+    it('renders custom slide background with mode and opacity', async () => {
       const slide = {
         ...useProjectStore.getState().project.slides[0]!,
         background: {
@@ -129,6 +130,7 @@ describe('Round 2 Fixes and Features', () => {
         />
       );
 
+      await waitFor(() => expect(container.querySelector('[data-testid="slide-custom-background"]')).toBeInTheDocument());
       const bgNode = container.querySelector('[data-testid="slide-custom-background"]') as HTMLElement;
       expect(bgNode).toBeInTheDocument();
       expect(bgNode.style.opacity).toBe('0.5');

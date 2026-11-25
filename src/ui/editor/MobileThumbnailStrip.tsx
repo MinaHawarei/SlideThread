@@ -163,6 +163,7 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
             showSafeZones={false}
             isStory={false}
             templateId={templateId}
+                templateSnapshot={useProjectStore.getState().project.templateSnapshot}
             themeMode={themeMode}
             dimensions={dims}
             projectBackground={useProjectStore((state) => state.project.background)}

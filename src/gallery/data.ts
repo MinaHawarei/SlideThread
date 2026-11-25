@@ -8,7 +8,7 @@ export interface GalleryTemplate {
   categories: string[];
   tags: string[];
   colorFlexible: boolean;
-  formats: 'all' | string[];
+  formats: Array<'post' | 'carousel'>;
   modes: string[];
   languages: string[];
   preview: string;
@@ -32,7 +32,7 @@ export interface GalleryFilters {
   query?: string;
   categoryId?: string;
   language?: string;
-  formatId?: string;
+  contentType?: 'post' | 'carousel';
   mode?: string;
   favoritesOnly?: boolean;
   favoriteIds?: readonly string[];
@@ -90,7 +90,7 @@ export function filterGalleryTemplates(
     if (filters.categoryId && !template.categories.includes(filters.categoryId)) return false;
     if (filters.language && !template.languages.includes(filters.language)) return false;
     if (filters.mode && !template.modes.includes(filters.mode)) return false;
-    if (filters.formatId && template.formats !== 'all' && !template.formats.includes(filters.formatId)) return false;
+    if (filters.contentType && !template.formats.includes(filters.contentType)) return false;
     if (filters.favoritesOnly && !favorites.has(template.id)) return false;
     if (!query) return true;
     const searchable = [
