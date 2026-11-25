@@ -49,3 +49,21 @@
   }
 }
 
+/* ── Task 3: Workspace dotted-grid background ───────────────────────────────
+   Applied only to the pan/zoom workspace area (data-testid="workspace-stage").
+   Never appears in exports, thumbnails, or the slide itself.
+   Dots: 1.5px circle at 10% black, 20px grid in light mode.
+   Dark mode: same spacing, 10% white dots on dark slate.
+   Static only — no animation, no motion. ─────────────────────────────────── */
+[data-testid="workspace-stage"] {
+  background-color: #e7e5e4; /* stone-200 — slightly darker than stone-100/70 */
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.10) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.dark [data-testid="workspace-stage"] {
+  background-color: #1c1917; /* stone-900 */
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.10) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+

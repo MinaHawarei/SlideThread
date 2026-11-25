@@ -191,7 +191,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
     <main
       data-testid="main-canvas"
       aria-label="Slide preview canvas"
-      className={`flex-1 flex flex-col justify-between overflow-hidden bg-stone-100/70 dark:bg-stone-950 relative ${className}`}
+      className={`flex-1 flex flex-col justify-between overflow-hidden bg-stone-200 dark:bg-stone-900 relative ${className}`}
     >
       {/* Canvas Top Bar: Quick status & controls */}
       <div className="p-3 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 bg-white/70 dark:bg-stone-900/70 backdrop-blur z-10">
@@ -273,6 +273,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
 
       {/* Centered Scaled Stage with Pan & Paper Lift */}
       <div
+        data-testid="workspace-stage"
         className="flex-1 flex items-center justify-center p-6 overflow-auto cursor-grab active:cursor-grabbing select-none"
         onPointerDown={handleStagePointerDown}
         onPointerMove={handleStagePointerMove}

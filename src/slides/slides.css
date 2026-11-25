@@ -129,8 +129,30 @@
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 60px;
-  align-items: center;
+  align-items: start;
+  padding-block-start: 0;
   height: 100%;
+  /* Each column clips its own content so long titles cannot overflow into the card column */
+}
+
+/* Title group must stay in its column even with very long titles */
+.cover-layout-landscape .cover-title-group {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  min-width: 0;
+}
+
+/* Visual card column stays vertically centered */
+.cover-layout-landscape .cover-visual-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-width: 0;
 }
 
 .cover-layout-stacked {

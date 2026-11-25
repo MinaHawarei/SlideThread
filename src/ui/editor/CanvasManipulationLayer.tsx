@@ -107,6 +107,33 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     };
   }, [selectedId, editingId, selectElement]);
 
+  // Extra guard: close the inline editor when a pointer-down lands outside both the
+  // element-hit region AND the portal toolbar. This runs regardless of selectedId so
+  // it fires even after the selection is cleared by a panel click.
+  useEffect(() => {
+    if (!editingId) return;
+    const handlePointerDownWhileEditing = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      // Stay open if the click is on the editor container, any element-hit, or the portal toolbar.
+      if (
+        target.closest('[data-testid="rich-text-editor-container"]') ||
+        target.closest('[data-rich-text-toolbar="true"]') ||
+        target.closest('[data-testid^="element-hit-"]') ||
+        target.closest('[data-testid="inspector"]') ||
+        target.closest('[data-testid="element-properties-panel"]') ||
+        target.closest('[data-testid="layers-panel"]') ||
+        target.closest('[data-testid="mobile-bottom-tabs"]') ||
+        target.closest('[data-testid="mobile-bottom-sheet"]')
+      ) {
+        return;
+      }
+      setEditingId(null);
+    };
+    window.addEventListener('pointerdown', handlePointerDownWhileEditing, { capture: true });
+    return () => window.removeEventListener('pointerdown', handlePointerDownWhileEditing, { capture: true });
+  }, [editingId]);
+
   useLayoutEffect(() => {
     const stage = layerRef.current?.parentElement;
     const overlayRect = layerRef.current?.getBoundingClientRect();

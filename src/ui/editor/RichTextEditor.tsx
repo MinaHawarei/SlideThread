@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useEditor, EditorContent } from '@tiptap/react';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -80,6 +81,73 @@ const SIZE_OPTIONS = [
   { value: 200, label: '200%' },
 ];
 
+// Hook to compute a clamped viewport-safe position for the floating toolbar.
+// Returns a {top, left} in page coordinates clamped so the toolbar fits
+// horizontally (wraps to two rows if needed) and flips below when above is clipped.
+function usePortalToolbarPosition(
+  anchorRef: React.RefObject<HTMLDivElement | null>,
+  toolbarRef: React.RefObject<HTMLDivElement | null>,
+) {
+  const [pos, setPos] = useState<{ top: number; left: number; below: boolean }>({
+    top: 0,
+    left: 0,
+    below: false,
+  });
+
+  // Keep latest pos in a ref to avoid stale-closure re-renders.
+  const posRef = useRef(pos);
+  posRef.current = pos;
+
+  const updateRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    const compute = () => {
+      const anchor = anchorRef.current;
+      if (!anchor) return;
+
+      const anchorRect = anchor.getBoundingClientRect();
+      const toolbar = toolbarRef.current;
+      const toolbarHeight = toolbar?.offsetHeight ?? 44;
+      const toolbarWidth = toolbar?.offsetWidth ?? 680;
+      const MARGIN = 8;
+      const vpW = window.innerWidth;
+
+      // Prefer above; flip below if not enough room above.
+      const spaceAbove = anchorRect.top;
+      const below = spaceAbove < toolbarHeight + MARGIN;
+      const top = below
+        ? anchorRect.bottom + MARGIN + window.scrollY
+        : anchorRect.top - toolbarHeight - MARGIN + window.scrollY;
+
+      // Clamp left so toolbar stays within viewport with 8px margin each side.
+      let left = anchorRect.left + window.scrollX;
+      left = Math.max(MARGIN, Math.min(left, vpW - toolbarWidth - MARGIN));
+
+      // Only update state if values actually changed (avoids re-render cascade).
+      const cur = posRef.current;
+      if (cur.top !== top || cur.left !== left || cur.below !== below) {
+        setPos({ top, left, below });
+      }
+    };
+
+    updateRef.current = compute;
+    compute(); // Initial measurement.
+
+    // Re-position on scroll/resize.
+    const onScroll = () => updateRef.current?.();
+    const onResize = () => updateRef.current?.();
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true });
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('resize', onResize);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount; compute() reads refs which always point to current DOM.
+
+  return pos;
+}
+
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   content,
   onChange,
@@ -92,6 +160,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const { t } = useT();
   const initialJSON = useRef(richTextToTiptapJSON(content));
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const toolbarRef = useRef<HTMLDivElement | null>(null);
 
   const editor = useEditor({
     extensions: [
@@ -154,6 +224,9 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [editor, onDone]);
 
+  // Compute portal toolbar position (desktop non-embedded layout only)
+  const toolbarPortalPos = usePortalToolbarPosition(containerRef, toolbarRef);
+
   if (!editor) return null;
 
   const isBold = editor.isActive('bold');
@@ -165,342 +238,381 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const isCenter = editor.isActive({ textAlign: 'center' });
   const isRight = editor.isActive({ textAlign: 'right' });
 
+  // The toolbar button/control content is shared between portal and embedded/touch layouts.
+  const toolbarControls = (
+    <>
+      {/* Font Select */}
+      <select
+        aria-label={t('editor.font')}
+        data-testid="toolbar-font-family"
+        onChange={(e) => {
+          const font = e.target.value;
+          editor.chain().focus().setMark('textStyle', { fontFamily: resolveFontFamily(font) }).run();
+        }}
+        style={{ minHeight: touchLayout ? 44 : 32, fontSize: 13, borderRadius: 6, border: '1px solid #94a3b8', padding: '0 4px', background: 'white' }}
+      >
+        {FONT_OPTIONS.map((f) => (
+          <option key={f.id} value={f.id}>{f.label}</option>
+        ))}
+      </select>
+
+      {/* Size Select */}
+      <select
+        aria-label={t('editor.fontSize')}
+        data-testid="toolbar-font-size"
+        defaultValue={100}
+        onChange={(e) => {
+          const size = Number(e.target.value);
+          editor.chain().focus().setMark('textStyle', { fontSize: `${size}%` }).run();
+        }}
+        style={{ minHeight: touchLayout ? 44 : 32, fontSize: 13, borderRadius: 6, border: '1px solid #94a3b8', padding: '0 4px', background: 'white' }}
+      >
+        {SIZE_OPTIONS.map((s) => (
+          <option key={s.value} value={s.value}>{s.label}</option>
+        ))}
+      </select>
+
+      {/* Color picker */}
+      <label
+        aria-label={t('editor.textColor')}
+        style={{ display: 'inline-flex', alignItems: 'center', minWidth: touchLayout ? 44 : 32, minHeight: touchLayout ? 44 : 32, cursor: 'pointer' }}
+      >
+        <input
+          type="color"
+          aria-label={t('editor.textColor')}
+          data-testid="toolbar-color-picker"
+          onChange={(e) => {
+            editor.chain().focus().setColor(e.target.value).run();
+          }}
+          style={{ width: touchLayout ? 36 : 26, height: touchLayout ? 36 : 26, padding: 0, border: 'none', borderRadius: 4, cursor: 'pointer' }}
+        />
+      </label>
+
+      {/* Bold */}
+      <button
+        type="button"
+        aria-label={t('editor.bold')}
+        data-testid="toolbar-bold"
+        aria-pressed={isBold}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          fontWeight: 700,
+          background: isBold ? '#0891b2' : '#f1f5f9',
+          color: isBold ? 'white' : '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        B
+      </button>
+
+      {/* Underline */}
+      <button
+        type="button"
+        aria-label={t('editor.underline')}
+        data-testid="toolbar-underline"
+        aria-pressed={isUnderline}
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          textDecoration: 'underline',
+          background: isUnderline ? '#0891b2' : '#f1f5f9',
+          color: isUnderline ? 'white' : '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        U
+      </button>
+
+      {/* Highlight */}
+      <button
+        type="button"
+        aria-label={t('editor.highlight')}
+        data-testid="toolbar-highlight"
+        aria-pressed={isHighlight}
+        onClick={() => editor.chain().focus().toggleHighlight({ color: '#fef08a' }).run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          background: isHighlight ? '#fef08a' : '#f1f5f9',
+          color: '#0f172a',
+          fontWeight: 600,
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        H
+      </button>
+
+      {/* Bullet List */}
+      <button
+        type="button"
+        aria-label={t('editor.bulletList')}
+        data-testid="toolbar-bullet-list"
+        aria-pressed={isBulletList}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          background: isBulletList ? '#0891b2' : '#f1f5f9',
+          color: isBulletList ? 'white' : '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: 14,
+        }}
+      >
+        •≡
+      </button>
+
+      {/* Ordered List */}
+      <button
+        type="button"
+        aria-label={t('editor.orderedList')}
+        data-testid="toolbar-ordered-list"
+        aria-pressed={isOrderedList}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          background: isOrderedList ? '#0891b2' : '#f1f5f9',
+          color: isOrderedList ? 'white' : '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: 14,
+        }}
+      >
+        1≡
+      </button>
+
+      {/* Alignment controls */}
+      <button
+        type="button"
+        aria-label={t('editor.alignLeft')}
+        data-testid="toolbar-align-left"
+        aria-pressed={isLeft}
+        onClick={() => editor.chain().focus().setTextAlign('left').run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          background: isLeft ? '#0891b2' : '#f1f5f9',
+          color: isLeft ? 'white' : '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        ⇤
+      </button>
+      <button
+        type="button"
+        aria-label={t('editor.alignCenter')}
+        data-testid="toolbar-align-center"
+        aria-pressed={isCenter}
+        onClick={() => editor.chain().focus().setTextAlign('center').run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          background: isCenter ? '#0891b2' : '#f1f5f9',
+          color: isCenter ? 'white' : '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        ⇥⇤
+      </button>
+      <button
+        type="button"
+        aria-label={t('editor.alignRight')}
+        data-testid="toolbar-align-right"
+        aria-pressed={isRight}
+        onClick={() => editor.chain().focus().setTextAlign('right').run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          background: isRight ? '#0891b2' : '#f1f5f9',
+          color: isRight ? 'white' : '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        ⇥
+      </button>
+
+      {/* Direction controls */}
+      <button
+        type="button"
+        aria-label={t('editor.dirLtr')}
+        data-testid="toolbar-dir-ltr"
+        onClick={() => editor.chain().focus().updateAttributes('paragraph', { dir: 'ltr' }).run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          fontSize: 12,
+          background: '#f1f5f9',
+          color: '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        LTR
+      </button>
+      <button
+        type="button"
+        aria-label={t('editor.dirRtl')}
+        data-testid="toolbar-dir-rtl"
+        onClick={() => editor.chain().focus().updateAttributes('paragraph', { dir: 'rtl' }).run()}
+        style={{
+          minWidth: touchLayout ? 44 : 32,
+          minHeight: touchLayout ? 44 : 32,
+          borderRadius: 6,
+          fontSize: 12,
+          background: '#f1f5f9',
+          color: '#0f172a',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        RTL
+      </button>
+
+      {/* Done / Close Button */}
+      {onDone && (
+        <button
+          type="button"
+          aria-label={t('editor.doneEditing')}
+          data-testid="toolbar-done"
+          onClick={onDone}
+          style={{
+            minWidth: touchLayout ? 44 : 32,
+            minHeight: touchLayout ? 44 : 32,
+            borderRadius: 6,
+            background: '#0e7490',
+            color: 'white',
+            fontWeight: 600,
+            border: 'none',
+            cursor: 'pointer',
+            padding: '0 8px',
+          }}
+        >
+          ✓
+        </button>
+      )}
+    </>
+  );
+
+  // Shared toolbar wrapper props (stops pointer events from bubbling out of the toolbar)
+  const toolbarPointerProps = {
+    onMouseDown: (e: React.MouseEvent) => e.preventDefault(),
+    onPointerDown: (e: React.PointerEvent) => { e.preventDefault(); e.stopPropagation(); },
+  };
+
   return (
     <div
+      ref={containerRef}
       className={`rich-text-editor-container ${className}`.trim()}
       style={{ position: 'relative', width: '100%', ...(embedded ? {} : { height: '100%' }), ...style }}
       data-testid="rich-text-editor-container"
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
     >
-      {/* Floating or Embedded Toolbar */}
-      <div
-        role="toolbar"
-        aria-label={t('editor.richTextToolbar')}
-        data-testid="rich-text-floating-toolbar"
-        onMouseDown={(e) => e.preventDefault()}
-        onPointerDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        style={
-          embedded
-            ? {
-              position: 'relative',
-              zIndex: 10,
-              display: 'flex',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 4,
-              padding: '6px',
-              background: '#f8fafc',
-              border: '1px solid #cbd5e1',
-              borderRadius: 8,
-              marginBottom: 6,
-            }
-            : touchLayout
-              ? {
-                position: 'fixed',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 9999,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                gap: 6,
-                padding: '8px 12px',
-                background: '#ffffff',
-                borderTop: '1px solid #cbd5e1',
-                boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.15)',
-              }
-              : {
-                position: 'absolute',
-                top: -56,
-                insetInlineStart: 0,
-                zIndex: 100,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                padding: '4px 8px',
-                background: '#ffffff',
-                border: '1px solid #cbd5e1',
-                borderRadius: 8,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                whiteSpace: 'nowrap',
-              }
-        }
-      >
-        {/* Font Select */}
-        <select
-          aria-label={t('editor.font')}
-          data-testid="toolbar-font-family"
-          onChange={(e) => {
-            const font = e.target.value;
-            editor.chain().focus().setMark('textStyle', { fontFamily: resolveFontFamily(font) }).run();
-          }}
-          style={{ minHeight: touchLayout ? 44 : 32, fontSize: 13, borderRadius: 6, border: '1px solid #94a3b8', padding: '0 4px', background: 'white' }}
-        >
-          {FONT_OPTIONS.map((f) => (
-            <option key={f.id} value={f.id}>{f.label}</option>
-          ))}
-        </select>
-
-        {/* Size Select */}
-        <select
-          aria-label={t('editor.fontSize')}
-          data-testid="toolbar-font-size"
-          defaultValue={100}
-          onChange={(e) => {
-            const size = Number(e.target.value);
-            editor.chain().focus().setMark('textStyle', { fontSize: `${size}%` }).run();
-          }}
-          style={{ minHeight: touchLayout ? 44 : 32, fontSize: 13, borderRadius: 6, border: '1px solid #94a3b8', padding: '0 4px', background: 'white' }}
-        >
-          {SIZE_OPTIONS.map((s) => (
-            <option key={s.value} value={s.value}>{s.label}</option>
-          ))}
-        </select>
-
-        {/* Color picker */}
-        <label
-          aria-label={t('editor.textColor')}
-          style={{ display: 'inline-flex', alignItems: 'center', minWidth: touchLayout ? 44 : 32, minHeight: touchLayout ? 44 : 32, cursor: 'pointer' }}
-        >
-          <input
-            type="color"
-            aria-label={t('editor.textColor')}
-            data-testid="toolbar-color-picker"
-            onChange={(e) => {
-              editor.chain().focus().setColor(e.target.value).run();
-            }}
-            style={{ width: touchLayout ? 36 : 26, height: touchLayout ? 36 : 26, padding: 0, border: 'none', borderRadius: 4, cursor: 'pointer' }}
-          />
-        </label>
-
-        {/* Bold */}
-        <button
-          type="button"
-          aria-label={t('editor.bold')}
-          data-testid="toolbar-bold"
-          aria-pressed={isBold}
-          onClick={() => editor.chain().focus().toggleBold().run()}
+      {/* Embedded toolbar (inside form panels) */}
+      {embedded && (
+        <div
+          role="toolbar"
+          aria-label={t('editor.richTextToolbar')}
+          data-testid="rich-text-floating-toolbar"
+          {...toolbarPointerProps}
           style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            fontWeight: 700,
-            background: isBold ? '#0891b2' : '#f1f5f9',
-            color: isBold ? 'white' : '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
+            position: 'relative',
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 4,
+            padding: '6px',
+            background: '#f8fafc',
+            border: '1px solid #cbd5e1',
+            borderRadius: 8,
+            marginBottom: 6,
           }}
         >
-          B
-        </button>
+          {toolbarControls}
+        </div>
+      )}
 
-        {/* Underline */}
-        <button
-          type="button"
-          aria-label={t('editor.underline')}
-          data-testid="toolbar-underline"
-          aria-pressed={isUnderline}
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
+      {/* Touch layout: fixed bottom bar */}
+      {!embedded && touchLayout && (
+        <div
+          role="toolbar"
+          aria-label={t('editor.richTextToolbar')}
+          data-testid="rich-text-floating-toolbar"
+          {...toolbarPointerProps}
           style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            textDecoration: 'underline',
-            background: isUnderline ? '#0891b2' : '#f1f5f9',
-            color: isUnderline ? 'white' : '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            gap: 6,
+            padding: '8px 12px',
+            background: '#ffffff',
+            borderTop: '1px solid #cbd5e1',
+            boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.15)',
           }}
         >
-          U
-        </button>
+          {toolbarControls}
+        </div>
+      )}
 
-        {/* Highlight */}
-        <button
-          type="button"
-          aria-label={t('editor.highlight')}
-          data-testid="toolbar-highlight"
-          aria-pressed={isHighlight}
-          onClick={() => editor.chain().focus().toggleHighlight({ color: '#fef08a' }).run()}
+      {/* Desktop floating toolbar: rendered via portal to escape overflow:hidden clip.
+          Positioned absolutely in page coordinates, clamped to viewport. */}
+      {!embedded && !touchLayout && typeof document !== 'undefined' && createPortal(
+        <div
+          ref={toolbarRef}
+          role="toolbar"
+          aria-label={t('editor.richTextToolbar')}
+          data-testid="rich-text-floating-toolbar"
+          data-rich-text-toolbar="true"
+          {...toolbarPointerProps}
           style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            background: isHighlight ? '#fef08a' : '#f1f5f9',
-            color: '#0f172a',
-            fontWeight: 600,
-            border: 'none',
-            cursor: 'pointer',
+            position: 'absolute',
+            top: toolbarPortalPos.top,
+            left: toolbarPortalPos.left,
+            zIndex: 99999,
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 4,
+            padding: '4px 8px',
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: 8,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            maxWidth: 'calc(100vw - 16px)',
+            overflowX: 'auto',
+            overflowY: 'hidden',
           }}
         >
-          H
-        </button>
-
-        {/* Bullet List */}
-        <button
-          type="button"
-          aria-label={t('editor.bulletList')}
-          data-testid="toolbar-bullet-list"
-          aria-pressed={isBulletList}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            background: isBulletList ? '#0891b2' : '#f1f5f9',
-            color: isBulletList ? 'white' : '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: 14,
-          }}
-        >
-          •≡
-        </button>
-
-        {/* Ordered List */}
-        <button
-          type="button"
-          aria-label={t('editor.orderedList')}
-          data-testid="toolbar-ordered-list"
-          aria-pressed={isOrderedList}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            background: isOrderedList ? '#0891b2' : '#f1f5f9',
-            color: isOrderedList ? 'white' : '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: 14,
-          }}
-        >
-          1≡
-        </button>
-
-        {/* Alignment controls */}
-        <button
-          type="button"
-          aria-label={t('editor.alignLeft')}
-          data-testid="toolbar-align-left"
-          aria-pressed={isLeft}
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            background: isLeft ? '#0891b2' : '#f1f5f9',
-            color: isLeft ? 'white' : '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          ⇤
-        </button>
-        <button
-          type="button"
-          aria-label={t('editor.alignCenter')}
-          data-testid="toolbar-align-center"
-          aria-pressed={isCenter}
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            background: isCenter ? '#0891b2' : '#f1f5f9',
-            color: isCenter ? 'white' : '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          ⇥⇤
-        </button>
-        <button
-          type="button"
-          aria-label={t('editor.alignRight')}
-          data-testid="toolbar-align-right"
-          aria-pressed={isRight}
-          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-          style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            background: isRight ? '#0891b2' : '#f1f5f9',
-            color: isRight ? 'white' : '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          ⇥
-        </button>
-
-        {/* Direction controls */}
-        <button
-          type="button"
-          aria-label={t('editor.dirLtr')}
-          data-testid="toolbar-dir-ltr"
-          onClick={() => editor.chain().focus().updateAttributes('paragraph', { dir: 'ltr' }).run()}
-          style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            fontSize: 12,
-            background: '#f1f5f9',
-            color: '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          LTR
-        </button>
-        <button
-          type="button"
-          aria-label={t('editor.dirRtl')}
-          data-testid="toolbar-dir-rtl"
-          onClick={() => editor.chain().focus().updateAttributes('paragraph', { dir: 'rtl' }).run()}
-          style={{
-            minWidth: touchLayout ? 44 : 32,
-            minHeight: touchLayout ? 44 : 32,
-            borderRadius: 6,
-            fontSize: 12,
-            background: '#f1f5f9',
-            color: '#0f172a',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          RTL
-        </button>
-
-        {/* Done / Close Button */}
-        {onDone && (
-          <button
-            type="button"
-            aria-label={t('editor.doneEditing')}
-            data-testid="toolbar-done"
-            onClick={onDone}
-            style={{
-              minWidth: touchLayout ? 44 : 32,
-              minHeight: touchLayout ? 44 : 32,
-              borderRadius: 6,
-              background: '#0e7490',
-              color: 'white',
-              fontWeight: 600,
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0 8px',
-            }}
-          >
-            ✓
-          </button>
-        )}
-      </div>
+          {toolbarControls}
+        </div>,
+        document.body,
+      )}
 
       {/* Editor Content Area */}
       <EditorContent
