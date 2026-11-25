@@ -148,7 +148,8 @@ export function createDefaultProject(init?: Partial<Project>): Project {
     const defaults = templateSnapshot.composition[slide.type]?.[selectedAspect]?.elements ?? [];
     if (!defaults.length) return slide;
     const existingIds = new Set((slide.extras ?? []).map((element) => element.id));
-    return { ...slide, extras: [...(slide.extras ?? []), ...defaults.filter((element) => !existingIds.has(element.id)).map((element) => structuredClone(element))] };
+    const detached = new Set(slide.detachedElementIds ?? []);
+    return { ...slide, extras: [...(slide.extras ?? []), ...defaults.filter((element) => !existingIds.has(element.id) && !detached.has(element.id)).map((element) => structuredClone(element))] };
   }) : baseSlides;
 
   return {
@@ -587,10 +588,17 @@ export const useProjectStore = create<ProjectState>()(
         },
 
         deleteExtraElement: (slideId, extraId) => {
+          const project = get().project;
+          const slide = project.slides.find((item) => item.id === slideId);
+          const isTemplateDefault = Boolean(slide && Object.values(project.templateSnapshot?.composition[slide.type] ?? {}).some((composition) => composition?.elements?.some((element) => element.id === extraId)));
           set((state) => ({
             project: {
               ...state.project,
-              slides: state.project.slides.map((slide) => slide.id === slideId ? { ...slide, extras: (slide.extras ?? []).filter((extra) => extra.id !== extraId) } : slide),
+              slides: state.project.slides.map((item) => item.id === slideId ? {
+                ...item,
+                extras: (item.extras ?? []).filter((extra) => extra.id !== extraId),
+                ...(isTemplateDefault ? { detachedElementIds: [...new Set([...(item.detachedElementIds ?? []), extraId])] } : {}),
+              } : item),
               updatedAt: Date.now(),
             },
           }));
@@ -653,10 +661,11 @@ export const useProjectStore = create<ProjectState>()(
                 const aspect = calcAspectClass(dimensions.width, dimensions.height);
                 const defaults = state.project.templateSnapshot?.composition[nextType]?.[aspect]?.elements ?? [];
                 const existingIds = new Set((s.extras ?? []).map((element) => element.id));
+                const detachedIds = new Set(s.detachedElementIds ?? []);
                 return {
                   ...s,
                   type: nextType,
-                  extras: [...(s.extras ?? []), ...defaults.filter((element) => !existingIds.has(element.id)).map((element) => structuredClone(element))],
+                  extras: [...(s.extras ?? []), ...defaults.filter((element) => !existingIds.has(element.id) && !detachedIds.has(element.id)).map((element) => structuredClone(element))],
                   fields: {
                     ...createDefaultSlide(nextType).fields,
                     ...plainTextFieldsToRichText(preservedFields),

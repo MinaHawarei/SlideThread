@@ -1,7 +1,7 @@
 import * as htmlToImage from 'html-to-image';
 import * as modernScreenshot from 'modern-screenshot';
 import { fontsReady, getFontRequirementsForText, type FontRequirement } from '../core/fonts';
-import { FONT_REGISTRY, type FontId, type FontWeight } from '../fonts/registry';
+import { FONT_REGISTRY, type FontId, type FontWeight, type FontStyle } from '../fonts/registry';
 
 export type CaptureLibrary = 'html-to-image' | 'modern-screenshot';
 
@@ -64,16 +64,15 @@ export async function capture(
   const fontEls = Array.from(element.querySelectorAll<HTMLElement>('[style*="font-family"]'));
   const extraFontReqs: FontRequirement[] = [];
   for (const el of fontEls) {
-    const fam = el.style.fontFamily.toLowerCase();
+    const computed = window.getComputedStyle(el);
+    const fam = (el.style.fontFamily || computed.fontFamily).toLowerCase();
+    const requestedWeight = Number(computed.fontWeight);
+    const requestedStyle: FontStyle = computed.fontStyle === 'italic' ? 'italic' : 'normal';
     for (const [id, def] of Object.entries(FONT_REGISTRY)) {
       if (fam.includes(def.family.toLowerCase()) || fam.includes(id)) {
-        extraFontReqs.push(
-          ...def.weights.map((weight) => ({
-            id: id as FontId,
-            family: def.family,
-            weight: weight as FontWeight,
-          }))
-        );
+        const weight = def.weights.includes(requestedWeight) ? requestedWeight : def.weights[0]!;
+        const style: FontStyle = def.styles.includes(requestedStyle) ? requestedStyle : 'normal';
+        extraFontReqs.push({ id: id as FontId, family: def.family, weight: weight as FontWeight, style, sampleText: element.textContent || 'SlideThread' });
       }
     }
   }

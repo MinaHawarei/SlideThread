@@ -3,9 +3,16 @@ import type { ExtraElement } from '../core/schema';
 import { MediaRenderer } from './MediaRenderer';
 import { RichTextRenderer } from './RichTextRenderer';
 import { getShapeSvg, getIconSvg, getEmojiSvg, getStickerSvg } from '../assets';
+import { buildExtraImageFilter } from '../core/extraStyles';
+import { textStyleToCss } from '../core/textStyle';
 
 export interface ExtrasRendererProps {
   extras?: readonly ExtraElement[];
+}
+
+function borderStyle(extra: ExtraElement): React.CSSProperties {
+  if (!extra.strokeColor || !extra.strokeWidth || extra.strokeWidth <= 0) return {};
+  return { border: `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${extra.strokeColor}`, boxSizing: 'border-box' };
 }
 
 export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras }) => {
@@ -92,7 +99,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
         return (
           <div
             data-testid={`shape-ellipse-${extra.id}`}
-            style={{ width: '100%', height: '100%', backgroundColor: fill, borderRadius: '50%' }}
+            style={{ width: '100%', height: '100%', backgroundColor: fill, borderRadius: '50%', ...borderStyle(extra) }}
           />
         );
       }
@@ -102,7 +109,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             data-testid={`shape-line-${extra.id}`}
             style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}
           >
-            <div style={{ width: '100%', height: 4, backgroundColor: fill }} />
+            <div style={{ width: '100%', height: extra.strokeWidth ?? 4, backgroundColor: fill, ...(extra.strokeStyle === 'dashed' ? { background: `repeating-linear-gradient(90deg, ${fill} 0 8px, transparent 8px 14px)` } : extra.strokeStyle === 'dotted' ? { background: `radial-gradient(circle, ${fill} 0 2px, transparent 2.5px) 0 50% / 8px 6px repeat-x` } : {}) }} />
           </div>
         );
       }
@@ -114,7 +121,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             preserveAspectRatio="none"
             style={{ width: '100%', height: '100%', fill }}
           >
-            <polygon points="0,35 60,35 60,10 100,50 60,90 60,65 0,65" />
+            <polygon points="0,35 60,35 60,10 100,50 60,90 60,65 0,65" fill={fill} stroke={extra.strokeWidth ? extra.strokeColor : undefined} strokeWidth={extra.strokeWidth} strokeDasharray={extra.strokeStyle === 'dashed' ? '6 4' : extra.strokeStyle === 'dotted' ? '1 4' : undefined} vectorEffect="non-scaling-stroke" />
           </svg>
         );
       }
@@ -126,7 +133,8 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             width: '100%',
             height: '100%',
             backgroundColor: fill,
-            borderRadius: 'var(--card-radius, 8px)',
+            borderRadius: extra.cornerRadius === undefined ? 'var(--card-radius, 8px)' : `${extra.cornerRadius}px`,
+            ...borderStyle(extra),
           }}
         />
       );
@@ -140,8 +148,14 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             width: '100%',
             height: '100%',
             color,
+            backgroundColor: extra.backgroundColor,
+            borderRadius: extra.backgroundColor ? `${extra.cornerRadius ?? 8}px` : undefined,
+            border: extra.backgroundColor && extra.strokeColor && extra.strokeWidth ? `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${extra.strokeColor}` : undefined,
+            padding: extra.backgroundColor ? '0.12em 0.35em' : undefined,
+            boxSizing: 'border-box',
             fontSize: 'calc(var(--ts-body, 24px))',
             lineHeight: 1.4,
+        ...textStyleToCss(extra.textStyle),
             overflowWrap: 'break-word',
             wordBreak: 'break-word',
             display: 'flex',
@@ -158,7 +172,9 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
       if (extra.shape === 'ellipse') {
         borderRadius = '50%';
       } else if (extra.shape === 'rectangle') {
-        borderRadius = '16px';
+        borderRadius = extra.cornerRadius === undefined ? '16px' : `${extra.cornerRadius}px`;
+      } else if (extra.kind === 'image' && extra.cornerRadius !== undefined) {
+        borderRadius = `${extra.cornerRadius}px`;
       }
 
       return (
@@ -168,6 +184,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
             height: '100%',
             borderRadius,
             overflow: 'hidden',
+            position: 'relative',
           }}
           data-testid={`image-extra-mask-${extra.id}`}
         >
@@ -180,8 +197,9 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
                 ? extra.assetId
                 : undefined
             }
-            style={{ width: '100%', height: '100%', objectFit: extra.media?.fit || 'cover' }}
+            style={{ width: '100%', height: '100%', objectFit: extra.media?.fit || 'cover', filter: buildExtraImageFilter(extra.filters) }}
           />
+          {extra.kind === 'image' && extra.strokeColor && extra.strokeWidth ? <div aria-hidden="true" data-testid={`image-extra-stroke-${extra.id}`} style={{ position: 'absolute', inset: 0, borderRadius, border: `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${extra.strokeColor}`, boxSizing: 'border-box', pointerEvents: 'none' }} /> : null}
         </div>
       );
     }

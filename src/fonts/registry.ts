@@ -1,19 +1,21 @@
 export const FONT_SCRIPTS = ['latin', 'arabic', 'coptic'] as const;
 export type FontScript = (typeof FONT_SCRIPTS)[number];
-export type FontWeight = 400 | 500 | 700;
+export type FontWeight = 400 | 500 | 600 | 700;
+export type FontStyle = 'normal' | 'italic';
 
 export interface FontDefinition {
   id: string;
   family: string;
   scripts: readonly FontScript[];
   weights: readonly number[];
+  styles: readonly FontStyle[];
   license: 'OFL-1.1';
   npmSource: string;
   version: string;
   attribution: string;
 }
 
-export type FontId = 'ibm-plex-sans' | 'ibm-plex-sans-arabic' | 'jetbrains-mono' | 'noto-sans-coptic';
+export type FontId = 'ibm-plex-sans' | 'ibm-plex-sans-arabic' | 'jetbrains-mono' | 'noto-sans-coptic' | 'ibm-plex-serif' | 'anton';
 
 export const FONT_REGISTRY: Record<FontId, FontDefinition> = {
   'ibm-plex-sans': {
@@ -21,6 +23,7 @@ export const FONT_REGISTRY: Record<FontId, FontDefinition> = {
     family: 'IBM Plex Sans',
     scripts: ['latin'],
     weights: [400, 500, 700],
+    styles: ['normal', 'italic'],
     license: 'OFL-1.1',
     npmSource: '@fontsource/ibm-plex-sans',
     version: '5.3.0',
@@ -31,6 +34,7 @@ export const FONT_REGISTRY: Record<FontId, FontDefinition> = {
     family: 'IBM Plex Sans Arabic',
     scripts: ['arabic', 'latin'],
     weights: [400, 500, 700],
+    styles: ['normal'],
     license: 'OFL-1.1',
     npmSource: '@fontsource/ibm-plex-sans-arabic',
     version: '5.3.0',
@@ -41,6 +45,7 @@ export const FONT_REGISTRY: Record<FontId, FontDefinition> = {
     family: 'JetBrains Mono',
     scripts: ['latin'],
     weights: [400, 700],
+    styles: ['normal', 'italic'],
     license: 'OFL-1.1',
     npmSource: '@fontsource/jetbrains-mono',
     version: '5.3.0',
@@ -51,10 +56,19 @@ export const FONT_REGISTRY: Record<FontId, FontDefinition> = {
     family: 'Noto Sans Coptic',
     scripts: ['coptic'],
     weights: [400],
+    styles: ['normal'],
     license: 'OFL-1.1',
     npmSource: '@fontsource/noto-sans-coptic',
     version: '5.3.0',
     attribution: 'Copyright 2022 The Noto Project Authors.',
+  },
+  'ibm-plex-serif': {
+    id: 'ibm-plex-serif', family: 'IBM Plex Serif', scripts: ['latin'], weights: [400, 500, 600, 700], styles: ['normal', 'italic'],
+    license: 'OFL-1.1', npmSource: '@fontsource/ibm-plex-serif', version: '5.3.0', attribution: 'Copyright 2017 IBM Corp.',
+  },
+  anton: {
+    id: 'anton', family: 'Anton', scripts: ['latin'], weights: [400], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/anton', version: '5.3.0', attribution: 'Copyright 2020 The Anton Project Authors.',
   },
 };
 

@@ -1,0 +1,15 @@
+# Template composition
+
+Template `composition[slideType][aspect].elements` uses the same `ExtraElement` schema as project layers. Each element has a stable, lowercase ID and a native kind (`text`, `image`, or `shape`); its position and size are normalized to the slide, with rotation and stacking in `rotation` and `z`. Image assets must be declared under the package's local `assets/` directory. Text styling uses registered font IDs and bounded typography fields. Text chips may set `backgroundColor`, `cornerRadius`, and stroke fields. No CSS, HTML, scripts, or remote font and asset URLs are accepted.
+
+When a project is created, the current aspect's template elements are cloned into that slide's `extras`. The template snapshot also stores validated composition and embedded asset data, so projects do not need the imported package to stay installed. Later edits belong to the project clone. Reset copies that element's template default back into the project; deleting a template-provided element records its ID as detached so changing slide type does not silently add it again. Duplicating a project clones its element arrays and keeps the source snapshot unchanged.
+
+On an aspect change, existing project elements keep their normalized position, size, rotation, and styles. The editor does not replace those edits with a different aspect's template defaults. A newly created slide uses defaults for the then-current aspect. Aspect-specific geometry for the built-in legacy layout slots continues through the existing layout and slot override paths.
+
+Semantic `title`, `tag`, and `sub` field bindings are currently supported on cover compositions only. A bound element renders the existing slide field and editing it updates that field; the corresponding legacy cover node is hidden and omitted from Layers while the bound element exists. Other template elements are independent text/image/shape layers.
+
+## Legacy-only styling
+
+Existing slide components and their template CSS retain their original layout and appearance. Their specialized internal treatments—such as generated quote marks, template-specific card decoration, command-line framing, and CSS-only text fitting—are not all expressible as composition elements. Existing decoration generators and background/texture assets remain part of the non-interactive template background rather than appearing as separately editable child layers. Imported template `customCss` remains unsupported. Use native composition elements for new editable content; this format does not claim a full serialization of every legacy CSS treatment.
+
+Composition fields are optional additions to the current schema. Projects remain at schema version 2 and template snapshots at version 1: older files omit the new optional text binding, chip background, or detached-element fields and keep their existing layout and styling.

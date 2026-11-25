@@ -29,7 +29,7 @@ export const RichTextRenderer: React.FC<RichTextRendererProps> = ({
   // If single block and single run and inline requested:
   if (inline && doc.blocks.length === 1 && doc.blocks[0]!.type === 'p') {
     return (
-      <span className={`rich-text-inline ${className}`.trim()} style={{ ...style }} dir={dir} data-manual-size={hasManual ? 'true' : undefined}>
+      <span className={`rich-text-inline ${className}`.trim()} style={{ display: 'block', width: '100%', minWidth: 0, maxWidth: '100%', whiteSpace: 'normal', ...style }} dir={dir} data-manual-size={hasManual ? 'true' : undefined}>
         {doc.blocks[0]!.runs.map((run, i) => (
           <RunRenderer key={i} run={run} />
         ))}

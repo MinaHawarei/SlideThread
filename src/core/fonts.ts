@@ -1,11 +1,11 @@
-import { FONT_REGISTRY, getScriptsInText, type FontId, type FontWeight } from '../fonts/registry';
+import { FONT_REGISTRY, getScriptsInText, type FontId, type FontStyle, type FontWeight } from '../fonts/registry';
 import { loadFont } from '../fonts/loader';
 
 export interface FontRequirement {
   id: FontId;
   family: string;
   weight: FontWeight;
-  style?: string;
+  style?: FontStyle;
   sampleText?: string;
 }
 

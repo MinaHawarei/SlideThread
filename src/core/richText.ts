@@ -273,11 +273,13 @@ export function tiptapJSONToRichText(json: JSONContent): RichText {
                 marks.size = Math.max(50, Math.min(300, mark.attrs.fontSize));
               }
               if (typeof mark.attrs.fontFamily === 'string') {
-                const fam = mark.attrs.fontFamily.toLowerCase();
-                if (fam.includes('arabic')) marks.font = 'ibm-plex-sans-arabic';
-                else if (fam.includes('mono')) marks.font = 'jetbrains-mono';
-                else if (fam.includes('coptic')) marks.font = 'noto-sans-coptic';
-                else if (fam.includes('ibm') || fam.includes('sans')) marks.font = 'ibm-plex-sans';
+                const family = mark.attrs.fontFamily.replace(/["']/g, '').trim().toLowerCase();
+                const exactFont = Object.values(FONT_REGISTRY).find((font) => font.family.toLowerCase() === family);
+                if (exactFont) marks.font = exactFont.id;
+                else if (family.includes('arabic')) marks.font = 'ibm-plex-sans-arabic';
+                else if (family.includes('mono')) marks.font = 'jetbrains-mono';
+                else if (family.includes('coptic')) marks.font = 'noto-sans-coptic';
+                else if (family.includes('ibm') || family.includes('sans')) marks.font = 'ibm-plex-sans';
                 else marks.font = mark.attrs.fontFamily;
               }
             }

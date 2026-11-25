@@ -9,8 +9,10 @@ import { RichTextEditor } from './RichTextEditor';
 import { parsePlainTextToRichText } from '../../core/richText';
 import { processUserUpload } from '../../core/uploads';
 import { getAssetUrl } from '../../core/assetStore';
-import type { RichText } from '../../core/schema';
+import type { RichText, TextStyleOverride } from '../../core/schema';
 import { BrandOverrideControls } from './BrandOverridePopover';
+import { FONT_REGISTRY, type FontId } from '../../fonts/registry';
+import { loadFont } from '../../fonts/loader';
 
 export interface ElementPropertiesPanelProps {
   onClose?: () => void;
@@ -53,6 +55,18 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   }, [slide, variant, aspect]);
 
   const element = elements.find((el) => el.id === selectedId);
+  const currentTextStyle: TextStyleOverride = element?.extra?.textStyle ?? (element?.kind === 'slot' ? slide?.overrides?.[aspect]?.[element.id]?.textStyle : undefined) ?? {};
+  const snapshotFont = element?.id === 'title' || element?.id === 'tag' ? project.templateSnapshot?.fonts.display : element?.id === 'code' ? project.templateSnapshot?.fonts.mono : project.templateSnapshot?.fonts.body;
+  const snapshotFontName = snapshotFont?.split(',')[0]?.replace(/["']/g, '').trim().toLowerCase();
+  const inheritedFontId: FontId = (Object.values(FONT_REGISTRY).find((font) => font.family.toLowerCase() === snapshotFontName)?.id as FontId | undefined) ?? 'ibm-plex-sans';
+  const activeFontId = (currentTextStyle.font ?? inheritedFontId) as FontId;
+  const activeFontDefinition = FONT_REGISTRY[activeFontId];
+
+  useEffect(() => {
+    const weight = currentTextStyle.weight ?? activeFontDefinition.weights[0]!;
+    const style = currentTextStyle.italic ? 'italic' : 'normal';
+    void loadFont(activeFontId, weight as 400 | 500 | 600 | 700, style).catch(() => {});
+  }, [activeFontId, activeFontDefinition, currentTextStyle.weight, currentTextStyle.italic]);
 
   // Check element capabilities
   const isImageElement = Boolean(
@@ -131,7 +145,8 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
       return { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] };
     }
     if (element.extra?.kind === 'text') {
-      return element.extra.text || { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] };
+      const bound = element.extra.binding ? slide.fields[element.extra.binding] : undefined;
+      return bound ?? element.extra.text ?? { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] };
     }
     const raw = slide.fields[element.id];
     if (typeof raw === 'string') {
@@ -157,6 +172,14 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
       : 100
   );
   const currentOpacity = Math.round((element.opacity ?? 1) * 100);
+  const extra = element.extra;
+  const radiusSupported = Boolean(extra && ((extra.kind === 'shape' && (!extra.assetId && (!extra.shape || extra.shape === 'rectangle'))) || extra.kind === 'image' || (extra.kind === 'text' && Boolean(extra.backgroundColor))));
+  const strokeSupported = Boolean(extra && ((extra.kind === 'image') || (extra.kind === 'text' && Boolean(extra.backgroundColor)) || (extra.kind === 'shape' && !extra.assetId && ['rectangle', 'ellipse', 'arrow', 'line'].includes(extra.shape ?? 'rectangle'))));
+  const updateExtra = (patch: Partial<NonNullable<typeof extra>>) => {
+    if (extra) updateExtraElement(slide.id, { ...extra, ...patch });
+  };
+  const radiusDefault = extra?.kind === 'image' ? (extra.shape === 'rectangle' ? 16 : 0) : 8;
+  const radiusValue = extra?.cornerRadius ?? radiusDefault;
 
   const handleCommit = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', val: number) => {
     if (element.kind === 'slot') {
@@ -204,6 +227,31 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
       }
       updateExtraElement(slide.id, nextExtra);
     }
+  };
+
+  const handleTextStyleChange = (patch: Partial<TextStyleOverride>) => {
+    if (!element) return;
+    const next: TextStyleOverride = { ...currentTextStyle, ...patch };
+    for (const [key, value] of Object.entries(next)) if (value === undefined) delete (next as Record<string, unknown>)[key];
+    const textStyle = Object.keys(next).length ? next : undefined;
+    if (element.extra?.kind === 'text') {
+      const base = { ...element.extra };
+      delete base.textStyle;
+      updateExtraElement(slide.id, { ...base, ...(textStyle ? { textStyle } : {}) });
+    } else if (element.kind === 'slot') {
+      const prior = slide.overrides?.[aspect]?.[element.id];
+      const base = { ...(prior ?? { dx: 0, dy: 0, scale: 1 }) };
+      delete base.textStyle;
+      updateSlotOverride(slide.id, aspect, element.id, { ...base, dx: prior?.dx ?? 0, dy: prior?.dy ?? 0, scale: prior?.scale ?? 1, ...(textStyle ? { textStyle } : {}) });
+    }
+  };
+
+  const handleFontChange = async (font: FontId | undefined) => {
+    const def = font ? FONT_REGISTRY[font] : undefined;
+    const weight = def && def.weights.includes(currentTextStyle.weight ?? 400) ? (currentTextStyle.weight ?? 400) : (def?.weights[0] ?? 400);
+    const italic = Boolean(currentTextStyle.italic && def?.styles.includes('italic'));
+    if (font && def) await loadFont(font, weight as 400 | 500 | 600 | 700, italic ? 'italic' : 'normal');
+    handleTextStyleChange({ font, ...(def && currentTextStyle.weight !== undefined && !def.weights.includes(currentTextStyle.weight) ? { weight: undefined } : {}), ...(currentTextStyle.italic && !def?.styles.includes('italic') ? { italic: undefined } : {}) });
   };
 
   const handleToggleLock = () => {
@@ -265,7 +313,14 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
         },
       }));
     } else if (element.extra) {
-      updateExtraElement(slide.id, { ...element.extra, rotation: 0, opacity: 1 });
+      const defaults = project.templateSnapshot?.composition[slide.type]?.[aspect]?.elements;
+      const templateDefault = defaults?.find((candidate) => candidate.id === element.id);
+      if (templateDefault) {
+        updateExtraElement(slide.id, structuredClone(templateDefault));
+        if (templateDefault.binding && templateDefault.text) updateSlideFields(slide.id, { [templateDefault.binding]: templateDefault.text });
+      } else {
+        updateExtraElement(slide.id, { ...element.extra, rotation: 0, opacity: 1 });
+      }
     }
   };
 
@@ -354,6 +409,8 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   const handleTextChange = (doc: RichText) => {
     if (element.kind === 'slot') {
       updateSlideFields(slide.id, { [element.id]: doc });
+    } else if (element.extra?.binding) {
+      updateSlideFields(slide.id, { [element.extra.binding]: doc });
     } else if (element.extra) {
       updateExtraElement(slide.id, { ...element.extra, text: doc });
     }
@@ -424,7 +481,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               className="py-1.5 px-2.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-mono text-xs"
             />
           </label>
-          <label className="text-xs text-stone-500 dark:text-stone-400 flex flex-col gap-1">
+          {element.extra && <label className="text-xs text-stone-500 dark:text-stone-400 flex flex-col gap-1">
             <span>{t('editor.elementWidth')}</span>
             <input
               type="number"
@@ -434,7 +491,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               onChange={(e) => handleCommit('w', parseFloat(e.target.value) || 10)}
               className="py-1.5 px-2.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-mono text-xs"
             />
-          </label>
+          </label>}
           <label className="text-xs text-stone-500 dark:text-stone-400 flex flex-col gap-1">
             <span>{t('editor.elementScale')}</span>
             <input
@@ -512,6 +569,32 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
       </div>
 
       {/* 4. Image Settings (P4: Replace Image, Remove Image, Opacity for images/placeholders) */}
+      {extra && (radiusSupported || strokeSupported || extra.kind === 'text') && (
+        <div data-testid="sidebar-style-controls" className="space-y-3 pt-2 border-t border-stone-200 dark:border-stone-800">
+          {extra.kind === 'text' && <label className="flex items-center justify-between text-xs">{t('editor.chipBackground')}<input aria-label={t('editor.chipBackground')} type="color" value={extra.backgroundColor?.startsWith('#') ? extra.backgroundColor : '#000000'} onChange={(event) => updateExtra({ backgroundColor: event.target.value })} /></label>}
+          {radiusSupported && <label className="block text-xs text-stone-600 dark:text-stone-300">{t('editor.radius')} <span className="font-mono">{Math.round(radiusValue)}px</span>
+            <input data-testid="sidebar-corner-radius" aria-label={t('editor.radius')} type="range" min="0" max="250" value={radiusValue} onChange={(e) => updateExtra({ cornerRadius: Number(e.target.value) === radiusDefault ? undefined : Number(e.target.value) })} className="w-full accent-amber-600" />
+            <button type="button" onClick={() => updateExtra({ cornerRadius: undefined })} className="text-xs text-cyan-700">{t('editor.radiusReset')}</button>
+          </label>}
+          {strokeSupported && <div className="space-y-2">
+            <div className="text-xs font-semibold text-stone-700 dark:text-stone-300">{t('editor.stroke')}</div>
+            {extra.kind !== 'shape' || extra.shape !== 'line' ? <label className="flex items-center justify-between text-xs">{t('editor.stroke')}<input aria-label={t('editor.stroke')} type="color" value={extra.strokeColor?.startsWith('#') ? extra.strokeColor : '#000000'} onChange={(e) => updateExtra({ strokeColor: e.target.value, strokeWidth: extra.strokeWidth || 2 })} /></label> : null}
+            <label className="block text-xs">{t('editor.strokeWidth')} <span className="font-mono">{extra.strokeWidth ?? (extra.kind === 'shape' && extra.shape === 'line' ? 4 : 0)}px</span>
+              <input aria-label={t('editor.strokeWidth')} type="range" min={extra.kind === 'shape' && extra.shape === 'line' ? 1 : 0} max="30" value={extra.strokeWidth ?? (extra.kind === 'shape' && extra.shape === 'line' ? 4 : 0)} onChange={(e) => updateExtra({ strokeWidth: Number(e.target.value) || undefined })} className="w-full accent-amber-600" />
+            </label>
+            <select aria-label={t('editor.strokeStyle')} value={extra.strokeStyle ?? 'solid'} onChange={(e) => updateExtra({ strokeStyle: e.target.value as 'solid' | 'dashed' | 'dotted' })} className="w-full rounded border p-1 text-xs"><option value="solid">Solid</option><option value="dashed">Dashed</option><option value="dotted">Dotted</option></select>
+            <button type="button" onClick={() => updateExtra({ strokeColor: undefined, strokeWidth: undefined, strokeStyle: undefined })} className="text-xs text-cyan-700">{t('editor.resetElement')}</button>
+          </div>}
+        </div>
+      )}
+      {extra?.kind === 'image' && <div data-testid="sidebar-image-filters" className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800">
+        <div className="text-xs font-semibold text-stone-700 dark:text-stone-300">{t('editor.filters')}</div>
+        {([['brightness', 0, 200, 100, 'editor.filterBrightness'], ['contrast', 0, 200, 100, 'editor.filterContrast'], ['saturation', 0, 200, 100, 'editor.filterSaturation'], ['grayscale', 0, 100, 0, 'editor.filterGrayscale'], ['blur', 0, 20, 0, 'editor.filterBlur']] as const).map(([key, min, max, base, label]) => {
+          const value = extra.filters?.[key] ?? base;
+          return <label key={key} className="block text-xs text-stone-600 dark:text-stone-300">{t(label)} <span className="font-mono">{value}{key === 'blur' ? 'px' : '%'}</span><input aria-label={t(label)} type="range" min={min} max={max} value={value} onChange={(e) => { const next = Number(e.target.value); const filters = { ...extra.filters, [key]: next === base ? undefined : next }; if (Object.values(filters).every((item) => item === undefined)) updateExtra({ filters: undefined }); else updateExtra({ filters }); }} className="w-full accent-amber-600" /></label>;
+        })}
+        <button type="button" onClick={() => updateExtra({ filters: undefined })} className="text-xs text-cyan-700">{t('editor.filtersReset')}</button>
+      </div>}
       {isImageElement && (
         <div data-testid="sidebar-image-controls" className="space-y-3 pt-2 border-t border-stone-200 dark:border-stone-800">
           <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">
@@ -590,6 +673,22 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
 
       {/* 5. Text Editing & Formatting (P1: "Settings first, editing below") */}
       {isTextElement && (
+        <>
+        <div data-testid="sidebar-element-typography" className="space-y-3 pt-2 border-t border-stone-200 dark:border-stone-800">
+          <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">{t('editor.elementTypography')}</label>
+          <label className="block text-xs text-stone-500 dark:text-stone-400">{t('editor.font')}<select data-testid="sidebar-typography-font" aria-label={t('editor.font')} value={currentTextStyle.font ?? ''} onChange={(e) => void handleFontChange((e.target.value || undefined) as FontId | undefined)} className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs dark:bg-stone-900">
+            <option value="">{t('editor.inheritTypography')}</option>
+            {Object.values(FONT_REGISTRY).map((font) => <option key={font.id} value={font.id}>{font.family}</option>)}
+          </select></label>
+          <label className="block text-xs text-stone-500 dark:text-stone-400">{t('editor.fontWeight')}<select data-testid="sidebar-typography-weight" aria-label={t('editor.fontWeight')} value={currentTextStyle.weight ?? ''} onChange={(e) => handleTextStyleChange({ weight: e.target.value ? Number(e.target.value) as 400 | 500 | 600 | 700 : undefined })} className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-xs dark:bg-stone-900">
+            <option value="">{t('editor.inheritTypography')}</option>
+            {activeFontDefinition.weights.filter((weight) => currentTextStyle.font || weight !== 600).map((weight) => <option key={weight} value={weight}>{weight}</option>)}
+          </select></label>
+          <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300"><input data-testid="sidebar-typography-italic" type="checkbox" checked={currentTextStyle.italic ?? false} disabled={!activeFontDefinition.styles.includes('italic')} onChange={(e) => handleTextStyleChange({ font: currentTextStyle.font ?? inheritedFontId, italic: e.target.checked })} />{t('editor.italic')}{!activeFontDefinition.styles.includes('italic') && <span className="text-stone-400">{t('editor.italicUnavailable')}</span>}</label>
+          {([['size', 'editor.fontSize', 8, 240], ['letterSpacing', 'editor.letterSpacing', -2, 20], ['lineHeight', 'editor.lineHeight', 0.8, 3]] as const).map(([key, labelKey, min, max]) => <label key={key} className="block text-xs text-stone-500 dark:text-stone-400">{t(labelKey)}<input data-testid={`sidebar-typography-${key}`} type="number" min={min} max={max} step={key === 'size' ? 1 : 0.1} value={currentTextStyle[key] ?? ''} placeholder={t('editor.inheritTypography')} onChange={(e) => handleTextStyleChange({ [key]: e.target.value === '' ? undefined : Number(e.target.value) } as Partial<TextStyleOverride>)} className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 font-mono text-xs dark:bg-stone-900" /></label>)}
+          <label className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">{t('editor.textColor')}<input data-testid="sidebar-typography-color" type="color" aria-label={t('editor.textColor')} value={currentTextStyle.color?.startsWith('#') ? currentTextStyle.color : '#000000'} onChange={(e) => handleTextStyleChange({ color: e.target.value })} /></label>
+          <button type="button" data-testid="sidebar-typography-reset" onClick={() => handleTextStyleChange({ font: undefined, size: undefined, weight: undefined, italic: undefined, letterSpacing: undefined, lineHeight: undefined, color: undefined })} className="text-xs text-cyan-700 dark:text-cyan-300">{t('editor.resetTypography')}</button>
+        </div>
         <div data-testid="sidebar-text-formatting-section" className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800">
           <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">
             {t('editor.textFormatting')}
@@ -601,6 +700,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
             autoFocus={false}
           />
         </div>
+        </>
       )}
 
       {/* 6. Layer Actions: Lock, Hide, Layer Order, Duplicate, Reset */}

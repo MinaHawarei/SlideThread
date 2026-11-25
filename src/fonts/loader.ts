@@ -1,40 +1,48 @@
-import { FONT_REGISTRY, type FontId, type FontScript, type FontWeight } from './registry';
+import { FONT_REGISTRY, type FontId, type FontScript, type FontStyle, type FontWeight } from './registry';
 
 type Loader = () => Promise<unknown>;
-type FontLoaders = Record<FontId, Partial<Record<FontWeight, Loader>>>;
+type FontLoaders = Record<FontId, Partial<Record<FontWeight, Partial<Record<FontStyle, Loader>>>>>;
 
 const FONT_LOADERS: FontLoaders = {
   'ibm-plex-sans': {
-    400: () => import('@fontsource/ibm-plex-sans/400.css'),
-    500: () => import('@fontsource/ibm-plex-sans/500.css'),
-    700: () => import('@fontsource/ibm-plex-sans/700.css'),
+    400: { normal: () => import('@fontsource/ibm-plex-sans/400.css'), italic: () => import('@fontsource/ibm-plex-sans/400-italic.css') },
+    500: { normal: () => import('@fontsource/ibm-plex-sans/500.css'), italic: () => import('@fontsource/ibm-plex-sans/500-italic.css') },
+    700: { normal: () => import('@fontsource/ibm-plex-sans/700.css'), italic: () => import('@fontsource/ibm-plex-sans/700-italic.css') },
   },
   'ibm-plex-sans-arabic': {
-    400: () => import('@fontsource/ibm-plex-sans-arabic/400.css'),
-    500: () => import('@fontsource/ibm-plex-sans-arabic/500.css'),
-    700: () => import('@fontsource/ibm-plex-sans-arabic/700.css'),
+    400: { normal: () => import('@fontsource/ibm-plex-sans-arabic/400.css') },
+    500: { normal: () => import('@fontsource/ibm-plex-sans-arabic/500.css') },
+    700: { normal: () => import('@fontsource/ibm-plex-sans-arabic/700.css') },
   },
   'jetbrains-mono': {
-    400: () => import('@fontsource/jetbrains-mono/400.css'),
-    700: () => import('@fontsource/jetbrains-mono/700.css'),
+    400: { normal: () => import('@fontsource/jetbrains-mono/400.css'), italic: () => import('@fontsource/jetbrains-mono/400-italic.css') },
+    700: { normal: () => import('@fontsource/jetbrains-mono/700.css'), italic: () => import('@fontsource/jetbrains-mono/700-italic.css') },
   },
   'noto-sans-coptic': {
-    400: () => import('@fontsource/noto-sans-coptic/coptic-400.css'),
+    400: { normal: () => import('@fontsource/noto-sans-coptic/coptic-400.css') },
   },
+  'ibm-plex-serif': {
+    400: { normal: () => import('@fontsource/ibm-plex-serif/400.css'), italic: () => import('@fontsource/ibm-plex-serif/400-italic.css') },
+    500: { normal: () => import('@fontsource/ibm-plex-serif/500.css'), italic: () => import('@fontsource/ibm-plex-serif/500-italic.css') },
+    600: { normal: () => import('@fontsource/ibm-plex-serif/600.css'), italic: () => import('@fontsource/ibm-plex-serif/600-italic.css') },
+    700: { normal: () => import('@fontsource/ibm-plex-serif/700.css'), italic: () => import('@fontsource/ibm-plex-serif/700-italic.css') },
+  },
+  anton: { 400: { normal: () => import('@fontsource/anton/400.css') } },
 };
 
 const pendingLoads = new Map<string, Promise<unknown>>();
 
-export async function loadFont(id: FontId, weight: number): Promise<void> {
+export async function loadFont(id: FontId, weight: number, style: FontStyle = 'normal'): Promise<void> {
   const font = FONT_REGISTRY[id];
   if (!(font.weights as readonly number[]).includes(weight)) {
     throw new Error(`Font ${id} does not include weight ${weight}`);
   }
 
-  const loader = FONT_LOADERS[id][weight as FontWeight];
-  if (!loader) throw new Error(`No bundled CSS loader for ${id} weight ${weight}`);
+  if (!font.styles.includes(style)) throw new Error(`Font ${id} does not include style ${style}`);
+  const loader = FONT_LOADERS[id][weight as FontWeight]?.[style];
+  if (!loader) throw new Error(`No bundled CSS loader for ${id} weight ${weight} ${style}`);
 
-  const cacheKey = `${id}:${weight}`;
+  const cacheKey = `${id}:${weight}:${style}`;
   let load = pendingLoads.get(cacheKey);
   if (!load) {
     load = loader();

@@ -53,6 +53,44 @@ const SafeColorValueSchema = z.string().max(64).regex(
   'Expected a hex color or a simple theme token'
 );
 
+export const ExtraFiltersSchema = z.object({
+  brightness: z.number().finite().min(0).max(200).optional(),
+  contrast: z.number().finite().min(0).max(200).optional(),
+  saturation: z.number().finite().min(0).max(200).optional(),
+  grayscale: z.number().finite().min(0).max(100).optional(),
+  blur: z.number().finite().min(0).max(20).optional(),
+}).strict();
+
+export const TextStyleOverrideSchema = z.object({
+  font: z.enum(['ibm-plex-sans', 'ibm-plex-sans-arabic', 'jetbrains-mono', 'noto-sans-coptic', 'ibm-plex-serif', 'anton']).optional(),
+  size: z.number().finite().min(8).max(240).optional(),
+  weight: z.union([z.literal(400), z.literal(500), z.literal(600), z.literal(700)]).optional(),
+  italic: z.boolean().optional(),
+  letterSpacing: z.number().finite().min(-2).max(20).optional(),
+  lineHeight: z.number().finite().min(0.8).max(3).optional(),
+  color: SafeColorValueSchema.optional(),
+}).strict().superRefine((style, context) => {
+  const supportedWeights: Record<NonNullable<typeof style.font>, readonly number[]> = {
+    'ibm-plex-sans': [400, 500, 700], 'ibm-plex-sans-arabic': [400, 500, 700],
+    'jetbrains-mono': [400, 700], 'noto-sans-coptic': [400],
+    'ibm-plex-serif': [400, 500, 600, 700], anton: [400],
+  };
+  const supportsItalic = style.font === 'ibm-plex-sans' || style.font === 'jetbrains-mono' || style.font === 'ibm-plex-serif';
+  if (style.font && style.weight !== undefined && !supportedWeights[style.font].includes(style.weight)) {
+    context.addIssue({ code: 'custom', path: ['weight'], message: `The selected font does not include weight ${style.weight}` });
+  }
+  if (!style.font && style.weight === 600) {
+    context.addIssue({ code: 'custom', path: ['weight'], message: 'A font with weight 600 must be selected explicitly' });
+  }
+  if (style.italic && !style.font) {
+    context.addIssue({ code: 'custom', path: ['italic'], message: 'Select a font with an italic face first' });
+  }
+  if (style.italic && style.font && !supportsItalic) {
+    context.addIssue({ code: 'custom', path: ['italic'], message: 'The selected font has no italic face' });
+  }
+});
+export type TextStyleOverride = z.infer<typeof TextStyleOverrideSchema>;
+
 export const RichTextMarksSchema = z.object({
   size: z.number().min(50).max(300).optional(),
   color: SafeColorValueSchema.optional(),
@@ -121,6 +159,7 @@ export const ElementOverrideSchema = z.object({
   hidden: z.boolean().optional(),
   rotation: z.number().finite().optional(),
   opacity: z.number().min(0).max(1).optional(),
+  textStyle: TextStyleOverrideSchema.optional(),
 }).strict();
 export type ElementOverride = z.infer<typeof ElementOverrideSchema>;
 
@@ -138,13 +177,35 @@ export const ExtraElementSchema = z.object({
   z: z.number().int(),
   locked: z.boolean(),
   hidden: z.boolean().optional(),
+  /** Optional semantic field binding; the project field remains the source of editable copy. */
+  binding: z.enum(['title', 'tag', 'sub']).optional(),
   text: RichTextSchema.optional(),
   media: MediaRefSchema.optional(),
   assetId: z.string().min(1).optional(),
   shape: z.enum(['rectangle', 'ellipse', 'line', 'arrow']).optional(),
   fill: SafeColorValueSchema.optional(),
+  backgroundColor: SafeColorValueSchema.optional(),
   opacity: z.number().min(0).max(1).optional(),
-}).strict();
+  cornerRadius: z.number().finite().min(0).max(500).optional(),
+  strokeColor: SafeColorValueSchema.optional(),
+  strokeWidth: z.number().finite().min(0).max(100).optional(),
+  strokeStyle: z.enum(['solid', 'dashed', 'dotted']).optional(),
+  filters: ExtraFiltersSchema.optional(),
+  textStyle: TextStyleOverrideSchema.optional(),
+}).strict().superRefine((extra, context) => {
+  if (extra.filters && extra.kind !== 'image') {
+    context.addIssue({ code: 'custom', path: ['filters'], message: 'Image filters are only supported on image extras' });
+  }
+  if (extra.kind === 'shape' && extra.shape === 'line' && extra.strokeWidth !== undefined && extra.strokeWidth <= 0) {
+    context.addIssue({ code: 'custom', path: ['strokeWidth'], message: 'Line thickness must be greater than zero' });
+  }
+  if (extra.textStyle && extra.kind !== 'text') {
+    context.addIssue({ code: 'custom', path: ['textStyle'], message: 'Typography overrides are only valid for text extras' });
+  }
+  if ((extra.binding || extra.backgroundColor) && extra.kind !== 'text') {
+    context.addIssue({ code: 'custom', path: [extra.binding ? 'binding' : 'backgroundColor'], message: 'Text bindings and text chip backgrounds are only valid for text extras' });
+  }
+});
 export type ExtraElement = z.infer<typeof ExtraElementSchema>;
 
 const TemplateSlotFrameSchema = z.object({
@@ -197,7 +258,13 @@ export const SlideSchema = z.object({
   hideSignature: z.boolean().optional(),
   overrides: ElementOverridesSchema.default({}),
   extras: z.array(ExtraElementSchema).default([]),
-}).strict();
+  /** Template defaults explicitly deleted from this project instance; prevents re-materializing on type changes. */
+  detachedElementIds: z.array(z.string().min(1)).optional(),
+}).strict().superRefine((slide, context) => {
+  if (slide.type !== 'cover' && slide.extras.some((extra) => extra.binding)) {
+    context.addIssue({ code: 'custom', path: ['extras'], message: 'Semantic template text bindings are currently supported only on cover slides' });
+  }
+});
 /** Accepted v2 input shape; schema parsing supplies overrides/extras defaults. */
 export type Slide = z.input<typeof SlideSchema>;
 export type ValidatedSlide = z.output<typeof SlideSchema>;

@@ -11,17 +11,17 @@ export const CoverSlide: React.FC<SlideProps> = ({ slide, aspectClass, textDir }
     <div className={`slide-content-area ${isLandscape ? 'cover-layout-landscape' : 'cover-layout-stacked'}`}>
       <div className="cover-title-group" dir={effectiveDir}>
         {tag && (
-          <div className="slide-tag">
+          <div className="slide-tag" data-element-id="tag">
             <RichTextRenderer content={slide.richFields?.tag ?? tag} inline />
           </div>
         )}
         {title && (
-          <h1 className="slide-title-h1">
+          <h1 className="slide-title-h1" data-element-id="title">
             <RichTextRenderer content={slide.richFields?.title ?? title} inline />
           </h1>
         )}
         {sub && (
-          <p className="slide-sub">
+          <p className="slide-sub" data-element-id="sub">
             <RichTextRenderer content={slide.richFields?.sub ?? sub} inline />
           </p>
         )}

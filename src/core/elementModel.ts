@@ -43,6 +43,7 @@ export function mergeTemplateSlotFrames(
 }
 
 export const SLOT_SELECTORS: Record<string, string> = {
+  tag: '.slide-tag',
   title: '.slide-title-h1, .slide-title-h2',
   body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',
   media: '.slide-media-element, .slide-bg-media, .cta-avatar-ring, .media-placeholder',
@@ -52,6 +53,14 @@ export const SLOT_SELECTORS: Record<string, string> = {
   value: '.stat-big-value',
   left: '.compare-card-bad',
   right: '.compare-card-ok',
+  cond: '.rule-layout-landscape .rule-card:nth-child(1) .rule-card-text, .rule-layout-stacked .rule-card:nth-child(1) .rule-card-text',
+  res: '.rule-layout-landscape .rule-card:nth-child(3) .rule-card-text, .rule-layout-stacked .rule-card:nth-child(3) .rule-card-text',
+  note: '.rule-note',
+  text: '.quote-text',
+  author: '.quote-author',
+  t1: '.compare-card-bad .compare-text',
+  t2: '.compare-card-ok .compare-text',
+  label: '.stat-label',
   source: '.quote-author',
 };
 
@@ -80,6 +89,54 @@ export function resizeElementGeometry(geometry: ElementGeometry, dx: number, dy:
   const w = Math.max(0.02, geometry.w + dx);
   const h = Math.max(0.02, geometry.h + (lockAspect ? dx * (geometry.h / geometry.w) : dy));
   return { ...geometry, w, h };
+}
+
+export type ResizeHandle = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w';
+
+/** Resize in slide pixels. Boundary policy: binary-search the drag distance to the last schema-valid size, preserving the opposite anchor and any locked ratio. */
+export function resizeElementGeometryFromHandle(
+  geometry: ElementGeometry, deltaX: number, deltaY: number, slideWidth: number, slideHeight: number,
+  handle: ResizeHandle, lockAspect: boolean,
+): ElementGeometry {
+  if (![geometry.x, geometry.y, geometry.w, geometry.h, geometry.rotation, deltaX, deltaY, slideWidth, slideHeight].every(Number.isFinite) || slideWidth <= 0 || slideHeight <= 0) return geometry;
+  const sx = handle.includes('w') ? -1 : handle.includes('e') ? 1 : 0;
+  const sy = handle.includes('n') ? -1 : handle.includes('s') ? 1 : 0;
+  if (!sx && !sy) return geometry;
+  const radians = geometry.rotation * Math.PI / 180;
+  const localDx = deltaX * Math.cos(radians) + deltaY * Math.sin(radians);
+  const localDy = -deltaX * Math.sin(radians) + deltaY * Math.cos(radians);
+  const oldW = geometry.w * slideWidth;
+  const oldH = geometry.h * slideHeight;
+  let dw = sx * localDx;
+  let dh = sy * localDy;
+  if (lockAspect && sx && sy) {
+    const scale = (oldW * dw + oldH * dh) / (oldW * oldW + oldH * oldH);
+    dw = oldW * scale;
+    dh = oldH * scale;
+  }
+  const anchorLocalX = sx ? -sx * oldW / 2 : 0;
+  const anchorLocalY = sy ? -sy * oldH / 2 : 0;
+  const anchorX = (geometry.x + geometry.w / 2) * slideWidth + anchorLocalX * Math.cos(radians) - anchorLocalY * Math.sin(radians);
+  const anchorY = (geometry.y + geometry.h / 2) * slideHeight + anchorLocalX * Math.sin(radians) + anchorLocalY * Math.cos(radians);
+  const make = (t: number): ElementGeometry => {
+    const w = Math.max(0.02 * slideWidth, Math.min(slideWidth, oldW + dw * t));
+    const h = Math.max(0.02 * slideHeight, Math.min(slideHeight, oldH + dh * t));
+    const localCenterX = sx ? sx * w / 2 : 0;
+    const localCenterY = sy ? sy * h / 2 : 0;
+    const centerX = anchorX + localCenterX * Math.cos(radians) - localCenterY * Math.sin(radians);
+    const centerY = anchorY + localCenterX * Math.sin(radians) + localCenterY * Math.cos(radians);
+    return { x: (centerX - w / 2) / slideWidth, y: (centerY - h / 2) / slideHeight, w: w / slideWidth, h: h / slideHeight, rotation: geometry.rotation };
+  };
+  const valid = (g: ElementGeometry) => g.x >= 0 && g.y >= 0 && g.w <= 1 && g.h <= 1 && g.x + g.w <= 1 && g.y + g.h <= 1;
+  const proposed = make(1);
+  if (valid(proposed)) return proposed;
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 40; i += 1) { const mid = (lo + hi) / 2; if (valid(make(mid))) lo = mid; else hi = mid; }
+  return make(lo);
+}
+
+export function rotationAngleFromPointer(centerX: number, centerY: number, pointerX: number, pointerY: number): number {
+  return Math.atan2(pointerY - centerY, pointerX - centerX);
 }
 
 export function rotateElementGeometry(geometry: ElementGeometry, degrees: number): ElementGeometry {
@@ -111,7 +168,8 @@ function resolveFrame(frame: LayoutFrame, override?: ElementOverride, order = 0)
 /** Resolve template slots and user extras into one stable, bottom-to-top layer list. */
 export function resolveSlideElements(slide: Slide, variant: LayoutVariant, aspect: AspectClass): ResolvedElement[] {
   const overrides = slide.overrides?.[aspect] ?? {};
-  const slots = variant.elements.map((frame, index) => resolveFrame(frame, overrides[frame.id], index));
+  const boundSlots = new Set((slide.extras ?? []).flatMap((extra) => extra.binding === 'tag' ? ['tag'] : extra.binding === 'title' ? ['title'] : extra.binding === 'sub' ? ['body'] : []));
+  const slots = variant.elements.filter((frame) => !boundSlots.has(frame.id)).map((frame, index) => resolveFrame(frame, overrides[frame.id], index));
   const extras: ResolvedElement[] = (slide.extras ?? []).map((extra) => ({
     id: extra.id,
     kind: extra.kind,

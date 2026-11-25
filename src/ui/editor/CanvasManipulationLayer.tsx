@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
-import { mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometry, rotateElementGeometry, scaleElementGeometry, SLOT_SELECTORS, type ElementGeometry, type ResolvedElement } from '../../core/elementModel';
+import { mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometryFromHandle, rotateElementGeometry, scaleElementGeometry, rotationAngleFromPointer, SLOT_SELECTORS, type ElementGeometry, type ResolvedElement, type ResizeHandle } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
@@ -26,6 +26,7 @@ type Gesture = {
   startDistance: number;
   initial: ElementGeometry;
   mode: 'move' | 'resize' | 'rotate' | 'pinch';
+  resizeHandle?: ResizeHandle;
   hasMoved: boolean;
 };
 
@@ -262,7 +263,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     }
   };
 
-  const begin = (event: React.PointerEvent<HTMLElement>, element: ResolvedElement, mode: Gesture['mode']) => {
+  const begin = (event: React.PointerEvent<HTMLElement>, element: ResolvedElement, mode: Gesture['mode'], resizeHandle: ResizeHandle = 'se') => {
     if (element.locked) return;
     event.preventDefault();
     event.stopPropagation();
@@ -270,7 +271,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     try { event.currentTarget.setPointerCapture(event.pointerId); } catch { /* Synthetic pointer events do not have an active pointer to capture. */ }
     const rect = event.currentTarget.closest('[data-testid="manipulation-layer"]')?.getBoundingClientRect();
     const startAngle = rect && rect.width && rect.height
-      ? Math.atan2((event.clientY - rect.top) / rect.height - element.y - element.h / 2, (event.clientX - rect.left) / rect.width - element.x - element.w / 2)
+      ? rotationAngleFromPointer(rect.left + (element.x + element.w / 2) * rect.width, rect.top + (element.y + element.h / 2) * rect.height, event.clientX, event.clientY)
       : 0;
     activePointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     const active = gesture.current;
@@ -302,6 +303,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       startDistance: 0,
       initial,
       mode,
+      resizeHandle,
       hasMoved: false,
     };
   };
@@ -333,9 +335,9 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       geometry = element.kind === 'slot' ? moved : rotateElementGeometry(moved, active.initial.rotation + (Math.atan2(deltaY, deltaX) - active.startAngle) * 180 / Math.PI);
     }
     if (active.mode === 'move') geometry = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy };
-    if (active.mode === 'resize') geometry = resizeElementGeometry(active.initial, dx, dy, element.kind === 'image' || element.kind === 'sticker');
+    if (active.mode === 'resize') geometry = resizeElementGeometryFromHandle(active.initial, event.clientX - active.startX, event.clientY - active.startY, width, height, active.resizeHandle ?? 'se', (element.kind === 'image' || element.kind === 'sticker' || Boolean(element.extra?.assetId)) !== event.shiftKey);
     if (active.mode === 'rotate') {
-      const angle = Math.atan2((event.clientY - rect.top) / rect.height - active.initial.y - active.initial.h / 2, (event.clientX - rect.left) / rect.width - active.initial.x - active.initial.w / 2);
+      const angle = rotationAngleFromPointer((rect.left + (active.initial.x + active.initial.w / 2) * rect.width), (rect.top + (active.initial.y + active.initial.h / 2) * rect.height), event.clientX, event.clientY);
       let newAngle = active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI;
       if (event.shiftKey) {
         newAngle = Math.round(newAngle / 15) * 15;
@@ -375,9 +377,9 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         geometry = element.kind === 'slot' ? moved : rotateElementGeometry(moved, active.initial.rotation + (Math.atan2(deltaY, deltaX) - active.startAngle) * 180 / Math.PI);
       }
       if (active.mode === 'move') geometry = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy };
-      if (active.mode === 'resize') geometry = resizeElementGeometry(active.initial, dx, dy, element.kind === 'image' || element.kind === 'sticker');
+      if (active.mode === 'resize') geometry = resizeElementGeometryFromHandle(active.initial, event.clientX - active.startX, event.clientY - active.startY, width, height, active.resizeHandle ?? 'se', (element.kind === 'image' || element.kind === 'sticker' || Boolean(element.extra?.assetId)) !== event.shiftKey);
       if (active.mode === 'rotate') {
-        const angle = Math.atan2((event.clientY - rect.top) / rect.height - active.initial.y - active.initial.h / 2, (event.clientX - rect.left) / rect.width - active.initial.x - active.initial.w / 2);
+        const angle = rotationAngleFromPointer((rect.left + (active.initial.x + active.initial.w / 2) * rect.width), (rect.top + (active.initial.y + active.initial.h / 2) * rect.height), event.clientX, event.clientY);
         let newAngle = active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI;
         if (event.shiftKey) {
           newAngle = Math.round(newAngle / 15) * 15;
@@ -505,23 +507,31 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                       onClose={() => selectElement()}
                     />
                   )}
-                  <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', right: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize' }} />
+                  <button aria-label={t('editor.resizeElement')} data-testid={`resize-${element.id}`} onPointerDown={(event) => begin(event, element, 'resize')} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', right: -22, bottom: -22, width: 44, height: 44, padding: 0, border: '2px solid white', borderRadius: 22, background: '#0891b2', pointerEvents: 'auto', touchAction: 'none', cursor: 'nwse-resize', display: 'none' }} />
                 </>
               ) : (
                 <>
+                  {!touchLayout && element.extra && (['nw', 'n', 'ne', 'e', 's', 'sw', 'w'] as ResizeHandle[]).map((handle) => {
+                    const x = handle.includes('w') ? 0 : handle.includes('e') ? 100 : 50;
+                    const y = handle.includes('n') ? 0 : handle.includes('s') ? 100 : 50;
+                    const cursor = handle === 'n' || handle === 's' ? 'ns-resize' : handle === 'e' || handle === 'w' ? 'ew-resize' : 'nwse-resize';
+                    return (
+                      <button key={handle} aria-label={t('editor.resizeElement')} title={t('editor.resizeElement')} data-testid={`resize-${element.id}-${handle}`} onPointerDown={(event) => begin(event, element, 'resize', handle)} onClick={(event) => event.stopPropagation()} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: `translate(-50%, -50%) rotate(-${shown.rotation}deg)`, width: 18, height: 18, padding: 0, border: '2px solid white', borderRadius: 9, background: '#0891b2', boxShadow: '0 2px 6px rgba(0,0,0,0.25)', pointerEvents: 'auto', touchAction: 'none', cursor }} />
+                    );
+                  })}
                   {/* Corner Resize Handle */}
                   <button
                     aria-label={t('editor.resizeElement')}
                     title={t('editor.resizeElement')}
                     data-testid={`resize-${element.id}`}
-                    onPointerDown={(event) => begin(event, element, 'resize')}
+                    onPointerDown={(event) => begin(event, element, 'resize', 'se')}
                     onClick={(event) => event.stopPropagation()}
                     style={{
                       position: 'absolute',
-                      right: -16,
-                      bottom: -16,
-                      width: 32,
-                      height: 32,
+                      right: touchLayout ? -22 : -9,
+                      bottom: touchLayout ? -22 : -9,
+                      width: touchLayout ? 44 : 18,
+                      height: touchLayout ? 44 : 18,
                       padding: 0,
                       border: '2px solid white',
                       borderRadius: 16,
@@ -530,7 +540,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                       pointerEvents: 'auto',
                       touchAction: 'none',
                       cursor: 'nwse-resize',
-                      display: 'flex',
+                      display: element.extra ? 'flex' : 'none',
                       alignItems: 'center',
                       justifyContent: 'center',
                       transform: `rotate(-${shown.rotation}deg)`,

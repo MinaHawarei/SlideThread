@@ -16,6 +16,8 @@ import ListItem from '@tiptap/extension-list-item';
 import type { RichText } from '../../core/schema';
 import { richTextToTiptapJSON, tiptapJSONToRichText, resolveFontFamily } from '../../core/richText';
 import { useT } from '../../i18n';
+import { FONT_REGISTRY, type FontId, type FontWeight } from '../../fonts/registry';
+import { loadFont } from '../../fonts/loader';
 
 const CustomParagraph = Paragraph.extend({
   addAttributes() {
@@ -71,6 +73,8 @@ const FONT_OPTIONS = [
   { id: 'ibm-plex-sans-arabic', label: 'IBM Plex Sans Arabic' },
   { id: 'jetbrains-mono', label: 'JetBrains Mono' },
   { id: 'noto-sans-coptic', label: 'Noto Sans Coptic' },
+  { id: 'ibm-plex-serif', label: 'IBM Plex Serif' },
+  { id: 'anton', label: 'Anton' },
 ];
 
 const SIZE_OPTIONS = [
@@ -246,8 +250,12 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         aria-label={t('editor.font')}
         data-testid="toolbar-font-family"
         onChange={(e) => {
-          const font = e.target.value;
-          editor.chain().focus().setMark('textStyle', { fontFamily: resolveFontFamily(font) }).run();
+          const font = e.target.value as FontId;
+          const definition = FONT_REGISTRY[font];
+          const weight = definition.weights.includes(isBold ? 700 : 400) ? (isBold ? 700 : 400) : definition.weights[0]!;
+          void loadFont(font, weight as FontWeight).then(() => {
+            editor.chain().focus().setMark('textStyle', { fontFamily: resolveFontFamily(font) }).run();
+          });
         }}
         style={{ minHeight: touchLayout ? 44 : 32, fontSize: 13, borderRadius: 6, border: '1px solid #94a3b8', padding: '0 4px', background: 'white' }}
       >

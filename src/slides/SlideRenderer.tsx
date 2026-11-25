@@ -28,6 +28,9 @@ import {
   type TemplateProjectSnapshotInput,
 } from '../core/schema';
 import { SLOT_SELECTORS } from '../core/elementModel';
+import { textStyleToCss, TYPOGRAPHY_SLOT_IDS } from '../core/textStyle';
+import { FONT_REGISTRY, type FontId, type FontWeight } from '../fonts/registry';
+import { loadFont } from '../fonts/loader';
 import { loadTemplateProjectSnapshot, templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
 import './slides.css';
 
@@ -86,6 +89,41 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
   const canvasRef = useRef<HTMLDivElement>(null);
   const overrides = slide.overrides?.[aspectClass];
+
+  useEffect(() => {
+    const required: Array<{ id: FontId; weight: number; italic: boolean; selector?: string }> = [];
+    for (const [slotId, override] of Object.entries(overrides ?? {})) {
+      const style = override.textStyle;
+      if (style?.font) required.push({ id: style.font as FontId, weight: style.weight ?? FONT_REGISTRY[style.font as FontId].weights[0]!, italic: Boolean(style.italic), selector: SLOT_SELECTORS[slotId] });
+    }
+    for (const extra of slide.extras ?? []) {
+      const style = extra.textStyle;
+      if (extra.kind === 'text' && style?.font) required.push({ id: style.font as FontId, weight: style.weight ?? FONT_REGISTRY[style.font as FontId].weights[0]!, italic: Boolean(style.italic) });
+      for (const run of extra.text?.blocks.flatMap((block) => block.runs) ?? []) {
+        if (run.marks?.font && run.marks.font in FONT_REGISTRY) {
+          const id = run.marks.font as FontId;
+          required.push({ id, weight: run.marks.bold && FONT_REGISTRY[id].weights.includes(700) ? 700 : FONT_REGISTRY[id].weights[0]!, italic: false });
+        }
+      }
+    }
+    for (const doc of Object.values(slide.fields)) for (const block of doc.blocks) for (const run of block.runs) {
+      if (run.marks?.font && run.marks.font in FONT_REGISTRY) {
+        const id = run.marks.font as FontId;
+        required.push({ id, weight: run.marks.bold && FONT_REGISTRY[id].weights.includes(700) ? 700 : FONT_REGISTRY[id].weights[0]!, italic: false });
+      }
+    }
+    let active = true;
+    void Promise.all(required.map(async (requirement) => {
+      const style = requirement.italic ? 'italic' : 'normal';
+      await loadFont(requirement.id, requirement.weight as FontWeight, style);
+      const font = FONT_REGISTRY[requirement.id];
+      if (document.fonts?.load) {
+        const node = requirement.selector ? canvasRef.current?.querySelector<HTMLElement>(requirement.selector) : undefined;
+        await document.fonts.load(`${style} ${requirement.weight} 16px "${font.family}"`, node?.textContent || slide.fields.title?.blocks.flatMap((block) => block.runs.map((run) => run.text)).join(' ') || 'SlideThread');
+      }
+    })).catch((error: unknown) => { if (active) console.warn('A stored typography font could not be loaded', error); });
+    return () => { active = false; };
+  }, [overrides, slide.extras, slide.fields]);
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -340,6 +378,43 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     });
   }, [template, slide.type, aspectClass, isStory, slideDims.width, slideDims.height, textDir, slide.fields]);
 
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !overrides) return;
+    const previous: Array<{ node: HTMLElement; values: Record<string, string> }> = [];
+    for (const [slotId, override] of Object.entries(overrides)) {
+      if (!override.textStyle || !TYPOGRAPHY_SLOT_IDS.has(slotId)) continue;
+      const selector = SLOT_SELECTORS[slotId];
+      if (!selector) continue;
+      for (const node of canvas.querySelectorAll<HTMLElement>(selector)) {
+        const targets = [node, ...node.querySelectorAll<HTMLElement>('*:not(bdi):not(.rich-text-run)')];
+        for (const target of targets) {
+          const css = textStyleToCss(override.textStyle);
+          const values = Object.fromEntries(Object.keys(css).map((key) => [key, (target.style as unknown as Record<string, string>)[key] ?? '']));
+          previous.push({ node: target, values });
+          for (const [property, value] of Object.entries(css)) (target.style as unknown as Record<string, string>)[property] = String(value);
+        }
+      }
+    }
+    return () => previous.forEach(({ node, values }) => {
+      for (const [property, value] of Object.entries(values)) (node.style as unknown as Record<string, string>)[property] = value;
+    });
+  }, [overrides, template, slide.type, aspectClass, slideDims.width, slideDims.height, slide.fields]);
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const bound = (slide.extras ?? []).filter((extra) => extra.kind === 'text' && extra.binding);
+    const nodes = bound.map((extra) => {
+      const node = canvas.querySelector<HTMLElement>(`[data-element-id="${extra.binding}"]`);
+      if (!node) return undefined;
+      const display = node.style.display;
+      node.style.display = 'none';
+      return { node, display };
+    }).filter((item): item is { node: HTMLElement; display: string } => Boolean(item));
+    return () => nodes.forEach(({ node, display }) => { node.style.display = display; });
+  }, [slide.extras, slide.type, aspectClass]);
+
   if (!template) return <div className={`slide-canvas aspect-${aspectClass} template-loading ${className}`.trim()} style={{ width: dimensions?.width, height: dimensions?.height, ...style }} aria-busy="true" />;
   const templatePalette = {
     ...(template.paletteByMode?.[themeMode] ?? palette),
@@ -510,7 +585,9 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
         </div>
       )}
       {renderComponent()}
-      <ExtrasRenderer extras={slide.extras} />
+      <ExtrasRenderer extras={(slide.extras ?? []).map((extra) => extra.binding && slide.fields[extra.binding]
+        ? { ...extra, text: slide.fields[extra.binding] }
+        : extra)} />
       {shouldRenderSignature && (
         <div
           className={`slide-signature-container sig-anchor-${signatureAnchor}`}

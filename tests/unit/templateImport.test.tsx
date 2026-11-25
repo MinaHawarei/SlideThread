@@ -9,6 +9,9 @@ import { invalidateTemplatePackage } from '../../src/templates/starters';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { generatePalette } from '../../src/core/palette';
+import { createDefaultProject } from '../../src/store/projectStore';
+import { exportProjectToJSON, importProjectFromJSON } from '../../src/core/projectIO';
+import { useProjectStore } from '../../src/store/projectStore';
 
 const svgAsset = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M0 0h10v10H0z" fill="#ff0000"/></svg>';
 
@@ -76,8 +79,11 @@ describe('browser template ZIP import', () => {
           portrait: {
             slots: { title: { blockStart: 0.2, inlineStart: 0.1, inlineSize: 0.8, blockSize: 0.2, align: 'start' } },
             elements: [
-              { id: 'custom-text', kind: 'text', x: 0.1, y: 0.65, w: 0.5, h: 0.1, rotation: 0, z: 4, locked: false, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'Editable template text' }] }] } },
-              { id: 'custom-image', kind: 'image', x: 0.65, y: 0.65, w: 0.2, h: 0.2, rotation: 0, z: 5, locked: false, assetId: 'mark' },
+              { id: 'custom-tag', kind: 'text', binding: 'tag', x: 0.1, y: 0.65, w: 0.2, h: 0.06, rotation: 0, z: 4, locked: false, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'ARCHITECTURE' }] }] } },
+              { id: 'custom-chip', kind: 'text', x: 0.32, y: 0.65, w: 0.24, h: 0.06, rotation: 0, z: 5, locked: false, backgroundColor: '#123456', cornerRadius: 12, textStyle: { font: 'ibm-plex-serif', size: 18, weight: 600, italic: true }, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'npm run build' }] }] } },
+              { id: 'custom-text', kind: 'text', x: 0.1, y: 0.74, w: 0.5, h: 0.1, rotation: 0, z: 6, locked: false, text: { type: 'doc', blocks: [{ type: 'p', runs: [{ text: 'مرحبا mixed English long composition text' }] }] } },
+              { id: 'custom-image', kind: 'image', x: 0.65, y: 0.65, w: 0.2, h: 0.2, rotation: 0, z: 7, locked: false, assetId: 'mark', filters: { grayscale: 10 } },
+              { id: 'custom-shape', kind: 'shape', shape: 'rectangle', x: 0.75, y: 0.85, w: 0.12, h: 0.06, rotation: 0, z: 8, locked: false, fill: '#ff5500', cornerRadius: 6, strokeColor: '#ffffff', strokeWidth: 2 },
             ],
           },
         },
@@ -93,8 +99,31 @@ describe('browser template ZIP import', () => {
     const snapshot = await loadTemplateProjectSnapshot(id, '#35D0E6');
     const composition = snapshot.composition.cover?.portrait;
     expect(composition?.slots?.title?.blockStart).toBe(0.2);
-    expect(composition?.elements).toHaveLength(2);
-    expect(composition?.elements?.[1]?.assetId).toMatch(/^data:image\/svg\+xml;base64,/);
+    expect(composition?.elements).toHaveLength(5);
+    expect(composition?.elements?.[3]?.assetId).toMatch(/^data:image\/svg\+xml;base64,/);
+
+    const projectA = createDefaultProject({ templateId: id, templateSnapshot: snapshot });
+    const projectB = createDefaultProject({ templateId: id, templateSnapshot: snapshot });
+    const slideA = projectA.slides[0]!;
+    const slideB = projectB.slides[0]!;
+    expect(slideA.extras?.map(({ id: elementId }) => elementId)).toEqual(['custom-tag', 'custom-chip', 'custom-text', 'custom-image', 'custom-shape']);
+    const editedChip = { ...slideA.extras![1]!, text: { type: 'doc' as const, blocks: [{ type: 'p' as const, runs: [{ text: 'Changed in project A' }] }] } };
+    slideA.extras = slideA.extras!.map((element) => element.id === 'custom-chip' ? editedChip : element);
+    expect(slideB.extras?.[1]?.text?.blocks[0]?.runs[0]?.text).toBe('npm run build');
+    expect(snapshot.composition.cover?.portrait?.elements?.[1]?.text?.blocks[0]?.runs[0]?.text).toBe('npm run build');
+    const projectRoundTrip = await exportProjectToJSON(projectA);
+    const restored = await importProjectFromJSON(projectRoundTrip.json);
+    expect(restored.templateSnapshot?.assets['assets/mark.svg']).toMatch(/^data:image\/svg\+xml;base64,/);
+    expect(restored.slides[0]?.extras?.find((element) => element.id === 'custom-chip')?.text?.blocks[0]?.runs[0]?.text).toBe('Changed in project A');
+
+    const priorStoreProject = useProjectStore.getState().project;
+    useProjectStore.getState().setProject(projectB);
+    useProjectStore.getState().deleteExtraElement(slideB.id, 'custom-chip');
+    expect(useProjectStore.getState().project.slides[0]?.detachedElementIds).toContain('custom-chip');
+    useProjectStore.getState().setSlideType(slideB.id, 'explain');
+    useProjectStore.getState().setSlideType(slideB.id, 'cover');
+    expect(useProjectStore.getState().project.slides[0]?.extras?.some((element) => element.id === 'custom-chip')).toBe(false);
+    useProjectStore.getState().setProject(priorStoreProject);
 
     await deleteUserTemplatePackage(id);
     invalidateTemplatePackage(id);
@@ -124,6 +153,8 @@ describe('browser template ZIP import', () => {
   it('rejects an invalid schema and unknown font with the failing field named', async () => {
     await expect(importTemplateZip(await makeZip(importedId(), {}, { schema: 2 }))).rejects.toThrow('template.json failed schema validation at schema');
     await expect(importTemplateZip(await makeZip(importedId(), {}, { theme: { fonts: { display: 'unknown-font', body: 'ibm-plex-sans-arabic' } } }))).rejects.toThrow('theme.fonts.display');
+    const badBinding = manifestFor(importedId(), { composition: { explain: { portrait: { elements: [{ id: 'bound-tag', kind: 'text', binding: 'tag', x: 0, y: 0, w: 0.2, h: 0.1, rotation: 0, z: 0, locked: false }] } } } });
+    await expect(importTemplateZip(await makeZip(String(badBinding.id), {}, badBinding))).rejects.toThrow('Semantic field bindings are currently supported only on cover slides');
     expect(await listUserTemplatePackages()).toHaveLength(0);
   });
 
@@ -196,7 +227,9 @@ describe('browser template ZIP import', () => {
     await expect(importTemplateZip(await makeZip(importedId(), { 'assets/remote.svg': '<svg xmlns="http://www.w3.org/2000/svg"><image href="https://example.com/x.png"/></svg>' }))).rejects.toThrow('external or linked resource reference');
     const id = importedId();
     await importTemplateZip(await makeZip(id));
-    await expect(importTemplateZip(await makeZip(id))).rejects.toThrow('already in your imported template library');
+    const storedBefore = await getUserTemplatePackage(id);
+    await expect(importTemplateZip(await makeZip(id, {}, { name: { en: 'Replacement', ar: 'بديل' } }))).rejects.toThrow('already in your imported template library');
+    expect((await getUserTemplatePackage(id))?.manifest.name.en).toBe(storedBefore?.manifest.name.en);
     await deleteUserTemplatePackage(id);
   });
 

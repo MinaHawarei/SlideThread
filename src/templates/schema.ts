@@ -66,6 +66,7 @@ export const TemplateSchema = z.object({
         if (!['text', 'image', 'shape'].includes(element.kind)) ctx.addIssue({ code: 'custom', path: ['composition', slideType, aspect, 'elements', id, 'kind'], message: 'Composition elements must use the native text, image, or shape editor kind' });
         if (!/^[a-z0-9][a-z0-9_-]*$/.test(element.id)) ctx.addIssue({ code: 'custom', path: ['composition', slideType, aspect, 'elements', id, 'id'], message: 'Composition element ids must be stable lowercase slugs' });
         if (ids.has(element.id)) ctx.addIssue({ code: 'custom', path: ['composition', slideType, aspect, 'elements', id, 'id'], message: `Duplicate composition element id: ${element.id}` });
+        if (element.binding && slideType !== 'cover') ctx.addIssue({ code: 'custom', path: ['composition', slideType, aspect, 'elements', id, 'binding'], message: 'Semantic field bindings are currently supported only on cover slides' });
         ids.add(element.id);
       }
     }
