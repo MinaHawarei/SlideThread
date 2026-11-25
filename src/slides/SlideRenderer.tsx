@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { SlideProps } from './types';
 import { CoverSlide } from './CoverSlide';
 import { ExplainSlide } from './ExplainSlide';
@@ -15,7 +15,6 @@ import { SlideCounter } from './SlideCounter';
 import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
 import { ExtrasRenderer } from './ExtrasRenderer';
 import { SlideBackgroundRenderer } from './SlideBackgroundRenderer';
-import { getTemplate } from '../templates';
 import type { TemplateDef } from '../templates';
 import {
   richTextFieldsToPlainText,
@@ -29,7 +28,7 @@ import {
   type TemplateProjectSnapshotInput,
 } from '../core/schema';
 import { SLOT_SELECTORS } from '../core/elementModel';
-import { templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
+import { loadTemplateProjectSnapshot, templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
 import './slides.css';
 
 const DEFAULT_DIMENSIONS: Record<AspectClass, { width: number; height: number }> = {
@@ -50,6 +49,7 @@ export interface SlideRendererProps extends Omit<SlideProps, 'slide'> {
 }
 
 export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) => {
+  const [resolvedSnapshot, setResolvedSnapshot] = useState<TemplateProjectSnapshotInput>();
   const {
     slide,
     palette,
@@ -63,7 +63,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     signatureConfig,
     showSafeZones = false,
     isStory = false,
-    templateId = 'network',
+    templateId = 'tech-mesh',
     themeMode = 'dark',
     dimensions,
     className = '',
@@ -72,7 +72,18 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     templateSnapshot,
   } = props;
 
-  const template = templateOverride ?? (templateSnapshot ? templateDefinitionFromSnapshot(templateSnapshot) : getTemplate(templateId));
+  useEffect(() => {
+    if (templateOverride || templateSnapshot) { setResolvedSnapshot(undefined); return; }
+    let active = true;
+    loadTemplateProjectSnapshot(templateId, '#35D0E6').then((snapshot) => { if (active) setResolvedSnapshot(snapshot); }).catch((error) => {
+      console.error(`Could not load template package ${templateId}`, error);
+    });
+    return () => { active = false; };
+  }, [templateId, templateOverride, templateSnapshot]);
+
+  const effectiveSnapshot = templateSnapshot ?? resolvedSnapshot;
+  const template = templateOverride ?? (effectiveSnapshot ? templateDefinitionFromSnapshot(effectiveSnapshot) : undefined);
+  if (!template) return <div className={`slide-canvas aspect-${aspectClass} template-loading ${className}`.trim()} style={{ width: dimensions?.width, height: dimensions?.height, ...style }} aria-busy="true" />;
   const templatePalette = {
     ...(template.paletteByMode?.[themeMode] ?? palette),
     ...template.paletteOverridesByMode?.[themeMode],

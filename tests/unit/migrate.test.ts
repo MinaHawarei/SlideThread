@@ -11,7 +11,7 @@ describe('Project migration and validation', () => {
     contentType: 'carousel',
     formatId: 'r_4_5',
     orientation: 'portrait',
-    templateId: 'network',
+    templateId: 'tech-mesh',
     primaryColor: '#35D0E6',
     theme: 'dark',
     textDir: 'auto',

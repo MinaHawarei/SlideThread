@@ -14,6 +14,7 @@
   "templates": [
     {
       "id": "bold-marketing",
+      "className": "bold",
       "name": {
         "en": "Bold Marketing",
         "ar": "تسويق جريء"
@@ -31,6 +32,49 @@
         "statement"
       ],
       "colorFlexible": true,
+      "theme": {
+        "modes": {
+          "dark": {
+            "bg": "#15161B",
+            "bg2": "#24252C",
+            "ink": "#FFF8E9",
+            "mute": "#C5C1B9",
+            "card": "#25262C",
+            "line": "#64636A"
+          },
+          "light": {
+            "bg": "#FFF8E9",
+            "bg2": "#F0E7D5",
+            "ink": "#17171A",
+            "mute": "#605B52",
+            "card": "#FFFFFF",
+            "line": "#29282B"
+          }
+        },
+        "fonts": {
+          "display": "ibm-plex-sans",
+          "body": "ibm-plex-sans-arabic",
+          "mono": "jetbrains-mono"
+        },
+        "typeScale": {
+          "h1": 124,
+          "h2": 80,
+          "body": 44,
+          "small": 30,
+          "mono": 34
+        },
+        "radius": {
+          "card": 0,
+          "chip": 0
+        }
+      },
+      "counter": {
+        "styles": [
+          "number",
+          "bar"
+        ],
+        "defaultStyle": "number"
+      },
       "formats": [
         "post",
         "carousel"
@@ -47,6 +91,7 @@
     },
     {
       "id": "clean-minimal",
+      "className": "clean",
       "name": {
         "en": "Clean Minimal",
         "ar": "بسيط ونظيف"
@@ -65,6 +110,30 @@
         "whitespace"
       ],
       "colorFlexible": true,
+      "theme": {
+        "fonts": {
+          "display": "ibm-plex-sans",
+          "body": "ibm-plex-sans-arabic",
+          "mono": "jetbrains-mono"
+        },
+        "typeScale": {
+          "h1": 96,
+          "h2": 64,
+          "body": 38,
+          "small": 26,
+          "mono": 30
+        },
+        "radius": {
+          "card": 12,
+          "chip": 6
+        }
+      },
+      "counter": {
+        "styles": [
+          "bar"
+        ],
+        "defaultStyle": "bar"
+      },
       "formats": [
         "post",
         "carousel"
@@ -81,6 +150,7 @@
     },
     {
       "id": "heritage-geometric",
+      "className": "heritage",
       "name": {
         "en": "Heritage Geometric",
         "ar": "هندسة تراثية"
@@ -98,6 +168,59 @@
         "warm"
       ],
       "colorFlexible": false,
+      "theme": {
+        "modes": {
+          "dark": {
+            "bg": "#241D18",
+            "bg2": "#342821",
+            "ink": "#FAF2E7",
+            "mute": "#C6B6A3",
+            "acc": "#D89B52",
+            "acc2": "#65A89A",
+            "line": "#785E47",
+            "card": "#31271F",
+            "ok": "#7DBD91",
+            "bad": "#E47E6F",
+            "onAcc": "#241D18"
+          },
+          "light": {
+            "bg": "#FAF4E8",
+            "bg2": "#F0E4D3",
+            "ink": "#2B2019",
+            "mute": "#68584A",
+            "acc": "#A75C2B",
+            "acc2": "#287565",
+            "line": "#D2BCA3",
+            "card": "#FFFFFF",
+            "ok": "#2B7A49",
+            "bad": "#A53C30",
+            "onAcc": "#FFFFFF"
+          }
+        },
+        "fonts": {
+          "display": "ibm-plex-sans-arabic",
+          "body": "ibm-plex-sans-arabic",
+          "mono": "jetbrains-mono"
+        },
+        "typeScale": {
+          "h1": 104,
+          "h2": 72,
+          "body": 42,
+          "small": 28,
+          "mono": 32
+        },
+        "radius": {
+          "card": 20,
+          "chip": 12
+        }
+      },
+      "counter": {
+        "styles": [
+          "number",
+          "dots"
+        ],
+        "defaultStyle": "number"
+      },
       "formats": [
         "post",
         "carousel"
@@ -114,6 +237,7 @@
     },
     {
       "id": "soft-gradient",
+      "className": "soft",
       "name": {
         "en": "Soft Gradient",
         "ar": "تدرّج ناعم"
@@ -132,6 +256,32 @@
         "friendly"
       ],
       "colorFlexible": true,
+      "theme": {
+        "fonts": {
+          "display": "ibm-plex-sans",
+          "body": "ibm-plex-sans-arabic",
+          "mono": "jetbrains-mono"
+        },
+        "typeScale": {
+          "h1": 108,
+          "h2": 72,
+          "body": 42,
+          "small": 28,
+          "mono": 32
+        },
+        "radius": {
+          "card": 36,
+          "chip": 9999
+        }
+      },
+      "counter": {
+        "styles": [
+          "dots",
+          "bar",
+          "number"
+        ],
+        "defaultStyle": "dots"
+      },
       "formats": [
         "post",
         "carousel"
@@ -148,6 +298,7 @@
     },
     {
       "id": "tech-mesh",
+      "className": "network",
       "name": {
         "en": "Weave",
         "ar": "نسيج"
@@ -165,6 +316,32 @@
         "original"
       ],
       "colorFlexible": true,
+      "theme": {
+        "fonts": {
+          "display": "ibm-plex-sans",
+          "body": "ibm-plex-sans-arabic",
+          "mono": "jetbrains-mono"
+        },
+        "typeScale": {
+          "h1": 112,
+          "h2": 76,
+          "body": 44,
+          "small": 30,
+          "mono": 34
+        },
+        "radius": {
+          "card": 24,
+          "chip": 9999
+        }
+      },
+      "counter": {
+        "styles": [
+          "number",
+          "bar",
+          "dots"
+        ],
+        "defaultStyle": "number"
+      },
       "formats": [
         "post",
         "carousel"

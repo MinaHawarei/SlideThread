@@ -237,7 +237,7 @@ describe('Counter System (Spec §5.4 & Revision Plan §3.6)', () => {
   describe('DesignInspector Controls Integration', () => {
     beforeEach(() => {
       useProjectStore.getState().createProject({
-        templateId: 'network',
+        templateId: 'tech-mesh',
         counter: { ...DEFAULT_COUNTER_CONFIG, show: true, anchor: 'br', style: 'number' },
         signature: { ...DEFAULT_SIGNATURE_CONFIG, show: true, anchor: 'br' },
       });

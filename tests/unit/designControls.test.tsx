@@ -177,7 +177,7 @@ describe('Design Controls & Format Relayout (Spec §7, §4.3, Task P3-7)', () =>
       // 1. Change format to 16:9 landscape
       useProjectStore.getState().updateProjectMeta({ formatId: 'r_16_9', orientation: 'landscape' });
       // 2. Change template to bold
-      useProjectStore.getState().updateProjectMeta({ templateId: 'bold' });
+      useProjectStore.getState().updateProjectMeta({ templateId: 'bold-marketing' });
       // 3. Change color to rose
       useProjectStore.getState().updateProjectMeta({ primaryColor: '#F43F5E' });
       // 4. Change theme to light
@@ -187,7 +187,7 @@ describe('Design Controls & Format Relayout (Spec §7, §4.3, Task P3-7)', () =>
       // 6. Change format to 9:16 story
       useProjectStore.getState().updateProjectMeta({ formatId: 'r_9_16', orientation: 'portrait' });
       // 7. Change template to clean
-      useProjectStore.getState().updateProjectMeta({ templateId: 'clean' });
+      useProjectStore.getState().updateProjectMeta({ templateId: 'clean-minimal' });
       // 8. Change format back to 4:5
       useProjectStore.getState().updateProjectMeta({ formatId: 'r_4_5' });
     });

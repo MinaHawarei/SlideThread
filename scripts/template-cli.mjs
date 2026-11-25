@@ -291,11 +291,14 @@ async function writeIndex(check) {
     if (manifest.testFixture) continue;
     templates.push({
       id: manifest.id,
+      className: manifest.className ?? manifest.id,
       name: manifest.name,
       description: manifest.description ?? {},
       categories: manifest.categories,
       tags: manifest.tags,
       colorFlexible: manifest.colorFlexible,
+      theme: manifest.theme,
+      counter: manifest.counter ?? null,
       formats: manifest.formats,
       modes: manifest.colorFlexible ? ['dark', 'light'] : Object.keys(manifest.theme.modes ?? {}).sort(),
       languages: ['ar', 'en'],

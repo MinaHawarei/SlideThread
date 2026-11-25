@@ -24,6 +24,7 @@
     "id": {
       "$ref": "#/$defs/id"
     },
+    "className": { "type": "string", "minLength": 1 },
     "name": {
       "$ref": "#/$defs/bilingualName"
     },

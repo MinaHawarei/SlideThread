@@ -36,7 +36,7 @@ describe('Project JSON I/O (Spec §8.2 & Plan §4)', () => {
     orientation: 'portrait',
     platform: 'linkedin',
     contentType: 'carousel',
-    templateId: 'network',
+    templateId: 'tech-mesh',
     theme: 'dark',
     primaryColor: '#06b6d4',
     textDir: 'ltr',

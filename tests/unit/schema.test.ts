@@ -18,7 +18,7 @@ describe('Project schema validation', () => {
     contentType: 'carousel',
     formatId: 'r_4_5',
     orientation: 'portrait',
-    templateId: 'network',
+    templateId: 'tech-mesh',
     primaryColor: '#35D0E6',
     theme: 'dark',
     textDir: 'auto',
@@ -75,7 +75,7 @@ describe('BrandSettings schema validation', () => {
     showSocials: false,
     socials: [{ platform: 'github', handle: 'minahawarei' }],
     language: 'en',
-    defaultTemplateId: 'network',
+    defaultTemplateId: 'tech-mesh',
     defaultPrimaryColor: '#35D0E6',
     defaultTheme: 'dark',
   };

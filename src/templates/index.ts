@@ -1,39 +1,40 @@
 import type { TemplateId } from '../core/schema';
+import { FONT_REGISTRY } from '../fonts/registry';
+import registry from './registry/index.json';
+import { STARTER_TEMPLATE_IDS } from './starters';
 import type { TemplateDef } from './types';
-import { networkTemplate } from './network';
-import { cleanTemplate } from './clean';
-import { boldTemplate } from './bold';
-import { softGradientTemplate } from './softGradient';
-import { heritageGeometricTemplate } from './heritageGeometric';
 
 export * from './types';
-export { networkTemplate } from './network';
-export { cleanTemplate } from './clean';
-export { boldTemplate } from './bold';
-export { softGradientTemplate } from './softGradient';
-export { heritageGeometricTemplate } from './heritageGeometric';
 
-type StarterTemplateId = 'tech-mesh' | 'clean-minimal' | 'bold-marketing' | 'soft-gradient' | 'heritage-geometric';
-export const TEMPLATES: Record<StarterTemplateId, TemplateDef> = {
-  'tech-mesh': networkTemplate,
-  'clean-minimal': cleanTemplate,
-  'bold-marketing': boldTemplate,
-  'soft-gradient': softGradientTemplate,
-  'heritage-geometric': heritageGeometricTemplate,
-};
+const previewImages = import.meta.glob<string>('./starters/*/preview.webp', { eager: true, query: '?url', import: 'default' });
+type RegistryTemplate = (typeof registry.templates)[number];
 
-const LEGACY_TEMPLATE_IDS: Record<string, StarterTemplateId> = {
-  network: 'tech-mesh',
-  clean: 'clean-minimal',
-  bold: 'bold-marketing',
-};
+function definitionFor(id: string): TemplateDef {
+  const entry = registry.templates.find((item) => item.id === id) as RegistryTemplate | undefined;
+  if (!entry) throw new Error(`Unknown template package: ${id}`);
+  const theme = entry.theme;
+  const display = FONT_REGISTRY[theme.fonts.display as keyof typeof FONT_REGISTRY].family;
+  const body = FONT_REGISTRY[theme.fonts.body as keyof typeof FONT_REGISTRY].family;
+  const mono = FONT_REGISTRY[(theme.fonts.mono ?? 'jetbrains-mono') as keyof typeof FONT_REGISTRY].family;
+  const typeScale = theme.typeScale as Partial<TemplateDef['typeScale']> | undefined;
+  const radius = theme.radius as Partial<TemplateDef['radius']> | undefined;
+  return {
+    id: id as TemplateId,
+    className: entry.className,
+    nameKey: `wizard.template.${id}`,
+    previewUrl: previewImages[`./starters/${id}/preview.webp`] ?? '',
+    fonts: { display: `${display}, sans-serif`, body: `${body}, sans-serif`, mono: `${mono}, monospace` },
+    typeScale: { h1: 112, h2: 76, body: 44, small: 30, mono: 34, ...typeScale },
+    radius: { card: 24, chip: 9999, ...radius },
+    ...(entry.counter ? { counter: entry.counter as TemplateDef['counter'] } : {}),
+    Background: () => null,
+  };
+}
 
-export function getTemplate(id: TemplateId = 'network'): TemplateDef {
-  const resolvedId = LEGACY_TEMPLATE_IDS[id] ?? id;
-  if (!Object.hasOwn(TEMPLATES, resolvedId)) throw new Error(`Unknown legacy template: ${id}`);
-  return TEMPLATES[resolvedId as StarterTemplateId];
+export function getTemplate(id: TemplateId | string = 'tech-mesh'): TemplateDef {
+  return definitionFor(id);
 }
 
 export function getAllTemplates(): TemplateDef[] {
-  return Object.values(TEMPLATES);
+  return STARTER_TEMPLATE_IDS.map(definitionFor);
 }

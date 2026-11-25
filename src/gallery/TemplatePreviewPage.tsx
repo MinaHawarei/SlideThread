@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateId, TemplateProjectSnapshot } from '../core/schema';
+import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateProjectSnapshot } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { SlideRenderer } from '../slides/SlideRenderer';
 import { SAMPLE_SLIDES } from '../slides/sampleSlides';
-import { getAllTemplates, getTemplate } from '../templates';
+import { getAllTemplates } from '../templates';
 import { useT } from '../i18n';
 import { useSettingsStore } from '../store/settingsStore';
 import { createProjectFromTemplate } from '../store/projectStore';
@@ -77,7 +77,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
   }, []);
 
   const allTemplates = getAllTemplates();
-  const isLegacyTemplate = allTemplates.some((t) => t.id === templateId);
+  const isLegacyTemplate = false;
   useEffect(() => {
     if (isLegacyTemplate) {
       setPackageSnapshot(undefined);
@@ -180,9 +180,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
     );
   }
 
-  const selectedTemplate = packageSnapshot
-    ? templateDefinitionFromSnapshot(packageSnapshot)
-    : getTemplate(templateId as TemplateId);
+  const selectedTemplate = packageSnapshot ? templateDefinitionFromSnapshot(packageSnapshot) : undefined;
   const effectivePrimaryColor =
     brandSettings.defaultPrimaryColor || (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
   const palette = packageSnapshot
@@ -242,8 +240,8 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
 
             <div className="min-w-0">
               <h1 className="text-base sm:text-lg font-bold font-serif text-stone-900 dark:text-white flex items-center gap-2 truncate">
-                <span>{t(selectedTemplate.nameKey as Parameters<typeof t>[0])}</span>
-                <span className="text-xs font-mono font-normal text-stone-400">({selectedTemplate.id})</span>
+                <span>{t(selectedTemplate!.nameKey as Parameters<typeof t>[0])}</span>
+                <span className="text-xs font-mono font-normal text-stone-400">({selectedTemplate!.id})</span>
               </h1>
             </div>
           </div>

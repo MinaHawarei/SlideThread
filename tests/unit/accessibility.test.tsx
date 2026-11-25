@@ -21,7 +21,7 @@ const makeTestProject = (): Project => ({
   contentType: 'carousel',
   formatId: 'r_4_5',
   orientation: 'portrait',
-  templateId: 'network',
+  templateId: 'tech-mesh',
   primaryColor: '#0077B5',
   theme: 'dark',
   textDir: 'auto',

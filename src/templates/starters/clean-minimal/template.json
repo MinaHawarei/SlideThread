@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "clean-minimal",
+  "className": "clean",
   "name": { "en": "Clean Minimal", "ar": "بسيط ونظيف" },
   "description": { "en": "Quiet space for personal ideas.", "ar": "مساحة هادئة للأفكار الشخصية." },
   "author": { "name": "SlideThread" },
@@ -15,5 +16,6 @@
     "radius": { "card": 12, "chip": 6 }
   },
   "layouts": { "cover": "cover-centered", "explain": "explain-editorial", "rule": "rule-editorial", "compare": "compare-centered", "code": "code-centered", "stat": "stat-editorial", "quote": "quote-editorial", "image": "image-centered", "cta": "cta-centered" },
+  "decor": { "background": { "id": "none", "intensity": 0 } },
   "formats": ["post", "carousel"]
 }

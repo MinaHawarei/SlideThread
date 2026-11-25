@@ -31,7 +31,6 @@ import { useRecentStore } from './recentStore';
 import { useSettingsStore } from './settingsStore';
 import { migrate } from '../core/migrate';
 import { recordHistoryChange, registerHistoryChannel } from './history';
-import { getTemplate } from '../templates';
 import { aspectClass as calcAspectClass, getDimensions } from '../core/formats';
 import { loadTemplateProjectSnapshot } from '../templates/projectSnapshot';
 
@@ -159,7 +158,7 @@ export function createDefaultProject(init?: Partial<Project>): Project {
     contentType: init?.contentType || 'carousel',
     formatId: selectedFormatId,
     orientation: selectedOrientation,
-    templateId: (init?.templateId as TemplateId) || 'network',
+    templateId: (init?.templateId as TemplateId) || 'tech-mesh',
     primaryColor: init?.primaryColor || '#35D0E6',
     theme: init?.theme || 'dark',
     textDir: init?.textDir || 'auto',
@@ -171,7 +170,7 @@ export function createDefaultProject(init?: Partial<Project>): Project {
     },
     signature: init?.signature || { ...DEFAULT_SIGNATURE_CONFIG },
     pattern: init?.pattern || {
-      enabled: (init?.templateId || 'network') === 'network',
+      enabled: (init?.templateId || 'tech-mesh') === 'tech-mesh',
       intensity: 1,
     },
     createdAt: init?.createdAt || now,
@@ -258,11 +257,11 @@ export const useProjectStore = create<ProjectState>()(
             const currentCounter = state.project.counter ?? DEFAULT_COUNTER_CONFIG;
             let nextCounter: CounterConfig = meta.counter ? { ...currentCounter, ...meta.counter } : currentCounter;
             if (meta.templateId && meta.templateId !== state.project.templateId) {
-              const tmpl = getTemplate(meta.templateId);
-              if (tmpl?.counter && !tmpl.counter.styles.includes(nextCounter.style)) {
+              const tmplCounter = meta.templateSnapshot?.counter;
+              if (tmplCounter && !tmplCounter.styles.includes(nextCounter.style)) {
                 nextCounter = {
                   ...nextCounter,
-                  style: tmpl.counter.defaultStyle,
+                  style: tmplCounter.defaultStyle,
                 };
               }
             }
@@ -798,8 +797,7 @@ export const useProjectStore = create<ProjectState>()(
 /** Load a package and freeze its resolved styles, composition, and assets into a new project. */
 export async function createProjectFromTemplate(init: Partial<Project>): Promise<Project> {
   const requestedId = String(init.templateId ?? 'tech-mesh');
-  const packageId = ({ network: 'tech-mesh', clean: 'clean-minimal', bold: 'bold-marketing' } as Record<string, string>)[requestedId] ?? requestedId;
-  const snapshot: TemplateProjectSnapshot = init.templateSnapshot ?? await loadTemplateProjectSnapshot(packageId, init.primaryColor ?? '#35D0E6');
+  const snapshot: TemplateProjectSnapshot = init.templateSnapshot ?? await loadTemplateProjectSnapshot(requestedId, init.primaryColor ?? '#35D0E6');
   return useProjectStore.getState().createProject({ ...init, templateSnapshot: snapshot });
 }
 

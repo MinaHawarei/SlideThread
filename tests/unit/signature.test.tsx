@@ -15,7 +15,7 @@ describe('SignatureBar Component (Spec §6.2)', () => {
     showSocials: false,
     socials: [],
     language: 'en',
-    defaultTemplateId: 'network',
+    defaultTemplateId: 'tech-mesh',
     defaultPrimaryColor: '#0A84FF',
     defaultTheme: 'dark',
   };
@@ -190,7 +190,7 @@ describe('SlideRenderer Signature Integration', () => {
     showSocials: false,
     socials: [],
     language: 'en',
-    defaultTemplateId: 'network',
+    defaultTemplateId: 'tech-mesh',
     defaultPrimaryColor: '#0A84FF',
     defaultTheme: 'dark',
   };

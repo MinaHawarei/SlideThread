@@ -14,7 +14,7 @@ import {
   getDimensions,
   aspectClass as calcAspectClass,
 } from '../../core/formats';
-import { getAllTemplates, getTemplate } from '../../templates';
+import { getAllTemplates } from '../../templates';
 import { generatePalette } from '../../core/palette';
 import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
 import { SlideRenderer } from '../../slides/SlideRenderer';
@@ -43,7 +43,7 @@ export const Wizard: React.FC<WizardProps> = ({
   initialPlatform = 'linkedin',
   initialContentType = 'carousel',
   initialFormatId = 'r_4_5',
-  initialTemplateId = 'network',
+  initialTemplateId = 'tech-mesh',
   onComplete,
   onCancel,
 }) => {
@@ -70,9 +70,10 @@ export const Wizard: React.FC<WizardProps> = ({
   const [orientation, setOrientation] = useState<Orientation>(() =>
     initialFormatId === 'r_16_9' ? 'landscape' : 'portrait'
   );
-  const [templateId, setTemplateId] = useState<TemplateId>(
-    getTemplate((settings.defaultTemplateId as TemplateId) || initialTemplateId).id
-  );
+  const [templateId, setTemplateId] = useState<TemplateId>(() => {
+    const preferred = String(settings.defaultTemplateId || initialTemplateId || 'tech-mesh');
+    return getAllTemplates().some((template) => template.id === preferred) ? preferred as TemplateId : 'tech-mesh';
+  });
 
   // Platform selection handler with matrix reconciliation
   const handleSelectPlatform = (nextPlatform: PlatformId) => {
@@ -203,7 +204,7 @@ export const Wizard: React.FC<WizardProps> = ({
       slides: initialSlides,
       counter: { ...DEFAULT_COUNTER_CONFIG, show: contentType === 'carousel' },
       signature: { ...DEFAULT_SIGNATURE_CONFIG },
-      pattern: { enabled: templateId === 'network', intensity: 1 },
+      pattern: { enabled: templateId === 'tech-mesh', intensity: 1 },
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };

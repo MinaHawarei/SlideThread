@@ -1,0 +1,205 @@
+{
+  "capturedFrom": "data-driven template package engine via app /preview route and editor PNG export",
+  "date": "2026-11-25",
+  "viewport": {
+    "width": 1600,
+    "height": 1000,
+    "deviceScaleFactor": 1
+  },
+  "slideCanvases": 36,
+  "artifacts": {
+    "tech-mesh": [
+      {
+        "file": "tech-mesh_en_dark.png",
+        "sha256": "99f06e078e3a6dd7364e0a2693eae7e7d22298d58e62b33eb10abdcf64bd0476",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "tech-mesh_en_light.png",
+        "sha256": "0ee63169dd0518c43d4e6c47c02557962bfeed0669610d64d6dc9708ea46fbbe",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "tech-mesh_ar_dark.png",
+        "sha256": "57d1fea6dc9f894917f39372783eaf41a1499d3bea7730662b6802ae32f1bbda",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "tech-mesh_ar_light.png",
+        "sha256": "88ba8bc3f5e101fac5fd5f644e3bd149645d160be185fabe369b745e50e1842a",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "tech-mesh_export_dark_portrait.png",
+        "sha256": "064b5580280806f457386856eef937a573eb29e40021b35e6ed5958db5ec4144",
+        "width": 1080,
+        "height": 1350
+      }
+    ],
+    "clean-minimal": [
+      {
+        "file": "clean-minimal_en_dark.png",
+        "sha256": "0d5f0f7b25e139d0c07d01fd28de23d2a018bb8c9cf08e1993b546291242b576",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "clean-minimal_en_light.png",
+        "sha256": "2c65e84c0c000cdcef2b0b90979c5b76a9c2c71e9e0a03fe2504b2d15ce34b6d",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "clean-minimal_ar_dark.png",
+        "sha256": "905fe7c7254ea0e21c0e3e5cb89165ad38aa173d95745c16c0b960879bad597a",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "clean-minimal_ar_light.png",
+        "sha256": "057195690791476a71c2438480c504e0817d0ee3b6937b222dfca067d7aa2873",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "clean-minimal_export_dark_portrait.png",
+        "sha256": "24c3bd33ab8a521fc4984322bde99970380176fcac0be98f4be98df904888c69",
+        "width": 1080,
+        "height": 1350
+      }
+    ],
+    "bold-marketing": [
+      {
+        "file": "bold-marketing_en_dark.png",
+        "sha256": "c8daf6b7d7aaf1ad0bc28e74225ad52c80c181fb40f9cde19816c415644a18fc",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "bold-marketing_en_light.png",
+        "sha256": "17eadc81c886b65b95b2bae805a31c88a0dce68c7b2a685d42e93df602f82ec0",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "bold-marketing_ar_dark.png",
+        "sha256": "3f6ee2c305145119b583466303b2262739f14553bf0dec819509b7b5742759d7",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "bold-marketing_ar_light.png",
+        "sha256": "7e2a7aca50eda2dd87afde7a0fd72eca0a9a25263c3e2eef1d52ce1b97e104e2",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "bold-marketing_export_dark_portrait.png",
+        "sha256": "ee6b3e8581a26372a38a2847e236f6244e107c33a8f6fd3061b599fb7e80eddb",
+        "width": 1080,
+        "height": 1350
+      }
+    ],
+    "soft-gradient": [
+      {
+        "file": "soft-gradient_en_dark.png",
+        "sha256": "41254d47b4860e72e0bd886130a7978b9231a105028214949bd57fb19e5c8e27",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "soft-gradient_en_light.png",
+        "sha256": "659e6dab0e63b9d49fb2440bf4a14f7b96e7030f7a13331e4ace5d6154f08a09",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "soft-gradient_ar_dark.png",
+        "sha256": "bb61cdbcac9214ac5e0afcf72a86c862166619e9f6cfcd3fd9543ab7cf30bb19",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "soft-gradient_ar_light.png",
+        "sha256": "c65ceec4edd8b106f245cd915845d25b0af242be154e5df8679ca213cdb73649",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "soft-gradient_export_dark_portrait.png",
+        "sha256": "8e564189b86d08cd2f3d48968154d4023bc2e29651d5f98257b2bf4a7cf1547b",
+        "width": 1080,
+        "height": 1350
+      }
+    ],
+    "heritage-geometric": [
+      {
+        "file": "heritage-geometric_en_dark.png",
+        "sha256": "6fa2cf7a6421f1478423e4fc8823b3518039a858eb56091a28e1e9de20ecbec4",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "heritage-geometric_en_light.png",
+        "sha256": "ed20b3642911e1890274bbb8351e0b5056daf86707fd11339324880baa87affc",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "heritage-geometric_ar_dark.png",
+        "sha256": "f31a92300edc0d2bf88c13c9fb950a4ec33cbb4c5168af4ae278fdd2a25fc560",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "heritage-geometric_ar_light.png",
+        "sha256": "d574276f7e86df4b2dad94e03cec1266186d07e8c88456acb87e9034e769606b",
+        "width": 1600,
+        "height": 8583
+      },
+      {
+        "file": "heritage-geometric_export_dark_portrait.png",
+        "sha256": "4e26e986f3eecfcd82596cbe3350114ed8e6a775a280977bed6750d3bbeaa027",
+        "width": 1080,
+        "height": 1350
+      }
+    ]
+  },
+  "pixelComparison": {
+    "metric": "mean absolute RGB channel difference on 0-255 scale",
+    "against": "../phase2-legacy",
+    "templatePage": {
+      "tech-mesh": {
+        "mean": 2.433,
+        "max": 3.139
+      },
+      "clean-minimal": {
+        "mean": 1.99,
+        "max": 2.266
+      },
+      "bold-marketing": {
+        "mean": 3.925,
+        "max": 4.991
+      },
+      "soft-gradient": {
+        "mean": 2.384,
+        "max": 2.971
+      },
+      "heritage-geometric": {
+        "mean": 2.528,
+        "max": 3.186
+      }
+    },
+    "exportPng": {
+      "tech-mesh": 1.363,
+      "clean-minimal": 1.258,
+      "bold-marketing": 3.906,
+      "soft-gradient": 1.172,
+      "heritage-geometric": 1.232
+    }
+  }
+}

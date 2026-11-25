@@ -166,6 +166,9 @@ export const TemplateProjectSnapshotSchema = z.object({
   counter: z.object({ styles: z.array(z.enum(['number', 'bar', 'dots'])), defaultStyle: z.enum(['number', 'bar', 'dots']) }).strict().optional(),
   composition: z.record(z.string(), z.record(z.string(), TemplateAspectCompositionSchema)),
   assets: z.record(z.string(), z.string()),
+  className: z.string().optional(),
+  gradientBackground: z.object({ from: z.string(), to: z.string(), x1: z.number(), y1: z.number(), x2: z.number(), y2: z.number() }).strict().optional(),
+  decorationAssets: z.array(z.object({ asset: z.string(), x: z.number().min(0).max(1), y: z.number().min(0).max(1), w: z.number().positive().max(1), h: z.number().positive().max(1), opacity: z.number().min(0).max(1) }).strict()).optional(),
   decoration: z.object({ id: z.string(), params: z.record(z.string(), z.unknown()), intensity: z.number().min(0).max(1) }).optional(),
 }).strict();
 export type TemplateProjectSnapshot = z.infer<typeof TemplateProjectSnapshotSchema>;

@@ -25,6 +25,7 @@ const CompositionAspectSchema = z.object({
 export const TemplateSchema = z.object({
   schema: z.literal(1),
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  className: z.string().optional(),
   testFixture: z.boolean().optional(),
   name: BilingualNameSchema,
   description: z.object({ en: z.string().optional(), ar: z.string().optional() }).strict().optional(),

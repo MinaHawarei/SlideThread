@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { useSettingsStore } from '../../store/settingsStore';
-import { getAllTemplates, getTemplate } from '../../templates';
+import { getAllTemplates } from '../../templates';
+import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import type { TemplateId, ThemeMode, TextDir, Anchor } from '../../core/schema';
 
@@ -26,8 +27,7 @@ export const DesignInspector: React.FC = () => {
   const [isChangeFormatOpen, setIsChangeFormatOpen] = useState(false);
 
   const allTemplates = getAllTemplates();
-  const currentTemplate = getTemplate(project.templateId);
-  const allowedStyles = currentTemplate.counter?.styles ?? ['number', 'bar', 'dots'];
+  const allowedStyles = project.templateSnapshot?.counter?.styles ?? ['number', 'bar', 'dots'];
   const counter = project.counter ?? {
     show: true,
     anchor: 'br',
@@ -40,8 +40,9 @@ export const DesignInspector: React.FC = () => {
   const isSignatureVisible = (settings.showSignature !== false) && (project.signature?.show !== false);
   const hasCollision = counter.show && isSignatureVisible && counter.anchor === signatureAnchor;
 
-  const handleTemplateChange = (templateId: TemplateId) => {
-    updateProjectMeta({ templateId });
+  const handleTemplateChange = async (templateId: TemplateId) => {
+    const templateSnapshot = await loadTemplateProjectSnapshot(templateId, project.primaryColor);
+    updateProjectMeta({ templateId, templateSnapshot });
   };
 
   const handleColorChange = (primaryColor: string) => {
@@ -65,7 +66,7 @@ export const DesignInspector: React.FC = () => {
         </label>
         <div className="grid grid-cols-3 gap-2">
           {allTemplates.map((tmpl) => {
-            const isSelected = getTemplate(project.templateId).id === tmpl.id;
+            const isSelected = project.templateId === tmpl.id;
             const nameKey = `wizard.template.${tmpl.id}` as const;
 
             return (
