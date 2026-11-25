@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { useSettingsStore } from '../../store/settingsStore';
-import { getAllTemplates } from '../../templates';
+import { getAllTemplates, getTemplate } from '../../templates';
 import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
 import { useUserTemplateLibrary } from '../../templates/useUserTemplateLibrary';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
@@ -32,7 +32,15 @@ export const DesignInspector: React.FC = () => {
     ...getAllTemplates().map((template) => ({ id: template.id, nameKey: template.nameKey, name: undefined as string | undefined })),
     ...importedTemplates.map((template) => ({ id: template.id, nameKey: template.id, name: template.manifest.name[locale] })),
   ];
-  const allowedStyles = project.templateSnapshot?.counter?.styles ?? ['number', 'bar', 'dots'];
+  let starterCounterStyles: ('number' | 'bar' | 'dots')[] | undefined;
+  if (!project.templateSnapshot?.counter?.styles) {
+    try {
+      starterCounterStyles = getTemplate(project.templateId).counter?.styles;
+    } catch {
+      // Unknown or user-imported template without snapshot.
+    }
+  }
+  const allowedStyles = project.templateSnapshot?.counter?.styles ?? starterCounterStyles ?? ['number', 'bar', 'dots'];
   const counter = project.counter ?? {
     show: true,
     anchor: 'br',

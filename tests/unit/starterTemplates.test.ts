@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { generatePalette, getContrastRatio } from '../../src/core/palette';
 import { getLayoutArchetype } from '../../src/templates/layouts/registry';
 import { loadStarterTemplate, STARTER_TEMPLATE_IDS } from '../../src/templates/starters';
@@ -39,7 +39,7 @@ describe('five starter template manifests', () => {
     expect(byId.get('tech-mesh')?.name).toEqual({ en: 'Weave', ar: 'نسيج' });
     expect(byId.get('tech-mesh')?.decor?.background?.id).toBe('mesh');
     expect(byId.get('clean-minimal')?.categories).toEqual(['personal-brand', 'general']);
-    expect(byId.get('clean-minimal')?.decor).toBeUndefined();
+    expect(byId.get('clean-minimal')?.decor?.background?.id).toBe('none');
     expect(byId.get('clean-minimal')?.counter?.defaultStyle).toBe('bar');
     expect(byId.get('bold-marketing')?.categories).toEqual(['marketing']);
     expect(byId.get('bold-marketing')?.colorFlexible).toBe(true);
@@ -63,6 +63,7 @@ describe('five starter template manifests', () => {
       templateId: 'bold-marketing',
       themeMode: 'dark',
     }));
+    await waitFor(() => expect(rendered.container.querySelector('.template-bold')).not.toBeNull());
     const canvas = rendered.container.querySelector('.slide-canvas') as HTMLElement;
     expect(canvas.style.getPropertyValue('--bg')).toBe(coral.bg);
     expect(canvas.style.getPropertyValue('--acc')).toBe(coral.acc);

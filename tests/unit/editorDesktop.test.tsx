@@ -1,6 +1,6 @@
 import { plainTextFieldsToRichText, richTextToPlainText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { EditorDesktop } from '../../src/ui/editor/EditorDesktop';
 import { useProjectStore } from '../../src/store/projectStore';
 import { useSettingsStore } from '../../src/store/settingsStore';
@@ -106,12 +106,13 @@ describe('EditorDesktop component (Task P3-5)', () => {
     expect(screen.getByTestId('sidebar-reset-title')).toBeInTheDocument();
   });
 
-  it('hides, locks, and reorders layout slots from the layer panel', () => {
+  it('hides, locks, and reorders layout slots from the layer panel', async () => {
     render(<EditorDesktop />);
     fireEvent.click(screen.getByTestId('tab-layers'));
     expect(screen.getByTestId('layers-panel')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Hide title' }));
     expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.hidden).toBe(true);
+    await waitFor(() => expect(screen.getByTestId('main-canvas').querySelector('.slide-canvas .slide-title-h1')).not.toBeNull());
     expect(screen.getByTestId('main-canvas').querySelector('.slide-canvas .slide-title-h1') as HTMLElement).toHaveStyle({ visibility: 'hidden' });
     fireEvent.click(screen.getByRole('button', { name: 'Show title' }));
     fireEvent.click(screen.getByRole('button', { name: 'Lock title' }));
@@ -318,7 +319,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
     expect(richTextToPlainText(slides[2]!.fields.body!)).toContain('Point 4');
   });
 
-  it('updates template, color, and theme mode from Design Inspector', () => {
+  it('updates template, color, and theme mode from Design Inspector', async () => {
     render(<EditorDesktop />);
 
     // Switch to Design tab
@@ -326,7 +327,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
 
     // Switch template to bold
     fireEvent.click(screen.getByTestId('design-template-bold-marketing'));
-    expect(useProjectStore.getState().project.templateId).toBe('bold-marketing');
+    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('bold-marketing'));
 
     // Pick preset color
     fireEvent.click(screen.getByTestId('design-preset-F43F5E'));

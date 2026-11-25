@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { DesignInspector } from '../../src/ui/editor/DesignInspector';
 import { ChangeFormatDialog } from '../../src/ui/editor/ChangeFormatDialog';
 import { useProjectStore } from '../../src/store/projectStore';
@@ -36,22 +36,22 @@ describe('Design Controls & Format Relayout (Spec §7, §4.3, Task P3-7)', () =>
     expect(screen.getByTestId('design-change-format-btn')).toBeInTheDocument();
   });
 
-  it('switches templates without losing any slide content', () => {
+  it('switches templates without losing any slide content', async () => {
     render(<DesignInspector />);
 
     const initialSlides = JSON.stringify(useProjectStore.getState().project.slides);
 
     // Switch to Clean
     fireEvent.click(screen.getByTestId('design-template-clean-minimal'));
-    expect(useProjectStore.getState().project.templateId).toBe('clean-minimal');
+    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('clean-minimal'));
 
     // Switch to Bold
     fireEvent.click(screen.getByTestId('design-template-bold-marketing'));
-    expect(useProjectStore.getState().project.templateId).toBe('bold-marketing');
+    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('bold-marketing'));
 
     // Switch back to Network
     fireEvent.click(screen.getByTestId('design-template-tech-mesh'));
-    expect(useProjectStore.getState().project.templateId).toBe('tech-mesh');
+    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('tech-mesh'));
 
     // Slides content unchanged
     expect(JSON.stringify(useProjectStore.getState().project.slides)).toBe(initialSlides);

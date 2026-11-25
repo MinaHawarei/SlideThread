@@ -322,7 +322,7 @@ describe('Counter System (Spec §5.4 & Revision Plan §3.6)', () => {
   });
 
   describe('SlideRenderer with Counter Integration', () => {
-    it('renders SlideCounter inside SlideRenderer and suppresses double counter in SignatureBar', () => {
+    it('renders SlideCounter inside SlideRenderer and suppresses double counter in SignatureBar', async () => {
       const slide: Slide = {
         id: 's_test_1',
         type: 'explain',
@@ -348,7 +348,7 @@ describe('Counter System (Spec §5.4 & Revision Plan §3.6)', () => {
       );
 
       // Only 1 slide-counter element in the DOM
-      const counters = screen.getAllByTestId('slide-counter');
+      const counters = await screen.findAllByTestId('slide-counter');
       expect(counters).toHaveLength(1);
       expect(counters[0]).toHaveTextContent('02/05');
       const container = counters[0]?.closest('.slide-counter-container');

@@ -195,7 +195,7 @@ describe('SlideRenderer Signature Integration', () => {
     defaultTheme: 'dark',
   };
 
-  it('renders signature bar on cover slide', () => {
+  it('renders signature bar on cover slide', async () => {
     const slide: Slide = {
       id: 's_test_cover',
       type: 'cover',
@@ -213,7 +213,7 @@ describe('SlideRenderer Signature Integration', () => {
       />
     );
 
-    expect(screen.getByTestId('signature-bar')).toBeInTheDocument();
+    expect(await screen.findByTestId('signature-bar')).toBeInTheDocument();
     expect(screen.getByText('Mina')).toBeInTheDocument();
     expect(screen.getByTestId('slide-counter')).toHaveTextContent('01/04');
   });

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
 import { useMemo } from 'react';
+import { getTemplate } from '../templates';
 import type {
   Project,
   Slide,
@@ -257,7 +258,14 @@ export const useProjectStore = create<ProjectState>()(
             const currentCounter = state.project.counter ?? DEFAULT_COUNTER_CONFIG;
             let nextCounter: CounterConfig = meta.counter ? { ...currentCounter, ...meta.counter } : currentCounter;
             if (meta.templateId && meta.templateId !== state.project.templateId) {
-              const tmplCounter = meta.templateSnapshot?.counter;
+              let tmplCounter = meta.templateSnapshot?.counter;
+              if (!tmplCounter) {
+                try {
+                  tmplCounter = getTemplate(meta.templateId).counter;
+                } catch {
+                  // Unknown or user-imported template without snapshot; keep current counter.
+                }
+              }
               if (tmplCounter && !tmplCounter.styles.includes(nextCounter.style)) {
                 nextCounter = {
                   ...nextCounter,

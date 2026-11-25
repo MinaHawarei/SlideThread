@@ -1,13 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { beforeAll, describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../../src/slides/sampleSlides';
 import { generatePalette, getContrastRatio } from '../../src/core/palette';
 import { getAllTemplates, getTemplate } from '../../src/templates';
-import type { AspectClass, SlideType, TemplateId } from '../../src/core/schema';
+import { loadTemplateProjectSnapshot } from '../../src/templates/projectSnapshot';
+import type { AspectClass, SlideType, TemplateId, TemplateProjectSnapshot } from '../../src/core/schema';
 
 describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
   const templates: TemplateId[] = getAllTemplates().map((template) => template.id);
+  const snapshots: Partial<Record<TemplateId, TemplateProjectSnapshot>> = {};
+
+  beforeAll(async () => {
+    await Promise.all(templates.map(async (id) => {
+      snapshots[id] = await loadTemplateProjectSnapshot(id, '#35D0E6');
+    }));
+  });
   const aspectClasses: AspectClass[] = ['landscape', 'square', 'portrait', 'tall'];
   const slideTypes: SlideType[] = [
     'cover',
@@ -23,7 +31,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
 
   it('all 5 starter templates are defined in the template registry', () => {
     const all = getAllTemplates();
-    expect(all.map((t) => t.id)).toEqual(['tech-mesh', 'clean-minimal', 'bold-marketing', 'soft-gradient', 'heritage-geometric']);
+    expect(all.map((t) => t.id)).toEqual(['bold-marketing', 'clean-minimal', 'heritage-geometric', 'soft-gradient', 'tech-mesh']);
   });
 
   it('verifies contrast compliance for Dark and Light palettes across all templates', () => {
@@ -61,6 +69,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
                     palette={palette}
                     aspectClass="square"
                     templateId={tmpl}
+                    templateSnapshot={snapshots[tmpl]}
                     themeMode={theme}
                     brand={SAMPLE_BRAND_EN}
                     textDir="ltr"
@@ -84,6 +93,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
                     palette={palette}
                     aspectClass="portrait"
                     templateId={tmpl}
+                    templateSnapshot={snapshots[tmpl]}
                     themeMode={theme}
                     brand={SAMPLE_BRAND_AR}
                     textDir="rtl"
@@ -115,6 +125,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
             palette={palette}
             aspectClass={aspect}
             templateId={tmpl}
+            templateSnapshot={snapshots[tmpl]}
             themeMode="dark"
             brand={SAMPLE_BRAND_EN}
             slideIndex={2}

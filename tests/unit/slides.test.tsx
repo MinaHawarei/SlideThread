@@ -1,11 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import React from 'react';
+import { beforeAll, describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { SlideRenderer } from '../../src/slides/SlideRenderer';
+import { SlideRenderer, type SlideRendererProps } from '../../src/slides/SlideRenderer';
 import { SAMPLE_SLIDES } from '../../src/slides/sampleSlides';
 import { NETWORK_DARK_PALETTE } from '../../src/core/palette';
-import { plainTextToRichText, type AspectClass, type SlideType } from '../../src/core/schema';
+import { loadTemplateProjectSnapshot } from '../../src/templates/projectSnapshot';
+import { plainTextToRichText, type AspectClass, type SlideType, type TemplateProjectSnapshot } from '../../src/core/schema';
 
 describe('Slide Components (Spec §5.2, §6)', () => {
+  let defaultSnapshot: TemplateProjectSnapshot;
+
+  beforeAll(async () => {
+    defaultSnapshot = await loadTemplateProjectSnapshot('tech-mesh', '#35D0E6');
+  });
+
+  const renderSlide = (ui: React.ReactElement<SlideRendererProps>) =>
+    render(React.cloneElement(ui, { templateSnapshot: ui.props.templateSnapshot ?? defaultSnapshot }));
   const aspectClasses: AspectClass[] = ['landscape', 'square', 'portrait', 'tall'];
   const slideTypes: SlideType[] = [
     'cover',
@@ -25,7 +35,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
         const slide = SAMPLE_SLIDES[`${type}_en`] || SAMPLE_SLIDES[`${type}_ar`];
         expect(slide).toBeDefined();
 
-        const { container } = render(
+        const { container } = renderSlide(
           <SlideRenderer
             slide={slide!}
             palette={NETWORK_DARK_PALETTE}
@@ -44,7 +54,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('CoverSlide', () => {
     it('renders tag, title, sub, and rule correctly', () => {
-      render(
+      renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.cover_en!}
           palette={NETWORK_DARK_PALETTE}
@@ -59,7 +69,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('ExplainSlide', () => {
     it('parses bullet nodes and paragraphs correctly', () => {
-      const { container } = render(
+      const { container } = renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.explain_en!}
           palette={NETWORK_DARK_PALETTE}
@@ -74,7 +84,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('RuleSlide', () => {
     it('renders IF and THEN cards with appropriate labels', () => {
-      render(
+      renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.rule_en!}
           palette={NETWORK_DARK_PALETTE}
@@ -89,7 +99,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('CompareSlide', () => {
     it('renders bad and ok comparison cards with distinct badges', () => {
-      render(
+      renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.compare_en!}
           palette={NETWORK_DARK_PALETTE}
@@ -103,7 +113,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('CodeSlide', () => {
     it('forces LTR direction for code blocks even in Arabic or RTL slides', () => {
-      const { container } = render(
+      const { container } = renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.code_ar!}
           palette={NETWORK_DARK_PALETTE}
@@ -120,7 +130,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('StatSlide', () => {
     it('renders big stat value and label', () => {
-      render(
+      renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.stat_en!}
           palette={NETWORK_DARK_PALETTE}
@@ -134,7 +144,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('QuoteSlide', () => {
     it('renders quotation text, mark, and author', () => {
-      render(
+      renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.quote_en!}
           palette={NETWORK_DARK_PALETTE}
@@ -149,7 +159,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
 
   describe('CtaSlide', () => {
     it('renders profile avatar initial and action button', () => {
-      render(
+      renderSlide(
         <SlideRenderer
           slide={SAMPLE_SLIDES.cta_en!}
           palette={NETWORK_DARK_PALETTE}
@@ -175,7 +185,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
         },
       };
 
-      const { container } = render(
+      const { container } = renderSlide(
         <SlideRenderer
           slide={slideWithBg}
           palette={NETWORK_DARK_PALETTE}
@@ -197,7 +207,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
         },
       };
 
-      const { container } = render(
+      const { container } = renderSlide(
         <SlideRenderer
           slide={slideWithReplace}
           palette={NETWORK_DARK_PALETTE}
@@ -237,7 +247,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
         },
       };
 
-      const { container } = render(
+      const { container } = renderSlide(
         <SlideRenderer
           slide={slideWithOverrides}
           palette={NETWORK_DARK_PALETTE}
@@ -276,7 +286,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
       };
 
       // Rendering on square (which has no overrides defined)
-      const { container } = render(
+      const { container } = renderSlide(
         <SlideRenderer
           slide={slideWithOverrides}
           palette={NETWORK_DARK_PALETTE}
@@ -351,7 +361,7 @@ describe('Slide Components (Spec §5.2, §6)', () => {
         ],
       };
 
-      const { container } = render(
+      const { container } = renderSlide(
         <SlideRenderer
           slide={slideWithExtras}
           palette={NETWORK_DARK_PALETTE}
