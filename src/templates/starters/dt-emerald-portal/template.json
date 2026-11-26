@@ -1,0 +1,898 @@
+{
+  "schema": 1,
+  "id": "dt-emerald-portal",
+  "name": {
+    "en": "Emerald Portal",
+    "ar": "بوابة الزمرد"
+  },
+  "description": {
+    "en": "Emerald Portal: dark-poster carousel. All 9 slide types and 4 aspects; the 4:5 cover is hand-built.",
+    "ar": "بوابة الزمرد: كاروسيل كامل لكل أنواع الشرائح والمقاسات. غلاف 4:5 مصمم يدويا."
+  },
+  "author": {
+    "name": "Instinct for Mina"
+  },
+  "license": "MIT",
+  "categories": [
+    "coding",
+    "marketing"
+  ],
+  "tags": [
+    "ai",
+    "carousel",
+    "glow",
+    "green",
+    "neon"
+  ],
+  "colorFlexible": false,
+  "theme": {
+    "modes": {
+      "dark": {
+        "bg": "#04100e",
+        "bg2": "#08201c",
+        "ink": "#f4fffa",
+        "mute": "#9fd8c4",
+        "acc": "#2cff8c",
+        "acc2": "#8cffd0",
+        "line": "#14503e",
+        "card": "#08201c",
+        "ok": "#7bd88f",
+        "bad": "#ff7a6b",
+        "onAcc": "#04100e"
+      },
+      "light": {
+        "bg": "#04100e",
+        "bg2": "#08201c",
+        "ink": "#f4fffa",
+        "mute": "#9fd8c4",
+        "acc": "#2cff8c",
+        "acc2": "#8cffd0",
+        "line": "#14503e",
+        "card": "#08201c",
+        "ok": "#7bd88f",
+        "bad": "#ff7a6b",
+        "onAcc": "#04100e"
+      }
+    },
+    "fonts": {
+      "display": "ibm-plex-sans",
+      "body": "ibm-plex-sans",
+      "mono": "jetbrains-mono"
+    }
+  },
+  "layouts": {
+    "cover": "cover-editorial",
+    "explain": "explain-editorial",
+    "rule": "rule-editorial",
+    "compare": "compare-editorial",
+    "code": "code-editorial",
+    "stat": "stat-editorial",
+    "quote": "quote-editorial",
+    "image": "image-editorial",
+    "cta": "cta-editorial"
+  },
+  "formats": [
+    "post",
+    "carousel"
+  ],
+  "assets": {
+    "bg-portrait": "assets/bg-portrait.webp",
+    "bg-square": "assets/bg-square.webp",
+    "bg-landscape": "assets/bg-landscape.webp",
+    "bg-tall": "assets/bg-tall.webp"
+  },
+  "composition": {
+    "cover": {
+      "portrait": {
+        "hiddenSlots": [
+          "tag",
+          "title",
+          "sub",
+          "rule"
+        ],
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "kicker",
+            "kind": "text",
+            "x": 0.42,
+            "y": 0.44,
+            "w": 0.52,
+            "h": 0.04,
+            "rotation": 0,
+            "z": 2,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "AI FRONTIER"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "jetbrains-mono",
+              "size": 38,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 2,
+              "lineHeight": 1.1
+            }
+          },
+          {
+            "id": "title0",
+            "kind": "text",
+            "x": 0.42,
+            "y": 0.5,
+            "w": 0.52,
+            "h": 0.09408000000000001,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "EXPLORE"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans",
+              "size": 120,
+              "weight": 700,
+              "color": "ink",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title1",
+            "kind": "text",
+            "x": 0.42,
+            "y": 0.596,
+            "w": 0.52,
+            "h": 0.09408000000000001,
+            "rotation": 0,
+            "z": 4,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "NEW"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans",
+              "size": 120,
+              "weight": 700,
+              "color": "ink",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title2",
+            "kind": "text",
+            "x": 0.42,
+            "y": 0.6920000000000001,
+            "w": 0.52,
+            "h": 0.09408000000000001,
+            "rotation": 0,
+            "z": 5,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "WORLDS"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans",
+              "size": 120,
+              "weight": 700,
+              "color": "acc",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "sub",
+            "kind": "text",
+            "x": 0.42,
+            "y": 0.808,
+            "w": 0.52,
+            "h": 0.05,
+            "rotation": 0,
+            "z": 6,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "Step into the unknown"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans",
+              "size": 44,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 0,
+              "lineHeight": 1.2
+            }
+          },
+          {
+            "id": "pill",
+            "kind": "shape",
+            "x": 0.42,
+            "y": 0.86,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 7,
+            "locked": false,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "pilltext",
+            "kind": "text",
+            "x": 0.44999999999999996,
+            "y": 0.868,
+            "w": 0.4,
+            "h": 0.046,
+            "rotation": 0,
+            "z": 8,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "ENTER"
+                    }
+                  ],
+                  "align": "center"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "jetbrains-mono",
+              "size": 40,
+              "weight": 700,
+              "color": "#04100e",
+              "letterSpacing": 1,
+              "lineHeight": 1.1
+            }
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "explain": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "rule": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "code": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "compare": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "stat": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "quote": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "image": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    },
+    "cta": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          }
+        ]
+      }
+    }
+  }
+}

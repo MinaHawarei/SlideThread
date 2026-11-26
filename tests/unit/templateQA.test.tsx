@@ -31,9 +31,9 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
     'cta',
   ];
 
-  it('all 7 built-in templates (5 starters + 2 full-carousel packs) are defined in the template registry', () => {
+  it('all 17 built-in templates (5 starters + 2 full-carousel packs + 10 group 1) are defined in the template registry', () => {
     const all = getAllTemplates();
-    expect(all.map((t) => t.id)).toEqual(['bold-marketing', 'clean-minimal', 'golden-hour-viral', 'heritage-geometric', 'neon-grid-process', 'soft-gradient', 'tech-mesh']);
+    expect(all.map((t) => t.id)).toEqual(['bold-marketing', 'clean-minimal', 'dt-arabic-green', 'dt-arabic-navy', 'dt-emerald-portal', 'dt-lime-steps', 'dt-magenta-noir', 'dt-mint-swipe', 'dt-phosphor-terminal', 'dt-purple-code', 'dt-signal-red', 'dt-teal-lab', 'golden-hour-viral', 'heritage-geometric', 'neon-grid-process', 'soft-gradient', 'tech-mesh']);
   });
 
   it('verifies contrast compliance for Dark and Light palettes across all templates', () => {

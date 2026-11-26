@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { getTemplate, getAllTemplates } from '../../src/templates';
 
 describe('Template package registry', () => {
-  it('lists the seven built-in package IDs', () => {
+  it('lists the seven original built-ins plus the ten group 1 (dt-*) templates', () => {
     expect(getAllTemplates().map((template) => template.id).sort()).toEqual([
-      'bold-marketing', 'clean-minimal', 'golden-hour-viral', 'heritage-geometric', 'neon-grid-process', 'soft-gradient', 'tech-mesh',
+      'bold-marketing', 'clean-minimal', 'dt-arabic-green', 'dt-arabic-navy', 'dt-emerald-portal', 'dt-lime-steps', 'dt-magenta-noir', 'dt-mint-swipe', 'dt-phosphor-terminal', 'dt-purple-code', 'dt-signal-red', 'dt-teal-lab', 'golden-hour-viral', 'heritage-geometric', 'neon-grid-process', 'soft-gradient', 'tech-mesh',
     ]);
   });
 
