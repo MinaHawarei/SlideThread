@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
-import { mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometryFromHandle, rotateElementGeometry, scaleElementGeometry, rotationAngleFromPointer, SLOT_SELECTORS, type ElementGeometry, type ResolvedElement, type ResizeHandle } from '../../core/elementModel';
+import { mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometryFromHandle, rotateElementGeometry, scaleElementGeometry, rotationAngleFromPointer, SLOT_SELECTORS, slotFieldKey, type ElementGeometry, type ResolvedElement, type ResizeHandle } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
@@ -30,6 +30,8 @@ type Gesture = {
   hasMoved: boolean;
 };
 
+const DOUBLE_TAP_MS = 400;
+
 export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = ({ slide, aspect, width, height, zoom, hideBrandPopover = false }) => {
   const { t } = useT();
   const project = useProjectStore((state) => state.project);
@@ -51,6 +53,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const gesture = useRef<Gesture>();
   const activePointers = useRef(new Map<number, { x: number; y: number }>());
   const layerRef = useRef<HTMLDivElement>(null);
+  // Touch layouts use touch-action:none, so the browser never fires dblclick. Detect the double tap ourselves.
+  const lastTap = useRef<{ id: string; time: number } | null>(null);
   const [measuredGeometry, setMeasuredGeometry] = useState<Record<string, ElementGeometry>>({});
 
   useEffect(() => {
@@ -359,6 +363,16 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       activePointers.current.delete(event.pointerId);
       gesture.current = undefined;
       setPreview(undefined);
+      if (event.pointerType !== 'mouse' && event.type === 'pointerup' && !element.locked && (element.kind === 'slot' || element.extra?.kind === 'text')) {
+        const now = event.timeStamp;
+        const previous = lastTap.current;
+        if (previous && previous.id === element.id && now - previous.time <= DOUBLE_TAP_MS) {
+          lastTap.current = null;
+          setEditingId(element.id);
+        } else {
+          lastTap.current = { id: element.id, time: now };
+        }
+      }
       return;
     }
 
@@ -474,12 +488,12 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
               <RichTextEditor
                 content={
                   element.kind === 'slot'
-                    ? (slide.fields[element.id] || { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] })
+                    ? (slide.fields[slotFieldKey(slide.type, element.id)] || { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] })
                     : (element.extra?.text || { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] })
                 }
                 onChange={(doc) => {
                   if (element.kind === 'slot') {
-                    updateSlideFields(slide.id, { [element.id]: doc });
+                    updateSlideFields(slide.id, { [slotFieldKey(slide.type, element.id)]: doc });
                   } else if (element.extra) {
                     updateExtraElement(slide.id, { ...element.extra, text: doc });
                   }

@@ -3,9 +3,10 @@ import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
-import { mergeTemplateSlotFrames, resolveSlideElements } from '../../core/elementModel';
+import { mergeTemplateSlotFrames, resolveSlideElements, slotFieldKey } from '../../core/elementModel';
 import { aspectClass as calcAspectClass, getDimensions } from '../../core/formats';
 import { RichTextEditor } from './RichTextEditor';
+import { PathEditor } from './PathEditor';
 import { parsePlainTextToRichText } from '../../core/richText';
 import { processUserUpload } from '../../core/uploads';
 import { getAssetUrl } from '../../core/assetStore';
@@ -88,7 +89,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
         element.id === 'source' ||
         element.id === 'left' ||
         element.id === 'right' ||
-        (slide && slide.fields[element.id] !== undefined)
+        (slide && slide.fields[slotFieldKey(slide.type, element.id)] !== undefined)
       ))
     )
   );
@@ -148,7 +149,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
       const bound = element.extra.binding ? slide.fields[element.extra.binding] : undefined;
       return bound ?? element.extra.text ?? { type: 'doc', blocks: [{ type: 'p', runs: [{ text: '' }] }] };
     }
-    const raw = slide.fields[element.id];
+    const raw = slide.fields[slotFieldKey(slide.type, element.id)];
     if (typeof raw === 'string') {
       return parsePlainTextToRichText(raw);
     }
@@ -174,7 +175,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   const currentOpacity = Math.round((element.opacity ?? 1) * 100);
   const extra = element.extra;
   const radiusSupported = Boolean(extra && ((extra.kind === 'shape' && (!extra.assetId && (!extra.shape || extra.shape === 'rectangle'))) || extra.kind === 'image' || (extra.kind === 'text' && Boolean(extra.backgroundColor))));
-  const strokeSupported = Boolean(extra && ((extra.kind === 'image') || (extra.kind === 'text' && Boolean(extra.backgroundColor)) || (extra.kind === 'shape' && !extra.assetId && ['rectangle', 'ellipse', 'arrow', 'line'].includes(extra.shape ?? 'rectangle'))));
+  const strokeSupported = Boolean(extra && ((extra.kind === 'image') || (extra.kind === 'text' && Boolean(extra.backgroundColor)) || (extra.kind === 'shape' && !extra.assetId && ['rectangle', 'ellipse', 'arrow', 'line', 'path'].includes(extra.shape ?? 'rectangle'))));
   const updateExtra = (patch: Partial<NonNullable<typeof extra>>) => {
     if (extra) updateExtraElement(slide.id, { ...extra, ...patch });
   };
@@ -408,7 +409,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
 
   const handleTextChange = (doc: RichText) => {
     if (element.kind === 'slot') {
-      updateSlideFields(slide.id, { [element.id]: doc });
+      updateSlideFields(slide.id, { [slotFieldKey(slide.type, element.id)]: doc });
     } else if (element.extra?.binding) {
       updateSlideFields(slide.id, { [element.extra.binding]: doc });
     } else if (element.extra) {
@@ -587,6 +588,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
           </div>}
         </div>
       )}
+      {extra?.kind === 'shape' && extra.shape === 'path' && extra.path && <PathEditor path={extra.path} color={extra.fill ?? '#0891b2'} onChange={(path) => updateExtra({ path })} />}
       {extra?.kind === 'image' && <div data-testid="sidebar-image-filters" className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800">
         <div className="text-xs font-semibold text-stone-700 dark:text-stone-300">{t('editor.filters')}</div>
         {([['brightness', 0, 200, 100, 'editor.filterBrightness'], ['contrast', 0, 200, 100, 'editor.filterContrast'], ['saturation', 0, 200, 100, 'editor.filterSaturation'], ['grayscale', 0, 100, 0, 'editor.filterGrayscale'], ['blur', 0, 20, 0, 'editor.filterBlur']] as const).map(([key, min, max, base, label]) => {

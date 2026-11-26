@@ -92,11 +92,11 @@ export async function loadTemplateProjectSnapshot(templateId: string, primaryCol
         decorationContext: { tileIndex: 0, tileCount: 1, tileWidth: 1080, height: 1350, seed: 7 },
       });
       const elements = (runtime.composition?.elements ?? []).map((element) => {
-        const asset = element.assetId ? assets[element.assetId] : undefined;
+        // The element keeps the asset NAME; the renderer resolves it through snapshot.assets. Copying the data URL
+        // into every element multiplied project size by slide types x aspects and filled browser storage.
         const mediaAsset = element.media?.assetId ? assets[element.media.assetId] : undefined;
         return {
           ...element,
-          ...(asset ? { assetId: asset } : {}),
           ...(element.media && mediaAsset ? { media: { ...element.media, assetId: mediaAsset } } : {}),
         };
       });

@@ -47,4 +47,4 @@ jobs:
         run: npm run build
 
       - name: End-to-end smoke test
-        run: npm run test:e2e -- tests/e2e/smoke.spec.ts tests/e2e/typographyStage2.spec.ts tests/e2e/templateCompositionStage3.spec.ts
+        run: npm run test:e2e -- tests/e2e/smoke.spec.ts tests/e2e/typographyStage2.spec.ts tests/e2e/templateCompositionStage3.spec.ts tests/e2e/mobileDoubleTapEdit.spec.ts tests/e2e/qaFixesAcceptance.spec.ts tests/e2e/coverLandscapeNoOverlap.spec.ts tests/e2e/toolbarPortalAndEditorClose.spec.ts tests/e2e/exportRegression.spec.ts tests/e2e/longTitleNoSubtitleOverlap.spec.ts tests/e2e/rtlAndToolbarEdges.spec.ts tests/e2e/vectorPathEditor.spec.ts tests/e2e/templateBuilder.spec.ts

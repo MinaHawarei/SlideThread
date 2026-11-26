@@ -11,14 +11,22 @@ The export regression suite verifies that high-resolution offscreen canvas captu
 ---
 
 ## 1. Export Goldens Matrix
-Golden PNGs captured and committed in `docs/export-goldens/`:
-1. `golden-r_4_5-light-en.png`: LinkedIn 4:5 document carousel cover slide in light Atelier palette.
-2. `golden-r_4_5-dark-ar.png`: LinkedIn 4:5 slide in dark Atelier palette with Arabic RTL typography.
-3. `golden-r_1_1-light-ar.png`: Instagram 1:1 square post in light theme with Arabic design system demo.
-4. `golden-r_9_16-dark-en.png`: Vertical Story 9:16 format with 14% safe zone margins respected.
-5. `golden-r_16_9-light-en.png`: Standard landscape presentation 16:9 slide.
+`tests/e2e/exportRegression.spec.ts` exports the current slide as PNG and compares it with these baselines
+(pixel comparison in the browser, fails when more than 1% of pixels differ by more than 24 levels, or when the
+export size changes). Actual exports are written to `test-results/export-actual/` for inspection.
 
----
+| Baseline | Project | Export size |
+| --- | --- | --- |
+| `golden-demo-en-4x5.png` | English demo project, 4:5 | 1080x1350 |
+| `golden-demo-ar-4x5.png` | Arabic (RTL) demo project, 4:5 | 1080x1350 |
+| `golden-wizard-1x1-tech-mesh.png` | New 1:1 tech-mesh cover | 1080x1080 |
+| `golden-wizard-16x9-bold-marketing.png` | New 16:9 bold-marketing cover | 1920x1080 |
+
+Refresh baselines only after reviewing the visual change: `UPDATE_GOLDENS=1 npx playwright test tests/e2e/exportRegression.spec.ts`.
+A normal run never writes into this folder.
+
+Earlier baselines (five files named by format/theme/language) were all the same image: the test never changed
+format, theme or language, and nothing compared against them. They were replaced by the files above.
 
 ## 2. Browser & Engine Compatibility Verification
 - **Chromium / Playwright:** All automated export tests green (`tests/e2e/exportFidelity.spec.ts` & `tests/e2e/exportRegression.spec.ts`, 11/11 passed).

@@ -101,7 +101,8 @@ describe('browser template ZIP import', () => {
     const composition = snapshot.composition.cover?.portrait;
     expect(composition?.slots?.title?.blockStart).toBe(0.2);
     expect(composition?.elements).toHaveLength(5);
-    expect(composition?.elements?.[3]?.assetId).toMatch(/^data:image\/svg\+xml;base64,/);
+    expect(composition?.elements?.[3]?.assetId).not.toMatch(/^data:/);
+    expect(snapshot.assets[composition!.elements![3]!.assetId!]).toMatch(/^data:image\/svg\+xml;base64,/);
 
     const projectA = createDefaultProject({ templateId: id, templateSnapshot: snapshot });
     const projectB = createDefaultProject({ templateId: id, templateSnapshot: snapshot });

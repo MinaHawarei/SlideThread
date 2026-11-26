@@ -31,6 +31,7 @@ import { SLOT_SELECTORS } from '../core/elementModel';
 import { textStyleToCss, TYPOGRAPHY_SLOT_IDS } from '../core/textStyle';
 import { FONT_REGISTRY, type FontId, type FontWeight } from '../fonts/registry';
 import { loadFont } from '../fonts/loader';
+import { STARTER_TEMPLATE_IDS } from '../templates/starters';
 import { loadTemplateProjectSnapshot, templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
 import './slides.css';
 
@@ -88,6 +89,18 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   const effectiveSnapshot = templateSnapshot ?? resolvedSnapshot;
   const template = templateOverride ?? (effectiveSnapshot ? templateDefinitionFromSnapshot(effectiveSnapshot) : undefined);
   const hiddenSlots = template?.composition?.[slide.type]?.[aspectClass]?.hiddenSlots ?? NO_HIDDEN_SLOTS;
+  // Shipped templates get their fonts from stylesheet rules. User-built or imported packages have no
+  // stylesheet, so their declared theme fonts are applied through custom properties instead.
+  const usesPackageFonts = Boolean(template && templateId && !STARTER_TEMPLATE_IDS.includes(templateId));
+  useEffect(() => {
+    if (!usesPackageFonts || !template) return;
+    for (const stack of [template.fonts.display, template.fonts.body, template.fonts.mono]) {
+      const family = stack.split(',')[0]?.trim().replace(/^"|"$/g, '');
+      const entry = Object.values(FONT_REGISTRY).find((font) => font.family === family);
+      if (!entry) continue;
+      for (const weight of entry.weights) void loadFont(entry.id as FontId, weight).catch(() => undefined);
+    }
+  }, [usesPackageFonts, template]);
   const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
   const canvasRef = useRef<HTMLDivElement>(null);
   const overrides = slide.overrides?.[aspectClass];
@@ -349,6 +362,33 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
         }
       }
     }
+    if (slide.type === 'stat' && frames.value) {
+      // The big value is absolutely positioned by its frame, so the label/note group would
+      // otherwise stay in the centred flow and collide with it. Pin the group directly under
+      // the value's own text (line count x line height) so the two can never overlap.
+      const valueEl = canvas.querySelector<HTMLElement>('.stat-big-value');
+      const descEl = canvas.querySelector<HTMLElement>('.stat-desc-group');
+      if (valueEl && descEl && typeof window !== 'undefined') {
+        const canvasRect = canvas.getBoundingClientRect();
+        const k = canvasRect.width > 0 && canvas.offsetWidth > 0 ? canvasRect.width / canvas.offsetWidth : 1;
+        const lineHeight = parseFloat(window.getComputedStyle(valueEl).lineHeight) || parseFloat(window.getComputedStyle(valueEl).fontSize) || 140;
+        let textHeight = lineHeight;
+        if (typeof document.createRange === 'function') {
+          const range = document.createRange();
+          range.selectNodeContents(valueEl);
+          if (typeof range.getBoundingClientRect === 'function') textHeight = range.getBoundingClientRect().height / k;
+        }
+        const lines = Math.max(1, Math.round(textHeight / lineHeight));
+        const gap = 20;
+        setManagedStyle(descEl, {
+          position: 'absolute',
+          insetInlineStart: `${frames.value.inlineStart * slideDims.width}px`,
+          width: `${frames.value.inlineSize * slideDims.width}px`,
+          insetBlockStart: `${frames.value.blockStart * slideDims.height + lines * lineHeight + gap}px`,
+          textAlign: frames.value.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frames.value.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center',
+        });
+      }
+    }
     if (slide.type === 'cta') {
       if (frames.media) {
         const mediaAtBottom = frames.media.blockStart >= 0.65;
@@ -515,6 +555,9 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     '--ts-body': `${template.typeScale.body}px`,
     '--ts-small': `${template.typeScale.small}px`,
     '--ts-mono': `${template.typeScale.mono}px`,
+    '--tpl-font-display': template.fonts.display,
+    '--tpl-font-body': template.fonts.body,
+    '--tpl-font-mono': template.fonts.mono,
     '--template-progress': `${(((slideIndex ?? 0) + 1) / Math.max(totalSlides ?? 1, 1)) * 100}%`,
     direction: textDir && textDir !== 'auto' ? textDir : undefined,
     ...style,
@@ -558,6 +601,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
       data-slide-type={slide.type}
       data-aspect-class={aspectClass}
       data-template-id={templateId}
+      data-package-fonts={usesPackageFonts ? 'true' : undefined}
     >
       <div
         className="slide-template-bg"
@@ -605,7 +649,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
       {renderComponent()}
       <ExtrasRenderer extras={(slide.extras ?? []).map((extra) => extra.binding && slide.fields[extra.binding]
         ? { ...extra, text: slide.fields[extra.binding] }
-        : extra)} />
+        : extra)} assets={effectiveSnapshot?.assets} />
       {shouldRenderSignature && (
         <div
           className={`slide-signature-container sig-anchor-${signatureAnchor}`}

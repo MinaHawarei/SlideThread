@@ -1629,3 +1629,8 @@
 
 
 
+
+/* Fonts declared by user-built or imported template packages (no per-template stylesheet). */
+.slide-canvas[data-package-fonts="true"] { font-family: var(--tpl-font-body), system-ui, sans-serif; }
+.slide-canvas[data-package-fonts="true"] :is(.slide-title-h1, .slide-title-h2, .slide-tag) { font-family: var(--tpl-font-display), system-ui, sans-serif; }
+.slide-canvas[data-package-fonts="true"] :is(.slide-code, .slide-mono, code, pre) { font-family: var(--tpl-font-mono), monospace; }

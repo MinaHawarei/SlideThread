@@ -5,8 +5,11 @@ import { RichTextRenderer } from './RichTextRenderer';
 import { getShapeSvg, getIconSvg, getEmojiSvg, getStickerSvg } from '../assets';
 import { buildExtraImageFilter } from '../core/extraStyles';
 import { textStyleToCss } from '../core/textStyle';
+import { pathToD } from '../core/vectorPath';
 
 export interface ExtrasRendererProps {
+  /** Template asset name to data URL map. Lets template elements reference an asset by name instead of copying its bytes into every element. */
+  assets?: Record<string, string>;
   extras?: readonly ExtraElement[];
 }
 
@@ -15,7 +18,7 @@ function borderStyle(extra: ExtraElement): React.CSSProperties {
   return { border: `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${extra.strokeColor}`, boxSizing: 'border-box' };
 }
 
-export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras }) => {
+export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras, assets }) => {
   if (!extras || extras.length === 0) return null;
 
   return (
@@ -54,7 +57,7 @@ export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras }) => {
               overflow: 'hidden',
             }}
           >
-            {renderExtraContent(extra)}
+            {renderExtraContent(extra, assets)}
           </div>
         );
       })}
@@ -62,7 +65,7 @@ export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras }) => {
   );
 };
 
-function renderExtraContent(extra: ExtraElement): React.ReactNode {
+function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>): React.ReactNode {
   switch (extra.kind) {
     case 'shape': {
       const fill = extra.fill || 'var(--acc, #0891b2)';
@@ -111,6 +114,29 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
           >
             <div style={{ width: '100%', height: extra.strokeWidth ?? 4, backgroundColor: fill, ...(extra.strokeStyle === 'dashed' ? { background: `repeating-linear-gradient(90deg, ${fill} 0 8px, transparent 8px 14px)` } : extra.strokeStyle === 'dotted' ? { background: `radial-gradient(circle, ${fill} 0 2px, transparent 2.5px) 0 50% / 8px 6px repeat-x` } : {}) }} />
           </div>
+        );
+      }
+      if (extra.shape === 'path' && extra.path) {
+        const stroke = extra.strokeColor ?? fill;
+        const strokeWidth = extra.strokeWidth ?? (extra.path.closed ? 0 : 4);
+        return (
+          <svg
+            data-testid={`shape-path-${extra.id}`}
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            style={{ width: '100%', height: '100%', overflow: 'visible' }}
+          >
+            <path
+              d={pathToD(extra.path, 100, 100)}
+              fill={extra.path.closed ? fill : 'none'}
+              stroke={strokeWidth > 0 ? stroke : undefined}
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={extra.strokeStyle === 'dashed' ? '6 4' : extra.strokeStyle === 'dotted' ? '1 4' : undefined}
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
         );
       }
       if (extra.shape === 'arrow') {
@@ -195,7 +221,7 @@ function renderExtraContent(extra: ExtraElement): React.ReactNode {
                 extra.assetId?.startsWith('data:') ||
                 extra.assetId?.startsWith('blob:')
                 ? extra.assetId
-                : undefined
+                : (extra.assetId ? assets?.[extra.assetId] : undefined)
             }
             style={{ width: '100%', height: '100%', objectFit: extra.media?.fit || 'cover', filter: buildExtraImageFilter(extra.filters) }}
           />

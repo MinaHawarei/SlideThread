@@ -4,6 +4,7 @@ import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { SHAPES_ITEMS, getShapeSvg } from '../../assets';
 import type { ExtraElement } from '../../core/schema';
+import { createDefaultPath } from '../../core/vectorPath';
 
 const SHAPE_PALETTE_COLORS = [
   '#0891b2', // Cyan
@@ -57,6 +58,23 @@ export const ShapesPicker: React.FC = () => {
       fill: project.primaryColor || '#0891b2',
     };
 
+    addExtraElement(activeSlide.id, newExtra);
+    selectElement(newExtra.id);
+  };
+
+  const handleAddPath = () => {
+    const newExtra: ExtraElement = {
+      id: `path_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      kind: 'shape',
+      shape: 'path',
+      path: createDefaultPath(),
+      x: 0.2, y: 0.35, w: 0.6, h: 0.3,
+      rotation: 0,
+      z: (activeSlide.extras?.length ?? 0) + 1,
+      locked: false,
+      fill: project.primaryColor || '#0891b2',
+      strokeWidth: 6,
+    };
     addExtraElement(activeSlide.id, newExtra);
     selectElement(newExtra.id);
   };
@@ -153,6 +171,9 @@ export const ShapesPicker: React.FC = () => {
       {/* Shapes Grid */}
       {isOpen && (
         <div className="grid grid-cols-4 gap-2 pt-1" data-testid="shapes-grid">
+          <button type="button" data-testid="add-path-shape" onClick={handleAddPath} title={t('assets.addPath')} aria-label={t('assets.addPath')} className="p-2 h-14 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:border-cyan-500 flex items-center justify-center cursor-pointer">
+            <svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 24 C 10 4, 18 28, 28 8" /></svg>
+          </button>
           {SHAPES_ITEMS.map((item) => {
             const displayName = locale === 'ar' ? item.name.ar : item.name.en;
             const svgContent = getShapeSvg(item.id);

@@ -166,6 +166,22 @@ export type ElementOverride = z.infer<typeof ElementOverrideSchema>;
 export const ElementOverridesSchema = z.partialRecord(AspectClassSchema, z.record(z.string().min(1), ElementOverrideSchema));
 export type ElementOverrides = z.infer<typeof ElementOverridesSchema>;
 
+/** A vector path node. Coordinates are 0..1 inside the element box; handles are absolute positions in the same space. */
+export const PathPointSchema = z.object({
+  x: z.number().finite().min(-0.5).max(1.5),
+  y: z.number().finite().min(-0.5).max(1.5),
+  inX: z.number().finite().min(-1).max(2).optional(),
+  inY: z.number().finite().min(-1).max(2).optional(),
+  outX: z.number().finite().min(-1).max(2).optional(),
+  outY: z.number().finite().min(-1).max(2).optional(),
+}).strict();
+export const VectorPathSchema = z.object({
+  points: z.array(PathPointSchema).min(2).max(200),
+  closed: z.boolean(),
+}).strict();
+export type PathPoint = z.infer<typeof PathPointSchema>;
+export type VectorPath = z.infer<typeof VectorPathSchema>;
+
 export const ExtraElementSchema = z.object({
   id: z.string().min(1),
   kind: z.enum(['image', 'icon', 'shape', 'sticker', 'text']),
@@ -182,7 +198,8 @@ export const ExtraElementSchema = z.object({
   text: RichTextSchema.optional(),
   media: MediaRefSchema.optional(),
   assetId: z.string().min(1).optional(),
-  shape: z.enum(['rectangle', 'ellipse', 'line', 'arrow']).optional(),
+  shape: z.enum(['rectangle', 'ellipse', 'line', 'arrow', 'path']).optional(),
+  path: VectorPathSchema.optional(),
   fill: SafeColorValueSchema.optional(),
   backgroundColor: SafeColorValueSchema.optional(),
   opacity: z.number().min(0).max(1).optional(),
@@ -198,6 +215,12 @@ export const ExtraElementSchema = z.object({
   }
   if (extra.kind === 'shape' && extra.shape === 'line' && extra.strokeWidth !== undefined && extra.strokeWidth <= 0) {
     context.addIssue({ code: 'custom', path: ['strokeWidth'], message: 'Line thickness must be greater than zero' });
+  }
+  if (extra.shape === 'path' && !extra.path) {
+    context.addIssue({ code: 'custom', path: ['path'], message: 'A path shape needs path points' });
+  }
+  if (extra.path && extra.shape !== 'path') {
+    context.addIssue({ code: 'custom', path: ['path'], message: 'Path points are only valid on path shapes' });
   }
   if (extra.textStyle && extra.kind !== 'text') {
     context.addIssue({ code: 'custom', path: ['textStyle'], message: 'Typography overrides are only valid for text extras' });

@@ -170,24 +170,31 @@ test.describe('Task 1 — Editor close paths preserve edits', () => {
 });
 
 test.describe('Task 1 — Touch layout: fixed bottom bar', () => {
+  test.use({ hasTouch: true, isMobile: true });
   test('Mobile bottom bar is visible and fixed', async ({ page }) => {
     test.setTimeout(45000);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.getByTestId('demo-en-btn').click();
 
-    // Mobile layout - look for the mobile editor
-    const mobileEditor = page.getByTestId('editor-mobile');
-    if (await mobileEditor.count() === 0) {
-      // Skip if no mobile editor in this build (layout may differ)
-      test.skip();
-      return;
-    }
+    // Mobile layout: the editor mounts asynchronously, so wait for it instead of skipping.
+    await expect(page.getByTestId('editor-mobile')).toBeVisible({ timeout: 15000 });
 
     // Enter editing mode
     const titleHit = page.getByTestId('element-hit-title').first();
-    if (await titleHit.count() === 0) test.skip();
-    await titleHit.dblclick({ force: true });
+    await expect(titleHit).toBeVisible({ timeout: 10000 });
+    // Double tap, re-measuring each time: the canvas animates into place and selecting can shift it.
+    for (let tap = 0; tap < 2; tap += 1) {
+      let last = '';
+      let frame = await titleHit.boundingBox();
+      for (let i = 0; i < 40 && JSON.stringify(frame) !== last; i += 1) {
+        last = JSON.stringify(frame);
+        await page.waitForTimeout(150);
+        frame = await titleHit.boundingBox();
+      }
+      if (!frame) throw new Error('title frame is not visible');
+      await page.touchscreen.tap(frame.x + frame.width / 2, frame.y + frame.height / 2);
+    }
 
     const toolbar = page.locator('[data-rich-text-toolbar="true"]');
     await expect(toolbar).toBeVisible({ timeout: 5000 });

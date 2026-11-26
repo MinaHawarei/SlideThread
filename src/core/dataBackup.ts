@@ -59,7 +59,17 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
  * Parses and restores all user data from a backup JSON string.
  * Validates and migrates projects if needed, restores settings and UI language.
  */
-export function importAllUserData(jsonString: string): boolean {
+export interface ImportBackupOptions {
+  /**
+   * Called when applying the backup would delete saved projects that are not in it
+   * (for example a backup with an empty project list). The import only goes ahead when
+   * this returns true. Without a callback such an import is refused, so nothing is
+   * deleted silently.
+   */
+  confirmOverwrite?: (info: { existingProjects: number; removedProjects: number; incomingProjects: number }) => boolean;
+}
+
+export function importAllUserData(jsonString: string, options: ImportBackupOptions = {}): boolean {
   try {
     const parsed = JSON.parse(jsonString) as Partial<AllUserDataBackup>;
     if (!isPlainRecord(parsed)) {
@@ -99,6 +109,21 @@ export function importAllUserData(jsonString: string): boolean {
         }
       }
       nextProjects = migratedProjects;
+    }
+
+    if (nextProjects !== undefined) {
+      const existingIds = Object.keys(useRecentStore.getState().projects || {});
+      const removedProjects = existingIds.filter((id) => !(id in nextProjects!)).length;
+      if (removedProjects > 0) {
+        const ok = options.confirmOverwrite?.({
+          existingProjects: existingIds.length,
+          removedProjects,
+          incomingProjects: Object.keys(nextProjects).length,
+        });
+        if (!ok) {
+          return false;
+        }
+      }
     }
 
     if (hasSettings && isPlainRecord(parsed.settings)) {

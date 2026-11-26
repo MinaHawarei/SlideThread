@@ -72,3 +72,13 @@ describe('element model plumbing', () => {
     expect(snapped.guides).toContainEqual({ axis: 'x', at: 0.5 });
   });
 });
+
+describe('slotFieldKey', () => {
+  it('maps the cover subtitle frame (body) to the sub field and leaves everything else alone', async () => {
+    const { slotFieldKey } = await import('../../src/core/elementModel');
+    expect(slotFieldKey('cover', 'body')).toBe('sub');
+    expect(slotFieldKey('cover', 'title')).toBe('title');
+    expect(slotFieldKey('explain', 'body')).toBe('body');
+    expect(slotFieldKey('cta', 'body')).toBe('body');
+  });
+});

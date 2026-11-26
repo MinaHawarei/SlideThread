@@ -561,11 +561,13 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       )}
 
       {/* Touch layout: fixed bottom bar */}
-      {!embedded && touchLayout && (
+      {/* Rendered in a portal: inside the scaled canvas, position:fixed is relative to the transformed ancestor and the bar ends up huge and off screen. */}
+      {!embedded && touchLayout && typeof document !== 'undefined' && createPortal(
         <div
           role="toolbar"
           aria-label={t('editor.richTextToolbar')}
           data-testid="rich-text-floating-toolbar"
+          data-rich-text-toolbar="true"
           {...toolbarPointerProps}
           style={{
             position: 'fixed',
@@ -586,7 +588,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         >
           {toolbarControls}
         </div>
-      )}
+      , document.body)}
 
       {/* Desktop floating toolbar: rendered via portal to escape overflow:hidden clip.
           Positioned absolutely in page coordinates, clamped to viewport. */}

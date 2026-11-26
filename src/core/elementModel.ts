@@ -42,6 +42,14 @@ export function mergeTemplateSlotFrames(
   return { ...variant, elements };
 }
 
+/**
+ * The cover layout calls its subtitle frame `body`, but the cover slide stores and renders that text in
+ * the `sub` field. Everything that reads or writes slot text must go through this key.
+ */
+export function slotFieldKey(slideType: string, elementId: string): string {
+  return slideType === 'cover' && elementId === 'body' ? 'sub' : elementId;
+}
+
 export const SLOT_SELECTORS: Record<string, string> = {
   tag: '.slide-tag',
   title: '.slide-title-h1, .slide-title-h2',

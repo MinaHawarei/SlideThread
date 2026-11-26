@@ -8,6 +8,8 @@ import { useRecentStore } from '../store/recentStore';
 import { deleteUserTemplatePackage } from '../templates/userLibrary';
 import { useUserTemplateLibrary } from '../templates/useUserTemplateLibrary';
 import { importTemplateZip } from '../templates/importZip';
+import { exportUserTemplateZip } from '../templates/portable';
+import { TemplateBuilderDialog } from './TemplateBuilderDialog';
 import { invalidateTemplatePackage } from '../templates/starters';
 import { Footer } from '../ui/common/Footer';
 import { LogoMark } from '../ui/brand/LogoMark';
@@ -59,6 +61,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   const [packageError, setPackageError] = useState<string>();
   const [packageNotice, setPackageNotice] = useState<string>();
   const [packageAction, setPackageAction] = useState(false);
+  const [builderOpen, setBuilderOpen] = useState(false);
   const [userPreviewUrls, setUserPreviewUrls] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -83,6 +86,20 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
     } finally {
       setPackageAction(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleExportPackage = async (id: string) => {
+    setPackageError(undefined);
+    try {
+      const file = await exportUserTemplateZip(id);
+      const url = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = url; link.download = file.name; document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      setPackageNotice(`Exported ${file.name}. It contains the template and everything it builds on.`);
+    } catch (reason) {
+      setPackageError(reason instanceof Error ? reason.message : String(reason));
     }
   };
 
@@ -240,6 +257,9 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
             <button type="button" data-testid="import-template-zip" disabled={packageAction} onClick={() => fileInputRef.current?.click()} className="px-4 py-2 rounded-xl text-xs font-semibold border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-amber-500 disabled:opacity-50">
               {packageAction ? 'Validating ZIP…' : 'Import template ZIP'}
             </button>
+            <button type="button" data-testid="open-template-builder" onClick={() => setBuilderOpen(true)} className="px-4 py-2 rounded-xl text-xs font-semibold border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-amber-500">
+              Create template
+            </button>
             <button
               type="button"
               data-testid="preview-brand-toggle"
@@ -259,6 +279,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
           </div>
         </section>
 
+        {builderOpen && <TemplateBuilderDialog mode={theme} accent={effectivePrimaryColor} onClose={() => setBuilderOpen(false)} onCreated={(name) => { setBuilderOpen(false); setPackageError(undefined); setPackageNotice(`“${name}” was added to Your templates.`); }} />}
         {(packageError || userLibraryError) && <p role="alert" data-testid="template-import-error" className="rounded-xl border border-red-300 bg-red-50 dark:bg-red-950/30 dark:border-red-900 p-3 text-sm text-red-800 dark:text-red-200">{packageError ?? userLibraryError}</p>}
         {packageNotice && <p role="status" data-testid="template-import-notice" className="rounded-xl border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-900 p-3 text-sm text-emerald-800 dark:text-emerald-200">{packageNotice}</p>}
         <section aria-label="Your imported templates" data-testid="user-template-library" className="space-y-4">
@@ -275,6 +296,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                 <div><h3 className="font-serif font-bold">{item.manifest.name[locale]}</h3><p className="text-xs font-mono text-stone-500">{item.id} · Imported</p><p className="text-xs text-stone-600 dark:text-stone-300 mt-2">{item.manifest.description?.[locale] ?? item.manifest.author.name}</p></div>
                 <div className="flex items-center justify-between border-t border-stone-100 dark:border-stone-800 pt-3">
                   <button type="button" data-testid={`use-user-template-${item.id}`} onClick={() => void handleUseTemplate(item.id)} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-violet-600 text-white hover:bg-violet-500">Use template</button>
+                  <button type="button" data-testid={`export-user-template-${item.id}`} onClick={() => void handleExportPackage(item.id)} className="text-xs font-semibold text-stone-600 dark:text-stone-300 hover:text-violet-600">Export ZIP</button>
                   <button type="button" data-testid={`delete-user-template-${item.id}`} onClick={() => void handleDeletePackage(item.id)} className="text-xs text-red-600 hover:text-red-500">Delete</button>
                 </div>
               </div>

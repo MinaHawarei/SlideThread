@@ -80,7 +80,9 @@ describe('package project snapshots', () => {
     const image = cover.extras!.find((element) => element.kind === 'image')!;
     const text = cover.extras!.find((element) => element.kind === 'text')!;
 
-    expect(image.assetId).toMatch(/^data:image\/svg\+xml/);
+    // The element keeps the asset name; the bytes live once in snapshot.assets (independent of the package folder).
+    expect(image.assetId).not.toMatch(/^data:/);
+    expect(snapshot.assets[image.assetId!]).toMatch(/^data:image\/svg\+xml/);
     expect(text.text?.blocks[0]?.runs[0]?.text).toBe('STUDIO / 01');
     expect(Object.isFrozen(snapshot)).toBe(true);
 

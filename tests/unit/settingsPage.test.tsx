@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SettingsPage } from '../../src/ui/settings/SettingsPage';
 import { useSettingsStore, DEFAULT_BRAND_SETTINGS } from '../../src/store/settingsStore';
@@ -258,5 +258,41 @@ describe('Data Management: Export, Import & Clear All Data (Spec §5.5)', () => 
     expect(importAllUserData(JSON.stringify({ schemaVersion: 2 }))).toBe(false);
     expect(importAllUserData(JSON.stringify([1, 2, 3]))).toBe(false);
     expect(useSettingsStore.getState().settings.displayName).toBe('Keep Me');
+  });
+});
+
+describe('backup import never silently deletes saved projects', () => {
+  const emptyBackup = JSON.stringify({ schemaVersion: 2, exportedAt: 1, settings: {}, projects: {}, recents: [] });
+  const seed = () =>
+    useRecentStore.setState({
+      projects: { p1: { id: 'p1', slides: [] } as unknown as Project },
+      recents: [],
+    });
+
+  it('refuses an empty-project backup without confirmation and keeps projects', () => {
+    seed();
+    expect(importAllUserData(emptyBackup)).toBe(false);
+    expect(Object.keys(useRecentStore.getState().projects)).toEqual(['p1']);
+  });
+
+  it('keeps projects when the user declines', () => {
+    seed();
+    const confirmOverwrite = vi.fn(() => false);
+    expect(importAllUserData(emptyBackup, { confirmOverwrite })).toBe(false);
+    expect(confirmOverwrite).toHaveBeenCalledWith({ existingProjects: 1, removedProjects: 1, incomingProjects: 0 });
+    expect(Object.keys(useRecentStore.getState().projects)).toEqual(['p1']);
+  });
+
+  it('applies the backup after explicit confirmation', () => {
+    seed();
+    expect(importAllUserData(emptyBackup, { confirmOverwrite: () => true })).toBe(true);
+    expect(useRecentStore.getState().projects).toEqual({});
+  });
+
+  it('imports without a prompt when nothing would be removed', () => {
+    useRecentStore.setState({ projects: {}, recents: [] });
+    const confirmOverwrite = vi.fn(() => false);
+    expect(importAllUserData(emptyBackup, { confirmOverwrite })).toBe(true);
+    expect(confirmOverwrite).not.toHaveBeenCalled();
   });
 });

@@ -6,6 +6,7 @@ import { getAllTemplates, getTemplate } from '../../templates';
 import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
 import { useUserTemplateLibrary } from '../../templates/useUserTemplateLibrary';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
+import { SaveDesignDialog } from './SaveDesignDialog';
 import type { TemplateId, ThemeMode, TextDir, Anchor } from '../../core/schema';
 
 const PRESET_COLORS = [
@@ -27,6 +28,7 @@ export const DesignInspector: React.FC = () => {
   const settings = useSettingsStore((state) => state.settings);
   const { templates: importedTemplates } = useUserTemplateLibrary();
   const [isChangeFormatOpen, setIsChangeFormatOpen] = useState(false);
+  const [isSaveDesignOpen, setIsSaveDesignOpen] = useState(false);
 
   const allTemplates = [
     ...getAllTemplates().map((template) => ({ id: template.id, nameKey: template.nameKey, name: undefined as string | undefined })),
@@ -368,6 +370,19 @@ export const DesignInspector: React.FC = () => {
           <span>{t('design.changeFormat')}</span>
         </button>
       </div>
+
+      <div>
+        <button
+          type="button"
+          data-testid="design-save-template-btn"
+          onClick={() => setIsSaveDesignOpen(true)}
+          className="w-full min-h-[44px] py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-cyan-500 text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center gap-2 shadow-xs"
+        >
+          <span>💾</span>
+          <span>Save design as template</span>
+        </button>
+      </div>
+      {isSaveDesignOpen && <SaveDesignDialog onClose={() => setIsSaveDesignOpen(false)} />}
 
       <ChangeFormatDialog
         isOpen={isChangeFormatOpen}

@@ -112,7 +112,10 @@ export const SettingsPage: React.FC = () => {
 
     try {
       const text = await file.text();
-      const success = importAllUserData(text);
+      const success = importAllUserData(text, {
+        confirmOverwrite: ({ removedProjects }) =>
+          window.confirm(t('settings.importOverwriteConfirm').replace('{count}', String(removedProjects))),
+      });
       if (success) {
         setFeedbackMessage({ text: t('settings.importSuccess'), type: 'success' });
       } else {
