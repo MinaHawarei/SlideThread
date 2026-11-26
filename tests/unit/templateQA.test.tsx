@@ -4,6 +4,7 @@ import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { SAMPLE_SLIDES, SAMPLE_BRAND_EN, SAMPLE_BRAND_AR } from '../../src/slides/sampleSlides';
 import { generatePalette, getContrastRatio } from '../../src/core/palette';
 import { getAllTemplates, getTemplate } from '../../src/templates';
+import { stubAssetFetch } from './helpers/stubAssetFetch';
 import { loadTemplateProjectSnapshot } from '../../src/templates/projectSnapshot';
 import type { AspectClass, SlideType, TemplateId, TemplateProjectSnapshot } from '../../src/core/schema';
 
@@ -12,6 +13,7 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
   const snapshots: Partial<Record<TemplateId, TemplateProjectSnapshot>> = {};
 
   beforeAll(async () => {
+    stubAssetFetch();
     await Promise.all(templates.map(async (id) => {
       snapshots[id] = await loadTemplateProjectSnapshot(id, '#35D0E6');
     }));
@@ -29,9 +31,9 @@ describe('Template QA Matrix (Spec §7.1, Task P2-3)', () => {
     'cta',
   ];
 
-  it('all 5 starter templates are defined in the template registry', () => {
+  it('all 7 built-in templates (5 starters + 2 full-carousel packs) are defined in the template registry', () => {
     const all = getAllTemplates();
-    expect(all.map((t) => t.id)).toEqual(['bold-marketing', 'clean-minimal', 'heritage-geometric', 'soft-gradient', 'tech-mesh']);
+    expect(all.map((t) => t.id)).toEqual(['bold-marketing', 'clean-minimal', 'golden-hour-viral-full', 'heritage-geometric', 'neon-grid-process-full', 'soft-gradient', 'tech-mesh']);
   });
 
   it('verifies contrast compliance for Dark and Light palettes across all templates', () => {

@@ -1,17 +1,17 @@
 /**
  * Full-carousel versions of the two Pinterest cover packs (golden-hour-viral-full, neon-grid-process-full).
- * Each is imported through the real ZIP import, previewed for all 9 slide types in all 4 aspect classes, and a
+ * Each ships built in (src/templates/starters/<id>), previewed for all 9 slide types in all 4 aspect classes, and a
  * project is made from it. Asserts the backdrop image really loads for every slide type and aspect, and that
  * titles stay inside the slide.
  */
 import { test, expect } from '@playwright/test';
-import path from 'node:path';
+import { finishLockedWizard } from './helpers/wizard';
 
 const PACKS = ['golden-hour-viral-full', 'neon-grid-process-full'] as const;
 const TYPES = ['cover', 'explain', 'rule', 'code', 'compare', 'stat', 'quote', 'image', 'cta'];
 
 for (const id of PACKS) {
-  test(`${id}: imports, renders every slide type in every aspect, starts a project`, async ({ page }) => {
+  test(`${id}: is built in, renders every slide type in every aspect, starts a project`, async ({ page }) => {
     test.setTimeout(100000);
     await page.route('**/_vercel/insights/**', (route) => route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
     const errors: string[] = [];
@@ -19,11 +19,9 @@ for (const id of PACKS) {
     await page.addInitScript(() => { if (!sessionStorage.getItem('seeded')) { localStorage.clear(); sessionStorage.setItem('seeded', '1'); } });
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/gallery');
-    await page.getByTestId('template-zip-input').setInputFiles(path.join('tests/fixtures/packs', `${id}.zip`));
-    await expect(page.getByTestId('template-import-error')).toHaveCount(0);
-    await expect(page.getByTestId(`user-template-card-${id}`)).toBeVisible({ timeout: 20000 });
-
-    await page.getByTestId(`preview-user-template-${id}`).click();
+    // Built-in: no import needed, the pack ships with the app next to the other starters.
+    await expect(page.getByTestId(`preview-template-${id}`)).toBeVisible({ timeout: 20000 });
+    await page.getByTestId(`preview-template-${id}`).click();
     await expect(page.getByTestId('template-preview-page')).toBeVisible();
     for (const aspect of ['portrait', 'square', 'landscape', 'tall']) {
       await page.getByTestId('aspect-filter').selectOption(aspect);
@@ -54,6 +52,7 @@ for (const id of PACKS) {
 
     // A real project from the pack opens in the editor.
     await page.getByTestId('preview-use-btn').click();
+    await finishLockedWizard(page);
     await expect(page.getByTestId('main-canvas')).toBeVisible({ timeout: 20000 });
     await page.screenshot({ path: `test-results/${id}-editor-v1.png` });
     // The project must stay small enough to autosave (browser storage is ~5 MB and the project is stored twice).

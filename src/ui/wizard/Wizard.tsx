@@ -36,6 +36,8 @@ export interface WizardProps {
   initialContentType?: ContentType;
   initialFormatId?: FormatId;
   initialTemplateId?: TemplateId;
+  /** The template was already chosen (for example in the Gallery): it is used as-is and the template step is skipped. */
+  lockedTemplateId?: string;
   onComplete?: (project: Project) => void;
   onCancel?: () => void;
 }
@@ -45,6 +47,7 @@ export const Wizard: React.FC<WizardProps> = ({
   initialContentType = 'carousel',
   initialFormatId = 'r_4_5',
   initialTemplateId = 'tech-mesh',
+  lockedTemplateId,
   onComplete,
   onCancel,
 }) => {
@@ -55,6 +58,9 @@ export const Wizard: React.FC<WizardProps> = ({
   const { templates: importedTemplates } = useUserTemplateLibrary();
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const lastStep = lockedTemplateId ? 3 : 4;
+  const lockedImported = lockedTemplateId ? importedTemplates.find((template) => template.id === lockedTemplateId) : undefined;
+  const lockedTemplateName = lockedTemplateId ? (lockedImported?.manifest.name[locale] ?? t(`wizard.template.${lockedTemplateId}` as Parameters<typeof t>[0])) : '';
   const [platform, setPlatform] = useState<PlatformId>(initialPlatform);
   const [contentType, setContentType] = useState<ContentType>(() => {
     const supported = PLATFORMS[initialPlatform]?.supportedContentTypes || ['carousel'];
@@ -73,13 +79,14 @@ export const Wizard: React.FC<WizardProps> = ({
     initialFormatId === 'r_16_9' ? 'landscape' : 'portrait'
   );
   const [templateId, setTemplateId] = useState<TemplateId>(() => {
+    if (lockedTemplateId) return lockedTemplateId;
     const preferred = String(settings.defaultTemplateId || initialTemplateId || 'tech-mesh');
     return getAllTemplates().some((template) => template.id === preferred) ? preferred as TemplateId : 'tech-mesh';
   });
   React.useEffect(() => {
-    const preferred = String(settings.defaultTemplateId || initialTemplateId || 'tech-mesh');
+    const preferred = String(lockedTemplateId || settings.defaultTemplateId || initialTemplateId || 'tech-mesh');
     if (importedTemplates.some((template) => template.id === preferred)) setTemplateId(preferred);
-  }, [settings.defaultTemplateId, initialTemplateId, importedTemplates]);
+  }, [settings.defaultTemplateId, initialTemplateId, lockedTemplateId, importedTemplates]);
 
   // Platform selection handler with matrix reconciliation
   const handleSelectPlatform = (nextPlatform: PlatformId) => {
@@ -285,8 +292,8 @@ export const Wizard: React.FC<WizardProps> = ({
             role="progressbar"
             aria-valuenow={step}
             aria-valuemin={1}
-            aria-valuemax={4}
-            aria-valuetext={`Step ${step} of 4: ${
+            aria-valuemax={lastStep}
+            aria-valuetext={`Step ${step} of ${lastStep}: ${
               step === 1 ? t('wizard.step1Title') :
               step === 2 ? t('wizard.step2Title') :
               step === 3 ? t('wizard.step3Title') :
@@ -295,7 +302,7 @@ export const Wizard: React.FC<WizardProps> = ({
             className="space-y-2"
           >
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              <span>{t('wizard.stepIndicator', { current: step, total: 4 })}</span>
+              <span>{t('wizard.stepIndicator', { current: step, total: lastStep })}</span>
               <span>
                 {step === 1 && t('wizard.step1Title')}
                 {step === 2 && t('wizard.step2Title')}
@@ -303,10 +310,15 @@ export const Wizard: React.FC<WizardProps> = ({
                 {step === 4 && t('wizard.step4Title')}
               </span>
             </div>
+            {lockedTemplateId && (
+              <div data-testid="wizard-locked-template" className="text-xs text-slate-600 dark:text-slate-300">
+                {t('wizard.step4Title')}: <span className="font-semibold">{lockedTemplateName}</span>
+              </div>
+            )}
             <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden flex">
               <div
                 className="h-full bg-gradient-to-r from-cyan-500 to-indigo-600 transition-all duration-300"
-                style={{ width: `${(step / 4) * 100}%` }}
+                style={{ width: `${(step / lastStep) * 100}%` }}
               />
             </div>
           </div>
@@ -586,11 +598,11 @@ export const Wizard: React.FC<WizardProps> = ({
               <div />
             )}
 
-            {step < 4 ? (
+            {step < lastStep ? (
               <button
                 type="button"
                 data-testid="wizard-next-btn"
-                onClick={() => setStep((s) => (s < 4 ? ((s + 1) as 1 | 2 | 3 | 4) : s))}
+                onClick={() => setStep((s) => (s < lastStep ? ((s + 1) as 1 | 2 | 3 | 4) : s))}
                 className="py-2.5 px-6 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-all shadow-sm flex items-center gap-2"
               >
                 <span>{t('wizard.btn.next')}</span>

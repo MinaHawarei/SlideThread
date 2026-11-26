@@ -13,15 +13,13 @@ describe('Design Controls & Format Relayout (Spec §7, §4.3, Task P3-7)', () =>
     useSettingsStore.getState().resetSettings();
   });
 
-  it('renders all design controls: template picker, free color picker, presets, theme, direction, and change format button', () => {
+  it('renders all design controls: free color picker, presets, theme, direction, and change format button', () => {
     render(<DesignInspector />);
 
     expect(screen.getByTestId('design-inspector')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-tech-mesh')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-clean-minimal')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-bold-marketing')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-soft-gradient')).toBeInTheDocument();
-    expect(screen.getByTestId('design-template-heritage-geometric')).toBeInTheDocument();
+    // The template is chosen when the project is created, so the Design tab has no template picker.
+    expect(screen.queryByTestId('design-template-tech-mesh')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('design-template-heritage-geometric')).not.toBeInTheDocument();
 
     expect(screen.getByTestId('design-color-picker')).toBeInTheDocument();
     expect(screen.getByTestId('design-preset-35D0E6')).toBeInTheDocument();
@@ -36,39 +34,18 @@ describe('Design Controls & Format Relayout (Spec §7, §4.3, Task P3-7)', () =>
     expect(screen.getByTestId('design-change-format-btn')).toBeInTheDocument();
   });
 
-  it('switches templates without losing any slide content', async () => {
-    render(<DesignInspector />);
-
-    const initialSlides = JSON.stringify(useProjectStore.getState().project.slides);
-
-    // Switch to Clean
-    fireEvent.click(screen.getByTestId('design-template-clean-minimal'));
-    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('clean-minimal'));
-
-    // Switch to Bold
-    fireEvent.click(screen.getByTestId('design-template-bold-marketing'));
-    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('bold-marketing'));
-
-    // Switch back to Network
-    fireEvent.click(screen.getByTestId('design-template-tech-mesh'));
-    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('tech-mesh'));
-
-    // Slides content unchanged
-    expect(JSON.stringify(useProjectStore.getState().project.slides)).toBe(initialSlides);
-  });
-
-  it('updates primary color using free color picker and preset chips', () => {
+  it('updates primary color using free color picker and preset chips', async () => {
     render(<DesignInspector />);
 
     // Free color picker
     const picker = screen.getByTestId('design-color-picker');
     fireEvent.change(picker, { target: { value: '#ff5722' } });
-    expect(useProjectStore.getState().project.primaryColor).toBe('#ff5722');
+    await waitFor(() => expect(useProjectStore.getState().project.primaryColor).toBe('#ff5722'));
 
     // Preset chip (Emerald #10B981)
     const emeraldChip = screen.getByTestId('design-preset-10B981');
     fireEvent.click(emeraldChip);
-    expect(useProjectStore.getState().project.primaryColor).toBe('#10B981');
+    await waitFor(() => expect(useProjectStore.getState().project.primaryColor).toBe('#10B981'));
   });
 
   it('switches theme between dark and light', () => {

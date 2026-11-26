@@ -3,8 +3,6 @@ import type { ThemeMode } from '../core/schema';
 import { generatePalette } from '../core/palette';
 import { useT } from '../i18n';
 import { useSettingsStore } from '../store/settingsStore';
-import { createProjectFromTemplate } from '../store/projectStore';
-import { useRecentStore } from '../store/recentStore';
 import { deleteUserTemplatePackage } from '../templates/userLibrary';
 import { useUserTemplateLibrary } from '../templates/useUserTemplateLibrary';
 import { importTemplateZip } from '../templates/importZip';
@@ -47,7 +45,6 @@ export interface GalleryPageProps {
 export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   const { t, dir, locale } = useT();
   const brandSettings = useSettingsStore((state) => state.settings);
-  const saveProject = useRecentStore((state) => state.saveProject);
 
   const [query, setQuery] = useState('');
   const [categoryId, setCategoryId] = useState('all');
@@ -160,20 +157,9 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
     }
   };
 
+  // Choosing a template runs the same wizard (platform, content type, format) with the template already picked.
   const handleUseTemplate = async (tmplId: string) => {
-    try {
-      const newProj = await createProjectFromTemplate({
-        title: 'Untitled Presentation',
-        templateId: tmplId,
-        primaryColor: effectivePrimaryColor,
-        theme,
-        textDir: locale === 'ar' ? 'rtl' : 'ltr',
-      });
-      saveProject(newProj);
-      navigateTo('/editor');
-    } catch (reason) {
-      setPackageError(reason instanceof Error ? reason.message : String(reason));
-    }
+    navigateTo(`/wizard?template=${encodeURIComponent(tmplId)}`);
   };
 
   const handlePreviewTemplate = (tmplId: string) => {

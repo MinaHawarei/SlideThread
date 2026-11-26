@@ -6,8 +6,6 @@ import { SAMPLE_SLIDES } from '../slides/sampleSlides';
 import { getAllTemplates } from '../templates';
 import { useT } from '../i18n';
 import { useSettingsStore } from '../store/settingsStore';
-import { createProjectFromTemplate } from '../store/projectStore';
-import { useRecentStore } from '../store/recentStore';
 import { Footer } from '../ui/common/Footer';
 import { LogoMark } from '../ui/brand/LogoMark';
 import { MobileNavDrawer } from '../ui/common/MobileNavDrawer';
@@ -43,7 +41,6 @@ export interface TemplatePreviewPageProps {
 export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavigate }) => {
   const { t, dir, locale } = useT();
   const brandSettings = useSettingsStore((state) => state.settings);
-  const saveProject = useRecentStore((state) => state.saveProject);
   const { templates: importedTemplates } = useUserTemplateLibrary();
 
   const getInitialTemplateId = (): string => {
@@ -100,19 +97,8 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
   };
 
   const handleUseThisTemplate = async () => {
-    const effectivePrimaryColor =
-      brandSettings.defaultPrimaryColor || (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
-
-    const newProj = await createProjectFromTemplate({
-      title: 'Untitled Presentation',
-      templateId,
-      primaryColor: effectivePrimaryColor,
-      theme,
-      textDir: lang === 'ar' ? 'rtl' : 'ltr',
-      ...(packageSnapshot ? { templateSnapshot: packageSnapshot } : {}),
-    });
-    saveProject(newProj);
-    navigateTo('/editor');
+    // Same wizard as New Carousel, with this template already chosen.
+    navigateTo(`/wizard?template=${encodeURIComponent(templateId)}`);
   };
 
   const handleTemplateChange = (newId: string) => {

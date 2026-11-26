@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
 import { useSettingsStore } from '../../store/settingsStore';
-import { getAllTemplates, getTemplate } from '../../templates';
-import { loadTemplateProjectSnapshot } from '../../templates/projectSnapshot';
-import { useUserTemplateLibrary } from '../../templates/useUserTemplateLibrary';
+import { getTemplate } from '../../templates';
+import { currentAccent, recolorTemplateSnapshot } from '../../templates/accent';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import { SaveDesignDialog } from './SaveDesignDialog';
-import type { TemplateId, ThemeMode, TextDir, Anchor } from '../../core/schema';
+import type { ThemeMode, TextDir, Anchor } from '../../core/schema';
 
 const PRESET_COLORS = [
   { name: 'Cyan (Network)', hex: '#35D0E6' },
@@ -21,19 +20,14 @@ const PRESET_COLORS = [
 ];
 
 export const DesignInspector: React.FC = () => {
-  const { t, locale } = useT();
+  const { t } = useT();
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
   const updateCounterConfig = useProjectStore((state) => state.updateCounterConfig);
   const settings = useSettingsStore((state) => state.settings);
-  const { templates: importedTemplates } = useUserTemplateLibrary();
   const [isChangeFormatOpen, setIsChangeFormatOpen] = useState(false);
   const [isSaveDesignOpen, setIsSaveDesignOpen] = useState(false);
 
-  const allTemplates = [
-    ...getAllTemplates().map((template) => ({ id: template.id, nameKey: template.nameKey, name: undefined as string | undefined })),
-    ...importedTemplates.map((template) => ({ id: template.id, nameKey: template.id, name: template.manifest.name[locale] })),
-  ];
   let starterCounterStyles: ('number' | 'bar' | 'dots')[] | undefined;
   if (!project.templateSnapshot?.counter?.styles) {
     try {
@@ -55,14 +49,15 @@ export const DesignInspector: React.FC = () => {
   const isSignatureVisible = (settings.showSignature !== false) && (project.signature?.show !== false);
   const hasCollision = counter.show && isSignatureVisible && counter.anchor === signatureAnchor;
 
-  const handleTemplateChange = async (templateId: TemplateId) => {
-    const templateSnapshot = await loadTemplateProjectSnapshot(templateId, project.primaryColor);
-    updateProjectMeta({ templateId, templateSnapshot });
+  const handleColorChange = async (primaryColor: string) => {
+    try {
+      const templateSnapshot = await recolorTemplateSnapshot(project.templateId, project.templateSnapshot, primaryColor);
+      updateProjectMeta({ primaryColor, templateSnapshot });
+    } catch {
+      updateProjectMeta({ primaryColor });
+    }
   };
-
-  const handleColorChange = (primaryColor: string) => {
-    updateProjectMeta({ primaryColor });
-  };
+  const accent = currentAccent(project.templateSnapshot, project.theme, project.primaryColor);
 
   const handleThemeChange = (theme: ThemeMode) => {
     updateProjectMeta({ theme });
@@ -74,35 +69,6 @@ export const DesignInspector: React.FC = () => {
 
   return (
     <div data-testid="design-inspector" className="p-4 space-y-6">
-      {/* Template Picker */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          {t('design.template')}
-        </label>
-        <div className="grid grid-cols-3 gap-2">
-          {allTemplates.map((tmpl) => {
-            const isSelected = project.templateId === tmpl.id;
-            const nameKey = `wizard.template.${tmpl.id}` as const;
-
-            return (
-              <button
-                key={tmpl.id}
-                type="button"
-                data-testid={`design-template-${tmpl.id}`}
-                onClick={() => handleTemplateChange(tmpl.id)}
-                className={`py-2 px-2 rounded-xl border text-xs font-bold capitalize transition-all ${
-                  isSelected
-                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm'
-                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750'
-                }`}
-              >
-                {tmpl.name ?? t(nameKey as Parameters<typeof t>[0])}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Free Color Picker & Presets */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -111,12 +77,12 @@ export const DesignInspector: React.FC = () => {
           </label>
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs uppercase font-semibold text-slate-600 dark:text-slate-300">
-              {project.primaryColor}
+              {accent}
             </span>
             <input
               data-testid="design-color-picker"
               type="color"
-              value={project.primaryColor}
+              value={/^#[\da-f]{6}$/i.test(accent) ? accent : project.primaryColor}
               onChange={(e) => handleColorChange(e.target.value)}
               className="w-7 h-7 rounded cursor-pointer border-0 bg-transparent p-0"
               title="Pick any hex color"
@@ -127,7 +93,7 @@ export const DesignInspector: React.FC = () => {
         {/* Color Chips */}
         <div className="flex flex-wrap gap-2">
           {PRESET_COLORS.map((c) => {
-            const isSelected = project.primaryColor.toLowerCase() === c.hex.toLowerCase();
+            const isSelected = accent.toLowerCase() === c.hex.toLowerCase();
             return (
               <button
                 key={c.hex}

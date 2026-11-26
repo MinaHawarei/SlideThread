@@ -60,7 +60,7 @@ Templates are untrusted data. The CI validator checks the JSON Schema and Zod sc
    npm run template:index
    ```
 
-6. Review the generated WebP, then run `npm run template:preview -- --check` and `npm run template:index -- --check`. Commit the manifest and preview; do not hand-edit the generated gallery index.
+6. Review the generated WebP, then run `npm run template:preview -- --check`. Commit the folder. The gallery, wizard and names are discovered from `src/templates/starters/<id>/` at build time, so there is no index or code to edit. Deleting the folder removes the template.
 
 This example deliberately adds no app code, registered layout, decoration, or asset. The `colorFlexible` flag lets the app generate light and dark palettes from a creator color; fixed palettes should provide complete `theme.modes.dark` and `theme.modes.light` values that pass contrast validation.
 
@@ -145,7 +145,7 @@ Do not copy a full template just to change its accent or radius.
 - `npm run template:validate` checks schema, security, contrast, assets, licenses, preview presence/size, and stress-renders each template across both themes, both scripts/directions, and all four aspect classes.
 - `npm run template:preview -- <id>` captures an 864×1080 WebP and reduces encoding quality as needed to stay at or below 40 KB.
 - `npm run template:preview -- --check` verifies that committed previews are current with a tolerant pixel comparison.
-- `npm run template:index` generates `src/templates/registry/index.json`; use `-- --check` in CI.
+- `npm run template:index` is a no-op kept for compatibility: the registry is discovered from the template folders at build time.
 - `npm run template:dev -- <id>` serves the template lab with hot reload and English/Arabic sample content.
 
 Read [Content Policy](CONTENT_POLICY.md) before adding text, palettes, patterns, or assets. CI is the final check; a local preview is not a license or security review.

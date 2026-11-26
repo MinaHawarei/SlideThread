@@ -4,7 +4,7 @@ import { MediaRenderer } from './MediaRenderer';
 import { RichTextRenderer } from './RichTextRenderer';
 import { getShapeSvg, getIconSvg, getEmojiSvg, getStickerSvg } from '../assets';
 import { buildExtraImageFilter } from '../core/extraStyles';
-import { textStyleToCss } from '../core/textStyle';
+import { textStyleToCss, themeColor } from '../core/textStyle';
 import { pathToD } from '../core/vectorPath';
 
 export interface ExtrasRendererProps {
@@ -14,8 +14,8 @@ export interface ExtrasRendererProps {
 }
 
 function borderStyle(extra: ExtraElement): React.CSSProperties {
-  if (!extra.strokeColor || !extra.strokeWidth || extra.strokeWidth <= 0) return {};
-  return { border: `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${extra.strokeColor}`, boxSizing: 'border-box' };
+  if (!themeColor(extra.strokeColor) || !extra.strokeWidth || extra.strokeWidth <= 0) return {};
+  return { border: `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${themeColor(extra.strokeColor)}`, boxSizing: 'border-box' };
 }
 
 export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras, assets }) => {
@@ -68,7 +68,7 @@ export const ExtrasRenderer: React.FC<ExtrasRendererProps> = ({ extras, assets }
 function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>): React.ReactNode {
   switch (extra.kind) {
     case 'shape': {
-      const fill = extra.fill || 'var(--acc, #0891b2)';
+      const fill = themeColor(extra.fill) || 'var(--acc, #0891b2)';
 
       // Check if this extra references a vector asset from shapes, icons, emoji, or stickers pack
       if (extra.assetId) {
@@ -117,7 +117,7 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
         );
       }
       if (extra.shape === 'path' && extra.path) {
-        const stroke = extra.strokeColor ?? fill;
+        const stroke = themeColor(extra.strokeColor) ?? fill;
         const strokeWidth = extra.strokeWidth ?? (extra.path.closed ? 0 : 4);
         return (
           <svg
@@ -147,7 +147,7 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
             preserveAspectRatio="none"
             style={{ width: '100%', height: '100%', fill }}
           >
-            <polygon points="0,35 60,35 60,10 100,50 60,90 60,65 0,65" fill={fill} stroke={extra.strokeWidth ? extra.strokeColor : undefined} strokeWidth={extra.strokeWidth} strokeDasharray={extra.strokeStyle === 'dashed' ? '6 4' : extra.strokeStyle === 'dotted' ? '1 4' : undefined} vectorEffect="non-scaling-stroke" />
+            <polygon points="0,35 60,35 60,10 100,50 60,90 60,65 0,65" fill={fill} stroke={extra.strokeWidth ? themeColor(extra.strokeColor) : undefined} strokeWidth={extra.strokeWidth} strokeDasharray={extra.strokeStyle === 'dashed' ? '6 4' : extra.strokeStyle === 'dotted' ? '1 4' : undefined} vectorEffect="non-scaling-stroke" />
           </svg>
         );
       }
@@ -166,7 +166,7 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
       );
     }
     case 'text': {
-      const color = extra.fill || 'var(--ink, #0f172a)';
+      const color = themeColor(extra.fill) || 'var(--ink, #0f172a)';
       return (
         <div
           data-testid={`text-extra-${extra.id}`}
@@ -174,9 +174,9 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
             width: '100%',
             height: '100%',
             color,
-            backgroundColor: extra.backgroundColor,
+            backgroundColor: themeColor(extra.backgroundColor),
             borderRadius: extra.backgroundColor ? `${extra.cornerRadius ?? 8}px` : undefined,
-            border: extra.backgroundColor && extra.strokeColor && extra.strokeWidth ? `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${extra.strokeColor}` : undefined,
+            border: extra.backgroundColor && themeColor(extra.strokeColor) && extra.strokeWidth ? `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${themeColor(extra.strokeColor)}` : undefined,
             padding: extra.backgroundColor ? '0.12em 0.35em' : undefined,
             boxSizing: 'border-box',
             fontSize: 'calc(var(--ts-body, 24px))',
@@ -225,7 +225,7 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
             }
             style={{ width: '100%', height: '100%', objectFit: extra.media?.fit || 'cover', filter: buildExtraImageFilter(extra.filters) }}
           />
-          {extra.kind === 'image' && extra.strokeColor && extra.strokeWidth ? <div aria-hidden="true" data-testid={`image-extra-stroke-${extra.id}`} style={{ position: 'absolute', inset: 0, borderRadius, border: `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${extra.strokeColor}`, boxSizing: 'border-box', pointerEvents: 'none' }} /> : null}
+          {extra.kind === 'image' && themeColor(extra.strokeColor) && extra.strokeWidth ? <div aria-hidden="true" data-testid={`image-extra-stroke-${extra.id}`} style={{ position: 'absolute', inset: 0, borderRadius, border: `${extra.strokeWidth}px ${extra.strokeStyle ?? 'solid'} ${themeColor(extra.strokeColor)}`, boxSizing: 'border-box', pointerEvents: 'none' }} /> : null}
         </div>
       );
     }
@@ -239,7 +239,7 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: extra.fill || 'var(--ink, #0f172a)',
+            color: themeColor(extra.fill) || 'var(--ink, #0f172a)',
             fontSize: 'calc(var(--ts-h2, 48px))',
           }}
         >

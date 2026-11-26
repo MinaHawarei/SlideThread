@@ -67,8 +67,8 @@ test.describe('Gate G3 Verification Flow', () => {
     await page.locator('[data-testid="apply-change-format-btn"]').click();
     await expect(page.locator('[data-testid="change-format-dialog"]')).not.toBeVisible();
 
-    // 7. Test Template Switching (switch to Clean template)
-    await page.locator('[data-testid="design-template-clean-minimal"]').click();
+    // 7. The template is chosen at creation: no template picker in the Design tab.
+    await expect(page.locator('[data-testid="design-template-clean-minimal"]')).toHaveCount(0);
 
     // 8. Test Color Switching (choose emerald green preset #10B981)
     await page.locator('[data-testid="design-preset-10B981"]').click();

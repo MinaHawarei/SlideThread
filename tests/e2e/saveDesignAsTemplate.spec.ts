@@ -3,6 +3,7 @@
  * reports skipped content, the saved package survives reload, and a new project from it reproduces the design.
  */
 import { test, expect, type Page } from '@playwright/test';
+import { finishLockedWizard } from './helpers/wizard';
 
 async function createEditor(page: Page) {
   await page.goto('/');
@@ -68,6 +69,7 @@ test('saved design reproduces moved title, hidden body and an added shape', asyn
   await page.reload();
   await expect(page.getByTestId('user-template-card-my-moved-title-look')).toBeVisible({ timeout: 15000 });
   await page.getByTestId('use-user-template-my-moved-title-look').click();
+  await finishLockedWizard(page);
   await expect(page.getByTestId('main-canvas')).toBeVisible({ timeout: 20000 });
 
   const again = await relBox(page, '.slide-title-h1');
@@ -96,6 +98,7 @@ test('a design saved from a user-package base exports and imports on a fresh bro
   // Second generation: the base is now a user package.
   await page.goto('/gallery');
   await page.getByTestId('use-user-template-my-first-look').click();
+  await finishLockedWizard(page);
   await expect(page.getByTestId('main-canvas')).toBeVisible({ timeout: 20000 });
   await page.getByTestId('element-hit-title').focus();
   for (let i = 0; i < 5; i++) await page.keyboard.press('Shift+ArrowDown');
@@ -124,6 +127,7 @@ test('a design saved from a user-package base exports and imports on a fresh bro
   await expect(page2.getByTestId('user-template-card-my-second-look')).toBeVisible({ timeout: 20000 });
   await expect(page2.getByTestId('user-template-card-my-first-look')).toHaveCount(0);
   await page2.getByTestId('use-user-template-my-second-look').click();
+  await finishLockedWizard(page2);
   await expect(page2.getByTestId('main-canvas')).toBeVisible({ timeout: 20000 });
   const imported = await relBox(page2, '.slide-title-h1');
   expect(Math.abs(imported.y - moved.y), `y ${imported.y} vs ${moved.y}`).toBeLessThan(1.5);

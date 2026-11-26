@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { getTemplate, getAllTemplates } from '../../src/templates';
 
 describe('Template package registry', () => {
-  it('lists the five starter package IDs', () => {
+  it('lists the seven built-in package IDs', () => {
     expect(getAllTemplates().map((template) => template.id).sort()).toEqual([
-      'bold-marketing', 'clean-minimal', 'heritage-geometric', 'soft-gradient', 'tech-mesh',
+      'bold-marketing', 'clean-minimal', 'golden-hour-viral-full', 'heritage-geometric', 'neon-grid-process-full', 'soft-gradient', 'tech-mesh',
     ]);
   });
 

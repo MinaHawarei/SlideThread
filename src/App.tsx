@@ -33,8 +33,9 @@ export const App: React.FC = () => {
   const appTheme = useSettingsStore((state) => state.settings.appTheme || 'light');
 
   const navigate = (path: string) => {
-    if (window.location.pathname !== path) window.history.pushState({}, '', path);
-    setCurrentPath(path);
+    if (window.location.pathname + window.location.search !== path) window.history.pushState({}, '', path);
+    // Routes match on the pathname only; a query string (e.g. /wizard?template=id) stays in the URL.
+    setCurrentPath(new URL(path, 'http://x').pathname);
   };
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export const App: React.FC = () => {
   if (currentPath === '/gallery') route = <GalleryPage onNavigate={navigate} />;
   else if (currentPath === '/preview' || currentPath.startsWith('/preview/') || currentPath.startsWith('/preview?')) route = <TemplatePreviewPage onNavigate={navigate} />;
   else if (currentPath === '/editor') route = <Editor onHome={() => navigate('/')} />;
-  else if (currentPath === '/wizard') route = <Wizard onComplete={() => navigate('/editor')} onCancel={() => navigate('/')} />;
+  else if (currentPath === '/wizard') route = <Wizard lockedTemplateId={new URLSearchParams(window.location.search).get('template') ?? undefined} onComplete={() => navigate('/editor')} onCancel={() => navigate('/')} />;
   else if (currentPath === '/settings') route = <SettingsPage />;
   else if (currentPath === '/kit') route = <KitPage />;
   else if (import.meta.env.DEV && currentPath === '/layout-preview' && LayoutPreviewPage) route = <LayoutPreviewPage />;

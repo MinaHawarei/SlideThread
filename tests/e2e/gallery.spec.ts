@@ -13,8 +13,10 @@ test.describe('Component Gallery Route (/gallery)', () => {
     await expect(categories.locator('option[value="coptic"]')).toHaveCount(0);
     await expect(categories.locator('option[value="islamic"]')).toHaveCount(0);
     await categories.selectOption('marketing');
-    await expect(page.getByTestId('gallery-template-card')).toHaveCount(1);
-    await expect(page.getByTestId('gallery-template-card')).toHaveAttribute('data-template-id', 'bold-marketing');
+    // Marketing: Bold Marketing plus the two built-in full-carousel packs.
+    await expect(page.getByTestId('gallery-template-card')).toHaveCount(3);
+    await expect(page.locator('[data-testid="gallery-template-card"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-template-id')).sort()))
+      .resolves.toEqual(['bold-marketing', 'golden-hour-viral-full', 'neon-grid-process-full']);
 
     await page.getByTestId('gallery-category').selectOption('all');
     await page.getByTestId('favorite-tech-mesh').click();

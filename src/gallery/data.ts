@@ -1,4 +1,4 @@
-import generatedIndex from '../templates/registry/index.json';
+import { templateRegistry } from '../templates/registry';
 import categoryRegistry from '../templates/registry/categories.json';
 
 export interface GalleryTemplate {
@@ -38,7 +38,7 @@ export interface GalleryFilters {
   favoriteIds?: readonly string[];
 }
 
-export const TEMPLATE_GALLERY_INDEX = generatedIndex as TemplateGalleryIndex;
+export const TEMPLATE_GALLERY_INDEX = templateRegistry as TemplateGalleryIndex;
 export const TEMPLATE_CATEGORIES = categoryRegistry as GalleryCategory[];
 export const TEMPLATE_FAVORITES_KEY = 'slidethread:template-favorites:v1';
 const previewUrls = import.meta.glob<string>('../templates/starters/*/preview.webp', { eager: true, query: '?url', import: 'default' });

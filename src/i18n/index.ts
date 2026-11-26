@@ -1,3 +1,4 @@
+import { templateRegistry } from '../templates/registry';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { en, type TranslationKey } from './en';
@@ -42,13 +43,23 @@ export const useI18nStore = create<I18nStoreState>()(
  * Pure translation function with optional parameter interpolation.
  * Example: t('editor.slideCounter', { current: 1, total: 5 }) -> "Slide 1 of 5"
  */
+/** Built-in templates added by dropping a folder carry their own names; no dictionary entry is needed. */
+function builtinTemplateText(locale: Locale, key: string): string | undefined {
+  const match = /^wizard\.(template|templateDesc)\.(.+)$/.exec(key);
+  if (!match) return undefined;
+  const entry = templateRegistry.templates.find((template) => template.id === match[2]);
+  if (!entry) return undefined;
+  const text = match[1] === 'template' ? entry.name : entry.description;
+  return text[locale as 'en' | 'ar'] ?? text.en;
+}
+
 export function translate(
   locale: Locale,
   key: TranslationKey,
   params?: Record<string, string | number>
 ): string {
   const dictionary = DICTIONARIES[locale] || DICTIONARIES.en;
-  let text = dictionary[key] || DICTIONARIES.en[key] || (key as string);
+  let text = dictionary[key] || DICTIONARIES.en[key] || builtinTemplateText(locale, key as string) || (key as string);
 
   if (params) {
     Object.entries(params).forEach(([paramKey, paramVal]) => {

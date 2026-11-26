@@ -3,6 +3,7 @@
  * imported ZIP, appears under Your templates, survives a reload, and a project made from it uses its font.
  */
 import { test, expect } from '@playwright/test';
+import { finishLockedWizard } from './helpers/wizard';
 
 test('create a template, keep it across reload, and use it in a project', async ({ page }) => {
   test.setTimeout(90000);
@@ -49,6 +50,7 @@ test('create a template, keep it across reload, and use it in a project', async 
 
   // Use the first template: the editor title uses the chosen heading font.
   await page.getByTestId('use-user-template-my-serif-test-look').click();
+  await finishLockedWizard(page);
   await expect(page.getByTestId('main-canvas')).toBeVisible({ timeout: 20000 });
   const title = page.getByTestId('workspace-stage').locator('.slide-title-h1, .slide-title-h2').first();
   await expect(title).toBeVisible();

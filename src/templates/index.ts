@@ -1,6 +1,6 @@
 import type { TemplateId } from '../core/schema';
 import { FONT_REGISTRY } from '../fonts/registry';
-import registry from './registry/index.json';
+import { templateRegistry as registry } from './registry';
 import { STARTER_TEMPLATE_IDS } from './starters';
 import type { TemplateDef } from './types';
 

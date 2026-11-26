@@ -24,7 +24,10 @@
     "id": {
       "$ref": "#/$defs/id"
     },
-    "className": { "type": "string", "minLength": 1 },
+    "className": {
+      "type": "string",
+      "minLength": 1
+    },
     "name": {
       "$ref": "#/$defs/bilingualName"
     },
@@ -116,7 +119,9 @@
                 "ibm-plex-sans",
                 "ibm-plex-sans-arabic",
                 "jetbrains-mono",
-                "noto-sans-coptic"
+                "noto-sans-coptic",
+                "ibm-plex-serif",
+                "anton"
               ]
             },
             "body": {
@@ -124,7 +129,9 @@
                 "ibm-plex-sans",
                 "ibm-plex-sans-arabic",
                 "jetbrains-mono",
-                "noto-sans-coptic"
+                "noto-sans-coptic",
+                "ibm-plex-serif",
+                "anton"
               ]
             },
             "mono": {
@@ -132,7 +139,9 @@
                 "ibm-plex-sans",
                 "ibm-plex-sans-arabic",
                 "jetbrains-mono",
-                "noto-sans-coptic"
+                "noto-sans-coptic",
+                "ibm-plex-serif",
+                "anton"
               ]
             }
           }
@@ -430,7 +439,23 @@
         "hiddenSlots": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "enum": ["tag", "title", "sub", "rule", "body", "media", "counter", "signature", "code", "value", "left", "right", "source"] }
+          "items": {
+            "enum": [
+              "tag",
+              "title",
+              "sub",
+              "rule",
+              "body",
+              "media",
+              "counter",
+              "signature",
+              "code",
+              "value",
+              "left",
+              "right",
+              "source"
+            ]
+          }
         },
         "elements": {
           "type": "array",
@@ -504,7 +529,9 @@
           "enum": [
             "text",
             "image",
-            "shape"
+            "shape",
+            "icon",
+            "sticker"
           ]
         },
         "x": {
@@ -554,7 +581,8 @@
             "rectangle",
             "ellipse",
             "line",
-            "arrow"
+            "arrow",
+            "path"
           ]
         },
         "fill": {
@@ -564,6 +592,45 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "binding": {
+          "enum": [
+            "title",
+            "tag",
+            "sub"
+          ]
+        },
+        "path": {
+          "type": "object"
+        },
+        "backgroundColor": {
+          "type": "string"
+        },
+        "strokeColor": {
+          "type": "string"
+        },
+        "cornerRadius": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 500
+        },
+        "strokeWidth": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "strokeStyle": {
+          "enum": [
+            "solid",
+            "dashed",
+            "dotted"
+          ]
+        },
+        "filters": {
+          "type": "object"
+        },
+        "textStyle": {
+          "type": "object"
         }
       }
     }

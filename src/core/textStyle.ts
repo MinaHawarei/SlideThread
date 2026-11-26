@@ -9,6 +9,12 @@ import { FONT_REGISTRY, type FontId } from '../fonts/registry';
  * inherited values; existing rich-text run marks remain the most specific
  * inline formatting. Omitting/resetting textStyle therefore restores inheritance.
  */
+const THEME_COLOR_TOKENS = new Set(['bg', 'bg2', 'ink', 'mute', 'acc', 'acc2', 'line', 'card', 'ok', 'bad', 'onAcc']);
+/** A palette token ("acc", "ink", ...) becomes the slide's CSS variable so it follows the template palette and the user's main color; hex and named colors pass through. */
+export function themeColor(value: string | undefined): string | undefined {
+  return value && THEME_COLOR_TOKENS.has(value) ? `var(--${value})` : value;
+}
+
 /** Converts validated, bounded editor typography into inline styles without raw CSS input. */
 export function textStyleToCss(style?: TextStyleOverride): CSSProperties {
   if (!style) return {};
@@ -21,7 +27,7 @@ export function textStyleToCss(style?: TextStyleOverride): CSSProperties {
     ...(style.italic !== undefined ? { fontStyle: style.italic ? 'italic' : 'normal' } : fontDefinition && !fontDefinition.styles.includes('italic') ? { fontStyle: 'normal' } : {}),
     ...(style.letterSpacing !== undefined ? { letterSpacing: `${style.letterSpacing}px` } : {}),
     ...(style.lineHeight !== undefined ? { lineHeight: style.lineHeight } : {}),
-    ...(style.color ? { color: style.color } : {}),
+    ...(style.color ? { color: themeColor(style.color) } : {}),
   };
 }
 

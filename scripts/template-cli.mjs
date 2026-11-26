@@ -13,7 +13,6 @@ const root = process.cwd();
 const startersDir = path.join(root, 'src/templates/starters');
 const schemaPath = path.join(root, 'src/templates/template.schema.json');
 const categoriesPath = path.join(root, 'src/templates/registry/categories.json');
-const indexPath = path.join(root, 'src/templates/registry/index.json');
 const dimensions = { landscape: [1920, 1080], square: [1080, 1080], portrait: [1080, 1350], tall: [1080, 1920] };
 
 function parseArgs(args) {
@@ -224,6 +223,8 @@ async function renderStressMatrix(manifests) {
               failures.push(`${manifest.id}/${aspect}/${theme}/${locale}: slide did not render`);
               continue;
             }
+            // Hand-built covers hide the title slot and draw their own text elements; they have no .slide-title-h1 to measure.
+            if (manifest.composition?.cover?.[aspect]?.hiddenSlots?.includes('title')) continue;
             const title = slide.locator('.slide-title-h1');
             const titleText = (await title.textContent())?.trim() ?? '';
             const titleBox = await title.boundingBox();
@@ -282,41 +283,6 @@ async function previewAll(manifests, check) {
   if (mismatches.length) throw new Error(`Preview drift:\n${mismatches.join('\n')}\nRun npm run template:preview to update previews.`);
 }
 
-async function writeIndex(check) {
-  const categories = await loadJson(categoriesPath);
-  const folders = await templateFolders();
-  const templates = [];
-  for (const folder of folders) {
-    const manifest = await loadJson(path.join(folder, 'template.json'));
-    if (manifest.testFixture) continue;
-    templates.push({
-      id: manifest.id,
-      className: manifest.className ?? manifest.id,
-      name: manifest.name,
-      description: manifest.description ?? {},
-      categories: manifest.categories,
-      tags: manifest.tags,
-      colorFlexible: manifest.colorFlexible,
-      theme: manifest.theme,
-      counter: manifest.counter ?? null,
-      formats: manifest.formats,
-      modes: manifest.colorFlexible ? ['dark', 'light'] : Object.keys(manifest.theme.modes ?? {}).sort(),
-      languages: ['ar', 'en'],
-      preview: `starters/${manifest.id}/preview.webp`,
-    });
-  }
-  const output = `${JSON.stringify({ schema: 1, categories: categories.map(({ id }) => id), templates }, null, 2)}\n`;
-  if (check) {
-    const current = await readFile(indexPath, 'utf8').catch(() => '');
-    if (current !== output) throw new Error('Generated template index is stale. Run npm run template:index.');
-    console.log(`Template index current (${templates.length} templates).`);
-  } else {
-    await mkdir(path.dirname(indexPath), { recursive: true });
-    await writeFile(indexPath, output);
-    console.log(`Wrote ${path.relative(root, indexPath)} (${templates.length} templates).`);
-  }
-}
-
 async function scaffold(id) {
   if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) throw new Error('Usage: npm run template:new -- <lowercase-slug>');
   const folder = path.join(startersDir, id);
@@ -365,7 +331,12 @@ async function main() {
   const { positional, flags } = parseArgs(args);
   if (command === 'new') return scaffold(positional[0]);
   if (command === 'dev') return dev(positional[0]);
-  if (command === 'index') return writeIndex(flags.has('--check'));
+  if (command === 'index') {
+    // The registry is discovered at build time from src/templates/starters/*/template.json; there is nothing to generate.
+    const folders = await templateFolders();
+    console.log(`Template registry is automatic (${folders.length} template folders discovered). Nothing to generate.`);
+    return;
+  }
   if (command === 'validate') {
     const manifests = await validateAll();
     await renderStressMatrix(manifests);

@@ -10,8 +10,8 @@ import { resolveTemplatePalette } from '../../src/templates/schema';
 import { SlideRenderer } from '../../src/slides/SlideRenderer';
 import { SAMPLE_SLIDES } from '../../src/slides/sampleSlides';
 
-describe('five starter template manifests', () => {
-  it('lazy loads all five validated templates with local categories, complete layouts, and usable palettes', async () => {
+describe('built-in template manifests', () => {
+  it('lazy loads all validated templates with local categories, complete layouts, and usable palettes', async () => {
     const templates = await Promise.all(STARTER_TEMPLATE_IDS.map((id) => loadStarterTemplate(id)));
     expect(templates.map((template) => template.id)).toEqual(STARTER_TEMPLATE_IDS);
 

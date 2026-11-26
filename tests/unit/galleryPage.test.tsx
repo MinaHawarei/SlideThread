@@ -105,7 +105,7 @@ describe('GalleryPage component (Task R8-2)', () => {
     expect(screen.getByTestId('gallery-template-choices')).toBeInTheDocument();
   });
 
-  it('R1: clicking template card directly uses it, and only Preview button opens preview', async () => {
+  it('R1: clicking template card directly opens the wizard with it preselected, and only Preview button opens preview', async () => {
     const onNavigate = vi.fn();
     render(<GalleryPage onNavigate={onNavigate} />);
 
@@ -114,7 +114,7 @@ describe('GalleryPage component (Task R8-2)', () => {
       (c) => c.getAttribute('data-template-id') === 'tech-mesh'
     )!;
     fireEvent.click(techMeshCard);
-    await waitFor(() => expect(onNavigate).toHaveBeenCalledWith('/editor'));
+    await waitFor(() => expect(onNavigate).toHaveBeenCalledWith('/wizard?template=tech-mesh'));
 
     onNavigate.mockClear();
 

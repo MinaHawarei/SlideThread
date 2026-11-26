@@ -319,19 +319,17 @@ describe('EditorDesktop component (Task P3-5)', () => {
     expect(richTextToPlainText(slides[2]!.fields.body!)).toContain('Point 4');
   });
 
-  it('updates template, color, and theme mode from Design Inspector', async () => {
+  it('updates color and theme mode from Design Inspector (the template is not switchable here)', async () => {
     render(<EditorDesktop />);
 
     // Switch to Design tab
     fireEvent.click(screen.getByTestId('tab-design'));
 
-    // Switch template to bold
-    fireEvent.click(screen.getByTestId('design-template-bold-marketing'));
-    await waitFor(() => expect(useProjectStore.getState().project.templateId).toBe('bold-marketing'));
+    expect(screen.queryByTestId('design-template-bold-marketing')).not.toBeInTheDocument();
 
     // Pick preset color
     fireEvent.click(screen.getByTestId('design-preset-F43F5E'));
-    expect(useProjectStore.getState().project.primaryColor).toBe('#F43F5E');
+    await waitFor(() => expect(useProjectStore.getState().project.primaryColor).toBe('#F43F5E'));
 
     // Toggle theme to light
     fireEvent.click(screen.getByTestId('design-theme-light'));

@@ -687,7 +687,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                         {item.platform} • {item.contentType}
                       </span>
                       <span className="text-[11px] px-2 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
-                        {item.formatId}
+                        {FORMAT_REGISTRY[item.formatId as FormatId]?.label ?? item.formatId}
                       </span>
                     </div>
                     <h4 className="font-semibold text-stone-900 dark:text-white truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">

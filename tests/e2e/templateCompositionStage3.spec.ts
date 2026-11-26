@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { finishLockedWizard } from './helpers/wizard';
 import JSZip from 'jszip';
 import { copyFile, readFile } from 'node:fs/promises';
 import sharp from 'sharp';
@@ -38,6 +39,7 @@ test('ZIP composition creates isolated editable native layers that persist after
   await page.getByTestId('template-zip-input').setInputFiles({ name: `${id}.zip`, mimeType: 'application/zip', buffer: await fixtureZip() });
   await expect(page.getByTestId('template-import-notice')).toBeVisible({ timeout: 30000 });
   await page.getByTestId(`use-user-template-${id}`).click();
+  await finishLockedWizard(page);
   await expect(page.getByTestId('editor-desktop')).toBeVisible();
   for (const selector of ['.slide-tag', '.slide-title-h1', '.slide-sub', '.slide-mono-line']) await expect(page.getByTestId('main-canvas').locator(selector)).toHaveCount(0);
   await page.getByTestId('tab-layers').click();
