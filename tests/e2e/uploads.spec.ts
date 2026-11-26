@@ -38,9 +38,7 @@ test.describe('Uploads & Image Masking E2E (§5.6, Task R6-6)', () => {
     await expect(imageElement).toBeVisible();
 
     // 4. In AssetsPanel.tsx, uploading automatically selects the new extra: selectElement(newExtra.id)
-    // Simply switch to Slide tab to access the inspector controls
-    const slideTab = page.getByTestId('tab-slide');
-    await slideTab.click();
+    // The selected image's controls (mask, fit) live in the Element Properties panel, which the Inspector shows while an element is selected.
 
     const imageControls = page.getByTestId('selected-image-controls');
     await expect(imageControls).toBeVisible();

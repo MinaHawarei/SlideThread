@@ -18,7 +18,7 @@ test('overflow warning and split-slide action for long content (R4-3, §5.3)', a
   await page.setViewportSize({ width: 1440, height: 900 });
 
   // 1. Switch to second slide (explain slide)
-  const slide2Thumb = page.getByRole('button', { name: /slide 2/i });
+  const slide2Thumb = page.locator('[data-testid^="rail-slide-"]').nth(1);
   await slide2Thumb.click();
 
   // 2. Open slide tab in inspector
@@ -39,11 +39,11 @@ test('overflow warning and split-slide action for long content (R4-3, §5.3)', a
   await expect(splitBtn).toBeVisible();
 
   // 5. Click split button
-  const priorSlideThumbs = await page.getByRole('button', { name: /slide \d/i }).count();
+  const priorSlideThumbs = await page.locator('[data-testid^="rail-slide-"]').count();
   await splitBtn.click();
 
   // 6. Verify slide count increased by 1
-  const newSlideThumbs = await page.getByRole('button', { name: /slide \d/i }).count();
+  const newSlideThumbs = await page.locator('[data-testid^="rail-slide-"]').count();
   expect(newSlideThumbs).toBe(priorSlideThumbs + 1);
 
   // 7. Verify title of the new slide contains continuation suffix
@@ -58,19 +58,19 @@ test('manual font size disables auto-fit and keeps fit-scale 1 (R4-3, §5.3)', a
   // Select title element and enter in-place editing
   const titleHit = page.getByTestId('element-hit-title');
   await titleHit.click();
-  await page.getByTestId('edit-text-btn-title').click();
+  await titleHit.dblclick();
 
   // Select all text in editor
-  const contentEditable = page.getByTestId('rich-text-contenteditable');
+  const contentEditable = page.getByTestId('element-hit-title').getByTestId('rich-text-contenteditable');
   await contentEditable.click();
   await page.keyboard.press('ControlOrMeta+a');
 
   // Change font size to 150% via toolbar
-  const sizeSelect = page.getByTestId('toolbar-font-size');
+  const sizeSelect = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-font-size');
   await sizeSelect.selectOption('150');
 
   // Done editing
-  await page.getByTestId('toolbar-done').click();
+  await page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-done').click();
 
   // Check that the slide title rendered has manual size marked
   const renderedTitle = page.locator('[data-testid="main-canvas"] .slide-title-h1');

@@ -14,6 +14,8 @@ import type { RichText, TextStyleOverride } from '../../core/schema';
 import { BrandOverrideControls } from './BrandOverridePopover';
 import { FONT_REGISTRY, type FontId } from '../../fonts/registry';
 import { loadFont } from '../../fonts/loader';
+import { SHAPE_PALETTE_COLORS } from './shapePalette';
+import { ImageExtraControls } from './ImageExtraControls';
 
 export interface ElementPropertiesPanelProps {
   onClose?: () => void;
@@ -588,6 +590,33 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
           </div>}
         </div>
       )}
+      {extra?.kind === 'shape' && (
+        <div data-testid="selected-shape-controls" className="space-y-1.5 pt-2 border-t border-stone-200 dark:border-stone-800">
+          <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 block">{t('assets.shapeColor')}</span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {SHAPE_PALETTE_COLORS.map((hex) => (
+              <button
+                key={hex}
+                type="button"
+                data-testid={`shape-palette-color-${hex}`}
+                onClick={() => updateExtra({ fill: hex })}
+                style={{ backgroundColor: hex }}
+                className={`w-7 h-7 rounded-md border transition-transform cursor-pointer ${extra.fill === hex ? 'scale-110 border-cyan-500 ring-2 ring-cyan-400/50' : 'border-stone-300 dark:border-stone-700 hover:scale-105'}`}
+                aria-label={hex}
+              />
+            ))}
+            <input
+              type="color"
+              data-testid="shape-color-input"
+              aria-label={t('assets.shapeColor')}
+              value={extra.fill?.startsWith('#') ? extra.fill : '#0891b2'}
+              onChange={(e) => updateExtra({ fill: e.target.value })}
+              className="w-7 h-7 p-0 rounded-md border border-stone-300 dark:border-stone-700 cursor-pointer"
+            />
+          </div>
+        </div>
+      )}
+      {extra?.kind === 'image' && <ImageExtraControls />}
       {extra?.kind === 'shape' && extra.shape === 'path' && extra.path && <PathEditor path={extra.path} color={extra.fill ?? '#0891b2'} onChange={(path) => updateExtra({ path })} />}
       {extra?.kind === 'image' && <div data-testid="sidebar-image-filters" className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800">
         <div className="text-xs font-semibold text-stone-700 dark:text-stone-300">{t('editor.filters')}</div>

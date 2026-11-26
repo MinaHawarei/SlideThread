@@ -125,7 +125,7 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     await page.setViewportSize({ width: 1440, height: 900 });
 
     // Open layers panel to toggle visibility and produce slot overrides
-    await page.getByTestId('layers-toggle').click();
+    await page.getByTestId('tab-layers').click();
     const hideTitleBtn = page.getByRole('button', { name: 'Hide title' });
     await expect(hideTitleBtn).toBeVisible();
     await hideTitleBtn.click();

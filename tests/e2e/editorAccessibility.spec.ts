@@ -20,7 +20,7 @@ test('keyboard editing, numeric inspector, and live announcements work in the br
   await title.focus();
   await page.keyboard.press('ArrowRight');
   await expect(page.getByTestId('canvas-live-announcement')).toContainText('title moved');
-  await expect(page.getByTestId('element-numeric-inspector')).toBeVisible();
+  await expect(page.getByTestId('sidebar-x-position')).toBeVisible();
   const x = page.getByRole('spinbutton', { name: 'X position (%)' });
   await x.fill('20');
   await expect(x).toHaveValue('20');
@@ -41,7 +41,7 @@ test('keyboard accessibility review matrix', async ({ page }) => {
         await page.getByTestId('mobile-tab-slides').click();
       } else {
         await page.getByTestId('element-hit-title').focus();
-        await expect(page.getByTestId('element-numeric-inspector')).toBeVisible();
+        await expect(page.getByTestId('sidebar-x-position')).toBeVisible();
       }
       for (const direction of ['ltr', 'rtl']) {
         if (await page.locator('html').getAttribute('dir') !== direction) await page.getByTestId('language-switcher').click();

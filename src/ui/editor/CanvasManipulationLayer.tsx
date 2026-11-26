@@ -507,8 +507,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                   width: `${zoom * 100}%`,
                   height: `${zoom * 100}%`,
                   minWidth: `min(${zoom * 100}%, calc(100vw - 32px))`,
-                  minHeight: `${Math.max(80, 80 * zoom)}px`,
-                  fontSize: `${Math.max(16, 16 * zoom)}px`,
+                  minHeight: `${80 * zoom}px`,
+                  fontSize: `${16 * zoom}px`, // net on-screen size after the 1/zoom scale is a constant 16px
                 }}
               />
             ) : (

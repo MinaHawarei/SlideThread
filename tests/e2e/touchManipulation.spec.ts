@@ -1,5 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
+test.use({ viewport: { width: 360, height: 800 }, hasTouch: true, isMobile: true });
+
 async function createEditor(page: Page) {
   await page.goto('/');
   await page.getByTestId('start-wizard-btn').click();
@@ -14,11 +16,12 @@ async function createEditor(page: Page) {
 }
 
 test('mobile canvas exposes touch targets at both required widths', async ({ page }) => {
-  await createEditor(page);
   for (const [width, height] of [[360, 800], [390, 844]] as const) {
+    // Fresh project per width: scaling the same title twice hits the geometry clamp.
     await page.setViewportSize({ width, height });
+    await createEditor(page);
     const title = page.getByTestId('element-hit-title');
-    await title.click();
+    await title.tap();
     const toolbar = page.getByTestId('mobile-selection-toolbar');
     await expect(toolbar).toBeVisible();
     const buttons = toolbar.getByRole('button');
@@ -28,13 +31,11 @@ test('mobile canvas exposes touch targets at both required widths', async ({ pag
       expect(box?.height).toBeGreaterThanOrEqual(44);
       expect(box?.width).toBeGreaterThanOrEqual(44);
     }
-    const resizeHandle = page.getByTestId('resize-title');
-    const handleBox = await resizeHandle.boundingBox();
-    expect(handleBox?.height).toBeGreaterThanOrEqual(44);
-    expect(handleBox?.width).toBeGreaterThanOrEqual(44);
+    // Template slots are resized with the toolbar's Scale buttons; the drag handle exists only for extra elements.
+    await expect(page.getByTestId('resize-title')).toBeHidden();
 
     const before = await title.evaluate((node) => Number.parseFloat((node as HTMLElement).style.width));
-    await toolbar.getByRole('button', { name: 'Scale down' }).click();
+    await toolbar.getByRole('button', { name: 'Scale down' }).tap();
     await expect.poll(async () => Number.parseFloat(await title.evaluate((node) => (node as HTMLElement).style.width))).toBeLessThan(before);
   }
 });
