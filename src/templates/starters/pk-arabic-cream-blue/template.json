@@ -1,0 +1,2522 @@
+{
+  "schema": 1,
+  "id": "pk-arabic-cream-blue",
+  "name": {
+    "en": "Arabic Cream Blue",
+    "ar": "كريمي أزرق عربي"
+  },
+  "description": {
+    "en": "Arabic Cream Blue: dark-poster carousel. All 9 slide types and 4 aspects; the 4:5 cover is hand-built.",
+    "ar": "كريمي أزرق عربي: كاروسيل كامل لكل أنواع الشرائح والمقاسات. غلاف 4:5 مصمم يدويا."
+  },
+  "author": {
+    "name": "Instinct for Mina"
+  },
+  "license": "MIT",
+  "categories": [
+    "arabic-heritage",
+    "education"
+  ],
+  "tags": [
+    "arabic",
+    "blue",
+    "carousel",
+    "cream",
+    "rtl"
+  ],
+  "colorFlexible": false,
+  "theme": {
+    "modes": {
+      "dark": {
+        "bg": "#f4eee2",
+        "bg2": "#ece3d0",
+        "ink": "#12306b",
+        "mute": "#3d4f75",
+        "acc": "#1f4fa8",
+        "acc2": "#b8892e",
+        "line": "#d9cfba",
+        "card": "#ffffff",
+        "ok": "#1f7a3a",
+        "bad": "#a02a1c",
+        "onAcc": "#ffffff"
+      },
+      "light": {
+        "bg": "#f4eee2",
+        "bg2": "#ece3d0",
+        "ink": "#12306b",
+        "mute": "#3d4f75",
+        "acc": "#1f4fa8",
+        "acc2": "#b8892e",
+        "line": "#d9cfba",
+        "card": "#ffffff",
+        "ok": "#1f7a3a",
+        "bad": "#a02a1c",
+        "onAcc": "#ffffff"
+      }
+    },
+    "fonts": {
+      "display": "ibm-plex-sans-arabic",
+      "body": "ibm-plex-sans-arabic",
+      "mono": "jetbrains-mono"
+    }
+  },
+  "layouts": {
+    "cover": "cover-centered",
+    "explain": "explain-centered",
+    "rule": "rule-centered",
+    "compare": "compare-centered",
+    "code": "code-centered",
+    "stat": "stat-centered",
+    "quote": "quote-centered",
+    "image": "image-centered",
+    "cta": "cta-centered"
+  },
+  "formats": [
+    "post",
+    "carousel"
+  ],
+  "assets": {
+    "bg-portrait": "assets/bg-portrait.webp",
+    "bg-square": "assets/bg-square.webp",
+    "bg-landscape": "assets/bg-landscape.webp",
+    "bg-tall": "assets/bg-tall.webp"
+  },
+  "composition": {
+    "cover": {
+      "portrait": {
+        "hiddenSlots": [
+          "tag",
+          "title",
+          "sub",
+          "rule"
+        ],
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "kicker",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.14,
+            "w": 0.84,
+            "h": 0.04,
+            "rotation": 0,
+            "z": 2,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "دليل الحي"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 38,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 0,
+              "lineHeight": 1.1
+            }
+          },
+          {
+            "id": "title0",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.2,
+            "w": 0.84,
+            "h": 0.090944,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "هنا"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 116,
+              "weight": 700,
+              "color": "ink",
+              "letterSpacing": 0,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title1",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.2928,
+            "w": 0.84,
+            "h": 0.090944,
+            "rotation": 0,
+            "z": 4,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "كل ما تحتاجه"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 116,
+              "weight": 700,
+              "color": "ink",
+              "letterSpacing": 0,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title2",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.3856,
+            "w": 0.84,
+            "h": 0.090944,
+            "rotation": 0,
+            "z": 5,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "في مكان واحد"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 116,
+              "weight": 700,
+              "color": "acc",
+              "letterSpacing": 0,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "sub",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.4984,
+            "w": 0.84,
+            "h": 0.05,
+            "rotation": 0,
+            "z": 6,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "خطوات بسيطة لتبدأ"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 44,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 0,
+              "lineHeight": 1.2
+            }
+          },
+          {
+            "id": "pill",
+            "kind": "shape",
+            "x": 0.4599999999999999,
+            "y": 0.6184000000000001,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 7,
+            "locked": false,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "pilltext",
+            "kind": "text",
+            "x": 0.4899999999999999,
+            "y": 0.6264000000000001,
+            "w": 0.4,
+            "h": 0.046,
+            "rotation": 0,
+            "z": 8,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "اسحب للمزيد"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "center"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 40,
+              "weight": 700,
+              "color": "#ffffff",
+              "letterSpacing": 0,
+              "lineHeight": 1.1
+            }
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "explain": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "rule": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "code": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "compare": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "stat": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "quote": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "image": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.009600000000000001,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    },
+    "cta": {
+      "portrait": {
+        "hiddenSlots": [
+          "tag",
+          "title",
+          "sub",
+          "rule"
+        ],
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "kicker",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.24,
+            "w": 0.84,
+            "h": 0.04,
+            "rotation": 0,
+            "z": 2,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "ابدأ الآن"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 38,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 0,
+              "lineHeight": 1.1
+            }
+          },
+          {
+            "id": "title0",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.3,
+            "w": 0.84,
+            "h": 0.090944,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "احفظ"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 116,
+              "weight": 700,
+              "color": "ink",
+              "letterSpacing": 0,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title1",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.3928,
+            "w": 0.84,
+            "h": 0.090944,
+            "rotation": 0,
+            "z": 4,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "المنشور"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 116,
+              "weight": 700,
+              "color": "acc",
+              "letterSpacing": 0,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "sub",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.5055999999999999,
+            "w": 0.84,
+            "h": 0.05,
+            "rotation": 0,
+            "z": 5,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "وشاركه مع من يهمه"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "right"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 44,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 0,
+              "lineHeight": 1.2
+            }
+          },
+          {
+            "id": "pill",
+            "kind": "shape",
+            "x": 0.4599999999999999,
+            "y": 0.6255999999999999,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 6,
+            "locked": false,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "pilltext",
+            "kind": "text",
+            "x": 0.4899999999999999,
+            "y": 0.6335999999999999,
+            "w": 0.4,
+            "h": 0.046,
+            "rotation": 0,
+            "z": 7,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "تابعنا"
+                    }
+                  ],
+                  "dir": "rtl",
+                  "align": "center"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans-arabic",
+              "size": 40,
+              "weight": 700,
+              "color": "#ffffff",
+              "letterSpacing": 0,
+              "lineHeight": 1.1
+            }
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.096875,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.11375,
+            "y": 0.05,
+            "w": 0.00675,
+            "h": 0.012,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-d0",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "acc",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d1",
+            "kind": "shape",
+            "x": 0.11,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          },
+          {
+            "id": "dc-d2",
+            "kind": "shape",
+            "x": 0.14,
+            "y": 0.05,
+            "w": 0.012,
+            "h": 0.00675,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "ellipse",
+            "fill": "line",
+            "cornerRadius": 40
+          }
+        ]
+      }
+    }
+  }
+}
