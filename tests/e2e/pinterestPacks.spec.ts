@@ -1,5 +1,5 @@
 /**
- * Full-carousel versions of the two Pinterest cover packs (golden-hour-viral-full, neon-grid-process-full).
+ * Full-carousel versions of the two Pinterest cover packs (golden-hour-viral, neon-grid-process).
  * Each ships built in (src/templates/starters/<id>), previewed for all 9 slide types in all 4 aspect classes, and a
  * project is made from it. Asserts the backdrop image really loads for every slide type and aspect, and that
  * titles stay inside the slide.
@@ -7,7 +7,7 @@
 import { test, expect } from '@playwright/test';
 import { finishLockedWizard } from './helpers/wizard';
 
-const PACKS = ['golden-hour-viral-full', 'neon-grid-process-full'] as const;
+const PACKS = ['golden-hour-viral', 'neon-grid-process'] as const;
 const TYPES = ['cover', 'explain', 'rule', 'code', 'compare', 'stat', 'quote', 'image', 'cta'];
 
 for (const id of PACKS) {

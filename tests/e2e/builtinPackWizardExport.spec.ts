@@ -5,7 +5,7 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 
-for (const id of ['golden-hour-viral-full', 'neon-grid-process-full']) {
+for (const id of ['golden-hour-viral', 'neon-grid-process']) {
   test(`wizard offers built-in ${id} and its PNG export is a full-size, non-blank image`, async ({ page }) => {
     test.setTimeout(70000);
     await page.route('**/_vercel/insights/**', (route) => route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));

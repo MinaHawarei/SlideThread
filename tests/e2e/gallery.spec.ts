@@ -16,7 +16,7 @@ test.describe('Component Gallery Route (/gallery)', () => {
     // Marketing: Bold Marketing plus the two built-in full-carousel packs.
     await expect(page.getByTestId('gallery-template-card')).toHaveCount(3);
     await expect(page.locator('[data-testid="gallery-template-card"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-template-id')).sort()))
-      .resolves.toEqual(['bold-marketing', 'golden-hour-viral-full', 'neon-grid-process-full']);
+      .resolves.toEqual(['bold-marketing', 'golden-hour-viral', 'neon-grid-process']);
 
     await page.getByTestId('gallery-category').selectOption('all');
     await page.getByTestId('favorite-tech-mesh').click();

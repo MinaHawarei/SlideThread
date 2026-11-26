@@ -26,8 +26,8 @@ test('gallery use-template runs the wizard with the template preselected and its
   await stub(page);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/gallery');
-  await page.getByTestId('use-template-golden-hour-viral-full').click();
-  await expect(page).toHaveURL(/\/wizard\?template=golden-hour-viral-full/);
+  await page.getByTestId('use-template-golden-hour-viral').click();
+  await expect(page).toHaveURL(/\/wizard\?template=golden-hour-viral/);
   await expect(page.getByTestId('wizard-step-indicator')).toHaveAttribute('aria-valuemax', '3');
   await expect(page.getByTestId('wizard-locked-template')).toContainText('Golden Hour Viral');
   await expect(page.getByRole('heading', { name: 'Select Platform' })).toBeVisible();
@@ -44,10 +44,10 @@ test('gallery use-template runs the wizard with the template preselected and its
   // The created project uses the preselected template (shown on the Recent Projects card).
   await page.waitForTimeout(1500);
   await page.goto('/');
-  await expect(page.getByText(/4:5 Portrait • golden-hour-viral-full/)).toBeVisible();
+  await expect(page.getByText(/4:5 Portrait • golden-hour-viral/)).toBeVisible();
 });
 
-for (const id of ['tech-mesh', 'heritage-geometric', 'golden-hour-viral-full', 'neon-grid-process-full']) {
+for (const id of ['tech-mesh', 'heritage-geometric', 'golden-hour-viral', 'neon-grid-process']) {
   test(`main color recolors ${id} and the Design tab has no template picker`, async ({ page }) => {
     test.setTimeout(70000);
     await stub(page);
@@ -74,7 +74,7 @@ test('golden pack hand-built cover text follows the main color (pixels)', async 
   test.setTimeout(70000);
   await stub(page);
   await page.setViewportSize({ width: 1440, height: 900 });
-  await startFromGallery(page, 'golden-hour-viral-full');
+  await startFromGallery(page, 'golden-hour-viral');
   const kicker = () => page.evaluate(() => {
     const el = Array.from(document.querySelectorAll('[data-testid="main-canvas"] .slide-canvas *')).find((e) => e.children.length === 0 && e.textContent?.trim() === '4 TYPES') as HTMLElement;
     return getComputedStyle(el).color;

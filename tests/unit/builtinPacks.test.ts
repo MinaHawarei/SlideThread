@@ -4,7 +4,7 @@ import path from 'node:path';
 import { loadStarterTemplate } from '../../src/templates/starters';
 import { templateRegistry as registry } from '../../src/templates/registry';
 
-const PACKS = ['golden-hour-viral-full', 'neon-grid-process-full'] as const;
+const PACKS = ['golden-hour-viral', 'neon-grid-process'] as const;
 const ASPECTS = ['portrait', 'square', 'landscape', 'tall'];
 const TYPES = ['cover', 'explain', 'rule', 'code', 'compare', 'stat', 'quote', 'image', 'cta'];
 

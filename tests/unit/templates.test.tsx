@@ -4,7 +4,7 @@ import { getTemplate, getAllTemplates } from '../../src/templates';
 describe('Template package registry', () => {
   it('lists the seven built-in package IDs', () => {
     expect(getAllTemplates().map((template) => template.id).sort()).toEqual([
-      'bold-marketing', 'clean-minimal', 'golden-hour-viral-full', 'heritage-geometric', 'neon-grid-process-full', 'soft-gradient', 'tech-mesh',
+      'bold-marketing', 'clean-minimal', 'golden-hour-viral', 'heritage-geometric', 'neon-grid-process', 'soft-gradient', 'tech-mesh',
     ]);
   });
 

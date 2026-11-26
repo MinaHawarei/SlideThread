@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const TEMPLATES = ['tech-mesh', 'clean-minimal', 'bold-marketing', 'golden-hour-viral-full', 'neon-grid-process-full'];
+const TEMPLATES = ['tech-mesh', 'clean-minimal', 'bold-marketing', 'golden-hour-viral', 'neon-grid-process'];
 const ASPECTS = ['portrait', 'square', 'landscape', 'tall'];
 
 test('stat value never overlaps its label (starters and packs, all aspects)', async ({ page }) => {
@@ -44,7 +44,7 @@ test('stat screenshots', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/gallery');
   await page.getByTestId('preview-template-tech-mesh').click();
-  const shots: Array<[string, string, string]> = [['golden-hour-viral-full', 'portrait', 'golden-full-portrait'], ['neon-grid-process-full', 'landscape', 'neon-full-landscape'], ['golden-hour-viral-full', 'landscape', 'golden-full-landscape'], ['neon-grid-process-full', 'portrait', 'neon-full-portrait']];
+  const shots: Array<[string, string, string]> = [['golden-hour-viral', 'portrait', 'golden-full-portrait'], ['neon-grid-process', 'landscape', 'neon-full-landscape'], ['golden-hour-viral', 'landscape', 'golden-full-landscape'], ['neon-grid-process', 'portrait', 'neon-full-portrait']];
   for (const [tmpl, aspect, name] of shots) {
     await page.getByTestId('template-select').selectOption(tmpl);
     await page.getByTestId('aspect-filter').selectOption(aspect);

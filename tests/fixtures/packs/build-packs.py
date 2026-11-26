@@ -73,5 +73,5 @@ def build(name, newid, title_en, title_ar, bgfn):
     print(newid,'uncompressed',tot,'assets',{f:os.path.getsize(f'{out}/assets/{f}') for f in os.listdir(f'{out}/assets')})
 
 g=Image.open('x-golden-hour-viral/golden-hour-viral/assets/golden-field.webp').convert('RGB')
-build('golden-hour-viral','golden-hour-viral-full','Golden Hour Viral (full carousel)','الساعة الذهبية (كاروسيل كامل)',lambda a:golden_bg(a,g))
-build('neon-grid-process','neon-grid-process-full','Neon Grid Process (full carousel)','شبكة النيون (كاروسيل كامل)',neon_bg)
+build('golden-hour-viral','golden-hour-viral','Golden Hour Viral (full carousel)','الساعة الذهبية (كاروسيل كامل)',lambda a:golden_bg(a,g))
+build('neon-grid-process','neon-grid-process','Neon Grid Process (full carousel)','شبكة النيون (كاروسيل كامل)',neon_bg)
