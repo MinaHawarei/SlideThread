@@ -89,7 +89,7 @@ test('layers: friendly names, thumbnails, front-on-top order, drag-and-drop reor
   const lastId = before[0]!.replace('layer-row-', '');
   expect(lastId.length).toBeGreaterThan(0);
   // Drag the first row onto the last row.
-  await page.locator(`[data-testid="${before[0]}"]`).dragTo(page.locator(`[data-testid="${before[before.length - 1]}"]`));
+  await page.locator(`[data-testid="${before[0]!.replace('layer-row-', 'layer-grip-')}"]`).dragTo(page.locator(`[data-testid="${before[before.length - 1]}"]`));
   await expect.poll(order).not.toEqual(before);
   const after = await order();
   expect(after[after.length - 1]).toBe(before[0]);

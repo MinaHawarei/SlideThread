@@ -591,7 +591,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
       )}
       {extra?.kind === 'shape' && (
         <div data-testid="selected-shape-controls" className="space-y-1.5 pt-2 border-t border-stone-200 dark:border-stone-800">
-          <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 block">{t('assets.shapeColor')}</span>
+          <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 block">{extra.assetId && Boolean(getShapeSvg(extra.assetId) || getIconSvg(extra.assetId)) ? 'Quick colors (outline)' : t('assets.shapeColor')}</span>
           <div className="flex items-center gap-1.5 flex-wrap">
             {SHAPE_PALETTE_COLORS.map((hex) => (
               <button

@@ -217,9 +217,9 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
   };
 
   return (
-    <div className="flex flex-col h-full space-y-4 p-4" data-testid="assets-panel">
+    <div className="flex flex-col space-y-4 p-4" data-testid="assets-panel">
       {/* Search Input and Upload button */}
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 flex-wrap items-center gap-2">
         <div className="relative flex-1">
           <input
             type="text"
@@ -264,6 +264,17 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
 
         <button
           type="button"
+          data-testid="assets-pen-btn"
+          onClick={() => { useSelectionStore.getState().setPenActive(true); onAssetAdded?.(); }}
+          title="Pen: draw a freehand shape on the slide"
+          className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-500 hover:bg-amber-600 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap"
+        >
+          <span>✎</span>
+          <span>Pen</span>
+        </button>
+
+        <button
+          type="button"
           data-testid="upload-asset-btn"
           onClick={() => fileInputRef.current?.click()}
           title={t('assets.uploadTitle')}
@@ -281,7 +292,7 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
       )}
 
       {/* Category Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs" data-testid="asset-categories">
+      <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto pb-1 text-xs" data-testid="asset-categories">
         <button
           type="button"
           data-testid="category-all"

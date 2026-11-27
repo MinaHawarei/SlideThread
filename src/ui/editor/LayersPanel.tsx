@@ -178,19 +178,39 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({ className = '', onSele
             <li
               key={item.id}
               data-testid={`layer-row-${item.id}`}
-              draggable
-              onDragStart={(event) => { setDragId(item.id); event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', item.id); }}
-              onDragOver={(event) => { if (dragId) { event.preventDefault(); setOverId(item.id); } }}
-              onDragLeave={() => setOverId((current) => (current === item.id ? null : current))}
-              onDrop={(event) => { event.preventDefault(); if (dragId) reorderLayer(dragId, item.id); setDragId(null); setOverId(null); }}
-              onDragEnd={() => { setDragId(null); setOverId(null); }}
+              data-layer-id={item.id}
               className={`${overId === item.id && dragId !== item.id ? 'ring-2 ring-amber-400 ' : ''}${dragId === item.id ? 'opacity-40 ' : ''}flex flex-wrap items-center gap-1.5 min-h-[48px] px-2.5 py-1 rounded-xl border transition-all ${
                 isSelected
                   ? 'bg-amber-500/10 border-amber-300 dark:border-amber-700 shadow-xs'
                   : 'bg-stone-50/70 dark:bg-stone-800/40 border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800'
               } ${item.hidden ? 'opacity-50' : 'opacity-100'}`}
             >
-              <span aria-hidden="true" title="Drag to reorder" className="cursor-grab select-none text-stone-400 text-sm px-0.5">⋮⋮</span>
+              <span
+                role="img"
+                aria-label="Drag to reorder"
+                data-testid={`layer-grip-${item.id}`}
+                title="Drag to reorder"
+                onPointerDown={(event) => {
+                  event.preventDefault();
+                  (event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
+                  setDragId(item.id);
+                }}
+                onPointerMove={(event) => {
+                  if (!dragId) return;
+                  const row = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-layer-id]');
+                  setOverId(row?.dataset.layerId ?? null);
+                }}
+                onPointerUp={(event) => {
+                  const row = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-layer-id]');
+                  const target = row?.dataset.layerId;
+                  if (dragId && target) reorderLayer(dragId, target);
+                  setDragId(null);
+                  setOverId(null);
+                }}
+                onPointerCancel={() => { setDragId(null); setOverId(null); }}
+                style={{ touchAction: 'none' }}
+                className="cursor-grab select-none text-stone-400 text-base px-1.5 min-h-[44px] flex items-center"
+              >⋮⋮</span>
               <LayerThumb item={item} ratio={ratio} />
               {/* Select layer button */}
               <button

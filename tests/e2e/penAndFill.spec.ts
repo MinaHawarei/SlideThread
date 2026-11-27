@@ -51,3 +51,15 @@ test('library shape gets a fill and outline; new assets keep their aspect on a 4
   await page.getByTestId('asset-fill-none').click();
   await expect(asset.locator('svg').first()).toHaveAttribute('fill', 'none');
 });
+
+test('mobile: the Assets sheet offers the Pen tool and its category pills are fully visible', async ({ page }) => {
+  test.setTimeout(60000);
+  await page.addInitScript(() => { if (!sessionStorage.getItem('seeded')) { localStorage.clear(); sessionStorage.setItem('seeded', '1'); } });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/editor');
+  await page.getByTestId('mobile-tab-assets').click();
+  const pills = (await page.getByTestId('asset-categories').boundingBox())!;
+  expect(pills.height, 'category pills row is not squashed').toBeGreaterThan(24);
+  await page.getByTestId('assets-pen-btn').click();
+  await expect(page.getByTestId('pen-draw-surface')).toBeVisible();
+});

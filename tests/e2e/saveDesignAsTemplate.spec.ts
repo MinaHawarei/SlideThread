@@ -44,7 +44,7 @@ test('saved design reproduces moved title, hidden body and an added shape', asyn
   expect(moved.x).toBeGreaterThan(base.x + 3);
   expect(moved.y).toBeGreaterThan(base.y + 3);
   await page.getByTestId('tab-layers').click();
-  await page.getByRole('button', { name: 'Hide body' }).click();
+  await page.getByRole('button', { name: 'Hide Subtitle' }).click();
   await page.getByTestId('tab-slide').click();
   await page.getByTestId('add-shape-line-arrow').click();
   const shapes = page.getByTestId('main-canvas').getByTestId('slide-extras-container').locator('> *');
