@@ -3,7 +3,7 @@ import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
-import { mergeTemplateSlotFrames, resolveSlideElements, slotFieldKey } from '../../core/elementModel';
+import { NON_TEXT_SLOT_IDS, mergeTemplateSlotFrames, resolveSlideElements, slotFieldKey } from '../../core/elementModel';
 import { aspectClass as calcAspectClass, getDimensions } from '../../core/formats';
 import { RichTextEditor } from './RichTextEditor';
 import { PathEditor } from './PathEditor';
@@ -82,17 +82,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   const isTextElement = Boolean(
     element && (
       element.extra?.kind === 'text' ||
-      (element.kind === 'slot' && (
-        element.id === 'title' ||
-        element.id === 'body' ||
-        element.id === 'caption' ||
-        element.id === 'code' ||
-        element.id === 'value' ||
-        element.id === 'source' ||
-        element.id === 'left' ||
-        element.id === 'right' ||
-        (slide && slide.fields[slotFieldKey(slide.type, element.id)] !== undefined)
-      ))
+      (element.kind === 'slot' && !NON_TEXT_SLOT_IDS.has(element.id))
     )
   );
 
@@ -179,20 +169,20 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   const radiusSupported = Boolean(extra && ((extra.kind === 'shape' && (!extra.assetId && (!extra.shape || extra.shape === 'rectangle'))) || extra.kind === 'image' || (extra.kind === 'text' && Boolean(extra.backgroundColor))));
   const strokeSupported = Boolean(extra && ((extra.kind === 'image') || (extra.kind === 'text' && Boolean(extra.backgroundColor)) || (extra.kind === 'shape' && !extra.assetId && ['rectangle', 'ellipse', 'arrow', 'line', 'path'].includes(extra.shape ?? 'rectangle'))));
   const updateExtra = (patch: Partial<NonNullable<typeof extra>>) => {
+    if (element.locked) return;
     if (extra) updateExtraElement(slide.id, { ...extra, ...patch });
   };
   const radiusDefault = extra?.kind === 'image' ? (extra.shape === 'rectangle' ? 16 : 0) : 8;
   const radiusValue = extra?.cornerRadius ?? radiusDefault;
 
   const handleCommit = (field: 'x' | 'y' | 'w' | 'scale' | 'rotation' | 'opacity', val: number) => {
+    if (element.locked) return;
     if (element.kind === 'slot') {
       const prior = slide.overrides?.[aspect]?.[element.id];
       const baseOverride = {
         dx: prior?.dx ?? 0,
         dy: prior?.dy ?? 0,
         scale: prior?.scale ?? 1,
-        ...(prior?.w !== undefined ? { w: prior.w } : {}),
-        ...(prior?.h !== undefined ? { h: prior.h } : {}),
         ...(prior?.rotation !== undefined ? { rotation: prior.rotation } : {}),
         ...(prior?.opacity !== undefined ? { opacity: prior.opacity } : {}),
         locked: prior?.locked ?? element.locked,
@@ -209,7 +199,11 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
         const newDy = (val / 100) - naturalY;
         updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, dy: newDy });
       } else if (field === 'w') {
-        updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, w: val / 100 });
+        // Slot size is stored as a scale factor: the renderer ignores width/height overrides on slots.
+        const natural = element.frame?.inlineSize ?? element.w;
+        const { w: _w, h: _h, ...scaled } = baseOverride as typeof baseOverride & { w?: number; h?: number };
+        void _w; void _h;
+        updateSlotOverride(slide.id, aspect, element.id, { ...scaled, scale: Math.max(0.1, Math.min(10, (val / 100) / natural)) });
       } else if (field === 'scale') {
         updateSlotOverride(slide.id, aspect, element.id, { ...baseOverride, scale: val / 100 });
       } else if (field === 'rotation') {
@@ -233,6 +227,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   };
 
   const handleTextStyleChange = (patch: Partial<TextStyleOverride>) => {
+    if (element.locked) return;
     if (!element) return;
     const next: TextStyleOverride = { ...currentTextStyle, ...patch };
     for (const [key, value] of Object.entries(next)) if (value === undefined) delete (next as Record<string, unknown>)[key];
@@ -410,6 +405,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   };
 
   const handleTextChange = (doc: RichText) => {
+    if (element.locked) return;
     if (element.kind === 'slot') {
       updateSlideFields(slide.id, { [slotFieldKey(slide.type, element.id)]: doc });
     } else if (element.extra?.binding) {
@@ -456,6 +452,8 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
         <BrandOverrideControls inline />
       )}
 
+      {element.locked && <p data-testid="sidebar-locked-notice" className="text-xs text-amber-700 dark:text-amber-400">{t('editor.unlockLayer', { id: '' }).trim()} 🔒</p>}
+      <fieldset disabled={element.locked} className="contents">
       {/* 2. Position & Size ("Settings first") */}
       <div className="space-y-3">
         <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">
@@ -484,7 +482,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               className="py-1.5 px-2.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-mono text-xs"
             />
           </label>
-          {element.extra && <label className="text-xs text-stone-500 dark:text-stone-400 flex flex-col gap-1">
+          <label className="text-xs text-stone-500 dark:text-stone-400 flex flex-col gap-1">
             <span>{t('editor.elementWidth')}</span>
             <input
               type="number"
@@ -494,7 +492,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               onChange={(e) => handleCommit('w', parseFloat(e.target.value) || 10)}
               className="py-1.5 px-2.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-mono text-xs"
             />
-          </label>}
+          </label>
           <label className="text-xs text-stone-500 dark:text-stone-400 flex flex-col gap-1">
             <span>{t('editor.elementScale')}</span>
             <input
@@ -733,6 +731,8 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
         </div>
         </>
       )}
+
+      </fieldset>
 
       {/* 6. Layer Actions: Lock, Hide, Layer Order, Duplicate, Reset */}
       <div className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800">

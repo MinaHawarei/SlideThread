@@ -17,6 +17,7 @@ export const ImageSlide: React.FC<SlideProps> = ({ slide, textDir }) => {
           <MediaRenderer media={media} imageUrl={imageUrl} className="image-fullbleed-img" />
         ) : (
           <div
+            className="image-fullbleed-placeholder"
             style={{
               width: '100%',
               height: '100%',

@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
-import { mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometryFromHandle, rotateElementGeometry, scaleElementGeometry, rotationAngleFromPointer, SLOT_SELECTORS, slotFieldKey, type ElementGeometry, type ResolvedElement, type ResizeHandle } from '../../core/elementModel';
+import { NON_TEXT_SLOT_IDS, resizeSlotGeometry, mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometryFromHandle, rotateElementGeometry, scaleElementGeometry, rotationAngleFromPointer, SLOT_SELECTORS, slotFieldKey, type ElementGeometry, type ResolvedElement, type ResizeHandle } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
@@ -41,6 +41,9 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const elements = useMemo(() => variant ? resolveSlideElements(slide, variant, aspect, hiddenSlots) : [], [slide, variant, aspect, hiddenSlots]);
   const selectedId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);
+  // A touch tap can shift the layout (selection toolbar), so the compatibility focus/mouse events land on a different
+  // element. Focus caused by a touch must not change the selection the tap just made.
+  const lastTouchAt = useRef(0);
   const updateSlotOverride = useProjectStore((state) => state.updateSlotOverride);
   const updateExtraElement = useProjectStore((state) => state.updateExtraElement);
   const addExtraElement = useProjectStore((state) => state.addExtraElement);
@@ -181,16 +184,18 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   // F15 & F17: Compute overrides relative to the element's actual position
   const persistGeometry = (element: ResolvedElement, geometry: ElementGeometry) => {
     if (element.kind === 'slot' && element.frame) {
+      // Slots are rendered as DOM nodes transformed by translate/scale/rotate. Width and height overrides are
+      // ignored by the renderer, so a size change must be stored as a scale factor relative to the rendered box.
       const prior = slide.overrides?.[aspect]?.[element.id];
-      const naturalX = element.x - (prior?.dx ?? 0);
-      const naturalY = element.y - (prior?.dy ?? 0);
+      const ratio = element.w > 0 && Math.abs(geometry.w - element.w) > 1e-6 ? geometry.w / element.w : 1;
+      const nextScale = Math.max(0.1, Math.min(10, (prior?.scale ?? 1) * ratio));
+      const { w: _w, h: _h, ...rest } = prior ?? { dx: 0, dy: 0, scale: 1 };
+      void _w; void _h;
       updateSlotOverride(slide.id, aspect, element.id, {
-        ...prior,
-        dx: geometry.x - naturalX,
-        dy: geometry.y - naturalY,
-        scale: prior?.scale ?? 1,
-        w: geometry.w,
-        h: geometry.h,
+        ...rest,
+        dx: (prior?.dx ?? 0) + (geometry.x - element.x),
+        dy: (prior?.dy ?? 0) + (geometry.y - element.y),
+        scale: nextScale,
         rotation: geometry.rotation,
       });
     } else if (element.extra) {
@@ -217,7 +222,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       return;
     }
     if (event.key === 'Enter') {
-      const isText = element.kind === 'slot' || element.extra?.kind === 'text';
+      const isText = (element.kind === 'slot' && !NON_TEXT_SLOT_IDS.has(element.id)) || element.extra?.kind === 'text';
       if (isText) {
         event.preventDefault();
         setEditingId(element.id);
@@ -270,6 +275,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
 
   const begin = (event: React.PointerEvent<HTMLElement>, element: ResolvedElement, mode: Gesture['mode'], resizeHandle: ResizeHandle = 'se') => {
     if (element.locked) return;
+    if (event.pointerType === 'touch') lastTouchAt.current = Date.now();
     event.preventDefault();
     event.stopPropagation();
     selectElement(element.id);
@@ -340,7 +346,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       geometry = element.kind === 'slot' ? moved : rotateElementGeometry(moved, active.initial.rotation + (Math.atan2(deltaY, deltaX) - active.startAngle) * 180 / Math.PI);
     }
     if (active.mode === 'move') geometry = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy };
-    if (active.mode === 'resize') geometry = resizeElementGeometryFromHandle(active.initial, event.clientX - active.startX, event.clientY - active.startY, width, height, active.resizeHandle ?? 'se', (element.kind === 'image' || element.kind === 'sticker' || Boolean(element.extra?.assetId)) !== event.shiftKey);
+    if (active.mode === 'resize') geometry = element.kind === 'slot' ? resizeSlotGeometry(active.initial, event.clientX - active.startX, rect.width) : resizeElementGeometryFromHandle(active.initial, event.clientX - active.startX, event.clientY - active.startY, width, height, active.resizeHandle ?? 'se', (element.kind === 'image' || element.kind === 'sticker' || Boolean(element.extra?.assetId)) !== event.shiftKey);
     if (active.mode === 'rotate') {
       const angle = rotationAngleFromPointer((rect.left + (active.initial.x + active.initial.w / 2) * rect.width), (rect.top + (active.initial.y + active.initial.h / 2) * rect.height), event.clientX, event.clientY);
       let newAngle = active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI;
@@ -363,7 +369,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
       activePointers.current.delete(event.pointerId);
       gesture.current = undefined;
       setPreview(undefined);
-      if (event.pointerType !== 'mouse' && event.type === 'pointerup' && !element.locked && (element.kind === 'slot' || element.extra?.kind === 'text')) {
+      if (event.pointerType !== 'mouse' && event.type === 'pointerup' && !element.locked && ((element.kind === 'slot' && !NON_TEXT_SLOT_IDS.has(element.id)) || element.extra?.kind === 'text')) {
         const now = event.timeStamp;
         const previous = lastTap.current;
         if (previous && previous.id === element.id && now - previous.time <= DOUBLE_TAP_MS) {
@@ -392,7 +398,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
         geometry = element.kind === 'slot' ? moved : rotateElementGeometry(moved, active.initial.rotation + (Math.atan2(deltaY, deltaX) - active.startAngle) * 180 / Math.PI);
       }
       if (active.mode === 'move') geometry = { ...active.initial, x: active.initial.x + dx, y: active.initial.y + dy };
-      if (active.mode === 'resize') geometry = resizeElementGeometryFromHandle(active.initial, event.clientX - active.startX, event.clientY - active.startY, width, height, active.resizeHandle ?? 'se', (element.kind === 'image' || element.kind === 'sticker' || Boolean(element.extra?.assetId)) !== event.shiftKey);
+      if (active.mode === 'resize') geometry = element.kind === 'slot' ? resizeSlotGeometry(active.initial, event.clientX - active.startX, rect.width) : resizeElementGeometryFromHandle(active.initial, event.clientX - active.startX, event.clientY - active.startY, width, height, active.resizeHandle ?? 'se', (element.kind === 'image' || element.kind === 'sticker' || Boolean(element.extra?.assetId)) !== event.shiftKey);
       if (active.mode === 'rotate') {
         const angle = rotationAngleFromPointer((rect.left + (active.initial.x + active.initial.w / 2) * rect.width), (rect.top + (active.initial.y + active.initial.h / 2) * rect.height), event.clientX, event.clientY);
         let newAngle = active.initial.rotation + ((angle - active.startAngle) * 180) / Math.PI;
@@ -451,19 +457,21 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
           : modelElement;
         const shown = preview?.id === element.id ? preview.geometry : element;
         const isSelected = selectedId === element.id;
-        const isTextElement = element.kind === 'slot' || element.extra?.kind === 'text';
+        const isTextElement = (element.kind === 'slot' && !NON_TEXT_SLOT_IDS.has(element.id)) || element.extra?.kind === 'text';
         const isCurrentlyEditing = editingId === element.id;
         return (
           <div
             key={element.id}
             data-testid={`element-hit-${element.id}`}
+            data-locked={element.locked ? 'true' : undefined}
+            aria-hidden={element.locked ? true : undefined}
             data-element-id={element.id}
             aria-label={t('editor.selectElement', { id: element.id })}
             aria-current={isSelected ? 'true' : undefined}
             aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Shift+ArrowUp Shift+ArrowDown Shift+ArrowLeft Shift+ArrowRight + - Escape Delete Control+D"
             role="group" className="transition-all hover:ring-2 hover:ring-amber-400/50 hover:ring-offset-1 rounded-sm"
             tabIndex={element.locked ? -1 : 0}
-            onFocus={() => { selectElement(element.id); setAnnouncement(t('editor.selectedAnnouncement', { id: element.id })); }}
+            onFocus={() => { if (element.locked) return; if (Date.now() - lastTouchAt.current < 700) return; selectElement(element.id); setAnnouncement(t('editor.selectedAnnouncement', { id: element.id })); }}
             onKeyDown={(event) => handleKeyDown(event, element)}
             onDoubleClick={(event) => {
               if (element.locked || !isTextElement) return;
@@ -481,8 +489,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
             onPointerMove={(event) => move(event, element)}
             onPointerUp={(event) => end(event, element)}
             onPointerCancel={(event) => end(event, element)}
-            onClick={() => selectElement(element.id)}
-            style={{ position: 'absolute', zIndex: isCurrentlyEditing ? 35 : isSelected ? 25 : 20, left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.w * 100}%`, height: `${shown.h * 100}%`, minWidth: 24, minHeight: 24, transform: `rotate(${shown.rotation}deg)`, transformOrigin: 'center', border: isSelected ? '2px solid #0891b2' : '1px solid transparent', background: isSelected ? '#06b6d40d' : 'transparent', pointerEvents: 'auto', touchAction: touchLayout ? 'none' : undefined, cursor: element.locked ? 'default' : isCurrentlyEditing ? 'text' : 'move', boxSizing: 'border-box' }}
+            onClick={() => { if (element.locked || Date.now() - lastTouchAt.current < 700) return; selectElement(element.id); }}
+            style={{ position: 'absolute', zIndex: isCurrentlyEditing ? 35 : isSelected ? 25 : 20, left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.w * 100}%`, height: `${shown.h * 100}%`, minWidth: 24, minHeight: 24, transform: `rotate(${shown.rotation}deg)`, transformOrigin: 'center', border: isSelected ? '2px solid #0891b2' : '1px solid transparent', background: isSelected ? '#06b6d40d' : 'transparent', pointerEvents: element.locked ? 'none' : 'auto', touchAction: touchLayout ? 'none' : undefined, cursor: element.locked ? 'default' : isCurrentlyEditing ? 'text' : 'move', boxSizing: 'border-box' }}
           >
             {isCurrentlyEditing ? (
               <RichTextEditor
@@ -543,8 +551,9 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                     onClick={(event) => event.stopPropagation()}
                     style={{
                       position: 'absolute',
-                      right: touchLayout ? -22 : -9,
-                      bottom: touchLayout ? -22 : -9,
+                      // Slots often span the full slide width, so an outside handle would be clipped by the slide edge: keep it inside.
+                      right: element.extra ? (touchLayout ? -22 : -9) : 2,
+                      bottom: element.extra ? (touchLayout ? -22 : -9) : 2,
                       width: touchLayout ? 44 : 18,
                       height: touchLayout ? 44 : 18,
                       padding: 0,
@@ -555,7 +564,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
                       pointerEvents: 'auto',
                       touchAction: 'none',
                       cursor: 'nwse-resize',
-                      display: element.extra ? 'flex' : 'none',
+                      display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       transform: `rotate(-${shown.rotation}deg)`,

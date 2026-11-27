@@ -13,62 +13,47 @@ async function createEditor(page: Page) {
   await page.getByTestId('wizard-create-btn').click();
 }
 
-test('in-place editing and floating toolbar formatting (R4-2, §5.3)', async ({ page }) => {
+test('in-place editing opens without a toolbar; formatting is applied from the Element Properties panel (R4-2, §5.3)', async ({ page }) => {
   await createEditor(page);
   await page.setViewportSize({ width: 1440, height: 900 });
 
-  // 1. Select title element
   const titleHit = page.getByTestId('element-hit-title');
   await titleHit.click();
-
-  // 2. Double-click opens the inline editor (no separate edit button exists)
   await titleHit.dblclick();
 
-  // 3. Verify editor container and floating toolbar appear
   const editorContainer = page.getByTestId('element-hit-title').getByTestId('rich-text-editor-container');
   await expect(editorContainer).toBeVisible();
+  // No toolbar on the canvas itself
+  await expect(page.locator('[data-rich-text-toolbar="true"]')).toHaveCount(0);
+  await expect(page.getByTestId('element-hit-title').getByTestId('rich-text-floating-toolbar')).toHaveCount(0);
 
-  const toolbar = page.locator('[data-rich-text-toolbar="true"]');
-  await expect(toolbar).toBeVisible();
-
-  // 4. Focus editor, select text, and apply formatting
-  const contentEditable = page.getByTestId('element-hit-title').getByTestId('rich-text-contenteditable');
-  await contentEditable.click();
+  // Format through the panel's editor + toolbar
+  const panel = page.getByTestId('element-properties-panel');
+  await panel.getByTestId('rich-text-contenteditable').click();
   await page.keyboard.press('ControlOrMeta+a');
-
-  const boldBtn = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-bold');
-  const underlineBtn = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-underline');
-  const highlightBtn = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-highlight');
-  const alignCenterBtn = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-align-center');
-  const dirRtlBtn = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-dir-rtl');
+  const toolbar = panel.getByTestId('rich-text-floating-toolbar');
+  await expect(toolbar).toBeVisible();
+  const boldBtn = toolbar.getByTestId('toolbar-bold');
+  const underlineBtn = toolbar.getByTestId('toolbar-underline');
+  const highlightBtn = toolbar.getByTestId('toolbar-highlight');
+  const alignCenterBtn = toolbar.getByTestId('toolbar-align-center');
 
   await boldBtn.click();
   await expect(boldBtn).toHaveAttribute('aria-pressed', 'true');
-
   await underlineBtn.click();
   await expect(underlineBtn).toHaveAttribute('aria-pressed', 'true');
-
   await highlightBtn.click();
   await expect(highlightBtn).toHaveAttribute('aria-pressed', 'true');
-
   await alignCenterBtn.click();
   await expect(alignCenterBtn).toHaveAttribute('aria-pressed', 'true');
-
-  await dirRtlBtn.click();
-
-  // 5. Done editing
-  const doneBtn = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-done');
-  await doneBtn.click();
-
-  await expect(editorContainer).not.toBeVisible();
+  await toolbar.getByTestId('toolbar-dir-rtl').click();
 });
 
-test('mobile docked toolbar above keyboard in mobile layout (R4-2, §5.3)', async ({ browser }) => {
+test('mobile: double tap opens inline editor with no docked toolbar (R4-2, §5.3)', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 360, height: 800 }, hasTouch: true, isMobile: true });
   const page = await context.newPage();
   await createEditor(page);
 
-  // Two quick touch taps enter edit mode on mobile (mouse dblclick is ignored there by design)
   const titleHit = page.getByTestId('element-hit-title');
   await expect(titleHit).toBeVisible();
   await page.waitForTimeout(800);
@@ -78,16 +63,9 @@ test('mobile docked toolbar above keyboard in mobile layout (R4-2, §5.3)', asyn
   b = (await titleHit.boundingBox())!;
   await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2);
 
-  // Verify docked toolbar at bottom
-  const toolbar = page.locator('[data-rich-text-toolbar="true"]');
-  await expect(toolbar).toBeVisible();
-  await expect(toolbar).toHaveCSS('position', 'fixed');
-  await expect(toolbar).toHaveCSS('bottom', '0px');
-
-  // Verify >=44px touch targets on mobile toolbar
-  const boldBtn = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-bold');
-  const box = await boldBtn.boundingBox();
-  expect(box?.height).toBeGreaterThanOrEqual(44);
+  await expect(page.getByTestId('element-hit-title').getByTestId('rich-text-contenteditable')).toBeVisible();
+  await expect(page.locator('[data-rich-text-toolbar="true"]')).toHaveCount(0);
+  await expect(page.getByTestId('rich-text-floating-toolbar')).toHaveCount(0);
   await context.close();
 });
 
@@ -111,7 +89,8 @@ test('rich text in-place editing 12-state review matrix (R4-2)', async ({ page }
       // Enter edit mode
       await page.getByTestId('element-hit-title').focus();
       await page.keyboard.press('Enter');
-      await expect(page.locator('[data-rich-text-toolbar="true"]')).toBeVisible();
+      await expect(page.getByTestId('element-hit-title').getByTestId('rich-text-contenteditable')).toBeVisible();
+      await expect(page.locator('[data-rich-text-toolbar="true"]')).toHaveCount(0);
 
       for (const direction of ['ltr', 'rtl']) {
         if (await page.locator('html').getAttribute('dir') !== direction) {

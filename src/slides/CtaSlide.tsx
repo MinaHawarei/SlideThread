@@ -87,12 +87,12 @@ export const CtaSlide: React.FC<SlideProps> = ({
           {(displayName || displayHandle) && (
             <div className="cta-profile-meta" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               {displayName && (
-                <div style={{ fontSize: '36px', fontWeight: 700, color: 'var(--ink)' }}>
+                <div className="cta-name" style={{ fontSize: '36px', fontWeight: 700, color: 'var(--ink)' }}>
                   <RichTextRenderer content={slide.richFields?.name ?? displayName} inline />
                 </div>
               )}
               {displayHandle && (
-                <div style={{ fontSize: '28px', color: 'var(--mute)', marginTop: '4px' }}>
+                <div className="cta-handle" style={{ fontSize: '28px', color: 'var(--mute)', marginTop: '4px' }}>
                   <RichTextRenderer content={slide.richFields?.handle ?? displayHandle} inline />
                 </div>
               )}

@@ -1,11 +1,11 @@
 /**
- * Arabic/RTL editing and inline-toolbar placement (screen edges + canvas zoom).
- * Real assertions: toolbar buttons fully inside the viewport, typed Arabic text and
- * RTL direction persist across close and reload, rendered DOM shows Arabic with dir=rtl.
+ * Arabic/RTL editing and the inline canvas editor at screen edges + canvas zoom.
+ * The inline editor has no toolbar: RTL/bold are applied from the Element Properties panel.
+ * Real assertions: typed Arabic text and RTL direction persist across close and reload, rendered DOM shows
+ * Arabic with dir=rtl, and no inline toolbar appears at any viewport size or zoom.
  */
 import { test, expect, type Page } from '@playwright/test';
 
-const BUTTONS = ['toolbar-bold', 'toolbar-align-left', 'toolbar-align-center', 'toolbar-align-right', 'toolbar-dir-ltr', 'toolbar-dir-rtl', 'toolbar-done'];
 
 async function boot(page: Page, demo: 'demo-ar-btn' | 'demo-en-btn', w = 1280, h = 800) {
   await page.setViewportSize({ width: w, height: h });
@@ -28,17 +28,16 @@ async function openTitle(page: Page) {
   await expect(hit.getByTestId('rich-text-editor-container')).toBeVisible({ timeout: 5000 });
 }
 
-async function assertToolbarInside(page: Page, w: number, h: number) {
-  const toolbar = page.locator('[data-rich-text-toolbar="true"]');
-  await expect(toolbar).toBeVisible();
-  for (const tid of BUTTONS) {
-    const box = await toolbar.getByTestId(tid).boundingBox();
-    expect(box, `${tid} missing`).not.toBeNull();
-    expect(box!.x, `${tid} left`).toBeGreaterThanOrEqual(0);
-    expect(box!.y, `${tid} top`).toBeGreaterThanOrEqual(0);
-    expect(box!.x + box!.width, `${tid} right`).toBeLessThanOrEqual(w + 1);
-    expect(box!.y + box!.height, `${tid} bottom`).toBeLessThanOrEqual(h + 1);
-  }
+async function assertNoInlineToolbar(page: Page, w: number, h: number) {
+  await expect(page.locator('[data-rich-text-toolbar="true"]')).toHaveCount(0);
+  const hit = page.getByTestId('element-hit-title').first();
+  await expect(hit.getByTestId('rich-text-contenteditable')).toBeVisible();
+  const box = await hit.getByTestId('rich-text-contenteditable').boundingBox();
+  expect(box, 'inline editor box').not.toBeNull();
+  expect(box!.width, 'inline editor usable width').toBeGreaterThan(20);
+  expect(box!.x + box!.width, 'editor right edge in viewport').toBeGreaterThan(0);
+  expect(box!.x, 'editor left edge in viewport').toBeLessThanOrEqual(w);
+  expect(box!.y, 'editor top in viewport').toBeLessThanOrEqual(h);
 }
 
 test.describe('Arabic / RTL editing', () => {
@@ -46,16 +45,19 @@ test.describe('Arabic / RTL editing', () => {
     test.setTimeout(60000);
     await boot(page, 'demo-ar-btn');
     await openTitle(page);
-    await assertToolbarInside(page, 1280, 800);
+    await assertNoInlineToolbar(page, 1280, 800);
     const input = page.getByTestId('element-hit-title').first().getByTestId('rich-text-contenteditable');
     await input.click();
     await page.keyboard.press('ControlOrMeta+a');
     await page.keyboard.type('عنوان تجريبي للاختبار');
+    await page.keyboard.press('Escape');
+    // Format from the Element Properties panel: select all in its editor, then RTL + bold.
+    await page.getByTestId('element-hit-title').first().focus();
+    const panel = page.getByTestId('element-properties-panel');
+    await panel.getByTestId('rich-text-contenteditable').click();
     await page.keyboard.press('ControlOrMeta+a');
-    const toolbar = page.locator('[data-rich-text-toolbar="true"]');
-    await toolbar.getByTestId('toolbar-dir-rtl').click();
-    await toolbar.getByTestId('toolbar-bold').click();
-    await toolbar.getByTestId('toolbar-done').click();
+    await panel.getByTestId('toolbar-dir-rtl').click();
+    await panel.getByTestId('toolbar-bold').click();
     const title = page.getByTestId('workspace-stage').locator('.slide-title-h1, .slide-title-h2').first();
     await expect(title).toContainText('عنوان تجريبي للاختبار');
     expect(await title.evaluate((el) => getComputedStyle(el).direction)).toBe('rtl');
@@ -78,10 +80,10 @@ test.describe('Arabic / RTL editing', () => {
   });
 });
 
-test.describe('Inline toolbar at edges and zoom', () => {
+test.describe('Inline editor (no toolbar) at edges and zoom', () => {
   for (const [w, h] of [[1280, 800], [1024, 600], [900, 560]] as const) {
     for (const zoomClicks of [0, 3, -2]) {
-      test(`toolbar inside viewport ${w}x${h}, zoom clicks ${zoomClicks}`, async ({ page }) => {
+      test(`inline editor opens without a toolbar ${w}x${h}, zoom clicks ${zoomClicks}`, async ({ page }) => {
         test.setTimeout(60000);
         await boot(page, 'demo-ar-btn', w, h);
         const btn = page.getByTestId(zoomClicks >= 0 ? 'canvas-zoom-in-btn' : 'canvas-zoom-out-btn');
@@ -90,8 +92,7 @@ test.describe('Inline toolbar at edges and zoom', () => {
         }
         await page.getByTestId('element-hit-title').first().scrollIntoViewIfNeeded();
         await openTitle(page);
-        await assertToolbarInside(page, w, h);
-        await page.screenshot({ path: `test-results/toolbar-${w}x${h}-z${zoomClicks}.png` });
+        await assertNoInlineToolbar(page, w, h);
       });
     }
   }

@@ -1,13 +1,10 @@
 /**
- * Task 1 Acceptance Tests — Desktop toolbar portal & editor close paths
+ * Inline canvas editor: no toolbar (formatting lives in the Element Properties panel) and close paths.
  *
  * Tests:
- *  - Every toolbar button (incl. LTR/RTL/Done) is fully inside the viewport and clickable
- *    at three element positions (top-left, top-right, bottom-right) on three desktop widths.
- *  - Editor closes on: outside workspace click, right-panel click, another element click, Escape.
+ *  - The inline editor opens with no toolbar on three desktop sizes and on touch.
+ *  - Editor closes on: outside workspace click, right-panel click, Escape.
  *  - Edits are preserved on every close path.
- *  - Toolbar interactions (color picker) do NOT close the editor.
- *  - Touch layout: fixed bottom bar, same close paths work.
  */
 import { test, expect, type Page } from '@playwright/test';
 
@@ -49,59 +46,17 @@ function renderedTitle(page: Page) {
   return page.getByTestId('workspace-stage').locator('.slide-title-h1, .slide-title-h2');
 }
 
-// All toolbar button testids that must be visible/clickable
-const TOOLBAR_BUTTONS = [
-  'toolbar-font-family',
-  'toolbar-font-size',
-  'toolbar-bold',
-  'toolbar-underline',
-  'toolbar-highlight',
-  'toolbar-bullet-list',
-  'toolbar-ordered-list',
-  'toolbar-align-left',
-  'toolbar-align-center',
-  'toolbar-align-right',
-  'toolbar-dir-ltr',
-  'toolbar-dir-rtl',
-  'toolbar-done',
-];
-
-test.describe('Task 1 — Desktop toolbar portal visibility', () => {
+test.describe('Inline editor has no toolbar (desktop)', () => {
   for (const [vpW, vpH] of [[1280, 800], [1024, 700], [1200, 900]] as const) {
-    test(`All toolbar buttons in viewport at ${vpW}×${vpH}`, async ({ page }) => {
+    test(`No inline toolbar at ${vpW}×${vpH}`, async ({ page }) => {
       test.setTimeout(60000);
       await bootEditor(page, vpW, vpH);
-
-      // Enter edit mode via double-click
       await openEditor(page, 'title');
-
-      const toolbar = page.locator('[data-rich-text-toolbar="true"]');
-      await expect(toolbar).toBeVisible();
-
-      for (const tid of TOOLBAR_BUTTONS) {
-        const btn = toolbar.getByTestId(tid);
-        await expect(btn).toBeVisible({ timeout: 5000 });
-        const box = await btn.boundingBox();
-        expect(box, `${tid} has no bounding box`).not.toBeNull();
-        if (box) {
-          // Must be fully within viewport
-          expect(box.x, `${tid} left is off-screen`).toBeGreaterThanOrEqual(0);
-          expect(box.y, `${tid} top is off-screen`).toBeGreaterThanOrEqual(0);
-          expect(box.x + box.width, `${tid} right is off-screen`).toBeLessThanOrEqual(vpW + 1);
-          expect(box.y + box.height, `${tid} bottom is off-screen`).toBeLessThanOrEqual(vpH + 1);
-        }
-        // Every button (except color picker input) must be clickable without force
-        if (tid !== 'toolbar-color-picker') {
-          // Just verify it's enabled / not covered — a click on the done btn would close, skip for now
-          if (tid !== 'toolbar-done') {
-            await btn.click();
-          }
-        }
-      }
-
-      // Done closes the editor
-      await toolbar.getByTestId('toolbar-done').click();
-      await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
+      await expect(inlineTitleInput(page)).toBeVisible();
+      await expect(page.locator('[data-rich-text-toolbar="true"]')).toHaveCount(0);
+      // The only formatting toolbar is the one embedded in the Element Properties panel.
+      await expect(page.getByTestId('rich-text-floating-toolbar')).toHaveCount(1);
+      await expect(page.getByTestId('element-properties-panel').getByTestId('rich-text-floating-toolbar')).toHaveCount(1);
     });
   }
 });
@@ -144,15 +99,6 @@ test.describe('Task 1 — Editor close paths preserve edits', () => {
     await expect(renderedTitle(page)).toContainText('EDITED_TEXT_ESCAPE');
   });
 
-  test('Close on Done button — editor disappears', async ({ page }) => {
-    test.setTimeout(45000);
-    await bootEditor(page, 1280, 800);
-    await openEditor(page, 'title');
-
-    await page.getByTestId('toolbar-done').click();
-    await expect(inlineTitleEditor(page)).not.toBeVisible({ timeout: 3000 });
-  });
-
   test('Close on right-side panel click — text is kept', async ({ page }) => {
     test.setTimeout(45000);
     await bootEditor(page, 1280, 800);
@@ -169,9 +115,9 @@ test.describe('Task 1 — Editor close paths preserve edits', () => {
   });
 });
 
-test.describe('Task 1 — Touch layout: fixed bottom bar', () => {
+test.describe('Inline editor has no toolbar (touch)', () => {
   test.use({ hasTouch: true, isMobile: true });
-  test('Mobile bottom bar is visible and fixed', async ({ page }) => {
+  test('Mobile double tap opens the inline editor with no toolbar or icons', async ({ page }) => {
     test.setTimeout(45000);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
@@ -196,17 +142,9 @@ test.describe('Task 1 — Touch layout: fixed bottom bar', () => {
       await page.touchscreen.tap(frame.x + frame.width / 2, frame.y + frame.height / 2);
     }
 
-    const toolbar = page.locator('[data-rich-text-toolbar="true"]');
-    await expect(toolbar).toBeVisible({ timeout: 5000 });
-
-    // Verify fixed positioning at bottom (touch layout)
-    await expect(toolbar).toHaveCSS('position', 'fixed');
-    await expect(toolbar).toHaveCSS('bottom', '0px');
-
-    // Verify >=44px touch target height
-    const bold = page.getByTestId('toolbar-bold');
-    const box = await bold.boundingBox();
-    if (box) expect(box.height).toBeGreaterThanOrEqual(44);
+    await expect(inlineTitleInput(page)).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('[data-rich-text-toolbar="true"]')).toHaveCount(0);
+    await expect(page.getByTestId('rich-text-floating-toolbar')).toHaveCount(0);
 
     // Escape closes
     await page.keyboard.press('Escape');

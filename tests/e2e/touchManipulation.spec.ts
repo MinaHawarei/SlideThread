@@ -31,8 +31,8 @@ test('mobile canvas exposes touch targets at both required widths', async ({ pag
       expect(box?.height).toBeGreaterThanOrEqual(44);
       expect(box?.width).toBeGreaterThanOrEqual(44);
     }
-    // Template slots are resized with the toolbar's Scale buttons; the drag handle exists only for extra elements.
-    await expect(page.getByTestId('resize-title')).toBeHidden();
+    // Slots now also expose a resize handle; the toolbar Scale buttons must visibly change the slot.
+    await expect(page.getByTestId('resize-title')).toBeVisible();
 
     const before = await title.evaluate((node) => Number.parseFloat((node as HTMLElement).style.width));
     await toolbar.getByRole('button', { name: 'Scale down' }).tap();

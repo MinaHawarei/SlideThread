@@ -3,6 +3,7 @@ import { FONT_REGISTRY } from '../fonts/registry';
 import { generatePalette, type Palette } from '../core/palette';
 import { AspectClassSchema, ExtraElementSchema, SlideTypeSchema, ThemeModeSchema } from '../core/schema';
 import { CATEGORY_REGISTRY } from './categories';
+import { LAYOUT_ELEMENT_IDS } from './layouts/registry';
 
 const BilingualNameSchema = z.object({ en: z.string().trim().min(1), ar: z.string().trim().min(1) }).strict();
 const FontIdSchema = z.enum(Object.keys(FONT_REGISTRY) as [keyof typeof FONT_REGISTRY, ...(keyof typeof FONT_REGISTRY)[]]);
@@ -18,7 +19,7 @@ const SlotFrameSchema = z.object({
   align: z.enum(['start', 'center', 'end']),
 }).strict();
 const CompositionAspectSchema = z.object({
-  slots: z.partialRecord(z.enum(['title', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source']), SlotFrameSchema).optional(),
+  slots: z.partialRecord(z.enum(LAYOUT_ELEMENT_IDS), SlotFrameSchema).optional(),
   hiddenSlots: z.array(z.enum(['tag', 'title', 'sub', 'rule', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source'])).optional(),
   elements: z.array(ExtraElementSchema).optional(),
 }).strict();

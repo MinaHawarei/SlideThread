@@ -120,9 +120,9 @@ describe('RichText Tiptap Adapters (R4-2, §5.3)', () => {
 describe('RichTextEditor Component (R4-2, §5.3)', () => {
   const initialDoc = parsePlainTextToRichText('Testing Rich Text');
 
-  it('renders floating toolbar with all required controls (font, size, color, bold, underline, highlight, align, dir)', () => {
+  it('renders the embedded (Element Properties panel) toolbar with all required controls (font, size, color, bold, underline, highlight, align, dir)', () => {
     const onChange = vi.fn();
-    render(<RichTextEditor content={initialDoc} onChange={onChange} />);
+    render(<RichTextEditor content={initialDoc} onChange={onChange} embedded />);
 
     expect(screen.getByTestId('rich-text-floating-toolbar')).toBeTruthy();
     expect(screen.getByTestId('toolbar-font-family')).toBeTruthy();
@@ -140,27 +140,23 @@ describe('RichTextEditor Component (R4-2, §5.3)', () => {
     expect(screen.getByTestId('toolbar-dir-rtl')).toBeTruthy();
   });
 
-  it('renders mobile docked toolbar with >=44px buttons in touchLayout mode', () => {
-    render(<RichTextEditor content={initialDoc} onChange={vi.fn()} touchLayout={true} onDone={vi.fn()} />);
-
-    const toolbar = screen.getByTestId('rich-text-floating-toolbar');
-    expect(toolbar.style.position).toBe('fixed');
-    expect(toolbar.style.bottom).toBe('0px');
-
-    const boldBtn = screen.getByTestId('toolbar-bold');
-    expect(boldBtn.style.minHeight).toBe('44px');
+  it('shows no toolbar for the inline canvas editor, on desktop or touch layouts: formatting lives in the Element Properties panel', () => {
+    const { unmount } = render(<RichTextEditor content={initialDoc} onChange={vi.fn()} touchLayout={true} onDone={vi.fn()} />);
+    expect(screen.queryByTestId('rich-text-floating-toolbar')).toBeNull();
+    expect(document.querySelector('[data-rich-text-toolbar="true"]')).toBeNull();
+    expect(screen.getByTestId('rich-text-contenteditable')).toBeTruthy();
+    unmount();
+    render(<RichTextEditor content={initialDoc} onChange={vi.fn()} onDone={vi.fn()} />);
+    expect(screen.queryByTestId('rich-text-floating-toolbar')).toBeNull();
+    expect(screen.queryByTestId('toolbar-bold')).toBeNull();
   });
 
-  it('invokes onDone callback when Done button is clicked or Escape is pressed', () => {
+  it('invokes onDone callback when Escape is pressed', () => {
     const onDone = vi.fn();
     render(<RichTextEditor content={initialDoc} onChange={vi.fn()} onDone={onDone} />);
 
-    const doneBtn = screen.getByTestId('toolbar-done');
-    fireEvent.click(doneBtn);
-    expect(onDone).toHaveBeenCalledTimes(1);
-
     fireEvent.keyDown(window, { key: 'Escape' });
-    expect(onDone).toHaveBeenCalledTimes(2);
+    expect(onDone).toHaveBeenCalledTimes(1);
   });
 });
 

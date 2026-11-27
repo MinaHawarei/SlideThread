@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -85,73 +84,6 @@ const SIZE_OPTIONS = [
   { value: 200, label: '200%' },
 ];
 
-// Hook to compute a clamped viewport-safe position for the floating toolbar.
-// Returns a {top, left} in page coordinates clamped so the toolbar fits
-// horizontally (wraps to two rows if needed) and flips below when above is clipped.
-function usePortalToolbarPosition(
-  anchorRef: React.RefObject<HTMLDivElement | null>,
-  toolbarRef: React.RefObject<HTMLDivElement | null>,
-) {
-  const [pos, setPos] = useState<{ top: number; left: number; below: boolean }>({
-    top: 0,
-    left: 0,
-    below: false,
-  });
-
-  // Keep latest pos in a ref to avoid stale-closure re-renders.
-  const posRef = useRef(pos);
-  posRef.current = pos;
-
-  const updateRef = useRef<(() => void) | null>(null);
-
-  useEffect(() => {
-    const compute = () => {
-      const anchor = anchorRef.current;
-      if (!anchor) return;
-
-      const anchorRect = anchor.getBoundingClientRect();
-      const toolbar = toolbarRef.current;
-      const toolbarHeight = toolbar?.offsetHeight ?? 44;
-      const toolbarWidth = toolbar?.offsetWidth ?? 680;
-      const MARGIN = 8;
-      const vpW = window.innerWidth;
-
-      // Prefer above; flip below if not enough room above.
-      const spaceAbove = anchorRect.top;
-      const below = spaceAbove < toolbarHeight + MARGIN;
-      const top = below
-        ? anchorRect.bottom + MARGIN + window.scrollY
-        : anchorRect.top - toolbarHeight - MARGIN + window.scrollY;
-
-      // Clamp left so toolbar stays within viewport with 8px margin each side.
-      let left = anchorRect.left + window.scrollX;
-      left = Math.max(MARGIN, Math.min(left, vpW - toolbarWidth - MARGIN));
-
-      // Only update state if values actually changed (avoids re-render cascade).
-      const cur = posRef.current;
-      if (cur.top !== top || cur.left !== left || cur.below !== below) {
-        setPos({ top, left, below });
-      }
-    };
-
-    updateRef.current = compute;
-    compute(); // Initial measurement.
-
-    // Re-position on scroll/resize.
-    const onScroll = () => updateRef.current?.();
-    const onResize = () => updateRef.current?.();
-    window.addEventListener('scroll', onScroll, { passive: true, capture: true });
-    window.addEventListener('resize', onResize, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll, true);
-      window.removeEventListener('resize', onResize);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount; compute() reads refs which always point to current DOM.
-
-  return pos;
-}
-
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   content,
   onChange,
@@ -165,7 +97,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const { t } = useT();
   const initialJSON = useRef(richTextToTiptapJSON(content));
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const toolbarRef = useRef<HTMLDivElement | null>(null);
 
   const editor = useEditor({
     extensions: [
@@ -228,8 +159,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [editor, onDone]);
 
-  // Compute portal toolbar position (desktop non-embedded layout only)
-  const toolbarPortalPos = usePortalToolbarPosition(containerRef, toolbarRef);
 
   if (!editor) return null;
 
@@ -560,71 +489,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         </div>
       )}
 
-      {/* Touch layout: fixed bottom bar */}
-      {/* Rendered in a portal: inside the scaled canvas, position:fixed is relative to the transformed ancestor and the bar ends up huge and off screen. */}
-      {!embedded && touchLayout && typeof document !== 'undefined' && createPortal(
-        <div
-          role="toolbar"
-          aria-label={t('editor.richTextToolbar')}
-          data-testid="rich-text-floating-toolbar"
-          data-rich-text-toolbar="true"
-          {...toolbarPointerProps}
-          style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            flexWrap: 'nowrap',
-            overflowX: 'auto',
-            overflowY: 'hidden',
-            gap: 4,
-            padding: '6px 8px',
-            background: '#ffffff',
-            borderTop: '1px solid #cbd5e1',
-            boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.15)',
-          }}
-        >
-          {toolbarControls}
-        </div>
-      , document.body)}
-
-      {/* Desktop floating toolbar: rendered via portal to escape overflow:hidden clip.
-          Positioned absolutely in page coordinates, clamped to viewport. */}
-      {!embedded && !touchLayout && typeof document !== 'undefined' && createPortal(
-        <div
-          ref={toolbarRef}
-          role="toolbar"
-          aria-label={t('editor.richTextToolbar')}
-          data-testid="rich-text-floating-toolbar"
-          data-rich-text-toolbar="true"
-          {...toolbarPointerProps}
-          style={{
-            position: 'absolute',
-            top: toolbarPortalPos.top,
-            left: toolbarPortalPos.left,
-            zIndex: 99999,
-            display: 'flex',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 4,
-            padding: '4px 8px',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            borderRadius: 8,
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            maxWidth: 'calc(100vw - 16px)',
-            overflowX: 'auto',
-            overflowY: 'hidden',
-          }}
-        >
-          {toolbarControls}
-        </div>,
-        document.body,
-      )}
+      {/* The canvas inline editor has no toolbar: all formatting lives in the Element Properties panel. */}
 
       {/* Editor Content Area */}
       <EditorContent

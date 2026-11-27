@@ -117,8 +117,12 @@ describe('EditorDesktop component (Task P3-5)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Show title' }));
     fireEvent.click(screen.getByRole('button', { name: 'Lock title' }));
     expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.locked).toBe(true);
+    // The cover layout now also lists the tag frame ahead of the title, so the title starts one step further along.
+    const zBefore = useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.z;
     fireEvent.click(screen.getByRole('button', { name: 'Move title backward' }));
-    expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.z).toBe(1);
+    const zAfter = useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.z;
+    expect(zAfter).toBe(2);
+    expect(zAfter).not.toBe(zBefore);
   });
 
   it('locks, hides, and reorders user-added layers', () => {

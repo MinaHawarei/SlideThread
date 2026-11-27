@@ -50,13 +50,16 @@ export function slotFieldKey(slideType: string, elementId: string): string {
   return slideType === 'cover' && elementId === 'body' ? 'sub' : elementId;
 }
 
+/** Slots that hold no editable text. */
+export const NON_TEXT_SLOT_IDS: ReadonlySet<string> = new Set(['media', 'counter', 'signature', 'left', 'right']);
+
 export const SLOT_SELECTORS: Record<string, string> = {
   tag: '.slide-tag',
   title: '.slide-title-h1, .slide-title-h2',
   sub: '.slide-sub',
   rule: '.slide-mono-line',
   body: '.slide-sub, .explain-body-list, .slide-paragraph, .quote-text',
-  media: '.slide-media-element, .slide-bg-media, .cta-avatar-ring, .media-placeholder',
+  media: '.slide-media-element, .slide-bg-media, .cta-avatar-ring, .media-placeholder, .image-fullbleed-placeholder',
   counter: '.sig-counter-badge',
   signature: '.slide-signature-container',
   code: '.code-container',
@@ -65,7 +68,15 @@ export const SLOT_SELECTORS: Record<string, string> = {
   right: '.compare-card-ok',
   cond: '.rule-layout-landscape .rule-card:nth-child(1) .rule-card-text, .rule-layout-stacked .rule-card:nth-child(1) .rule-card-text',
   res: '.rule-layout-landscape .rule-card:nth-child(3) .rule-card-text, .rule-layout-stacked .rule-card:nth-child(3) .rule-card-text',
-  note: '.rule-note',
+  note: '.rule-note, .stat-note, .code-note',
+  condLabel: '.rule-card:nth-child(1) .rule-badge',
+  resLabel: '.rule-card:nth-child(3) .rule-badge',
+  l1: '.compare-badge-bad',
+  l2: '.compare-badge-ok',
+  caption: '.image-caption-bar',
+  name: '.cta-name',
+  handle: '.cta-handle',
+  action: '.cta-action-button',
   text: '.quote-text',
   author: '.quote-author',
   t1: '.compare-card-bad .compare-text',
@@ -99,6 +110,16 @@ export function resizeElementGeometry(geometry: ElementGeometry, dx: number, dy:
   const w = Math.max(0.02, geometry.w + dx);
   const h = Math.max(0.02, geometry.h + (lockAspect ? dx * (geometry.h / geometry.w) : dy));
   return { ...geometry, w, h };
+}
+
+/**
+ * Slots are scaled around their centre by the renderer, so a drag only needs the size ratio: no slide-edge clamp,
+ * keep the aspect ratio, allow the 10x scale range used everywhere else.
+ */
+export function resizeSlotGeometry(geometry: ElementGeometry, deltaX: number, slideWidth: number): ElementGeometry {
+  if (![geometry.w, geometry.h, deltaX, slideWidth].every(Number.isFinite) || geometry.w <= 0 || slideWidth <= 0) return geometry;
+  const ratio = Math.max(0.1, Math.min(10, (geometry.w * slideWidth + deltaX) / (geometry.w * slideWidth)));
+  return { ...geometry, w: geometry.w * ratio, h: geometry.h * ratio };
 }
 
 export type ResizeHandle = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w';
@@ -178,8 +199,9 @@ function resolveFrame(frame: LayoutFrame, override?: ElementOverride, order = 0)
 /** Resolve template slots and user extras into one stable, bottom-to-top layer list. */
 export function resolveSlideElements(slide: Slide, variant: LayoutVariant, aspect: AspectClass, hiddenSlots: readonly string[] = []): ResolvedElement[] {
   const overrides = slide.overrides?.[aspect] ?? {};
+  const hiddenAll = slide.type === 'cover' && hiddenSlots.includes('sub') ? [...hiddenSlots, 'body'] : hiddenSlots;
   const boundSlots = new Set((slide.extras ?? []).flatMap((extra) => extra.binding === 'tag' ? ['tag'] : extra.binding === 'title' ? ['title'] : extra.binding === 'sub' ? ['body'] : []));
-  const slots = variant.elements.filter((frame) => !boundSlots.has(frame.id) && !hiddenSlots.includes(frame.id)).map((frame, index) => resolveFrame(frame, overrides[frame.id], index));
+  const slots = variant.elements.filter((frame) => !boundSlots.has(frame.id) && !hiddenAll.includes(frame.id)).map((frame, index) => resolveFrame(frame, overrides[frame.id], index));
   const extras: ResolvedElement[] = (slide.extras ?? []).map((extra) => ({
     id: extra.id,
     kind: extra.kind,

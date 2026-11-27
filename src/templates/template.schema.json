@@ -429,7 +429,25 @@
               "value",
               "left",
               "right",
-              "source"
+              "source",
+              "tag",
+              "rule",
+              "cond",
+              "res",
+              "condLabel",
+              "resLabel",
+              "note",
+              "l1",
+              "t1",
+              "l2",
+              "t2",
+              "label",
+              "text",
+              "author",
+              "caption",
+              "name",
+              "handle",
+              "action"
             ]
           },
           "additionalProperties": {
@@ -453,7 +471,25 @@
               "value",
               "left",
               "right",
-              "source"
+              "source",
+              "tag",
+              "rule",
+              "cond",
+              "res",
+              "condLabel",
+              "resLabel",
+              "note",
+              "l1",
+              "t1",
+              "l2",
+              "t2",
+              "label",
+              "text",
+              "author",
+              "caption",
+              "name",
+              "handle",
+              "action"
             ]
           }
         },

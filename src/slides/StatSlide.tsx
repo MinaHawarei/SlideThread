@@ -20,7 +20,7 @@ export const StatSlide: React.FC<SlideProps> = ({ slide, aspectClass, textDir })
             </h2>
           )}
           {note && (
-            <p style={{ fontSize: '28px', color: 'var(--mute)', margin: 0 }}>
+            <p className="stat-note" style={{ fontSize: '28px', color: 'var(--mute)', margin: 0 }}>
               <RichTextRenderer content={slide.richFields?.note ?? note} inline />
             </p>
           )}

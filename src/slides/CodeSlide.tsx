@@ -17,7 +17,7 @@ export const CodeSlide: React.FC<SlideProps> = ({ slide, textDir }) => {
         <code>{code}</code>
       </div>
       {note && (
-        <div style={{ marginTop: '20px', fontSize: '28px', color: 'var(--mute)' }} dir={effectiveDir}>
+        <div className="code-note" style={{ marginTop: '20px', fontSize: '28px', color: 'var(--mute)' }} dir={effectiveDir}>
           <RichTextRenderer content={slide.richFields?.note ?? note} inline />
         </div>
       )}

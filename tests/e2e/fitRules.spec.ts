@@ -60,17 +60,14 @@ test('manual font size disables auto-fit and keeps fit-scale 1 (R4-3, §5.3)', a
   await titleHit.click();
   await titleHit.dblclick();
 
-  // Select all text in editor
-  const contentEditable = page.getByTestId('element-hit-title').getByTestId('rich-text-contenteditable');
+  // Select all text in the Element Properties panel editor (the canvas inline editor has no toolbar)
+  const panel = page.getByTestId('element-properties-panel');
+  const contentEditable = panel.getByTestId('rich-text-contenteditable');
   await contentEditable.click();
   await page.keyboard.press('ControlOrMeta+a');
 
-  // Change font size to 150% via toolbar
-  const sizeSelect = page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-font-size');
-  await sizeSelect.selectOption('150');
-
-  // Done editing
-  await page.locator('[data-rich-text-toolbar="true"]').getByTestId('toolbar-done').click();
+  // Change font size to 150% via the panel toolbar
+  await panel.getByTestId('toolbar-font-size').selectOption('150');
 
   // Check that the slide title rendered has manual size marked
   const renderedTitle = page.locator('[data-testid="main-canvas"] .slide-title-h1');

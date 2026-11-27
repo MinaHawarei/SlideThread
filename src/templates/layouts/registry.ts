@@ -1,7 +1,10 @@
 import { SlideTypeSchema, AspectClassSchema, type AspectClass } from '../../core/schema';
 import type { z } from 'zod';
 
-export const LAYOUT_ELEMENT_IDS = ['title', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source'] as const;
+export const LAYOUT_ELEMENT_IDS = [
+  'title', 'body', 'media', 'counter', 'signature', 'code', 'value', 'left', 'right', 'source',
+  'tag', 'rule', 'cond', 'res', 'condLabel', 'resLabel', 'note', 'l1', 't1', 'l2', 't2', 'label', 'text', 'author', 'caption', 'name', 'handle', 'action',
+] as const;
 export type LayoutElementId = (typeof LAYOUT_ELEMENT_IDS)[number];
 export type LayoutSlideType = z.infer<typeof SlideTypeSchema>;
 export type LayoutAspectClass = z.infer<typeof AspectClassSchema>;
@@ -29,16 +32,31 @@ export interface LayoutArchetype {
 
 const ASPECTS = AspectClassSchema.options;
 const SLIDE_TYPES = SlideTypeSchema.options;
+/**
+ * Every element each built-in slide type actually renders, so each one can be selected, moved, resized and edited.
+ * (Earlier versions listed generic ids such as `body` for slides that do not render them, which left real elements
+ * like the rule slide's IF/THEN cards and the stat label uncontrollable.)
+ */
 const SLOT_IDS: Record<LayoutSlideType, readonly LayoutElementId[]> = {
-  cover: ['title', 'body', 'signature', 'counter'],
+  cover: ['tag', 'title', 'body', 'rule', 'signature', 'counter'],
   explain: ['title', 'body', 'media', 'signature', 'counter'],
-  rule: ['title', 'body', 'signature', 'counter'],
-  code: ['title', 'code', 'body', 'signature', 'counter'],
-  compare: ['title', 'left', 'right', 'counter'],
-  stat: ['title', 'value', 'body', 'counter'],
-  quote: ['body', 'source', 'signature', 'counter'],
-  image: ['media', 'title', 'body', 'counter'],
-  cta: ['media', 'title', 'body'],
+  rule: ['title', 'condLabel', 'cond', 'resLabel', 'res', 'note', 'signature', 'counter'],
+  code: ['title', 'code', 'note', 'signature', 'counter'],
+  compare: ['title', 'l1', 't1', 'l2', 't2', 'counter'],
+  stat: ['value', 'label', 'note', 'counter'],
+  quote: ['text', 'author', 'signature', 'counter'],
+  image: ['media', 'caption', 'counter'],
+  cta: ['media', 'name', 'handle', 'title', 'body', 'action'],
+};
+
+/** Relative heights of the elements stacked in the content band of each non-cover slide type. */
+const STACK_WEIGHTS: Partial<Record<LayoutSlideType, Array<[LayoutElementId, number]>>> = {
+  rule: [['condLabel', 0.5], ['cond', 2], ['resLabel', 0.5], ['res', 2], ['note', 1]],
+  code: [['code', 4], ['note', 1]],
+  compare: [['l1', 0.6], ['t1', 2], ['l2', 0.6], ['t2', 2]],
+  stat: [['value', 3], ['label', 1], ['note', 1]],
+  quote: [['text', 4], ['author', 1]],
+  cta: [['media', 2.2], ['name', 0.6], ['handle', 0.5], ['title', 1.6], ['body', 1.4], ['action', 1]],
 };
 
 type FrameBox = Omit<LayoutFrame, 'id'>;
@@ -81,6 +99,36 @@ function positions(slideType: LayoutSlideType, style: 'centered' | 'editorial', 
     cta: { media: isTall ? box(0.12, 0.34, 0.32, 0.18, 'center') : box(0.28, 0.08, 0.2, 0.28, 'center'), title: isTall ? box(0.38, 0.1, 0.8, 0.16, 'center') : box(0.27, 0.34, 0.58, 0.2, 'start'), body: isTall ? box(0.59, 0.12, 0.76, 0.13, 'center') : box(0.52, 0.34, 0.55, 0.16, 'start') },
   };
 
+  // Rebuild the element boxes of every type that renders more than the generic title/body pair.
+  const own = SLOT_IDS[slideType];
+  const base = map[slideType];
+  const result: BoxMap = {};
+  for (const id of own) if (base[id]) result[id] = base[id];
+  const stackWeights = STACK_WEIGHTS[slideType];
+  const inlineStart = 0.08;
+  const inlineSize = centered ? 0.84 : 0.78;
+  if (stackWeights) {
+    const titleBox = result.title;
+    const top = slideType === 'cta' ? 0.08 : titleBox ? titleBox.blockStart + titleBox.blockSize + 0.02 : 0.14;
+    const bottom = 0.85;
+    const gap = 0.012;
+    const total = stackWeights.reduce((sum, [, weight]) => sum + weight, 0);
+    const room = bottom - top - gap * (stackWeights.length - 1);
+    let cursor = top;
+    for (const [id, weight] of stackWeights) {
+      const blockSize = (room * weight) / total;
+      result[id] = box(cursor, inlineStart, inlineSize, blockSize, id === 'media' ? 'center' : result[id]?.align ?? (centered ? 'center' : 'start'));
+      cursor += blockSize + gap;
+    }
+    if (slideType === 'cta' && result.media) result.media = box(result.media.blockStart, 0.34, 0.32, result.media.blockSize, 'center');
+  }
+  if (slideType === 'cover') {
+    result.tag = box(0.12, 0.08, 0.3, 0.05);
+    result.rule = box(isTall ? 0.62 : 0.72, 0.08, 0.5, 0.06);
+  }
+  if (slideType === 'image') result.caption = base.body ?? box(0.9, 0.1, 0.8, 0.08);
+  map[slideType] = result;
+
   if (style === 'centered') return map[slideType];
   const editorial: BoxMap = { ...map[slideType] };
   if (editorial.title) editorial.title = { ...editorial.title, inlineStart: 0.08, align: 'start', inlineSize: isWide ? 0.52 : 0.78 };
@@ -89,14 +137,9 @@ function positions(slideType: LayoutSlideType, style: 'centered' | 'editorial', 
     const blockStart = slideType === 'image' ? (isTall ? 0.25 : 0.16) : isWide ? 0.32 : isTall ? 0.52 : 0.65;
     editorial.media = { ...editorial.media, inlineStart: isWide ? 0.56 : 0.12, inlineSize: isWide ? 0.34 : 0.76, blockStart, ...(slideType === 'image' && isTall ? { blockSize: 0.48 } : {}) };
   }
-  if (slideType === 'compare') {
-    editorial.left = isWide ? box(0.39, 0.08, 0.32, 0.42) : box(0.39, 0.08, 0.84, 0.2);
-    editorial.right = isWide ? box(0.48, 0.47, 0.42, 0.42) : box(0.63, 0.08, 0.84, 0.2);
-  }
   if (slideType === 'stat' && editorial.value) editorial.value = { ...editorial.value, inlineStart: 0.1, inlineSize: 0.78, align: 'start' };
   if (slideType === 'quote' && editorial.body) editorial.body = { ...editorial.body, inlineStart: 0.08, inlineSize: 0.72, blockStart: isTall ? 0.24 : 0.22, align: 'start' };
   if (slideType === 'code' && editorial.code) editorial.code = { ...editorial.code, inlineStart: 0.08, inlineSize: 0.84 };
-  if (slideType === 'cta' && editorial.media) editorial.media = isTall ? box(0.14, 0.12, 0.26, 0.15) : box(0.72, 0.08, 0.23, 0.2);
   return editorial;
 }
 
