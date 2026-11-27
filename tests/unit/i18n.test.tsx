@@ -75,14 +75,16 @@ describe('i18n Module & Typed Dictionaries (Spec §5.5, §14, Task P3-1)', () =>
 
     const btn = screen.getByTestId('language-switcher');
     expect(btn).toBeInTheDocument();
-    expect(btn).toHaveTextContent('العربية');
+    expect(btn).toHaveTextContent('EN | عربي');
+    expect(btn.querySelector('b')?.textContent).toBe('EN');
+    expect(btn.textContent).not.toMatch(/[\u{1F300}-\u{1FAFF}]/u);
 
     // Click to switch to Arabic
     fireEvent.click(btn);
     expect(useI18nStore.getState().locale).toBe('ar');
     expect(document.documentElement.lang).toBe('ar');
     expect(document.documentElement.dir).toBe('rtl');
-    expect(btn).toHaveTextContent('English');
+    expect(btn.querySelector('b')?.textContent).toBe('عربي');
 
     // Click again to switch back to English
     fireEvent.click(btn);

@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { BrandSettings, SocialPlatform, ThemeMode, SignatureConfig, CounterConfig } from '../core/schema';
+import type { BrandSettings, SocialPlatform } from '../core/schema';
+import { stripLegacyDesignDefaults } from '../core/schema';
 import { useI18nStore } from '../i18n';
 import { STORAGE_KEYS, createSafeStorage } from '../core/storage';
-import { DEFAULT_COUNTER_CONFIG, DEFAULT_SIGNATURE_CONFIG } from '../core/schema';
 import { recordHistoryChange, registerHistoryChannel } from './history';
 
 export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
@@ -13,13 +13,8 @@ export const DEFAULT_BRAND_SETTINGS: BrandSettings = {
   showSignature: true,
   showSocials: false,
   showCounter: true,
-  defaultCounter: { ...DEFAULT_COUNTER_CONFIG },
-  defaultSignature: { ...DEFAULT_SIGNATURE_CONFIG },
   socials: [],
   language: 'en',
-  defaultTemplateId: 'tech-mesh',
-  defaultPrimaryColor: '#35D0E6',
-  defaultTheme: 'dark',
   appTheme: 'light',
 };
 
@@ -35,13 +30,9 @@ export interface SettingsState {
   setSocials: (socials: { platform: SocialPlatform; handle: string }[]) => void;
   addSocial: (platform: SocialPlatform, handle: string) => void;
   removeSocial: (platform: SocialPlatform) => void;
+  setSocialHandle: (platform: SocialPlatform, handle: string) => void;
   setLanguage: (language: 'en' | 'ar') => void;
-  setDefaultTemplate: (templateId: string) => void;
-  setDefaultColor: (color: string) => void;
-  setDefaultTheme: (theme: ThemeMode) => void;
   setAppTheme: (appTheme: 'light' | 'dark') => void;
-  updateDefaultCounter: (counter: Partial<CounterConfig>) => void;
-  updateDefaultSignature: (signature: Partial<SignatureConfig>) => void;
   resetSettings: () => void;
 }
 
@@ -111,6 +102,12 @@ export const useSettingsStore = create<SettingsState>()(
           get().updateSettings({ socials: [...filtered, { platform, handle }] });
         },
 
+        setSocialHandle: (platform, handle) => {
+          get().updateSettings({
+            socials: get().settings.socials.map((s) => (s.platform === platform ? { ...s, handle } : s)),
+          });
+        },
+
         removeSocial: (platform) => {
           const filtered = get().settings.socials.filter((s) => s.platform !== platform);
           get().updateSettings({ socials: filtered });
@@ -121,37 +118,11 @@ export const useSettingsStore = create<SettingsState>()(
           useI18nStore.getState().setLocale(language);
         },
 
-        setDefaultTemplate: (defaultTemplateId) => {
-          get().updateSettings({ defaultTemplateId });
-        },
-
-        setDefaultColor: (defaultPrimaryColor) => {
-          get().updateSettings({ defaultPrimaryColor });
-        },
-
-        setDefaultTheme: (defaultTheme) => {
-          get().updateSettings({ defaultTheme });
-        },
-
         setAppTheme: (appTheme) => {
           get().updateSettings({ appTheme });
           if (typeof document !== 'undefined') {
             document.documentElement.classList.toggle('dark', appTheme === 'dark');
           }
-        },
-
-        updateDefaultCounter: (counter) => {
-          const current = get().settings.defaultCounter ?? DEFAULT_COUNTER_CONFIG;
-          get().updateSettings({
-            defaultCounter: { ...current, ...counter },
-          });
-        },
-
-        updateDefaultSignature: (signature) => {
-          const current = get().settings.defaultSignature ?? DEFAULT_SIGNATURE_CONFIG;
-          get().updateSettings({
-            defaultSignature: { ...current, ...signature },
-          });
         },
 
         resetSettings: () => {
@@ -162,12 +133,13 @@ export const useSettingsStore = create<SettingsState>()(
     },
     {
       name: STORAGE_KEYS.SETTINGS,
-      version: 2,
+      version: 3,
       migrate: (persistedState: unknown) => {
         if (typeof persistedState !== 'object' || persistedState === null)
           return { settings: { ...DEFAULT_BRAND_SETTINGS } };
         const state = persistedState as { settings?: Partial<BrandSettings> };
-        return { settings: { ...DEFAULT_BRAND_SETTINGS, ...(state.settings || {}) } };
+        // Design defaults (template, color, theme, counter, signature) now belong to the template, so old saved values are dropped.
+        return { settings: { ...DEFAULT_BRAND_SETTINGS, ...stripLegacyDesignDefaults(state.settings || {}) } };
       },
       storage: createJSONStorage(() => createSafeStorage()),
     }

@@ -18,15 +18,13 @@ async function stableCenter(locator: Locator) {
 
 async function createCarousel(page: Page) {
   await page.goto('/');
-  await page.getByTestId('start-wizard-btn').click();
+  await page.goto('/gallery');
+  await page.getByTestId('use-template-tech-mesh').click({ force: true });
   await page.getByTestId('platform-linkedin').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('type-carousel').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('format-r_4_5').click();
-  await page.getByTestId('wizard-next-btn').click();
-  await page.getByTestId('template-tech-mesh').click();
-  await page.getByTestId('wizard-create-btn').click();
+  await page.getByTestId('orientation-portrait').click();
+  await page.getByTestId('create-submit').click();
 }
 
 test('mobile: one tap selects only; double tap opens the inline editor; typing is kept', async ({ page }) => {

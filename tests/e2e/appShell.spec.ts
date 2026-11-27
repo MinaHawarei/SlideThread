@@ -11,12 +11,12 @@ const viewports = [
 
 test('primary navigation opens gallery and settings routes', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('link', { name: 'Settings' }).click();
   await expect(page).toHaveURL(/\/settings$/);
   await expect(page.getByRole('heading', { name: 'Make it yours' })).toBeVisible();
   await page.getByRole('link', { name: 'Gallery' }).click();
   await expect(page).toHaveURL(/\/gallery$/);
-  await expect(page.getByRole('heading', { name: /Component Gallery/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Find your first frame/ })).toBeVisible();
 });
 
 test('editor route loads lazily and returns home through history navigation', async ({ page }) => {
@@ -35,13 +35,19 @@ for (const viewport of viewports) {
         await page.goto('/settings');
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
         if (direction === 'rtl') {
-          await page.getByRole('button', { name: /Language/ }).click();
-          await expect(page.getByRole('heading', { level: 1 })).toHaveText('اجعله يعبر عنك');
+          await page.getByTestId('language-switcher').click();
+          await expect(page.getByRole('heading', { level: 1 })).toHaveText(/اجعله\s*يعبر عنك/);
+          await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
         }
-        await page.locator('.settings-shell').evaluate((element, state) => {
-          element.setAttribute('data-theme', state.theme);
-          element.setAttribute('dir', state.direction);
-        }, { theme, direction });
+        // Theme: the top bar toggle exists from md up; below that the Appearance section carries the same switch.
+        const wantDark = theme === 'dark';
+        const isDark = async () => page.evaluate(() => document.documentElement.classList.contains('dark'));
+        if ((await isDark()) !== wantDark) {
+          const toggle = page.getByTestId('nav-theme-toggle');
+          if (await toggle.isVisible()) await toggle.click();
+          else await page.getByTestId(wantDark ? 'settings-app-theme-dark' : 'settings-app-theme-light').click();
+        }
+        await expect.poll(isDark).toBe(wantDark);
         await page.evaluate(() => document.fonts.ready);
         await mkdir(outputDirectory, { recursive: true });
         await page.screenshot({

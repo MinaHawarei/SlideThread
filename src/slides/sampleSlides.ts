@@ -185,9 +185,6 @@ export const SAMPLE_BRAND_EN: import('../core/schema').BrandSettings = {
   showSocials: false,
   socials: [],
   language: 'en',
-  defaultTemplateId: 'tech-mesh',
-  defaultPrimaryColor: '#0A84FF',
-  defaultTheme: 'dark',
   appTheme: 'light',
 };
 
@@ -198,8 +195,5 @@ export const SAMPLE_BRAND_AR: import('../core/schema').BrandSettings = {
   showSocials: false,
   socials: [],
   language: 'ar',
-  defaultTemplateId: 'tech-mesh',
-  defaultPrimaryColor: '#0A84FF',
-  defaultTheme: 'dark',
   appTheme: 'light',
 };

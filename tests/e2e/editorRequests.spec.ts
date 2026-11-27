@@ -3,8 +3,7 @@
  *  1. The Design tab has no template picker (the template is chosen at creation).
  *  2. The main color control really recolors every template: flexible starter, fixed starter, built-in packs.
  *  3. Recent Projects shows a readable format label, not r_4_5.
- *  4. Choosing a template in the Gallery runs the wizard (platform, content type, format) with that template
- *     already chosen and the template step skipped.
+ *  4. Using a template in the Gallery opens the create dialog with that template already chosen.
  */
 import { test, expect, type Page } from '@playwright/test';
 import { finishLockedWizard } from './helpers/wizard';
@@ -14,37 +13,34 @@ const stub = (page: Page) => page.route('**/_vercel/insights/**', (r) => r.fulfi
 async function startFromGallery(page: Page, id: string) {
   await page.goto('/gallery');
   await page.getByTestId(`use-template-${id}`).click();
-  await expect(page.getByTestId('wizard-locked-template')).toBeVisible();
+  await expect(page.getByTestId('create-dialog')).toBeVisible();
   await finishLockedWizard(page);
   await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 20000 });
 }
 
 const accOf = (page: Page) => page.evaluate(() => getComputedStyle(document.querySelector('[data-testid="main-canvas"] .slide-canvas') as HTMLElement).getPropertyValue('--acc').trim().toLowerCase());
 
-test('gallery use-template runs the wizard with the template preselected and its step skipped', async ({ page }) => {
+test('gallery Use opens the create dialog with the template; orientation is required before create', async ({ page }) => {
   test.setTimeout(70000);
   await stub(page);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/gallery');
-  await page.getByTestId('use-template-golden-hour-viral').click();
-  await expect(page).toHaveURL(/\/wizard\?template=golden-hour-viral/);
-  await expect(page.getByTestId('wizard-step-indicator')).toHaveAttribute('aria-valuemax', '3');
-  await expect(page.getByTestId('wizard-locked-template')).toContainText('Golden Hour Viral');
-  await expect(page.getByRole('heading', { name: 'Select Platform' })).toBeVisible();
-  await page.screenshot({ path: 'test-results/gallery-wizard-step1-v1.png' });
-  await page.getByTestId('wizard-next-btn').click();
-  await expect(page.getByRole('heading', { name: 'Select Content Type' })).toBeVisible();
-  await page.getByTestId('wizard-next-btn').click();
-  await expect(page.getByRole('heading', { name: 'Select Format & Size' })).toBeVisible();
-  await page.screenshot({ path: 'test-results/gallery-wizard-step3-v1.png' });
-  // The last step creates the project: there is no template step.
-  await expect(page.getByTestId('wizard-next-btn')).toHaveCount(0);
-  await page.getByTestId('wizard-create-btn').click();
+  await page.getByTestId('gallery-template-card').first().hover();
+  await page.getByTestId('use-template-golden-hour-viral').click({ force: true });
+  await expect(page).toHaveURL(/\/gallery/);
+  await expect(page.getByTestId('create-dialog')).toContainText('Golden Hour Viral');
+  await expect(page.getByTestId('create-submit')).toBeDisabled();
+  await expect(page.getByTestId('orientation-required')).toBeVisible();
+  await page.screenshot({ path: 'test-results/gallery-dialog-orientation-unselected-v1.png' });
+  await page.getByTestId('orientation-portrait').click();
+  await expect(page.getByTestId('create-submit')).toBeEnabled();
+  await page.screenshot({ path: 'test-results/gallery-dialog-orientation-selected-v1.png' });
+  await page.getByTestId('create-submit').click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 20000 });
   // The created project uses the preselected template (shown on the Recent Projects card).
   await page.waitForTimeout(1500);
   await page.goto('/');
-  await expect(page.getByText(/4:5 Portrait • golden-hour-viral/)).toBeVisible();
+  await expect(page.getByText(/4:5 • golden-hour-viral/)).toBeVisible();
 });
 
 for (const id of ['tech-mesh', 'heritage-geometric', 'golden-hour-viral', 'neon-grid-process']) {
@@ -95,7 +91,7 @@ test('Recent Projects shows a readable format label', async ({ page }) => {
   await page.goto('/');
   const list = page.getByTestId('recent-list');
   await expect(list).toBeVisible();
-  await expect(list).toContainText('4:5 Portrait');
+  await expect(list).toContainText('4:5');
   await expect(list).not.toContainText('r_4_5');
   await page.screenshot({ path: 'test-results/recent-projects-label-v1.png' });
 });

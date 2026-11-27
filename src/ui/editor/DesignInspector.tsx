@@ -45,7 +45,7 @@ export const DesignInspector: React.FC = () => {
     hideOnFirst: false,
     hideOnLast: false,
   };
-  const signatureAnchor = project.signature?.anchor || settings.defaultSignature?.anchor || 'br';
+  const signatureAnchor = project.signature?.anchor || 'br';
   const isSignatureVisible = (settings.showSignature !== false) && (project.signature?.show !== false);
   const hasCollision = counter.show && isSignatureVisible && counter.anchor === signatureAnchor;
 

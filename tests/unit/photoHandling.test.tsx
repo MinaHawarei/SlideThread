@@ -29,9 +29,6 @@ const createMockBrand = (overrides?: Partial<BrandSettings>): BrandSettings => (
   showSocials: false,
   showCounter: false,
   language: 'en',
-  defaultTemplateId: 'tech-mesh',
-  defaultPrimaryColor: '#0284c7',
-  defaultTheme: 'dark',
   ...overrides,
 });
 

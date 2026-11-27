@@ -18,9 +18,10 @@ test.describe('Settings Page Persistence & Data Management E2E (Spec §5.5)', ()
     const handleInput = page.getByTestId('settings-handle-input');
     await handleInput.fill('@sarahjenkins');
 
-    // 3. Switch Default Theme
-    const lightThemeBtn = page.getByTestId('settings-theme-light');
-    await lightThemeBtn.click();
+    // 3. Switch theme with the top bar toggle (Settings v5 shows Appearance on mobile only)
+    const themeToggle = page.getByTestId('nav-theme-toggle');
+    const wasDark = (await themeToggle.getAttribute('aria-pressed')) === 'true';
+    await themeToggle.click();
 
     // 4. Reload page to verify persistence across reload
     await page.reload();
@@ -29,7 +30,7 @@ test.describe('Settings Page Persistence & Data Management E2E (Spec §5.5)', ()
     // 5. Assert values persisted in inputs
     await expect(page.getByTestId('settings-display-name-input')).toHaveValue('Sarah Jenkins');
     await expect(page.getByTestId('settings-handle-input')).toHaveValue('@sarahjenkins');
-    await expect(page.getByTestId('settings-theme-light')).toHaveClass(/border-cyan-500/);
+    await expect(page.getByTestId('nav-theme-toggle')).toHaveAttribute('aria-pressed', wasDark ? 'false' : 'true');
   });
 
   test('export all data triggers a valid JSON file download', async ({ page }) => {

@@ -15,9 +15,6 @@ describe('SignatureBar Component (Spec §6.2)', () => {
     showSocials: false,
     socials: [],
     language: 'en',
-    defaultTemplateId: 'tech-mesh',
-    defaultPrimaryColor: '#0A84FF',
-    defaultTheme: 'dark',
   };
 
   it('formats slide counter with 2-digit zero-padding', () => {
@@ -190,9 +187,6 @@ describe('SlideRenderer Signature Integration', () => {
     showSocials: false,
     socials: [],
     language: 'en',
-    defaultTemplateId: 'tech-mesh',
-    defaultPrimaryColor: '#0A84FF',
-    defaultTheme: 'dark',
   };
 
   it('renders signature bar on cover slide', async () => {

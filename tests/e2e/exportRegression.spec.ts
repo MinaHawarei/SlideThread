@@ -16,15 +16,13 @@ test.describe('Task R9-1: Comprehensive Export Regression Suite', () => {
     async (page) => {
       await page.goto('/');
       await page.getByTestId('start-wizard-btn').click();
+      await page.getByTestId(`template-${template}`).click();
       await page.getByTestId('platform-linkedin').click();
-      await page.getByTestId('wizard-next-btn').click();
       await page.getByTestId('type-carousel').click();
-      await page.getByTestId('wizard-next-btn').click();
       await page.getByTestId(`format-${format}`).click();
       if (landscape) await page.getByTestId('orientation-landscape').click();
-      await page.getByTestId('wizard-next-btn').click();
-      await page.getByTestId(`template-${template}`).click();
-      await page.getByTestId('wizard-create-btn').click();
+      else if (format !== 'r_1_1') await page.getByTestId('orientation-portrait').click();
+      await page.getByTestId('create-submit').click();
     };
   const demo =
     (id: 'demo-en-btn' | 'demo-ar-btn'): Setup =>

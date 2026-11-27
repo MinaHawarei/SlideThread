@@ -75,18 +75,14 @@ describe('BrandSettings schema validation', () => {
     showSocials: false,
     socials: [{ platform: 'github', handle: 'minahawarei' }],
     language: 'en',
-    defaultTemplateId: 'tech-mesh',
-    defaultPrimaryColor: '#35D0E6',
-    defaultTheme: 'dark',
   };
 
   it('validates correct brand settings', () => {
     const result = validateBrandSettings(validSettings);
-    expect(result).toMatchObject({
-      ...validSettings,
-      defaultCounter: { show: true, anchor: 'br', style: 'number' },
-      defaultSignature: { show: true, anchor: 'bc', arrangement: 'inline' },
-    });
+    expect(result).toMatchObject(validSettings);
+    // Design defaults now live with the template, so none are filled in here.
+    expect(result).not.toHaveProperty('defaultCounter');
+    expect(result).not.toHaveProperty('defaultSignature');
   });
 
   it('rejects invalid language or social platform', () => {

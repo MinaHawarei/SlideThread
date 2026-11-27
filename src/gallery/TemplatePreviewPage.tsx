@@ -1,3 +1,4 @@
+import { openCreateDialog } from '../store/createDialogStore';
 import React, { useState, useEffect } from 'react';
 import type { AspectClass, SlideType, ThemeMode, TextDir, TemplateProjectSnapshot } from '../core/schema';
 import { generatePalette } from '../core/palette';
@@ -10,6 +11,7 @@ import { Footer } from '../ui/common/Footer';
 import { LogoMark } from '../ui/brand/LogoMark';
 import { MobileNavDrawer } from '../ui/common/MobileNavDrawer';
 import { FORMAT_REGISTRY, type FormatId } from '../core/formats';
+import { FALLBACK_PRIMARY_COLOR } from '../templates/defaults';
 import { loadTemplateProjectSnapshot, templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
 import { useUserTemplateLibrary } from '../templates/useUserTemplateLibrary';
 
@@ -80,11 +82,11 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
     let cancelled = false;
     setPackageSnapshot(undefined);
     setPackageLoadError(false);
-    loadTemplateProjectSnapshot(templateId, brandSettings.defaultPrimaryColor || '#35D0E6')
+    loadTemplateProjectSnapshot(templateId, FALLBACK_PRIMARY_COLOR)
       .then((snapshot) => { if (!cancelled) setPackageSnapshot(snapshot); })
       .catch(() => { if (!cancelled) setPackageLoadError(true); });
     return () => { cancelled = true; };
-  }, [templateId, brandSettings.defaultPrimaryColor]);
+  }, [templateId]);
   const isKnownTemplate = packageSnapshot?.id === templateId;
 
   const navigateTo = (path: string) => {
@@ -96,9 +98,8 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
     }
   };
 
-  const handleUseThisTemplate = async () => {
-    // Same wizard as New Carousel, with this template already chosen.
-    navigateTo(`/wizard?template=${encodeURIComponent(templateId)}`);
+  const handleUseThisTemplate = () => {
+    openCreateDialog({ templateId });
   };
 
   const handleTemplateChange = (newId: string) => {
@@ -167,7 +168,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
     ? t(selectedTemplate!.nameKey as Parameters<typeof t>[0])
     : importedTemplates.find((template) => template.id === templateId)?.manifest.name[locale] ?? packageSnapshot?.name?.[locale] ?? templateId;
   const effectivePrimaryColor =
-    brandSettings.defaultPrimaryColor || (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
+    (theme === 'dark' ? '#35D0E6' : '#0B7FA6');
   const palette = packageSnapshot
     ? packageSnapshot.paletteByMode[theme] as unknown as ReturnType<typeof generatePalette>
     : generatePalette(effectivePrimaryColor, theme);

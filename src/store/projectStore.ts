@@ -33,6 +33,8 @@ import { useSettingsStore } from './settingsStore';
 import { migrate } from '../core/migrate';
 import { recordHistoryChange, registerHistoryChannel } from './history';
 import { aspectClass as calcAspectClass, getDimensions } from '../core/formats';
+import { hasOwnPosition, isFloatingElementId, type FloatingElementId } from '../core/floatingPosition';
+import type { FloatingScope } from '../core/schema';
 import { loadTemplateProjectSnapshot } from '../templates/projectSnapshot';
 
 export function createDefaultSlide(type: SlideType = 'cover', index = 0): Slide {
@@ -206,6 +208,10 @@ export interface ProjectState {
   updateSlideFields: (id: string, fields: Record<string, string | RichText>) => void;
   updateSlideMedia: (id: string, media?: MediaRef) => void;
   updateSlotOverride: (slideId: string, aspect: AspectClass, elementId: string, override?: ElementOverride) => void;
+  /** Counter/signature: save drags for all slides (project position) or this slide only. */
+  setFloatingScope: (elementId: FloatingElementId, scope: FloatingScope) => void;
+  /** Counter/signature: drop this slide's own position so it follows the project position again. */
+  resetFloatingToProject: (slideId: string, aspect: AspectClass, elementId: FloatingElementId) => void;
   resetAspectOverrides: (aspect: AspectClass, slideId?: string) => void;
   updateExtraElement: (slideId: string, extra: ExtraElement) => void;
   addExtraElement: (slideId: string, extra: ExtraElement) => void;
@@ -532,6 +538,37 @@ export const useProjectStore = create<ProjectState>()(
         },
 
         updateSlotOverride: (slideId, aspect, elementId, override) => {
+          // Counter and signature: a move is saved for every slide (project position) or only this slide, per the element's scope.
+          // Deltas are relative to the position currently rendered, so both paths add to what the user sees.
+          if (override && isFloatingElementId(elementId)) {
+            const state = get();
+            const config = state.project[elementId] ?? (elementId === 'counter' ? DEFAULT_COUNTER_CONFIG : DEFAULT_SIGNATURE_CONFIG);
+            const slide = state.project.slides.find((item) => item.id === slideId);
+            const prior = slide?.overrides?.[aspect]?.[elementId];
+            const moved = override.dx !== (prior?.dx ?? 0) || override.dy !== (prior?.dy ?? 0);
+            if (moved && slide && !hasOwnPosition(prior)) {
+              const projectOffset = config.offset?.[aspect] ?? { dx: 0, dy: 0 };
+              const ddx = override.dx - (prior?.dx ?? 0);
+              const ddy = override.dy - (prior?.dy ?? 0);
+              if ((config.scope ?? 'all') === 'all') {
+                const nextOffset = { dx: projectOffset.dx + ddx, dy: projectOffset.dy + ddy };
+                set((current) => ({
+                  project: {
+                    ...current.project,
+                    [elementId]: { ...config, offset: { ...(config.offset ?? {}), [aspect]: nextOffset } },
+                    updatedAt: Date.now(),
+                  },
+                }));
+                // Keep non-position edits (scale, rotation, layer state) on the slide, with no own position.
+                const { dx: _dx, dy: _dy, ...rest } = override;
+                const hasOther = Object.keys(rest).some((key) => (key === 'scale' ? rest.scale !== 1 : rest[key as keyof typeof rest] !== undefined));
+                get().updateSlotOverride(slideId, aspect, elementId, hasOther ? { ...override, dx: 0, dy: 0 } : undefined);
+                return;
+              }
+              // This slide only: start from the project position so the element does not jump.
+              override = { ...override, dx: override.dx + projectOffset.dx, dy: override.dy + projectOffset.dy };
+            }
+          }
           set((state) => ({
             project: {
               ...state.project,
@@ -547,6 +584,21 @@ export const useProjectStore = create<ProjectState>()(
               updatedAt: Date.now(),
             },
           }));
+        },
+
+        setFloatingScope: (elementId, scope) => {
+          set((state) => ({
+            project: { ...state.project, [elementId]: { ...(state.project[elementId] ?? (elementId === 'counter' ? DEFAULT_COUNTER_CONFIG : DEFAULT_SIGNATURE_CONFIG)), scope }, updatedAt: Date.now() },
+          }));
+        },
+
+        resetFloatingToProject: (slideId, aspect, elementId) => {
+          const slide = get().project.slides.find((item) => item.id === slideId);
+          const prior = slide?.overrides?.[aspect]?.[elementId];
+          if (!prior) return;
+          const { dx: _dx, dy: _dy, ...rest } = prior;
+          const hasOther = Object.keys(rest).some((key) => (key === 'scale' ? rest.scale !== 1 : rest[key as keyof typeof rest] !== undefined));
+          get().updateSlotOverride(slideId, aspect, elementId, hasOther ? { ...prior, dx: 0, dy: 0 } : undefined);
         },
 
         resetAspectOverrides: (aspect: AspectClass, slideId?: string) => {

@@ -171,7 +171,8 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
   const displayName = brand?.displayName || '';
   const handle = brand?.handle || '';
   const photoDataUrl = brand?.photoDataUrl;
-  const rawSocials = brand?.socials || [];
+  // An account that is switched on but has no handle yet is not shown.
+  const rawSocials = (brand?.socials || []).filter((s) => s.handle.trim().length > 0);
 
   // Spec §6.2: max 3 shown, the rest collapsed, never overflowing
   const visibleSocials = rawSocials.slice(0, 3);

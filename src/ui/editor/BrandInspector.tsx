@@ -33,19 +33,17 @@ export const BrandInspector: React.FC = () => {
   const removeSocial = useSettingsStore((state) => state.removeSocial);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
   const resetSettings = useSettingsStore((state) => state.resetSettings);
-  const updateDefaultSignature = useSettingsStore((state) => state.updateDefaultSignature);
 
   const project = useProjectStore((state) => state.project);
   const updateSignatureConfig = useProjectStore((state) => state.updateSignatureConfig);
   const resetBrandOverride = useProjectStore((state) => state.resetBrandOverride);
 
-  const sigConfig: SignatureConfig = project.signature ?? settings.defaultSignature ?? {
+  const sigConfig: SignatureConfig = project.signature ?? {
     ...DEFAULT_SIGNATURE_CONFIG,
   };
 
   const handleSignatureUpdate = (patch: Partial<SignatureConfig>) => {
     updateSignatureConfig(patch);
-    updateDefaultSignature(patch);
   };
 
   const handleToggleSignature = (show?: boolean) => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { useT } from '../../i18n';
 import { OWNER, GITHUB_URL, FEEDBACK_URL, APP_VERSION, APP_NAME } from '../../config/site';
 import { LogoMark } from '../brand/LogoMark';
+import { StarIcon, ChatIcon } from './icons';
 
 export interface FooterProps {
   className?: string;
@@ -72,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({
             rel="noopener noreferrer"
             className="hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 transition-colors"
           >
-            ★ {t('app.starGithub')}
+            <StarIcon size={12} /> {t('app.starGithub')}
           </a>
           <a
             data-testid="footer-feedback-btn"
@@ -198,7 +199,7 @@ export const Footer: React.FC<FooterProps> = ({
             rel="noopener noreferrer"
             className="min-h-[44px] py-2 px-3.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 font-semibold transition-colors flex items-center gap-1.5 shadow-2xs"
           >
-            <span className="text-amber-500">★</span>
+            <StarIcon size={14} className="text-amber-500" />
             <span>{t('app.starGithub')}</span>
           </a>
 
@@ -209,7 +210,7 @@ export const Footer: React.FC<FooterProps> = ({
             rel={isExternalFeedback ? 'noopener noreferrer' : undefined}
             className="min-h-[44px] py-2 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
-            <span>💬</span>
+            <ChatIcon size={15} />
             <span>{t('app.feedback')}</span>
           </a>
         </div>

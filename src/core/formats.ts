@@ -3,8 +3,51 @@ import type { FormatDef, Orientation, AspectClass } from './schema';
 export type FormatId = 'r_4_5' | 'r_1_1' | 'r_9_16' | 'r_16_9';
 
 export interface FormatEntry extends FormatDef {
-  id: FormatId;
+  id: string;
   aspectRatio: string;
+}
+
+/** Custom canvas size limits in px. Proposed limits; the export path is exercised at both edges in tests. */
+export const CUSTOM_SIZE_MIN = 200;
+export const CUSTOM_SIZE_MAX = 4096;
+const CUSTOM_FORMAT_PATTERN = /^custom_(\d{3,4})x(\d{3,4})$/;
+
+export function isValidCustomSize(width: number, height: number): boolean {
+  return Number.isInteger(width) && Number.isInteger(height)
+    && width >= CUSTOM_SIZE_MIN && width <= CUSTOM_SIZE_MAX
+    && height >= CUSTOM_SIZE_MIN && height <= CUSTOM_SIZE_MAX;
+}
+
+/** Format id for a user-entered size, for example custom_1200x628. */
+export function customFormatId(width: number, height: number): string {
+  return `custom_${Math.round(width)}x${Math.round(height)}`;
+}
+
+export function isCustomFormatId(id: string): boolean {
+  return CUSTOM_FORMAT_PATTERN.test(id);
+}
+
+function greatestCommonDivisor(a: number, b: number): number {
+  return b === 0 ? a : greatestCommonDivisor(b, a % b);
+}
+
+function parseCustomFormat(id: string): FormatEntry | undefined {
+  const match = CUSTOM_FORMAT_PATTERN.exec(id);
+  if (!match) return undefined;
+  const width = Number(match[1]);
+  const height = Number(match[2]);
+  if (!isValidCustomSize(width, height)) return undefined;
+  const divisor = greatestCommonDivisor(width, height);
+  return {
+    id,
+    label: `Custom ${width} × ${height}`,
+    aspectRatio: `${width / divisor}:${height / divisor}`,
+    width,
+    height,
+    orientable: false,
+    platforms: ['custom'],
+    contentTypes: ['post', 'carousel', 'story'],
+  };
 }
 
 /**
@@ -15,11 +58,11 @@ export interface FormatEntry extends FormatDef {
 export const FORMAT_REGISTRY: Record<FormatId, FormatEntry> = {
   r_4_5: {
     id: 'r_4_5',
-    label: '4:5 Portrait',
+    label: '4:5',
     aspectRatio: '4:5',
     width: 1080,
     height: 1350,
-    orientable: false,
+    orientable: true,
     platforms: ['instagram', 'linkedin', 'facebook', 'custom'],
     contentTypes: ['post', 'carousel'],
   },
@@ -35,17 +78,17 @@ export const FORMAT_REGISTRY: Record<FormatId, FormatEntry> = {
   },
   r_9_16: {
     id: 'r_9_16',
-    label: '9:16 Story',
+    label: '9:16',
     aspectRatio: '9:16',
     width: 1080,
     height: 1920,
-    orientable: false,
+    orientable: true,
     platforms: ['instagram', 'facebook', 'custom'],
     contentTypes: ['story'],
   },
   r_16_9: {
     id: 'r_16_9',
-    label: '16:9 Landscape / Portrait',
+    label: '16:9',
     aspectRatio: '16:9',
     width: 1920,
     height: 1080,
@@ -58,11 +101,11 @@ export const FORMAT_REGISTRY: Record<FormatId, FormatEntry> = {
 export const FORMAT_LIST: FormatEntry[] = Object.values(FORMAT_REGISTRY);
 
 export function getFormat(id: string): FormatEntry | undefined {
-  return FORMAT_REGISTRY[id as FormatId];
+  return FORMAT_REGISTRY[id as FormatId] ?? parseCustomFormat(id);
 }
 
 /**
- * Returns canvas dimensions for a format, respecting orientation for orientable formats (16:9).
+ * Returns canvas dimensions for a format, respecting an explicit orientation for orientable formats (4:5, 9:16, 16:9).
  */
 export function getDimensions(
   formatOrId: FormatDef | string,
@@ -73,20 +116,15 @@ export function getDimensions(
     throw new Error(`Unknown format: "${formatOrId}"`);
   }
 
-  if (format.orientable) {
-    if (orientation === 'portrait') {
-      return {
-        width: Math.min(format.width, format.height),
-        height: Math.max(format.width, format.height),
-      };
-    }
-    // Default or landscape: 1920x1080
-    return {
-      width: Math.max(format.width, format.height),
-      height: Math.min(format.width, format.height),
-    };
+  if (format.orientable && orientation) {
+    const longSide = Math.max(format.width, format.height);
+    const shortSide = Math.min(format.width, format.height);
+    return orientation === 'portrait'
+      ? { width: shortSide, height: longSide }
+      : { width: longSide, height: shortSide };
   }
 
+  // Without an explicit orientation the registry's own width and height apply.
   return { width: format.width, height: format.height };
 }
 

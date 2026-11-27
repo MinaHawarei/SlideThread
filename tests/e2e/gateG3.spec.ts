@@ -19,24 +19,13 @@ test.describe('Gate G3 Verification Flow', () => {
     await expect(page.locator('[data-testid="start-screen"]')).toBeVisible();
 
     // 2. Click Start Guided Flow to enter Wizard
-    await page.locator('[data-testid="start-wizard-btn"]').click();
-    await expect(page.locator('[data-testid="wizard-screen"]')).toBeVisible();
-
-    // Step 1: Select Platform (LinkedIn) -> Next
-    await page.locator('[data-testid="platform-linkedin"]').click();
-    await page.locator('[data-testid="wizard-next-btn"]').click();
-
-    // Step 2: Select Content Type (Carousel) -> Next
-    await page.locator('[data-testid="type-carousel"]').click();
-    await page.locator('[data-testid="wizard-next-btn"]').click();
-
-    // Step 3: Select Format (4:5 Portrait) -> Next
-    await page.locator('[data-testid="format-r_4_5"]').click();
-    await page.locator('[data-testid="wizard-next-btn"]').click();
-
-    // Step 4: Select Template (Network) -> Finish / Create
-    await page.locator('[data-testid="template-tech-mesh"]').click();
-    await page.locator('[data-testid="wizard-create-btn"]').click();
+    await page.goto('/gallery');
+    await page.getByTestId('use-template-tech-mesh').click({ force: true });
+    await page.getByTestId('platform-linkedin').click();
+    await page.getByTestId('type-carousel').click();
+    await page.getByTestId('format-r_4_5').click();
+    await page.getByTestId('orientation-portrait').click();
+    await page.getByTestId('create-submit').click();
 
     // 3. Desktop Editor loads
     await expect(page.locator('[data-testid="editor-desktop"]')).toBeVisible();

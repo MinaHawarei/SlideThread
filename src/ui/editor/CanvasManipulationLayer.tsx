@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
 import { measureSlots } from './measureElements';
+import { slideWithProjectFloating } from '../../core/floatingPosition';
 import { NON_TEXT_SLOT_IDS, resizeSlotGeometry, mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometryFromHandle, rotateElementGeometry, scaleElementGeometry, rotationAngleFromPointer, SLOT_SELECTORS, slotFieldKey, type ElementGeometry, type ResolvedElement, type ResizeHandle } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
@@ -41,7 +42,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const layout = getLayoutArchetype(`${slide.type}-centered`);
   const variant = mergeTemplateSlotFrames(layout?.variants[aspect], project.templateSnapshot?.composition[slide.type]?.[aspect]?.slots);
   const hiddenSlots = project.templateSnapshot?.composition[slide.type]?.[aspect]?.hiddenSlots;
-  const elements = useMemo(() => variant ? resolveSlideElements(slide, variant, aspect, hiddenSlots) : [], [slide, variant, aspect, hiddenSlots]);
+  const drawnSlide = useMemo(() => slideWithProjectFloating(slide, project, aspect), [slide, project.counter, project.signature, aspect]);
+  const elements = useMemo(() => variant ? resolveSlideElements(drawnSlide, variant, aspect, hiddenSlots) : [], [drawnSlide, variant, aspect, hiddenSlots]);
   const selectedId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);
   const penMode = useSelectionStore((state) => state.penMode);

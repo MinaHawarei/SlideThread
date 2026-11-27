@@ -3,15 +3,13 @@ import { test, expect } from '@playwright/test';
 test('canvas selects, moves, and resets a layout slot through normalized overrides', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/');
-  await page.getByTestId('start-wizard-btn').click();
+  await page.goto('/gallery');
+  await page.getByTestId('use-template-tech-mesh').click({ force: true });
   await page.getByTestId('platform-linkedin').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('type-carousel').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('format-r_4_5').click();
-  await page.getByTestId('wizard-next-btn').click();
-  await page.getByTestId('template-tech-mesh').click();
-  await page.getByTestId('wizard-create-btn').click();
+  await page.getByTestId('orientation-portrait').click();
+  await page.getByTestId('create-submit').click();
 
   const title = page.getByTestId('element-hit-title');
   await expect(title).toBeVisible();
@@ -33,15 +31,13 @@ test('canvas selects, moves, and resets a layout slot through normalized overrid
 test('manipulation overlay review matrix', async ({ page }) => {
   test.setTimeout(60000);
   await page.goto('/');
-  await page.getByTestId('start-wizard-btn').click();
+  await page.goto('/gallery');
+  await page.getByTestId('use-template-tech-mesh').click({ force: true });
   await page.getByTestId('platform-linkedin').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('type-carousel').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('format-r_4_5').click();
-  await page.getByTestId('wizard-next-btn').click();
-  await page.getByTestId('template-tech-mesh').click();
-  await page.getByTestId('wizard-create-btn').click();
+  await page.getByTestId('orientation-portrait').click();
+  await page.getByTestId('create-submit').click();
   await expect(page.getByTestId('manipulation-layer')).toBeVisible();
 
   const sizes = [[360, 800], [768, 1024], [1440, 900]] as const;

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import { useCreateDialogStore } from '../../src/store/createDialogStore';
 import { GalleryPage } from '../../src/gallery/GalleryPage';
 import { useI18nStore } from '../../src/i18n';
-import { useSettingsStore } from '../../src/store/settingsStore';
 
 describe('GalleryPage component (Task R8-2)', () => {
   beforeEach(() => {
@@ -13,9 +13,8 @@ describe('GalleryPage component (Task R8-2)', () => {
   it('renders gallery header, search, category chips, and starter template cards', () => {
     render(<GalleryPage />);
 
-    expect(screen.getByRole('heading', { level: 1, name: /SlideThread Component Gallery/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /Find your first frame/i })).toBeInTheDocument();
     expect(screen.getByTestId('gallery-search')).toBeInTheDocument();
-    expect(screen.getByTestId('preview-brand-toggle')).toBeInTheDocument();
     expect(screen.getByTestId('gallery-template-choices')).toBeInTheDocument();
 
     const templateCards = screen.getAllByTestId('gallery-template-card');
@@ -47,22 +46,9 @@ describe('GalleryPage component (Task R8-2)', () => {
     expect(screen.getAllByTestId('gallery-template-card').length).toBeGreaterThanOrEqual(5);
   });
 
-  it('toggles Preview with my brand mode', () => {
-    useSettingsStore.getState().updateSettings({
-      defaultPrimaryColor: '#FF5500',
-      displayName: 'Alex Brand',
-    });
-
+  it('has no brand-preview toggle: templates carry their own colors', () => {
     render(<GalleryPage />);
-
-    const brandBtn = screen.getByTestId('preview-brand-toggle');
-    expect(brandBtn).toHaveAttribute('aria-pressed', 'false');
-
-    fireEvent.click(brandBtn);
-    expect(brandBtn).toHaveAttribute('aria-pressed', 'true');
-
-    fireEvent.click(brandBtn);
-    expect(brandBtn).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.queryByTestId('preview-brand-toggle')).not.toBeInTheDocument();
   });
 
   it('toggles template favorites and filters by favorites only', () => {
@@ -105,18 +91,24 @@ describe('GalleryPage component (Task R8-2)', () => {
     expect(screen.getByTestId('gallery-template-choices')).toBeInTheDocument();
   });
 
-  it('R1: clicking template card directly opens the wizard with it preselected, and only Preview button opens preview', async () => {
+  it('R1: Use opens the create dialog with the template, a card tap only reveals actions, and Preview opens preview', async () => {
     const onNavigate = vi.fn();
     render(<GalleryPage onNavigate={onNavigate} />);
 
-    // Click the card directly
     const techMeshCard = screen.getAllByTestId('gallery-template-card').find(
       (c) => c.getAttribute('data-template-id') === 'tech-mesh'
     )!;
+    // Tapping the card only reveals the overlay. It never navigates or opens the dialog.
+    expect(techMeshCard).toHaveAttribute('data-active', 'false');
     fireEvent.click(techMeshCard);
-    await waitFor(() => expect(onNavigate).toHaveBeenCalledWith('/wizard?template=tech-mesh'));
+    expect(techMeshCard).toHaveAttribute('data-active', 'true');
+    expect(onNavigate).not.toHaveBeenCalled();
+    expect(useCreateDialogStore.getState().open).toBe(false);
 
-    onNavigate.mockClear();
+    fireEvent.click(screen.getByTestId('use-template-tech-mesh'));
+    expect(useCreateDialogStore.getState().open).toBe(true);
+    expect(useCreateDialogStore.getState().request.templateId).toBe('tech-mesh');
+    expect(onNavigate).not.toHaveBeenCalled();
 
     // Click the Preview button specifically
     const previewBtn = screen.getByTestId('preview-template-tech-mesh');

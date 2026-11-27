@@ -11,6 +11,7 @@ import { ImageSlide } from './ImageSlide';
 import { CtaSlide } from './CtaSlide';
 import { MediaRenderer } from './MediaRenderer';
 import { SignatureBar } from './SignatureBar';
+import { clampFloatingTranslate, isFloatingElementId, resolveFloatingOffset } from '../core/floatingPosition';
 import { SlideCounter } from './SlideCounter';
 import { StorySafeZoneOverlay } from './StorySafeZoneOverlay';
 import { ExtrasRenderer } from './ExtrasRenderer';
@@ -103,7 +104,19 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
   }, [usesPackageFonts, template]);
   const slideDims = dimensions || DEFAULT_DIMENSIONS[aspectClass];
   const canvasRef = useRef<HTMLDivElement>(null);
-  const overrides = slide.overrides?.[aspectClass];
+  const ownOverrides = slide.overrides?.[aspectClass];
+  const counterOffsets = counterConfig?.offset;
+  const signatureOffsets = (signatureConfig ?? DEFAULT_SIGNATURE_CONFIG).offset;
+  // Counter and signature: slide override, then project position (shared resolver, also used by export).
+  const overrides = React.useMemo(() => {
+    if (!counterOffsets && !signatureOffsets) return ownOverrides;
+    const merged = { ...(ownOverrides ?? {}) };
+    for (const [id, offsets] of [['counter', counterOffsets], ['signature', signatureOffsets]] as const) {
+      const resolved = resolveFloatingOffset(offsets, ownOverrides?.[id], aspectClass);
+      if (resolved.source === 'project') merged[id] = { ...(ownOverrides?.[id] ?? { dx: 0, dy: 0, scale: 1 }), dx: resolved.dx, dy: resolved.dy };
+    }
+    return merged;
+  }, [ownOverrides, counterOffsets, signatureOffsets, aspectClass]);
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -197,13 +210,29 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
               node.style.position = 'relative';
             }
           }
-          const tx = (override.dx || 0) * slideDims.width;
-          const ty = (override.dy || 0) * slideDims.height;
+          let tx = (override.dx || 0) * slideDims.width;
+          let ty = (override.dy || 0) * slideDims.height;
           const scale = override.scale ?? 1;
           const rot = override.rotation ?? 0;
+          const floating = isFloatingElementId(slotId);
+          if (floating && (tx !== 0 || ty !== 0)) {
+            // Keep the counter and signature inside the safe area, measured before the move is applied.
+            const nodeRect = node.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+            const k = canvasRect.width / slideDims.width;
+            if (k > 0 && nodeRect.width > 0) {
+              const clamped = clampFloatingTranslate(
+                { left: (nodeRect.left - canvasRect.left) / k, top: (nodeRect.top - canvasRect.top) / k, width: nodeRect.width / k, height: nodeRect.height / k },
+                slideDims, tx, ty,
+              );
+              tx = clamped.tx;
+              ty = clamped.ty;
+            }
+          }
           if (tx !== 0 || ty !== 0 || scale !== 1 || rot !== 0) {
             const rotPart = rot !== 0 ? ` rotate(${rot}deg)` : '';
-            node.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})${rotPart}`;
+            const anchorPart = floating && node.style.transform ? `${node.style.transform} ` : '';
+            node.style.transform = `${anchorPart}translate(${tx}px, ${ty}px) scale(${scale})${rotPart}`;
             node.style.transformOrigin = 'center';
             if (typeof window !== 'undefined' && window.getComputedStyle(node).position === 'static') {
               node.style.position = 'relative';
@@ -497,7 +526,7 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     Boolean(brand && brand.showSignature !== false && signatureConfig?.show !== false);
 
   const effectiveSignatureConfig =
-    signatureConfig ?? brand?.defaultSignature ?? DEFAULT_SIGNATURE_CONFIG;
+    signatureConfig ?? DEFAULT_SIGNATURE_CONFIG;
   const signatureAnchor = effectiveSignatureConfig.anchor ?? 'bc';
 
   const renderProps: SlideProps = {

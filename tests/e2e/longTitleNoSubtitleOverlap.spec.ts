@@ -19,14 +19,12 @@ const overlaps = (a: Box, b: Box, tol = 1) =>
 async function createCover(page: Page, templateId: string, format: string) {
   await page.goto('/');
   await page.getByTestId('start-wizard-btn').click();
-  await page.getByTestId(format === 'r_9_16' ? 'platform-instagram' : 'platform-linkedin').click();
-  await page.getByTestId('wizard-next-btn').click();
-  await page.getByTestId(format === 'r_9_16' ? 'type-story' : 'type-carousel').click();
-  await page.getByTestId('wizard-next-btn').click();
-  await page.getByTestId(`format-${format}`).click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId(`template-${templateId}`).click();
-  await page.getByTestId('wizard-create-btn').click();
+  await page.getByTestId(format === 'r_9_16' ? 'platform-instagram' : 'platform-linkedin').click();
+  await page.getByTestId(format === 'r_9_16' ? 'type-story' : 'type-carousel').click();
+  await page.getByTestId(`format-${format}`).click();
+  if (format !== 'r_1_1') await page.getByTestId('orientation-portrait').click();
+  await page.getByTestId('create-submit').click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 15000 });
 }
 

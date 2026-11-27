@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { BrandSettingsSchema } from '../../src/core/schema';
 import { SettingsPage } from '../../src/ui/settings/SettingsPage';
 import { useSettingsStore, DEFAULT_BRAND_SETTINGS } from '../../src/store/settingsStore';
 import { useRecentStore } from '../../src/store/recentStore';
@@ -23,7 +24,7 @@ describe('Settings Page Component (Spec §5.5)', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Make it yours');
     expect(screen.getByTestId('settings-profile-section')).toBeInTheDocument();
     expect(screen.getByTestId('settings-socials-section')).toBeInTheDocument();
-    expect(screen.getByTestId('settings-defaults-section')).toBeInTheDocument();
+    expect(screen.getByTestId('settings-language-section')).toBeInTheDocument();
     expect(screen.getByTestId('settings-data-section')).toBeInTheDocument();
   });
 
@@ -39,49 +40,53 @@ describe('Settings Page Component (Spec §5.5)', () => {
     expect(useSettingsStore.getState().settings.handle).toBe('@alexmorgan');
   });
 
-  it('adds and removes social accounts', () => {
+  it('switches an account on with its own handle, and off again', () => {
     render(<SettingsPage />);
 
-    const handleInput = screen.getByTestId('settings-new-social-handle') as HTMLInputElement;
-    const addBtn = screen.getByTestId('settings-add-social-btn');
-
-    fireEvent.change(handleInput, { target: { value: 'alex_m' } });
-    fireEvent.click(addBtn);
+    fireEvent.click(screen.getByTestId('settings-social-chip-x'));
+    fireEvent.click(screen.getByTestId('settings-social-chip-github'));
+    fireEvent.change(screen.getByTestId('settings-social-handle-x'), { target: { value: 'alex_m' } });
+    fireEvent.change(screen.getByTestId('settings-social-handle-github'), { target: { value: 'alexm' } });
 
     const socials = useSettingsStore.getState().settings.socials;
-    expect(socials.some((s) => s.platform === 'x' && s.handle === 'alex_m')).toBe(true);
+    expect(socials.find((s) => s.platform === 'x')?.handle).toBe('alex_m');
+    expect(socials.find((s) => s.platform === 'github')?.handle).toBe('alexm');
 
-    const removeBtn = screen.getByTestId('settings-remove-social-x');
-    fireEvent.click(removeBtn);
+    fireEvent.click(screen.getByTestId('settings-remove-social-x'));
     expect(useSettingsStore.getState().settings.socials.some((s) => s.platform === 'x')).toBe(false);
+    expect(useSettingsStore.getState().settings.socials.some((s) => s.platform === 'github')).toBe(true);
   });
 
-  it('updates design defaults: template, theme, and color', () => {
+  it('has no design defaults, counter and signature defaults, or live preview', () => {
     render(<SettingsPage />);
-
-    const templateSelect = screen.getByTestId('settings-default-template-select') as HTMLSelectElement;
-    fireEvent.change(templateSelect, { target: { value: 'clean-minimal' } });
-    expect(useSettingsStore.getState().settings.defaultTemplateId).toBe('clean-minimal');
-
-    const lightBtn = screen.getByTestId('settings-theme-light');
-    fireEvent.click(lightBtn);
-    expect(useSettingsStore.getState().settings.defaultTheme).toBe('light');
-
-    const colorInput = screen.getByTestId('settings-default-color-input') as HTMLInputElement;
-    fireEvent.change(colorInput, { target: { value: '#7c3aed' } });
-    expect(useSettingsStore.getState().settings.defaultPrimaryColor).toBe('#7c3aed');
+    for (const id of ['settings-defaults-section', 'settings-default-template-select', 'settings-counter-toggle', 'settings-signature-toggle', 'settings-live-preview']) {
+      expect(screen.queryByTestId(id)).not.toBeInTheDocument();
+    }
+    expect(screen.getByTestId('settings-profile-section')).toBeInTheDocument();
+    expect(screen.getByTestId('settings-socials-section')).toBeInTheDocument();
+    expect(screen.getByTestId('settings-language-section')).toBeInTheDocument();
+    expect(screen.getByTestId('settings-data-section')).toBeInTheDocument();
   });
 
-  it('updates counter and signature defaults', () => {
+  it('changes the app theme from Appearance (mobile) and from the desktop nav icon', () => {
     render(<SettingsPage />);
+    fireEvent.click(screen.getByTestId('settings-app-theme-dark'));
+    expect(useSettingsStore.getState().settings.appTheme).toBe('dark');
+    fireEvent.click(screen.getByTestId('nav-theme-toggle'));
+    expect(useSettingsStore.getState().settings.appTheme).toBe('light');
+  });
 
-    const counterToggle = screen.getByTestId('settings-counter-toggle') as HTMLInputElement;
-    fireEvent.click(counterToggle);
-    expect(useSettingsStore.getState().settings.defaultCounter?.show).toBe(false);
-
-    const sigToggle = screen.getByTestId('settings-signature-toggle') as HTMLInputElement;
-    fireEvent.click(sigToggle);
-    expect(useSettingsStore.getState().settings.defaultSignature?.show).toBe(false);
+  it('drops old stored design defaults when loading settings', () => {
+    const parsed = BrandSettingsSchema.parse({
+      displayName: 'A', handle: '@a', showSignature: true, showSocials: false, socials: [], language: 'en',
+      defaultTemplateId: 'tech-mesh', defaultPrimaryColor: '#123456', defaultTheme: 'light',
+      defaultCounter: { show: true }, defaultSignature: { show: true },
+    });
+    expect(parsed).not.toHaveProperty('defaultTemplateId');
+    expect(parsed).not.toHaveProperty('defaultPrimaryColor');
+    expect(parsed).not.toHaveProperty('defaultTheme');
+    expect(parsed).not.toHaveProperty('defaultCounter');
+    expect(parsed).not.toHaveProperty('defaultSignature');
   });
 });
 

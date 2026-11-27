@@ -4,15 +4,13 @@ test.use({ viewport: { width: 360, height: 800 }, hasTouch: true, isMobile: true
 
 async function createEditor(page: Page) {
   await page.goto('/');
-  await page.getByTestId('start-wizard-btn').click();
+  await page.goto('/gallery');
+  await page.getByTestId('use-template-tech-mesh').click({ force: true });
   await page.getByTestId('platform-linkedin').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('type-carousel').click();
-  await page.getByTestId('wizard-next-btn').click();
   await page.getByTestId('format-r_4_5').click();
-  await page.getByTestId('wizard-next-btn').click();
-  await page.getByTestId('template-tech-mesh').click();
-  await page.getByTestId('wizard-create-btn').click();
+  await page.getByTestId('orientation-portrait').click();
+  await page.getByTestId('create-submit').click();
 }
 
 test('mobile canvas exposes touch targets at both required widths', async ({ page }) => {

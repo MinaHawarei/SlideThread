@@ -132,7 +132,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
             <div role="radiogroup" aria-label={t('design.changeFormat')} className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {allFormats.map((fmt) => {
                 const isSelected = selectedFormatId === fmt.id;
-                const ratioLabel = t(FORMAT_LABELS[fmt.id]);
+                const ratioLabel = t(FORMAT_LABELS[fmt.id as FormatId]);
                 const formatDims = getDimensions(fmt.id, selectedOrientation);
 
                 return (
@@ -142,7 +142,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                     role="radio"
                     aria-checked={isSelected}
                     data-testid={`change-format-option-${fmt.id}`}
-                    onClick={() => setSelectedFormatId(fmt.id)}
+                    onClick={() => setSelectedFormatId(fmt.id as FormatId)}
                     className={`min-h-[44px] p-3 rounded-2xl border-2 text-left transition-all flex flex-col justify-between focus-visible:ring-2 focus-visible:ring-cyan-500 ${
                       isSelected
                         ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20 shadow-sm ring-1 ring-cyan-500'

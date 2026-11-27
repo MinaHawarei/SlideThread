@@ -9,7 +9,7 @@ import { GlobalPhotoCropDialog } from './ui/common/PhotoCropDialog';
 import { LoadingScreen } from './ui/brand/LoadingScreen';
 
 const StartScreen = React.lazy(() => import('./ui/start/StartScreen').then((m) => ({ default: m.StartScreen })));
-const Wizard = React.lazy(() => import('./ui/wizard/Wizard').then((m) => ({ default: m.Wizard })));
+const CreateDialog = React.lazy(() => import('./ui/create/CreateDialog').then((m) => ({ default: m.CreateDialog })));
 const Editor = React.lazy(() => import('./ui/editor').then((m) => ({ default: m.Editor })));
 const GalleryPage = React.lazy(() => import('./gallery/GalleryPage').then((m) => ({ default: m.GalleryPage })));
 const TemplatePreviewPage = React.lazy(() => import('./gallery/TemplatePreviewPage').then((m) => ({ default: m.TemplatePreviewPage })));
@@ -34,7 +34,7 @@ export const App: React.FC = () => {
 
   const navigate = (path: string) => {
     if (window.location.pathname + window.location.search !== path) window.history.pushState({}, '', path);
-    // Routes match on the pathname only; a query string (e.g. /wizard?template=id) stays in the URL.
+    // Routes match on the pathname only; a query string (e.g. /preview?template=id) stays in the URL.
     setCurrentPath(new URL(path, 'http://x').pathname);
   };
 
@@ -87,16 +87,15 @@ export const App: React.FC = () => {
   if (currentPath === '/gallery') route = <GalleryPage onNavigate={navigate} />;
   else if (currentPath === '/preview' || currentPath.startsWith('/preview/') || currentPath.startsWith('/preview?')) route = <TemplatePreviewPage onNavigate={navigate} />;
   else if (currentPath === '/editor') route = <Editor onHome={() => navigate('/')} />;
-  else if (currentPath === '/wizard') route = <Wizard lockedTemplateId={new URLSearchParams(window.location.search).get('template') ?? undefined} onComplete={() => navigate('/editor')} onCancel={() => navigate('/')} />;
   else if (currentPath === '/settings') route = <SettingsPage />;
   else if (currentPath === '/kit') route = <KitPage />;
   else if (import.meta.env.DEV && currentPath === '/layout-preview' && LayoutPreviewPage) route = <LayoutPreviewPage />;
   else if (import.meta.env.DEV && currentPath === '/spike') route = <SpikePage />;
   else if (import.meta.env.DEV && currentPath === '/ux-preview' && UxPreview) route = <UxPreview />;
   else if (import.meta.env.DEV && currentPath === '/template-dev' && TemplateDevPage) route = <TemplateDevPage />;
-  else route = <StartScreen onStartWizard={() => navigate('/wizard')} onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;
+  else route = <StartScreen onOpenProject={() => navigate('/editor')} onNavigate={navigate} />;
 
-  return <>{initialFontLoaded ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<GlobalPhotoCropDialog /><Analytics /></>;
+  return <>{initialFontLoaded ? <Suspense fallback={<LoadingScreen />}>{route}</Suspense> : <LoadingScreen />}<Suspense fallback={null}><CreateDialog onCreated={() => navigate('/editor')} /></Suspense><GlobalPhotoCropDialog /><Analytics /></>;
 };
 
 export default App;

@@ -1,6 +1,7 @@
 import { plainTextFieldsToRichText } from '../../src/core/schema';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { useCreateDialogStore } from '../../src/store/createDialogStore';
 import { StartScreen } from '../../src/ui/start/StartScreen';
 import { useProjectStore } from '../../src/store/projectStore';
 import { useRecentStore } from '../../src/store/recentStore';
@@ -31,73 +32,43 @@ describe('StartScreen component', () => {
     render(<StartScreen />);
 
     expect(screen.getByTestId('start-app-title')).toHaveTextContent('SlideThread');
-    expect(screen.getByTestId('hero-carousel')).toBeInTheDocument();
+    expect(screen.getByTestId('hero-card-stack')).toBeInTheDocument();
     expect(screen.getByTestId('quick-platform-linkedin')).toBeInTheDocument();
     expect(screen.getByTestId('quick-platform-instagram')).toBeInTheDocument();
     expect(screen.getByTestId('quick-platform-story')).toBeInTheDocument();
     expect(screen.getByTestId('quick-platform-post')).toBeInTheDocument();
     expect(screen.getByTestId('start-wizard-card')).toBeInTheDocument();
-    expect(screen.getByTestId('start-direct-card')).toBeInTheDocument();
     expect(screen.getByTestId('start-import-card')).toBeInTheDocument();
     expect(screen.getByTestId('demo-projects-container')).toBeInTheDocument();
   });
 
-  it('calls onStartWizard when guided path button is clicked', () => {
-    const handleStartWizard = vi.fn();
-    render(<StartScreen onStartWizard={handleStartWizard} />);
-
-    fireEvent.click(screen.getByTestId('start-wizard-btn'));
-    expect(handleStartWizard).toHaveBeenCalledTimes(1);
-  });
-
-  it('opens direct dimensions modal when Pick Dimensions is clicked', () => {
+  it('opens the create dialog from the New project button, blank mode', () => {
+    useCreateDialogStore.setState({ open: false, request: {} });
     render(<StartScreen />);
-
-    expect(screen.queryByTestId('direct-dimensions-modal')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('start-direct-btn'));
-    expect(screen.getByTestId('direct-dimensions-modal')).toBeInTheDocument();
-
-    // Verify 4 direct format options exist
-    expect(screen.getByTestId('direct-format-r_4_5')).toBeInTheDocument();
-    expect(screen.getByTestId('direct-format-r_1_1')).toBeInTheDocument();
-    expect(screen.getByTestId('direct-format-r_16_9')).toBeInTheDocument();
-    expect(screen.getByTestId('direct-format-r_9_16')).toBeInTheDocument();
-
-    // Close modal
-    fireEvent.click(screen.getByTestId('close-direct-modal'));
-    expect(screen.queryByTestId('direct-dimensions-modal')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('start-wizard-btn'));
+    expect(useCreateDialogStore.getState().open).toBe(true);
+    expect(useCreateDialogStore.getState().request.templateId).toBeUndefined();
   });
 
-  it('creates project with selected format and opens editor when format is picked', async () => {
-    const handleOpenProject = vi.fn();
-    render(<StartScreen onOpenProject={handleOpenProject} />);
-
-    fireEvent.click(screen.getByTestId('start-direct-btn'));
-    fireEvent.click(screen.getByTestId('direct-format-r_1_1'));
-
-    await waitFor(() => expect(handleOpenProject).toHaveBeenCalledTimes(1), { timeout: 10000 });
-    const createdProject = handleOpenProject.mock.calls[0]![0] as Project;
-    expect(createdProject.formatId).toBe('r_1_1');
-    expect(createdProject.orientation).toBe('portrait');
-    expect(useProjectStore.getState().project.formatId).toBe('r_1_1');
+  it('opens the create dialog from the hero button', () => {
+    useCreateDialogStore.setState({ open: false, request: {} });
+    render(<StartScreen />);
+    fireEvent.click(screen.getByTestId('hero-start-btn'));
+    expect(useCreateDialogStore.getState().open).toBe(true);
   });
 
-  it('creates project directly when a quick platform tile is clicked', async () => {
-    const handleOpenProject = vi.fn();
-    render(<StartScreen onOpenProject={handleOpenProject} />);
-
-    // Click LinkedIn Carousel (4:5)
-    fireEvent.click(screen.getByTestId('quick-platform-linkedin'));
-    await waitFor(() => expect(handleOpenProject).toHaveBeenCalledTimes(1), { timeout: 10000 });
-    const linkedinProj = handleOpenProject.mock.calls[0]![0] as Project;
-    expect(linkedinProj.platform).toBe('linkedin');
-    expect(linkedinProj.formatId).toBe('r_4_5');
-
-    // Click Story (9:16)
+  it('opens the create dialog with the platform preset when a quick tile is clicked', () => {
+    useCreateDialogStore.setState({ open: false, request: {} });
+    render(<StartScreen />);
     fireEvent.click(screen.getByTestId('quick-platform-story'));
-    await waitFor(() => expect(handleOpenProject).toHaveBeenCalledTimes(2), { timeout: 10000 });
-    const storyProj = handleOpenProject.mock.calls[1]![0] as Project;
-    expect(storyProj.formatId).toBe('r_9_16');
+    expect(useCreateDialogStore.getState().open).toBe(true);
+    expect(useCreateDialogStore.getState().request).toMatchObject({ platform: 'instagram', formatId: 'r_9_16', contentType: 'story' });
+  });
+
+  it('no longer has the Pick Dimensions modal or the wizard', () => {
+    render(<StartScreen />);
+    expect(screen.queryByTestId('start-direct-card')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('direct-dimensions-modal')).not.toBeInTheDocument();
   });
 
   it('shows resume banner when active project has slides and calls onOpenProject on click', () => {
@@ -250,13 +221,13 @@ describe('StartScreen component', () => {
   it('updates language when locale changes', () => {
     render(<StartScreen />);
 
-    expect(screen.getByTestId('start-wizard-btn')).toHaveTextContent('Start with Wizard');
+    expect(screen.getByTestId('start-wizard-btn')).toHaveTextContent('New project');
 
     // Switch to Arabic via store
     act(() => {
       useI18nStore.getState().setLocale('ar');
     });
 
-    expect(screen.getByTestId('start-wizard-btn')).toHaveTextContent('البدء مع المعالج');
+    expect(screen.getByTestId('start-wizard-btn')).toHaveTextContent('مشروع جديد');
   });
 });

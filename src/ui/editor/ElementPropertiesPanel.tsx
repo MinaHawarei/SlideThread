@@ -1,5 +1,6 @@
 import { getShapeSvg, getIconSvg } from '../../assets';
 import { extraToPath } from '../../core/convertToPath';
+import { slideWithProjectFloating, hasOwnPosition, isFloatingElementId, type FloatingElementId } from '../../core/floatingPosition';
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
@@ -36,6 +37,8 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   const selectElement = useSelectionStore((state) => state.selectElement);
 
   const updateSlotOverride = useProjectStore((state) => state.updateSlotOverride);
+  const setFloatingScope = useProjectStore((state) => state.setFloatingScope);
+  const resetFloatingToProject = useProjectStore((state) => state.resetFloatingToProject);
   const updateExtraElement = useProjectStore((state) => state.updateExtraElement);
   const addExtraElement = useProjectStore((state) => state.addExtraElement);
   const deleteExtraElement = useProjectStore((state) => state.deleteExtraElement);
@@ -56,7 +59,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
 
   const elements = useMemo(() => {
     if (!slide || !variant) return [];
-    return resolveSlideElements(slide, variant, aspect, project.templateSnapshot?.composition[slide.type]?.[aspect]?.hiddenSlots);
+    return resolveSlideElements(slideWithProjectFloating(slide, project, aspect), variant, aspect, project.templateSnapshot?.composition[slide.type]?.[aspect]?.hiddenSlots);
   }, [slide, variant, aspect, project.templateSnapshot]);
 
   const element = elements.find((el) => el.id === selectedId);
@@ -790,6 +793,27 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
       )}
 
       </fieldset>
+
+      {element && isFloatingElementId(element.id) && slide && (() => {
+        const floatId = element.id as FloatingElementId;
+        const scope = project[floatId]?.scope ?? 'all';
+        const own = hasOwnPosition(slide.overrides?.[aspect]?.[floatId]);
+        return (
+          <div className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800" data-testid="floating-scope">
+            <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">{t('editor.floatingScope')}</label>
+            <div className="flex gap-1.5" role="group" aria-label={t('editor.floatingScope')}>
+              <button type="button" data-testid="floating-scope-all" aria-pressed={scope === 'all'} onClick={() => setFloatingScope(floatId, 'all')} className={`px-2 py-1 text-xs rounded border ${scope === 'all' ? 'bg-cyan-700 text-white border-cyan-700' : 'border-stone-300 dark:border-stone-700'}`}>{t('editor.floatingScopeAll')}</button>
+              <button type="button" data-testid="floating-scope-slide" aria-pressed={scope === 'slide'} onClick={() => setFloatingScope(floatId, 'slide')} className={`px-2 py-1 text-xs rounded border ${scope === 'slide' ? 'bg-cyan-700 text-white border-cyan-700' : 'border-stone-300 dark:border-stone-700'}`}>{t('editor.floatingScopeSlide')}</button>
+            </div>
+            {own && (
+              <div className="flex items-center gap-2" data-testid="floating-own-position">
+                <span className="text-xs text-stone-500">{t('editor.floatingOwnPosition')}</span>
+                <button type="button" data-testid="floating-reset-project" onClick={() => resetFloatingToProject(slide.id, aspect, floatId)} className="text-xs text-cyan-700">{t('editor.floatingResetToProject')}</button>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* 6. Layer Actions: Lock, Hide, Layer Order, Duplicate, Reset */}
       <div className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800">

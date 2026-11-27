@@ -6,6 +6,10 @@ import {
   getDimensions,
   aspectClass,
   getAspectClassForFormat,
+  customFormatId,
+  isValidCustomSize,
+  CUSTOM_SIZE_MIN,
+  CUSTOM_SIZE_MAX,
 } from '../../src/core/formats';
 import {
   PLATFORMS,
@@ -32,7 +36,7 @@ describe('Format Registry (Spec §4.1)', () => {
   });
 
   it('getFormat retrieves format definition or undefined', () => {
-    expect(getFormat('r_4_5')?.label).toBe('4:5 Portrait');
+    expect(getFormat('r_4_5')?.label).toBe('4:5');
     expect(getFormat('r_1_1')?.label).toBe('1:1 Square');
     expect(getFormat('nonexistent')).toBeUndefined();
   });
@@ -45,8 +49,26 @@ describe('Format Registry (Spec §4.1)', () => {
     // 16:9 orientable
     expect(getDimensions('r_16_9', 'landscape')).toEqual({ width: 1920, height: 1080 });
     expect(getDimensions('r_16_9', 'portrait')).toEqual({ width: 1080, height: 1920 });
-    // Default orientation when omitted is landscape (1920x1080)
+    // Without an orientation the registry size applies (16:9 is registered as 1920x1080)
     expect(getDimensions('r_16_9')).toEqual({ width: 1920, height: 1080 });
+
+    // 4:5 and 9:16 are orientable too; the user picks the orientation in the Use dialog
+    expect(getDimensions('r_4_5', 'portrait')).toEqual({ width: 1080, height: 1350 });
+    expect(getDimensions('r_4_5', 'landscape')).toEqual({ width: 1350, height: 1080 });
+    expect(getDimensions('r_9_16', 'portrait')).toEqual({ width: 1080, height: 1920 });
+    expect(getDimensions('r_9_16', 'landscape')).toEqual({ width: 1920, height: 1080 });
+    // Square stays square
+    expect(getDimensions('r_1_1', 'landscape')).toEqual({ width: 1080, height: 1080 });
+
+    // Custom sizes are parsed from the id and range-checked
+    expect(getDimensions(customFormatId(1200, 628))).toEqual({ width: 1200, height: 628 });
+    expect(getFormat('custom_1200x628')?.label).toBe('Custom 1200 × 628');
+    expect(getFormat('custom_100x500')).toBeUndefined();
+    expect(getFormat('custom_5000x500')).toBeUndefined();
+    expect(isValidCustomSize(CUSTOM_SIZE_MIN, CUSTOM_SIZE_MAX)).toBe(true);
+    expect(isValidCustomSize(CUSTOM_SIZE_MIN - 1, 500)).toBe(false);
+    expect(isValidCustomSize(500, CUSTOM_SIZE_MAX + 1)).toBe(false);
+    expect(isValidCustomSize(500.5, 500)).toBe(false);
 
     // Passing FormatDef object
     const def = getFormat('r_4_5')!;

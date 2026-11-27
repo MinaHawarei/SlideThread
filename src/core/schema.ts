@@ -302,6 +302,13 @@ export type TemplateId = z.infer<typeof TemplateIdSchema>;
 export const AnchorSchema = z.enum(['tl', 'tc', 'tr', 'bl', 'bc', 'br']);
 export type Anchor = z.infer<typeof AnchorSchema>;
 
+/** Project-level free position for the counter or signature, as fractions of the slide per aspect class (same units as slide overrides). */
+export const FloatingOffsetsSchema = z.partialRecord(AspectClassSchema, z.object({ dx: z.number().finite(), dy: z.number().finite() }).strict());
+export type FloatingOffsets = z.infer<typeof FloatingOffsetsSchema>;
+/** Where a drag of the counter or signature is saved: every slide (project) or only the selected slide. */
+export const FloatingScopeSchema = z.enum(['all', 'slide']);
+export type FloatingScope = z.infer<typeof FloatingScopeSchema>;
+
 export const CounterConfigSchema = z.object({
   show: z.boolean(),
   anchor: AnchorSchema,
@@ -309,6 +316,8 @@ export const CounterConfigSchema = z.object({
   format: z.enum(['nn/nn', 'n', 'n/nn']),
   hideOnFirst: z.boolean(),
   hideOnLast: z.boolean(),
+  offset: FloatingOffsetsSchema.optional(),
+  scope: FloatingScopeSchema.optional(),
 }).strict();
 export type CounterConfig = z.infer<typeof CounterConfigSchema>;
 
@@ -320,6 +329,8 @@ export const SignatureConfigSchema = z.object({
   photoShape: z.enum(['circle', 'rounded', 'square']),
   showHandle: z.boolean(),
   showSocials: z.boolean(),
+  offset: FloatingOffsetsSchema.optional(),
+  scope: FloatingScopeSchema.optional(),
 }).strict();
 export type SignatureConfig = z.infer<typeof SignatureConfigSchema>;
 
@@ -402,30 +413,36 @@ export const SocialPlatformSchema = z.enum([
 ]);
 export type SocialPlatform = z.infer<typeof SocialPlatformSchema>;
 
-export const BrandSettingsSchema = z.object({
+/** Keys that older versions stored in settings. The design (template) owns these values now, so they are dropped on load. */
+export const LEGACY_DESIGN_DEFAULT_KEYS = ['defaultCounter', 'defaultSignature', 'defaultTemplateId', 'defaultPrimaryColor', 'defaultTheme'] as const;
+
+export function stripLegacyDesignDefaults<T>(value: T): T {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return value;
+  const copy = { ...(value as Record<string, unknown>) };
+  for (const key of LEGACY_DESIGN_DEFAULT_KEYS) delete copy[key];
+  return copy as T;
+}
+
+const BrandSettingsObjectSchema = z.object({
   displayName: z.string(),
   handle: z.string(),
   photoDataUrl: z.string().optional(),
   showSignature: z.boolean(),
   showSocials: z.boolean(),
   showCounter: z.boolean().optional(),
-  defaultCounter: CounterConfigSchema.default(DEFAULT_COUNTER_CONFIG),
-  defaultSignature: SignatureConfigSchema.default(DEFAULT_SIGNATURE_CONFIG),
   socials: z.array(z.object({
     platform: SocialPlatformSchema,
     handle: z.string(),
   }).strict()),
   language: z.enum(['en', 'ar']),
-  defaultTemplateId: z.string(),
-  defaultPrimaryColor: z.string(),
-  defaultTheme: ThemeModeSchema,
   appTheme: z.enum(['light', 'dark']).optional().default('light'),
 }).strict();
+export const BrandSettingsSchema = z.preprocess(stripLegacyDesignDefaults, BrandSettingsObjectSchema);
 /** Accepted settings input shape; schema parsing supplies counter/signature defaults. */
-export type BrandSettings = z.input<typeof BrandSettingsSchema>;
+export type BrandSettings = z.input<typeof BrandSettingsObjectSchema>;
 import { parsePlainTextToRichText, serializeRichTextToPlainText } from './richText';
 
-export type ValidatedBrandSettings = z.output<typeof BrandSettingsSchema>;
+export type ValidatedBrandSettings = z.output<typeof BrandSettingsObjectSchema>;
 
 /** Converts a plain string to the v2 RichText document shape. */
 export function plainTextToRichText(text: string): RichText {

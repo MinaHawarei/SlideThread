@@ -48,27 +48,12 @@ async function createLandscapeCover(page: Page, templateId: string, lang: 'en' |
   }
 
   await page.getByTestId('start-wizard-btn').click();
-  // Choose LinkedIn (which creates 16:9 landscape)
+  await page.getByTestId(`template-${templateId}`).click();
   await page.getByTestId('platform-linkedin').click();
-  await page.getByTestId('wizard-next-btn').click();
-  // Choose carousel or any type
-  const carouselBtn = page.getByTestId('type-carousel');
-  await expect(carouselBtn).toBeVisible();
-  await carouselBtn.click();
-  await page.getByTestId('wizard-next-btn').click();
-  // Pick landscape format (16:9 / r_16_9)
-  const fmt169 = page.getByTestId('format-r_16_9');
-  await expect(fmt169).toBeVisible();
-  await fmt169.click();
-  const landscapeOrientation = page.getByTestId('orientation-landscape');
-  await expect(landscapeOrientation).toBeVisible();
-  await landscapeOrientation.click();
-  await page.getByTestId('wizard-next-btn').click();
-  // Pick template
-  const tmplBtn = page.getByTestId(`template-${templateId}`);
-  await expect(tmplBtn).toBeVisible();
-  await tmplBtn.click();
-  await page.getByTestId('wizard-create-btn').click();
+  await page.getByTestId('type-carousel').click();
+  await page.getByTestId('format-r_16_9').click();
+  await page.getByTestId('orientation-landscape').click();
+  await page.getByTestId('create-submit').click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 15000 });
 }
 
@@ -131,16 +116,9 @@ test.describe('Task 2 — Regression: non-landscape formats unchanged', () => {
       await expect(page.locator('[data-testid="start-screen"]')).toBeVisible({ timeout: 15000 });
       await page.getByTestId('start-wizard-btn').click();
       await page.getByTestId('platform-linkedin').click();
-      await page.getByTestId('wizard-next-btn').click();
-      const carouselBtn = page.getByTestId('type-carousel');
-      if (await carouselBtn.count() > 0) await carouselBtn.click();
-      await page.getByTestId('wizard-next-btn').click();
-      const fmtBtn = page.getByTestId(fmtTestId);
-      if (await fmtBtn.count() > 0) {
-        await fmtBtn.click();
-      }
-      await page.getByTestId('wizard-next-btn').click();
-      await page.getByTestId('wizard-create-btn').click();
+      await page.getByTestId('type-carousel').click();
+      await page.getByTestId('orientation-portrait').click();
+      await page.getByTestId('create-submit').click();
       await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 15000 });
 
       // Slide should load with no JS errors
