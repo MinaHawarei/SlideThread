@@ -173,11 +173,16 @@
 .gl-ov .use, .gl-ov .pre { width: 150px; text-align: center; padding: 13px 0; border-radius: 999px; font-size: 15px; border: 0; cursor: pointer; }
 .gl-ov .use { background: var(--ed-acc); color: var(--ed-accfg); font-weight: 700; }
 .gl-ov .pre { background: #fff1; color: #fff; border: 1.5px solid #fffc; backdrop-filter: blur(6px); }
+.gl-act { display: flex; gap: 10px; }
+.gl-act button { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff1; color: #fff; border: 1.5px solid #fffc; backdrop-filter: blur(6px); cursor: pointer; }
+.gl-act button:hover { background: #fff3; }
+.gl-act button.danger { color: #fca5a5; border-color: #fca5a5aa; }
+.gl-act button.danger:hover { background: #dc26264d; }
 .gl-nm { position: absolute; inset: auto 0 0 0; z-index: 1; padding: 46px 18px 16px; background: linear-gradient(transparent, #000d); color: #fff; opacity: 0; transition: opacity .2s; pointer-events: none; }
 .gl-card:hover .gl-nm, .gl-card:focus-within .gl-nm, .gl-card[data-active='true'] .gl-nm { opacity: 1; }
 .gl-nm h3 { font-family: Georgia, serif; font-weight: 400; font-size: 24px; margin: 0; }
 .gl-nm small { color: #d6d3d1; font-size: 12px; }
-@media (max-width: 560px) { .gl-nm { padding: 34px 12px 10px; } .gl-nm h3 { font-size: 19px; } .gl-ov .use, .gl-ov .pre { width: 130px; font-size: 13px; padding: 10px 0; } }
+@media (max-width: 560px) { .gl-nm { padding: 34px 12px 10px; } .gl-nm h3 { font-size: 19px; } .gl-ov .use, .gl-ov .pre { width: 130px; font-size: 13px; padding: 10px 0; } .gl-act button { width: 34px; height: 34px; } }
 .gl-section { border-top: 1px solid var(--ed-line); margin-top: 30px; padding-top: 22px; }
 .gl-section h2 { font-family: Georgia, serif; font-weight: 400; font-size: 30px; margin: 0; }
 .gl-section p { color: var(--ed-mut); font-size: 14px; }

@@ -29,7 +29,9 @@ test('create a template, keep it across reload, and use it in a project', async 
 
   // The gallery preview image must show the same background and heading colour as the resulting template.
   const previewColors = await page.evaluate(async (id) => {
-    const img = document.querySelector(`[data-testid="preview-user-template-${id}"] img`) as HTMLImageElement;
+    // Card redesign (Nov 27): the poster image is passive; the overlay Preview button now owns the
+    // preview-user-template testid, so the image is queried by its own user-template-poster testid.
+    const img = document.querySelector(`[data-testid="user-template-poster-${id}"]`) as HTMLImageElement;
     await img.decode();
     const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
     const ctx = c.getContext('2d')!; ctx.drawImage(img, 0, 0);

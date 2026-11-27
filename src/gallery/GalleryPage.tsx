@@ -13,7 +13,7 @@ import { exportUserTemplateZip } from '../templates/portable';
 import { TemplateBuilderDialog } from './TemplateBuilderDialog';
 import { invalidateTemplatePackage } from '../templates/starters';
 import { Footer } from '../ui/common/Footer';
-import { SearchIcon, StarIcon, FolderIcon } from '../ui/common/icons';
+import { SearchIcon, StarIcon, FolderIcon, DownloadIcon, TrashIcon } from '../ui/common/icons';
 import '../ui/common/editorial.css';
 import {
   filterGalleryTemplates,
@@ -217,20 +217,89 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
               <p>Private to this browser</p>
               {userTemplatesLoading ? <p>Loading your templates…</p> : (
                 <div className="gl-grid">
-                  {userTemplates.map((item) => (
-                    <article key={item.id} data-testid={`user-template-card-${item.id}`} className="gl-card">
-                      <button type="button" data-testid={`preview-user-template-${item.id}`} onClick={() => handlePreviewTemplate(item.id)} className="gl-im block w-full text-start">
-                        {userPreviewUrls[item.id] ? <img src={userPreviewUrls[item.id]} alt={item.manifest.name[locale]} /> : <span className="grid h-full place-items-center text-sm" style={{ color: 'var(--ed-mut)' }}>No preview included</span>}
-                      </button>
-                      <h3>{item.manifest.name[locale]}</h3>
-                      <small>{item.id} · Imported</small>
-                      <div className="mt-3 flex items-center gap-3 text-xs">
-                        <button type="button" data-testid={`use-user-template-${item.id}`} onClick={() => handleUseTemplate(item.id)} className="hm-btn" style={{ padding: '8px 16px', fontSize: 13 }}>Use template</button>
-                        <button type="button" data-testid={`export-user-template-${item.id}`} onClick={() => void handleExportPackage(item.id)} className="st-rm">Export ZIP</button>
-                        <button type="button" data-testid={`delete-user-template-${item.id}`} onClick={() => void handleDeletePackage(item.id)} className="st-rm" style={{ color: '#dc2626' }}>Delete</button>
-                      </div>
-                    </article>
-                  ))}
+                  {userTemplates.map((item) => {
+                    const activeKey = `user:${item.id}`;
+                    const userCategoryLabels = item.manifest.categories
+                      .map((id) => TEMPLATE_CATEGORIES.find((cat) => cat.id === id)?.name[locale])
+                      .filter(Boolean)
+                      .join(' · ');
+                    const userModes = (['dark', 'light'] as const).filter((mode) => item.manifest.theme.modes[mode]);
+                    const sub = [userCategoryLabels, modeLabel(userModes), 'Imported'].filter(Boolean).join(' · ');
+                    return (
+                      <article
+                        key={item.id}
+                        data-testid={`user-template-card-${item.id}`}
+                        data-template-id={item.id}
+                        data-active={activeCardId === activeKey}
+                        onClick={() => setActiveCardId((current) => (current === activeKey ? null : activeKey))}
+                        className="gl-card"
+                      >
+                        <div className="gl-im">
+                          {userPreviewUrls[item.id] ? (
+                            <img data-testid={`user-template-poster-${item.id}`} src={userPreviewUrls[item.id]} alt={item.manifest.name[locale]} loading="lazy" />
+                          ) : (
+                            <span className="grid h-full place-items-center text-sm" style={{ color: 'var(--ed-mut)' }}>No preview included</span>
+                          )}
+                          <div data-testid={`card-overlay-user-${item.id}`} className="gl-ov">
+                            <button
+                              type="button"
+                              data-testid={`use-user-template-${item.id}`}
+                              className="use"
+                              aria-label={`${t('ux.gallery.use')}: ${item.manifest.name[locale]}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUseTemplate(item.id);
+                              }}
+                            >
+                              {t('gallery.cardUse')}
+                            </button>
+                            <button
+                              type="button"
+                              data-testid={`preview-user-template-${item.id}`}
+                              className="pre"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePreviewTemplate(item.id);
+                              }}
+                            >
+                              {t('gallery.cardPreview')}
+                            </button>
+                            <div className="gl-act">
+                              <button
+                                type="button"
+                                data-testid={`export-user-template-${item.id}`}
+                                aria-label={`Export ZIP: ${item.manifest.name[locale]}`}
+                                title="Export ZIP"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void handleExportPackage(item.id);
+                                }}
+                              >
+                                <DownloadIcon size={16} />
+                              </button>
+                              <button
+                                type="button"
+                                data-testid={`delete-user-template-${item.id}`}
+                                className="danger"
+                                aria-label={`Delete: ${item.manifest.name[locale]}`}
+                                title="Delete"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void handleDeletePackage(item.id);
+                                }}
+                              >
+                                <TrashIcon size={16} />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="gl-nm" data-testid={`card-name-user-${item.id}`}>
+                            <h3>{item.manifest.name[locale]}</h3>
+                            <small>{sub}</small>
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               )}
             </section>
