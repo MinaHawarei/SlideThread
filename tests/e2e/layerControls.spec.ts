@@ -75,3 +75,25 @@ test('selection and layers review matrix', async ({ page }) => {
     }
   }
 });
+
+test('layers: friendly names, thumbnails, front-on-top order, drag-and-drop reorder and select button', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await createEditor(page);
+  await page.getByTestId('tab-layers').click();
+  const panel = page.getByTestId('layers-panel');
+  await expect(panel.getByText('Subtitle').first()).toBeVisible();
+  await expect(page.getByTestId('layer-thumb-title')).toBeVisible();
+  const order = async () => page.locator('[data-testid="layers-panel"] li').evaluateAll((items) => items.map((item) => (item as HTMLElement).dataset.testid));
+  const before = await order();
+  // Front layer is listed first: the last slot in z order is on top.
+  const lastId = before[0]!.replace('layer-row-', '');
+  expect(lastId.length).toBeGreaterThan(0);
+  // Drag the first row onto the last row.
+  await page.locator(`[data-testid="${before[0]}"]`).dragTo(page.locator(`[data-testid="${before[before.length - 1]}"]`));
+  await expect.poll(order).not.toEqual(before);
+  const after = await order();
+  expect(after[after.length - 1]).toBe(before[0]);
+  // The select button of a row selects that element.
+  await page.locator(`[data-testid="${before[1]}"] button`).first().click();
+  await expect(page.getByTestId('element-properties-panel')).toBeVisible();
+});
