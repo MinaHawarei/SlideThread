@@ -88,6 +88,13 @@ describe('Unified create dialog', () => {
     fireEvent.click(screen.getByTestId('orientation-portrait'));
     fireEvent.click(screen.getByTestId('create-submit'));
     await waitFor(() => expect(onCreated).toHaveBeenCalledTimes(1), { timeout: 10000 });
-    expect((onCreated.mock.calls[0]![0] as Project).templateId).toBe('clean-minimal');
+    const created = onCreated.mock.calls[0]![0] as Project;
+    expect(created.templateId).toBe('clean-minimal');
+    // Blank carries no Weave sample content and uses a neutral light theme.
+    expect(created.theme).toBe('light');
+    const cover = JSON.stringify(created.slides[0]!.fields);
+    expect(cover).not.toContain('npx create-slidethread');
+    expect(cover).not.toContain('ARCHITECTURE');
+    expect(cover).not.toContain('My Carousel Title');
   });
 });

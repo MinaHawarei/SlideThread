@@ -561,6 +561,7 @@ export const useProjectStore = create<ProjectState>()(
                 }));
                 // Keep non-position edits (scale, rotation, layer state) on the slide, with no own position.
                 const { dx: _dx, dy: _dy, ...rest } = override;
+                void _dx; void _dy;
                 const hasOther = Object.keys(rest).some((key) => (key === 'scale' ? rest.scale !== 1 : rest[key as keyof typeof rest] !== undefined));
                 get().updateSlotOverride(slideId, aspect, elementId, hasOther ? { ...override, dx: 0, dy: 0 } : undefined);
                 return;
@@ -597,6 +598,7 @@ export const useProjectStore = create<ProjectState>()(
           const prior = slide?.overrides?.[aspect]?.[elementId];
           if (!prior) return;
           const { dx: _dx, dy: _dy, ...rest } = prior;
+          void _dx; void _dy;
           const hasOther = Object.keys(rest).some((key) => (key === 'scale' ? rest.scale !== 1 : rest[key as keyof typeof rest] !== undefined));
           get().updateSlotOverride(slideId, aspect, elementId, hasOther ? { ...prior, dx: 0, dy: 0 } : undefined);
         },

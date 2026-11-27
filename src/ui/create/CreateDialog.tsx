@@ -141,6 +141,7 @@ const CreateDialogBody: React.FC<CreateDialogProps> = ({ onCreated }) => {
         : needsOrientation ? (orientation as Orientation) : 'portrait';
       const project = await buildNewProject({
         templateId,
+        blank: isBlank,
         platform,
         contentType,
         formatId: format.id,

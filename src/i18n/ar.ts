@@ -824,6 +824,6 @@ export const ar: Record<TranslationKey, string> = {
   'home.ticker3': 'PNG · PDF · ZIP',
   'home.ticker4': 'بدون حساب',
   'home.templateOf': 'القالب {index} من {count}',
-  'gallery.cardUse': 'استخدام',
+  'gallery.cardUse': 'استخدمه',
   'gallery.cardPreview': 'معاينة',
 };

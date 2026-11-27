@@ -202,7 +202,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
           <span>•</span>
           <span className="capitalize">{aspect}</span>
           <span>•</span>
-          <span className="capitalize">{project.templateId}</span>
+          <span className="capitalize">{project.templateId === 'clean-minimal' ? t('create.blank') : project.templateId}</span>
         </div>
 
         <div className="flex items-center gap-3">

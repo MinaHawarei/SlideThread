@@ -42,7 +42,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const layout = getLayoutArchetype(`${slide.type}-centered`);
   const variant = mergeTemplateSlotFrames(layout?.variants[aspect], project.templateSnapshot?.composition[slide.type]?.[aspect]?.slots);
   const hiddenSlots = project.templateSnapshot?.composition[slide.type]?.[aspect]?.hiddenSlots;
-  const drawnSlide = useMemo(() => slideWithProjectFloating(slide, project, aspect), [slide, project.counter, project.signature, aspect]);
+  const drawnSlide = useMemo(() => slideWithProjectFloating(slide, project, aspect), [slide, project, aspect]);
   const elements = useMemo(() => variant ? resolveSlideElements(drawnSlide, variant, aspect, hiddenSlots) : [], [drawnSlide, variant, aspect, hiddenSlots]);
   const selectedId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);

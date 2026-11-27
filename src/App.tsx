@@ -66,6 +66,11 @@ export const App: React.FC = () => {
     }
   }, [currentPath]);
 
+  // A new route starts at the top. Without this the editor opens scrolled out of view after "Start creating" far down Home.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPath]);
+
   useEffect(() => {
     const handlePopState = () => setCurrentPath(window.location.pathname);
     window.addEventListener('popstate', handlePopState);

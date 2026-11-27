@@ -822,7 +822,7 @@ export const en = {
   'home.ticker3': 'PNG · PDF · ZIP',
   'home.ticker4': 'No account',
   'home.templateOf': 'Template {index} of {count}',
-  'gallery.cardUse': 'Use template',
+  'gallery.cardUse': 'Use it',
   'gallery.cardPreview': 'Preview',
 } as const;
 

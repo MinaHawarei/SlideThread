@@ -386,9 +386,11 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                                 {t('gallery.cardPreview')}
                               </button>
                             </div>
+                            <div className="gl-nm" data-testid={`card-name-${item.id}`}>
+                              <h3>{item.name[locale]}</h3>
+                              <small>{sub}</small>
+                            </div>
                           </div>
-                          <h3>{item.name[locale]}</h3>
-                          <small>{sub}</small>
                         </article>
                       );
                     })}

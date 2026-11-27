@@ -1,9 +1,15 @@
 import type { ContentType, Orientation, PlatformId, Project, Slide } from '../core/schema';
-import { CURRENT_SCHEMA_VERSION } from '../core/schema';
+import { CURRENT_SCHEMA_VERSION, plainTextFieldsToRichText } from '../core/schema';
 import { aspectClass as calcAspectClass, getDimensions } from '../core/formats';
 import { loadTemplateProjectSnapshot } from '../templates/projectSnapshot';
 import { getTemplateDefaults } from '../templates/defaults';
 import { createDefaultSlide } from './projectStore';
+
+/** Sample text for a blank project: no tag, code line or tech wording. */
+function blankSlide(slide: Slide, index: number): Slide {
+  if (slide.type === 'cover') return { ...slide, fields: plainTextFieldsToRichText({ tag: '', title: 'Title', sub: '', rule: '' }) };
+  return { ...slide, fields: plainTextFieldsToRichText({ title: `Slide ${index + 1}`, body: '' }) };
+}
 
 export interface NewProjectOptions {
   templateId: string;
@@ -14,6 +20,8 @@ export interface NewProjectOptions {
   textDir: 'ltr' | 'rtl';
   /** Theme modes of an imported template package, when the template is not a built-in. */
   importedModes?: readonly string[];
+  /** A blank project: neutral light theme and no template sample content. */
+  blank?: boolean;
 }
 
 /**
@@ -28,6 +36,7 @@ export async function buildNewProject(options: NewProjectOptions): Promise<Proje
     ? [createDefaultSlide('cover', 0)]
     : [createDefaultSlide('cover', 0), createDefaultSlide('explain', 1)];
 
+  if (options.blank) slides = slides.map(blankSlide);
   const templateSnapshot = await loadTemplateProjectSnapshot(templateId, defaults.primaryColor);
   const dimensions = getDimensions(formatId, orientation);
   const aspect = calcAspectClass(dimensions.width, dimensions.height);
@@ -50,7 +59,7 @@ export async function buildNewProject(options: NewProjectOptions): Promise<Proje
     templateId,
     templateSnapshot,
     primaryColor: defaults.primaryColor,
-    theme: defaults.theme,
+    theme: options.blank ? 'light' : defaults.theme,
     textDir,
     slides,
     counter: { ...defaults.counter, style: counterStyle, show: contentType === 'carousel' },
