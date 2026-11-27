@@ -4,6 +4,7 @@ import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { SHAPES_ITEMS, getShapeSvg } from '../../assets';
 import type { ExtraElement } from '../../core/schema';
+import { getDimensions } from '../../core/formats';
 import { createDefaultPath } from '../../core/vectorPath';
 import { SHAPE_PALETTE_COLORS } from './shapePalette';
 
@@ -18,6 +19,8 @@ export const ShapesPicker: React.FC = () => {
   const selectedElementId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);
 
+  const penActive = useSelectionStore((state) => state.penActive);
+  const setPenActive = useSelectionStore((state) => state.setPenActive);
   const [isOpen, setIsOpen] = useState(true);
 
   if (!activeSlide) return null;
@@ -32,7 +35,10 @@ export const ShapesPicker: React.FC = () => {
     if (!item) return;
 
     const baseWidth = item.defaultWidth ? Math.min(0.4, item.defaultWidth / 500) : 0.2;
-    const baseHeight = item.defaultHeight ? Math.min(0.3, item.defaultHeight / 500) : 0.15;
+    // Sizes are slide fractions: derive the height from the shape's own aspect so it is not stretched on a 4:5 slide.
+    const dims = getDimensions(project.formatId, project.orientation);
+    const itemAspect = item.defaultWidth && item.defaultHeight ? item.defaultWidth / item.defaultHeight : 1;
+    const baseHeight = Math.min(0.9, (baseWidth * (dims.width / dims.height)) / itemAspect);
 
     const newExtra: ExtraElement = {
       id: `shape_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
@@ -161,6 +167,10 @@ export const ShapesPicker: React.FC = () => {
       {/* Shapes Grid */}
       {isOpen && (
         <div className="grid grid-cols-4 gap-2 pt-1" data-testid="shapes-grid">
+          <button type="button" data-testid="pen-tool" aria-pressed={penActive} onClick={() => setPenActive(!penActive)} title="Pen: draw a freehand shape on the slide (Esc to stop)" aria-label="Pen tool" className={`p-2 h-14 rounded-xl border bg-white dark:bg-slate-800 flex flex-col items-center justify-center cursor-pointer text-[10px] gap-0.5 ${penActive ? 'border-cyan-500 ring-2 ring-cyan-400/50' : 'border-slate-200 dark:border-slate-800 hover:border-cyan-500'}`}>
+            <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"><path d="M6 26l2-7L22 5l5 5L13 24z M19 8l5 5" /></svg>
+            {penActive ? 'Drawing…' : 'Pen'}
+          </button>
           <button type="button" data-testid="add-path-shape" onClick={handleAddPath} title={t('assets.addPath')} aria-label={t('assets.addPath')} className="p-2 h-14 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:border-cyan-500 flex items-center justify-center cursor-pointer">
             <svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 24 C 10 4, 18 28, 28 8" /></svg>
           </button>

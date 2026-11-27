@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore } from '../../store/projectStore';
+import { useSelectionStore } from '../../store/selectionStore';
 import { handleExportProject } from '../../core/projectIO';
 import { undo, redo, useHistoryStore } from '../../store/history';
 import { SizeWarningModal } from '../common/SizeWarningModal';
@@ -25,6 +26,8 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   onOpenExport,
 }) => {
   const { t } = useT();
+  const penActive = useSelectionStore((state) => state.penActive);
+  const setPenActive = useSelectionStore((state) => state.setPenActive);
   const project = useProjectStore((state) => state.project);
   const updateProjectMeta = useProjectStore((state) => state.updateProjectMeta);
   const canUndo = useHistoryStore((state) => state.canUndo);
@@ -233,6 +236,22 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
           >
             <span className="text-sm">◇</span>
             <span className="text-[9px] scale-90">{t('rail.shapes')}</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="rail-tool-pen"
+            aria-pressed={penActive}
+            onClick={() => setPenActive(!penActive)}
+            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${penActive
+              ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold ring-2 ring-amber-400/60'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+              }`}
+            title="Pen: draw a freehand shape on the slide (Esc to stop)"
+            aria-label="Pen tool"
+          >
+            <span className="text-sm">✎</span>
+            <span className="text-[9px] scale-90">Pen</span>
           </button>
 
           <button

@@ -1,3 +1,4 @@
+import { getDimensions } from '../../core/formats';
 import React, { useState, useMemo, useRef } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide } from '../../store/projectStore';
@@ -171,6 +172,13 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
       baseWidth = 0.15;
       baseHeight = 0.15;
     }
+
+    // Extra sizes are slide fractions, so equal fractions would stretch the asset on a 4:5 slide.
+    // Convert the intended on-screen aspect (width x height in the same units) into fractions.
+    const dims = getDimensions(project.formatId, project.orientation);
+    const slideRatio = dims.width / dims.height;
+    baseHeight = Math.min(0.9, baseHeight * slideRatio);
+    baseWidth = Math.min(0.9, baseWidth);
 
     const newExtra: ExtraElement = {
       id: `${packId}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,

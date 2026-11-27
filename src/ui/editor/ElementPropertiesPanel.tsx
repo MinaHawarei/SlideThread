@@ -1,3 +1,4 @@
+import { getShapeSvg, getIconSvg } from '../../assets';
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
@@ -612,6 +613,24 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               className="w-7 h-7 p-0 rounded-md border border-stone-300 dark:border-stone-700 cursor-pointer"
             />
           </div>
+        </div>
+      )}
+      {extra?.kind === 'shape' && extra.assetId && Boolean(getShapeSvg(extra.assetId) || getIconSvg(extra.assetId)) && (
+        <div data-testid="asset-style-controls" className="space-y-2 pt-2 border-t border-stone-200 dark:border-stone-800">
+          <div className="text-xs font-semibold text-stone-700 dark:text-stone-300">Fill and outline</div>
+          <div className="flex items-center justify-between text-xs">
+            <span>Fill</span>
+            <span className="flex items-center gap-1.5">
+              <button type="button" data-testid="asset-fill-none" aria-pressed={extra.innerFill === 'none'} onClick={() => updateExtra({ innerFill: 'none' })} className={`px-2 py-1 rounded border text-[11px] ${extra.innerFill === 'none' ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-950/30' : 'border-stone-300 dark:border-stone-700'}`}>No fill</button>
+              <input data-testid="asset-fill-color" aria-label="Fill color" type="color" value={extra.innerFill?.startsWith('#') ? extra.innerFill : '#0891b2'} onChange={(e) => updateExtra({ innerFill: e.target.value })} className="w-7 h-7 p-0 rounded-md border border-stone-300 dark:border-stone-700 cursor-pointer" />
+            </span>
+          </div>
+          <label className="flex items-center justify-between text-xs">Outline color
+            <input data-testid="asset-stroke-color" aria-label="Outline color" type="color" value={(extra.strokeColor ?? extra.fill)?.startsWith('#') ? (extra.strokeColor ?? extra.fill) : '#0891b2'} onChange={(e) => updateExtra({ strokeColor: e.target.value })} />
+          </label>
+          <label className="block text-xs">Outline width <span className="font-mono">{extra.strokeWidth ?? 4}</span>
+            <input data-testid="asset-stroke-width" aria-label="Outline width" type="range" min="1" max="16" value={extra.strokeWidth ?? 4} onChange={(e) => updateExtra({ strokeWidth: Number(e.target.value) })} className="w-full accent-amber-600" />
+          </label>
         </div>
       )}
       {extra?.kind === 'image' && <ImageExtraControls />}

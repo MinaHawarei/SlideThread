@@ -110,18 +110,19 @@ describe('EditorDesktop component (Task P3-5)', () => {
     render(<EditorDesktop />);
     fireEvent.click(screen.getByTestId('tab-layers'));
     expect(screen.getByTestId('layers-panel')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Hide title' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hide Title' }));
     expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.hidden).toBe(true);
     await waitFor(() => expect(screen.getByTestId('main-canvas').querySelector('.slide-canvas .slide-title-h1')).not.toBeNull());
     expect(screen.getByTestId('main-canvas').querySelector('.slide-canvas .slide-title-h1') as HTMLElement).toHaveStyle({ visibility: 'hidden' });
-    fireEvent.click(screen.getByRole('button', { name: 'Show title' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Lock title' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show Title' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Lock Title' }));
     expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.locked).toBe(true);
     // The cover layout now also lists the tag frame ahead of the title, so the title starts one step further along.
     const zBefore = useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.z;
-    fireEvent.click(screen.getByRole('button', { name: 'Move title backward' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Title backward' }));
     const zAfter = useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.z;
-    expect(zAfter).toBe(2);
+    // Backward now means toward the back: the title swaps z with the layer just behind it.
+    expect(zAfter).toBe(0);
     expect(zAfter).not.toBe(zBefore);
   });
 
@@ -135,11 +136,11 @@ describe('EditorDesktop component (Task P3-5)', () => {
     });
     render(<EditorDesktop />);
     fireEvent.click(screen.getByTestId('tab-layers'));
-    fireEvent.click(screen.getByRole('button', { name: 'Lock star-a' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Hide star-b' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Lock Shape (ellipse)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hide Shape (rectangle)' }));
     expect(useProjectStore.getState().project.slides[0]?.extras?.[0]?.locked).toBe(true);
     expect(useProjectStore.getState().project.slides[0]?.extras?.[1]?.hidden).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'Move star-a backward' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Move Shape (rectangle) backward' }));
     expect(useProjectStore.getState().project.slides[0]?.extras?.map((item) => item.z)).toEqual([1, 0]);
   });
 

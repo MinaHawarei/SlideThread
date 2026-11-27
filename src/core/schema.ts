@@ -201,6 +201,8 @@ export const ExtraElementSchema = z.object({
   shape: z.enum(['rectangle', 'ellipse', 'line', 'arrow', 'path']).optional(),
   path: VectorPathSchema.optional(),
   fill: SafeColorValueSchema.optional(),
+  /** Interior fill of a library shape or icon. `fill` keeps colouring its outline for older projects; `none` leaves it hollow. */
+  innerFill: SafeColorValueSchema.optional(),
   backgroundColor: SafeColorValueSchema.optional(),
   opacity: z.number().min(0).max(1).optional(),
   cornerRadius: z.number().finite().min(0).max(500).optional(),

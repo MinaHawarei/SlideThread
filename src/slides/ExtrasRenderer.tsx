@@ -80,6 +80,22 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
 
         if (svgContent) {
           const isRecolorable = !getEmojiSvg(extra.assetId) && !getStickerSvg(extra.assetId);
+          const outline = themeColor(extra.strokeColor) || fill;
+          let markup = svgContent;
+          if (isRecolorable) {
+            const inner = themeColor(extra.innerFill);
+            if (inner) {
+              // Library shapes carry their own faint fill on child paths, so replace it everywhere, not only on the root.
+              const rootEnd = markup.indexOf('>');
+              const head = markup.slice(0, rootEnd).replace(/\sfill="[^"]*"/, ` fill="${inner}"`);
+              const body = markup
+                .slice(rootEnd)
+                .replace(/\sfill-opacity="[^"]*"/g, '')
+                .replace(/\sfill="(?!none")[^"]*"/g, ` fill="${inner}"`);
+              markup = head + body;
+            }
+            if (extra.strokeWidth && extra.strokeWidth > 0) markup = markup.replace(/stroke-width="[\d.]+"/g, `stroke-width="${extra.strokeWidth}"`);
+          }
           return (
             <div
               data-testid={`shape-asset-${extra.id}`}
@@ -87,12 +103,12 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
               style={{
                 width: '100%',
                 height: '100%',
-                color: isRecolorable ? fill : undefined,
+                color: isRecolorable ? outline : undefined,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              dangerouslySetInnerHTML={{ __html: svgContent }}
+              dangerouslySetInnerHTML={{ __html: markup }}
             />
           );
         }
