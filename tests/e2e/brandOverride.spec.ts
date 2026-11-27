@@ -46,11 +46,13 @@ test.describe('Brand Override System E2E (Spec §5.5)', () => {
     await expect(sigBar.getByText('Project Custom Name')).toBeVisible();
     await expect(sigBar.getByText('@projectcustom')).toBeVisible();
 
-    // Verify BrandInspector shows active override banner
-    const brandTab = page.getByTestId('tab-brand');
-    await brandTab.click();
+    // Verify BrandInspector shows the active override banner. Switching inspector tabs deselects the
+    // element (and so closes the canvas popover), so select the signature again before applying.
+    await page.getByTestId('tab-brand').click();
     const overrideBanner = page.getByTestId('brand-override-active-banner');
     await expect(overrideBanner).toBeVisible();
+    await sigHit.click();
+    await expect(popover).toBeVisible();
 
     // 4. Click "Apply to defaults" in popover
     await applyBtn.click();
@@ -59,6 +61,7 @@ test.describe('Brand Override System E2E (Spec §5.5)', () => {
     await expect(overrideBanner).not.toBeVisible();
 
     // Check defaults in BrandInspector now hold the new values
+    await page.getByTestId('tab-brand').click();
     const brandNameInput = page.getByTestId('brand-name-input');
     const brandHandleInput = page.getByTestId('brand-handle-input');
     await expect(brandNameInput).toHaveValue('Project Custom Name');

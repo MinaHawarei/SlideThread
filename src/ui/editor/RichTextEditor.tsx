@@ -17,6 +17,7 @@ import { richTextToTiptapJSON, tiptapJSONToRichText, resolveFontFamily } from '.
 import { useT } from '../../i18n';
 import { FONT_REGISTRY, type FontId, type FontWeight } from '../../fonts/registry';
 import { loadFont } from '../../fonts/loader';
+import { CheckIcon, IndentIcon, OutdentIcon } from '../common/icons';
 
 const CustomParagraph = Paragraph.extend({
   addAttributes() {
@@ -347,7 +348,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           cursor: 'pointer',
         }}
       >
-        ⇤
+        <OutdentIcon size={16} />
       </button>
       <button
         type="button"
@@ -365,7 +366,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           cursor: 'pointer',
         }}
       >
-        ⇥⇤
+        <IndentIcon size={16} />
       </button>
       <button
         type="button"
@@ -383,7 +384,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           cursor: 'pointer',
         }}
       >
-        ⇥
+        <IndentIcon size={16} />
       </button>
 
       {/* Direction controls */}
@@ -443,7 +444,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             padding: '0 8px',
           }}
         >
-          ✓
+          <CheckIcon size={16} />
         </button>
       )}
     </>

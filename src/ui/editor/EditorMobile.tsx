@@ -20,6 +20,7 @@ import { ElementPropertiesPanel } from './ElementPropertiesPanel';
 import { LayersPanel } from './LayersPanel';
 import { LogoMark } from '../brand/LogoMark';
 import { DirectionalNavButton } from '../common/SlideNavControls';
+import { DownloadIcon, PageIcon, ShieldIcon } from '../common/icons';
 
 export type MobileTab = 'slides' | 'edit' | 'assets' | 'layers' | 'design' | 'export';
 
@@ -265,7 +266,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
                 : 'border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400'
                 }`}
             >
-              🛡️
+              <ShieldIcon size={16} />
             </button>
           )}
         </div>
@@ -571,7 +572,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               }}
               className="w-full min-h-[44px] py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>↓</span>
+              <DownloadIcon size={16} />
               <span>{t('editor.export')}</span>
             </button>
 
@@ -581,7 +582,7 @@ export const EditorMobile: React.FC<EditorMobileProps> = ({
               onClick={handleExportJson}
               className="w-full min-h-[44px] py-2.5 px-4 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-200 font-medium text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>📄</span>
+              <PageIcon size={16} />
               <span>{t('io.exportJson')}</span>
             </button>
           </div>

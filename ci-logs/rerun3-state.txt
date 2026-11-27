@@ -1,0 +1,5 @@
+gallery rc=0   3 passed (11.1s) 
+gateG3 rc=0   2 passed (9.0s) 
+mobileFixes rc=1   4 failed   4 passed (2.4m) 
+manipulation rc=0   2 passed (10.7s) 
+FIN

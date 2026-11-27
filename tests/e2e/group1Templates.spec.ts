@@ -5,6 +5,7 @@
  */
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
+import { openTemplateDialog } from './helpers/wizard';
 
 const IDS = ['dt-lime-steps', 'dt-mint-swipe', 'dt-signal-red', 'dt-magenta-noir', 'dt-purple-code', 'dt-phosphor-terminal', 'dt-teal-lab', 'dt-emerald-portal', 'dt-arabic-green', 'dt-arabic-navy'];
 
@@ -14,8 +15,7 @@ for (const id of IDS) {
     await page.route('**/_vercel/insights/**', (route) => route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
-    await page.getByTestId('start-wizard-btn').click();
-    await page.getByTestId(`template-${id}`).click();
+    await openTemplateDialog(page, id);
     await page.getByTestId('platform-linkedin').click();
     await page.getByTestId('type-carousel').click();
     await page.getByTestId('format-r_4_5').click();

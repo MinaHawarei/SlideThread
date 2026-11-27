@@ -3,7 +3,8 @@ import { useT } from '../../i18n';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useAvatarUpload } from '../common/useAvatarUpload';
 import { Footer } from '../common/Footer';
-import { AppNav, applyThemeWithFade } from '../common/AppNav';
+import { AppNav } from '../common/AppNav';
+import { applyThemeWithFade } from '../common/themeFade';
 import { SocialIcon } from '../../slides/SignatureBar';
 import {
   downloadAllUserData,

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useT } from '../../i18n';
+import { WarningIcon } from './icons';
 
 export interface SizeWarningModalProps {
   isOpen: boolean;
@@ -49,7 +50,7 @@ export const SizeWarningModal: React.FC<SizeWarningModalProps> = ({
       >
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl shrink-0">
-            ⚠️
+            <WarningIcon size={22} />
           </div>
           <div className="space-y-1">
             <h3

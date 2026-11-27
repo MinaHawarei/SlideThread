@@ -10,6 +10,7 @@ import { SlideTypePicker } from './SlideTypePicker';
 import { MobileBottomSheet } from './MobileBottomSheet';
 import { DirectionalNavButton } from '../common/SlideNavControls';
 import type { SlideType, Slide, CounterConfig, SignatureConfig, ThemeMode, AspectClass } from '../../core/schema';
+import { ClipboardIcon, SparkleIcon } from '../common/icons';
 
 export interface MobileThumbnailStripProps {
   className?: string;
@@ -348,7 +349,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 title={t('editor.chooseSlideType')}
                 className="shrink-0 min-h-[44px] min-w-[36px] h-[60px] w-9 rounded-xl border-2 border-dashed border-amber-400/60 dark:border-amber-700/60 bg-amber-500/5 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 flex flex-col items-center justify-center text-xs hover:bg-amber-500/15 transition-colors"
               >
-                <span>✨</span>
+                <SparkleIcon size={16} />
               </button>
               <button
                 type="button"
@@ -358,7 +359,7 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
                 title={t('paste.title')}
                 className="shrink-0 min-h-[44px] min-w-[44px] h-[60px] w-12 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 bg-stone-100/50 dark:bg-stone-800/50 text-stone-600 dark:text-stone-400 flex flex-col items-center justify-center font-bold text-sm hover:bg-stone-200/50 dark:hover:bg-stone-700/50 transition-colors"
               >
-                <span>📋</span>
+                <ClipboardIcon size={16} />
               </button>
             </>
           )}

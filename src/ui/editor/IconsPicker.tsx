@@ -4,6 +4,7 @@ import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { ICONS_ITEMS, getIconSvg } from '../../assets';
 import type { ExtraElement } from '../../core/schema';
+import { ChevronDownIcon, ChevronRightIcon } from '../common/icons';
 
 const ICON_PALETTE_COLORS = [
   '#0891b2', // Cyan
@@ -89,7 +90,7 @@ export const IconsPicker: React.FC = () => {
           >
             <span>{t('assets.iconsTitle')}</span>
             <span className="text-[10px] text-slate-400 font-mono">({ICONS_ITEMS.length})</span>
-            <span className="text-[10px] text-slate-400">{isOpen ? '▼' : '▶'}</span>
+            <span className="text-[10px] text-slate-400">{isOpen ? <ChevronDownIcon size={10} /> : <ChevronRightIcon size={10} />}</span>
           </button>
         </div>
         <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium">

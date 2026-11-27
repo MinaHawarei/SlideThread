@@ -36,12 +36,12 @@ test.describe('Icons Pack E2E (§5.6, Task R6-3)', () => {
     const svgIcon = iconElement.locator('svg');
     await expect(svgIcon).toBeVisible();
 
-    // The inspector should show selected icon controls
-    const controls = page.getByTestId('selected-icon-controls');
+    // Adding selects the element, and the inspector shows its element properties (shape controls)
+    const controls = page.getByTestId('selected-shape-controls');
     await expect(controls).toBeVisible();
 
     // Recolor to purple preset
-    const purplePreset = page.getByTestId('icon-palette-color-#a855f7');
+    const purplePreset = page.getByTestId('shape-palette-color-#a855f7');
     await expect(purplePreset).toBeVisible();
     await purplePreset.click();
 

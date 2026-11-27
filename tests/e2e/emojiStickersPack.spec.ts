@@ -33,6 +33,11 @@ test.describe('Emoji and Stickers Pack E2E (§5.6, Task R6-4)', () => {
     await expect(emojiElement).toBeVisible();
     await expect(emojiElement.locator('svg')).toBeVisible();
 
+    // Adding an element selects it and swaps the inspector to element properties.
+    // Escape deselects, which brings the slide inspector (and the picker) back.
+    await page.keyboard.press('Escape');
+    await expect(picker).toBeVisible();
+
     // 2. Switch to stickers tab and add pro tip badge
     const stickersTab = page.getByTestId('tab-stickers');
     await expect(stickersTab).toBeVisible();

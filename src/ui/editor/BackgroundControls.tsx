@@ -4,6 +4,7 @@ import { useProjectStore, useActiveSlide } from '../../store/projectStore';
 import { processUserUpload } from '../../core/uploads';
 import type { SlideBackground } from '../../core/schema';
 import { SHAPES_ITEMS, getShapeSvg, ICONS_ITEMS, getIconSvg } from '../../assets';
+import { CameraIcon, CloseIcon, SparkleIcon } from '../common/icons';
 
 export const BackgroundControls: React.FC = () => {
   const { t } = useT();
@@ -178,7 +179,7 @@ export const BackgroundControls: React.FC = () => {
           onClick={() => fileInputRef.current?.click()}
           className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-1.5 shadow-2xs transition-colors"
         >
-          <span>📷</span>
+          <CameraIcon size={16} />
           <span>{t('editor.background.upload')}</span>
         </button>
 
@@ -188,7 +189,7 @@ export const BackgroundControls: React.FC = () => {
           onClick={() => setShowSymbolPicker((prev) => !prev)}
           className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center gap-1.5 shadow-2xs transition-colors"
         >
-          <span>✨</span>
+          <SparkleIcon size={16} />
           <span>{t('editor.background.symbol')}</span>
         </button>
       </div>
@@ -203,7 +204,7 @@ export const BackgroundControls: React.FC = () => {
               onClick={() => setShowSymbolPicker(false)}
               className="text-slate-400 hover:text-slate-600"
             >
-              ✕
+              <CloseIcon size={16} />
             </button>
           </div>
           <div className="grid grid-cols-6 gap-1 max-h-36 overflow-y-auto p-1 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">

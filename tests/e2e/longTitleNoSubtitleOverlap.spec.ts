@@ -3,6 +3,7 @@
  * Geometry check on the rendered cover (title vs subtitle bounding boxes).
  */
 import { test, expect, type Page } from '@playwright/test';
+import { openTemplateDialog } from './helpers/wizard';
 
 const TEMPLATES = ['clean-minimal', 'heritage-geometric', 'soft-gradient', 'bold-marketing', 'tech-mesh'];
 // r_9_16 is only offered for the story content type, so it uses the story wizard path.
@@ -18,8 +19,7 @@ const overlaps = (a: Box, b: Box, tol = 1) =>
 
 async function createCover(page: Page, templateId: string, format: string) {
   await page.goto('/');
-  await page.getByTestId('start-wizard-btn').click();
-  await page.getByTestId(`template-${templateId}`).click();
+  await openTemplateDialog(page, templateId);
   await page.getByTestId(format === 'r_9_16' ? 'platform-instagram' : 'platform-linkedin').click();
   await page.getByTestId(format === 'r_9_16' ? 'type-story' : 'type-carousel').click();
   await page.getByTestId(`format-${format}`).click();
@@ -47,10 +47,14 @@ for (const format of FORMATS) {
 
         const canvas = page.getByTestId('workspace-stage').locator('.slide-canvas');
         const titleBox = await canvas.locator('.slide-title-h1').first().boundingBox();
-        const subBox = await canvas.locator('.slide-sub').first().boundingBox();
+        // clean-minimal opens through Start creating, which is the Blank project: its subtitle is empty and not rendered.
+        const blankBase = template === 'clean-minimal';
+        const sub = canvas.locator('.slide-sub');
+        if (blankBase) await expect(sub).toHaveCount(0);
+        const subBox = blankBase ? null : await sub.first().boundingBox();
         const canvasBox = await canvas.boundingBox();
-        expect(titleBox && subBox && canvasBox).toBeTruthy();
-        expect(overlaps(titleBox!, subBox!), `title ${JSON.stringify(titleBox)} overlaps subtitle ${JSON.stringify(subBox)}`).toBe(false);
+        expect(titleBox && canvasBox && (blankBase || subBox)).toBeTruthy();
+        if (subBox) expect(overlaps(titleBox!, subBox), `title ${JSON.stringify(titleBox)} overlaps subtitle ${JSON.stringify(subBox)}`).toBe(false);
         // The title must also stay inside the slide.
         expect(titleBox!.y).toBeGreaterThanOrEqual(canvasBox!.y - 1);
         expect(titleBox!.y + titleBox!.height).toBeLessThanOrEqual(canvasBox!.y + canvasBox!.height + 1);

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { setDirection } from './helpers/direction';
 
 async function createEditor(page: Page) {
   await page.goto('/');
@@ -91,9 +92,7 @@ test('rich text in-place editing 12-state review matrix (R4-2)', async ({ page }
       await expect(page.locator('[data-rich-text-toolbar="true"]')).toHaveCount(0);
 
       for (const direction of ['ltr', 'rtl']) {
-        if (await page.locator('html').getAttribute('dir') !== direction) {
-          await page.getByTestId('language-switcher').click();
-        }
+        await setDirection(page, direction as 'ltr' | 'rtl');
         await expect(page.locator('html')).toHaveAttribute('dir', direction);
         await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
 

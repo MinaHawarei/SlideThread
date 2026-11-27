@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import * as fs from 'fs';
 import JSZip from 'jszip';
+import { setDirection } from './helpers/direction';
 
 test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', () => {
   test.beforeEach(async ({ page }) => {
@@ -209,7 +210,7 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
           await page.getByTestId('mobile-tab-slides').click();
         }
         for (const direction of ['ltr', 'rtl']) {
-          if (await page.locator('html').getAttribute('dir') !== direction) await page.getByTestId('language-switcher').click();
+          await setDirection(page, direction as 'ltr' | 'rtl');
           await expect(page.locator('html')).toHaveAttribute('dir', direction);
           await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
           await page.screenshot({ path: `docs/ux-review/R3-6/editor-${width}x${height}-${theme}-${direction}.png` });

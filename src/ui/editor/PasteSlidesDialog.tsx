@@ -5,6 +5,7 @@ import type { TranslationKey } from '../../i18n/en';
 import { useProjectStore } from '../../store/projectStore';
 import { parsePastedText, candidateToSlide, type ParsedCandidateSlide } from '../../core/paste';
 import type { SlideType } from '../../core/schema';
+import { CheckIcon, ClipboardIcon, CloseIcon } from '../common/icons';
 
 export interface PasteSlidesDialogProps {
   isOpen: boolean;
@@ -108,7 +109,7 @@ export const PasteSlidesDialog: React.FC<PasteSlidesDialogProps> = ({
               id="paste-dialog-title"
               className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"
             >
-              <span>📋</span>
+              <ClipboardIcon size={16} />
               <span>{t('paste.title')}</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -122,7 +123,7 @@ export const PasteSlidesDialog: React.FC<PasteSlidesDialogProps> = ({
             aria-label={t('common.close')}
             className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"
           >
-            ✕
+            <CloseIcon size={16} />
           </button>
         </div>
 
@@ -247,7 +248,7 @@ export const PasteSlidesDialog: React.FC<PasteSlidesDialogProps> = ({
             disabled={candidates.length === 0}
             className="px-5 py-2 rounded-xl text-xs font-bold bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-sm transition-all flex items-center gap-1.5"
           >
-            <span>✓</span>
+            <CheckIcon size={16} />
             <span>{t('paste.apply')} ({candidates.length})</span>
           </button>
         </div>

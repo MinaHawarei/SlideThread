@@ -8,6 +8,7 @@ import { CanvasManipulationLayer } from './CanvasManipulationLayer';
 import { useSelectionStore } from '../../store/selectionStore';
 import { useRecentAssetsStore } from '../../store/recentAssetsStore';
 import type { ExtraElement } from '../../core/schema';
+import { ShieldIcon } from '../common/icons';
 
 export interface MainCanvasProps {
   className?: string;
@@ -218,7 +219,7 @@ export const MainCanvas: React.FC<MainCanvasProps> = ({
                 : 'border-stone-300 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-800'
                 }`}
             >
-              {effectiveSafeZones ? '🛡️ Safe Zones ON' : 'Safe Zones'}
+              {effectiveSafeZones ? <span className="inline-flex items-center gap-1"><ShieldIcon size={13} /> Safe Zones ON</span> : 'Safe Zones'}
             </button>
           )}
 

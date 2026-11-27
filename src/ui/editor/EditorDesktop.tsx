@@ -15,6 +15,7 @@ import { ShortcutsOverlay } from '../common/ShortcutsOverlay';
 import { OnboardingModal } from '../common/OnboardingModal';
 import { APP_NAME } from '../../config/site';
 import { LogoMark } from '../brand/LogoMark';
+import { BrandIcon, BulbIcon, DownloadIcon, KeyboardIcon, LayoutIcon, PageIcon, PenIcon, PencilIcon, RedoIcon, ShapesIcon, SlidesIcon, TemplateIcon, UndoIcon, UploadIcon } from '../common/icons';
 
 export interface EditorDesktopProps {
   onHome?: () => void;
@@ -118,7 +119,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
               className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 hover:bg-amber-500/10 hover:text-amber-600 text-[10px] font-mono font-medium transition-colors cursor-pointer"
               title={t('editor.changeFormat')}
             >
-              {FORMAT_REGISTRY[project.formatId as FormatId]?.label || project.formatId} ✎
+              <span className="inline-flex items-center gap-1">{FORMAT_REGISTRY[project.formatId as FormatId]?.label || project.formatId} <PencilIcon size={11} /></span>
             </button>
           </div>
         </div>
@@ -134,7 +135,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title={`${t('editor.undo')} (Ctrl+Z)`}
             aria-label={t('editor.undo')}
           >
-            ↺
+            <UndoIcon size={16} />
           </button>
           <button
             type="button"
@@ -145,7 +146,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title={`${t('editor.redo')} (Ctrl+Shift+Z)`}
             aria-label={t('editor.redo')}
           >
-            ↻
+            <RedoIcon size={16} />
           </button>
         </div>
 
@@ -159,7 +160,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title={t('shortcuts.title')}
             aria-label={t('shortcuts.title')}
           >
-            ⌨️
+            <KeyboardIcon size={16} />
           </button>
 
           <button
@@ -170,7 +171,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title={t('onboarding.step1Title')}
             aria-label={t('onboarding.step1Title')}
           >
-            💡
+            <BulbIcon size={16} />
           </button>
 
           <button
@@ -180,7 +181,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             className="py-1.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 font-medium text-xs transition-colors flex items-center gap-1.5"
             title={t('io.exportJson')}
           >
-            <span>📄</span>
+            <PageIcon size={16} />
             <span>{t('io.exportJson')}</span>
           </button>
 
@@ -190,7 +191,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             onClick={onOpenExport}
             className="py-1.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5"
           >
-            <span>↓</span>
+            <DownloadIcon size={16} />
             <span>{t('editor.export')}</span>
           </button>
         </div>
@@ -217,7 +218,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title="Templates & Layouts"
             aria-label="Templates & Layouts"
           >
-            <span className="text-sm">▧</span>
+            <TemplateIcon size={16} />
             <span className="text-[9px] scale-90">{t('rail.tmpl')}</span>
           </button>
 
@@ -234,7 +235,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title="Shapes & Stickers"
             aria-label="Shapes & Stickers"
           >
-            <span className="text-sm">◇</span>
+            <ShapesIcon size={16} />
             <span className="text-[9px] scale-90">{t('rail.shapes')}</span>
           </button>
 
@@ -250,7 +251,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title="Pencil: draw a freehand shape on the slide (Esc to stop)"
             aria-label="Pencil tool"
           >
-            <span className="text-sm">✎</span>
+            <PencilIcon size={16} />
             <span className="text-[9px] scale-90">Pencil</span>
           </button>
 
@@ -266,7 +267,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title="Pen: click to place points, drag to curve, click the first point to close, Enter to finish"
             aria-label="Pen tool"
           >
-            <span className="text-sm">✒</span>
+            <PenIcon size={16} />
             <span className="text-[9px] scale-90">Pen</span>
           </button>
 
@@ -297,7 +298,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title="Upload Assets"
             aria-label="Upload Assets"
           >
-            <span className="text-sm">↑</span>
+            <UploadIcon size={16} />
             <span className="text-[9px] scale-90">{t('rail.upload')}</span>
           </button>
 
@@ -314,7 +315,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title="Brand Kit"
             aria-label="Brand Kit"
           >
-            <span className="text-sm">◉</span>
+            <BrandIcon size={16} />
             <span className="text-[9px] scale-90">{t('rail.brand')}</span>
           </button>
 
@@ -328,7 +329,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             title="Layout Design"
             aria-label="Layout Design"
           >
-            <span className="text-sm">▦</span>
+            <LayoutIcon size={16} />
             <span className="text-[9px] scale-90">{t('rail.layout')}</span>
           </button>
 
@@ -344,7 +345,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
               title="Toggle Slide Rail"
               aria-label="Toggle Slide Rail"
             >
-              <span className="text-sm">📑</span>
+              <SlidesIcon size={16} />
               <span className="text-[9px] scale-90">Rail</span>
             </button>
           </div>

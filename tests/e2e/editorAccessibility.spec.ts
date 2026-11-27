@@ -11,6 +11,15 @@ async function createEditor(page: Page) {
   await page.getByTestId('create-submit').click();
 }
 
+/** Language lives on the Settings page (there is no switcher in the editor), so go there and come back to the saved project. */
+async function setDirection(page: Page, direction: 'ltr' | 'rtl', width: number) {
+  if ((await page.locator('html').getAttribute('dir')) === direction) return;
+  await page.goto('/settings');
+  await page.getByTestId(direction === 'rtl' ? 'settings-lang-ar-btn' : 'settings-lang-en-btn').click();
+  await page.goto('/editor');
+  await expect(page.getByTestId(width < 640 ? 'editor-mobile' : 'editor-desktop')).toBeVisible({ timeout: 15000 });
+}
+
 test('keyboard editing, numeric inspector, and live announcements work in the browser', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await createEditor(page);
@@ -41,8 +50,8 @@ test('keyboard accessibility review matrix', async ({ page }) => {
         await page.getByTestId('element-hit-title').focus();
         await expect(page.getByTestId('sidebar-x-position')).toBeVisible();
       }
-      for (const direction of ['ltr', 'rtl']) {
-        if (await page.locator('html').getAttribute('dir') !== direction) await page.getByTestId('language-switcher').click();
+      for (const direction of ['ltr', 'rtl'] as const) {
+        await setDirection(page, direction, width);
         await expect(page.locator('html')).toHaveAttribute('dir', direction);
         await page.screenshot({ path: `docs/ux-review/R3-3/editor-${width}x${height}-${theme}-${direction}.png` });
       }

@@ -3,6 +3,7 @@ import type { SlideProps } from './types';
 import { RichTextRenderer } from './RichTextRenderer';
 import { useAvatarUpload } from '../ui/common/useAvatarUpload';
 import { getAssetUrl } from '../core/assetStore';
+import { CameraIcon } from '../ui/common/icons';
 
 export const CtaSlide: React.FC<SlideProps> = ({
   slide,
@@ -70,7 +71,7 @@ export const CtaSlide: React.FC<SlideProps> = ({
                 style={{ opacity: mediaOpacity }}
               >
                 {initial}
-                <span className="avatar-camera-badge cta-avatar-badge" aria-hidden="true">📷</span>
+                <CameraIcon size={16} />
               </div>
             )}
 

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useT } from '../../i18n';
 import { APP_NAME } from '../../config/site';
 import { LogoMark } from '../brand/LogoMark';
+import { GearIcon, HomeIcon, PaletteIcon } from './icons';
 
 export interface MobileNavDrawerProps {
   currentPath?: string;
@@ -187,7 +188,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                         : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
                     }`}
                   >
-                    <span className="text-base" aria-hidden="true">🏠</span>
+                    <HomeIcon size={18} />
                     <span>{t('nav.home')}</span>
                   </button>
 
@@ -202,7 +203,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                         : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
                     }`}
                   >
-                    <span className="text-base" aria-hidden="true">🎨</span>
+                    <PaletteIcon size={18} />
                     <span>{t('nav.gallery')}</span>
                   </button>
 
@@ -217,7 +218,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                         : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
                     }`}
                   >
-                    <span className="text-base" aria-hidden="true">⚙️</span>
+                    <GearIcon size={18} />
                     <span>{t('nav.settings')}</span>
                   </button>
                 </nav>

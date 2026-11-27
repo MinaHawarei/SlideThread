@@ -8,6 +8,7 @@ import { clearAllUserData } from '../../core/storage';
 import { SocialIcon } from '../../slides/SignatureBar';
 import type { SocialPlatform, SignatureConfig } from '../../core/schema';
 import { DEFAULT_SIGNATURE_CONFIG } from '../../core/schema';
+import { CameraIcon, CloseIcon, SparkleIcon } from '../common/icons';
 
 const ALL_SOCIAL_PLATFORMS: SocialPlatform[] = [
   'linkedin',
@@ -80,7 +81,7 @@ export const BrandInspector: React.FC = () => {
           className="p-3 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800 rounded-xl flex items-center justify-between text-xs"
         >
           <div className="flex items-center gap-2 text-cyan-800 dark:text-cyan-300 font-medium">
-            <span>✨</span>
+            <SparkleIcon size={16} />
             <span>{t('brand.isOverridden')}</span>
           </div>
           <button
@@ -126,12 +127,12 @@ export const BrandInspector: React.FC = () => {
                 className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 text-xl"
               >
                 {settings.displayName.trim().charAt(0).toUpperCase() || 'M'}
-                <span className="avatar-camera-badge" aria-hidden="true">📷</span>
+                <CameraIcon size={16} />
               </div>
             )}
 
             <div className="avatar-hover-overlay" aria-hidden="true">
-              <span className="avatar-hover-icon">📷</span>
+              <CameraIcon size={16} />
             </div>
           </div>
 
@@ -142,7 +143,7 @@ export const BrandInspector: React.FC = () => {
               onClick={triggerUpload}
               className="min-h-[44px] py-2 px-4 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors flex items-center justify-center gap-2 shadow-xs"
             >
-              <span>📷</span>
+              <CameraIcon size={16} />
               <span>{t('brand.uploadPhoto')}</span>
             </button>
 
@@ -408,7 +409,7 @@ export const BrandInspector: React.FC = () => {
                   aria-label={`Remove ${s.platform}`}
                   className="min-h-[44px] min-w-[44px] flex items-center justify-center text-red-500 hover:text-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                 >
-                  ✕
+                  <CloseIcon size={16} />
                 </button>
               </div>
             ))}

@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 
+// /ux-preview is a DEV-only route (import.meta.env.DEV), absent from the production build CI serves.
+// Run it with SPIKE_DEV=1 against the Vite dev server (PLAYWRIGHT_TEST_BASE_URL=http://localhost:5199).
+test.skip(!process.env.SPIKE_DEV, 'dev-only route /ux-preview: needs the Vite dev server, run with SPIKE_DEV=1');
+
 test.describe('R0-6 UX direction preview', () => {
   test('switches directions, built pages, gallery states, theme, and language', async ({ page }) => {
     await page.goto('/ux-preview');

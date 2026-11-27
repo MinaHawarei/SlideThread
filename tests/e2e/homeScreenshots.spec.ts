@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -34,23 +34,22 @@ test.describe('R8-1 Home Screen UX Screenshots', () => {
             }
           }, theme);
 
-          // Set locale if needed
-          if (locale === 'ar') {
-            const langBtn = page.getByTestId('language-switcher');
-            const isCurrentlyAr = await page.evaluate(() => document.documentElement.dir === 'rtl');
-            if (!isCurrentlyAr) {
-              await langBtn.click();
-            }
-          } else {
-            const isCurrentlyAr = await page.evaluate(() => document.documentElement.dir === 'rtl');
-            if (isCurrentlyAr) {
-              const langBtn = page.getByTestId('language-switcher');
-              await langBtn.click();
-            }
+          // Language lives in Settings (v5): switch there, then return to the page under test.
+          const wantRtl = locale === 'ar';
+          const isRtl = await page.evaluate(() => document.documentElement.dir === 'rtl');
+          if (isRtl !== wantRtl) {
+            const back = new URL(page.url()).pathname + new URL(page.url()).search;
+            await page.goto('/settings');
+            await page.getByTestId(wantRtl ? 'settings-lang-ar-btn' : 'settings-lang-en-btn').click();
+            await page.goto(back);
+            await page.evaluate((th) => {
+              document.documentElement.classList.toggle('dark', th === 'dark');
+            }, theme);
           }
+          expect(await page.evaluate(() => document.documentElement.dir)).toBe(wantRtl ? 'rtl' : 'ltr');
 
           // Wait for carousel to be visible
-          await page.waitForSelector('[data-testid="hero-carousel"]');
+          await page.waitForSelector('[data-testid="start-screen"]');
           await page.waitForTimeout(200);
 
           const filePath = path.join(outDir, `${vp.width}x${vp.height}-${theme}-${locale}.jpg`);

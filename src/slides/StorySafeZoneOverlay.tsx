@@ -62,7 +62,7 @@ export const StorySafeZoneOverlay: React.FC<StorySafeZoneOverlayProps> = ({
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
           }}
         >
-          ⚠️ Top Safe Zone (14% / {insets.top}px) · Profile & Story Header
+          Top Safe Zone (14% / {insets.top}px) · Profile & Story Header
         </span>
       </div>
 
@@ -97,7 +97,7 @@ export const StorySafeZoneOverlay: React.FC<StorySafeZoneOverlayProps> = ({
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
           }}
         >
-          ⚠️ Bottom Safe Zone (14% / {insets.bottom}px) · Reply & Actions Bar
+          Bottom Safe Zone (14% / {insets.bottom}px) · Reply & Actions Bar
         </span>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useEffectiveBrand } from '../../store/projectStore';
 import { useAvatarUpload } from '../common/useAvatarUpload';
+import { CameraIcon, CloseIcon, SparkleIcon } from '../common/icons';
 
 export interface BrandOverrideControlsProps {
   onClose?: () => void;
@@ -43,7 +44,7 @@ export const BrandOverrideControls: React.FC<BrandOverrideControlsProps> = ({
             id="brand-override-title"
             className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5"
           >
-            <span>✨</span>
+            <SparkleIcon size={16} />
             <span>{t('brand.overrideTitle')}</span>
           </h3>
           <p className="text-[10px] text-slate-500 dark:text-slate-400">
@@ -59,7 +60,7 @@ export const BrandOverrideControls: React.FC<BrandOverrideControlsProps> = ({
             className="w-6 h-6 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs"
             aria-label="Close"
           >
-            ✕
+            <CloseIcon size={16} />
           </button>
         )}
       </div>
@@ -93,11 +94,11 @@ export const BrandOverrideControls: React.FC<BrandOverrideControlsProps> = ({
               aria-hidden="true"
               className="absolute -bottom-1 -end-1 w-5 h-5 rounded-full bg-cyan-600 text-white text-[10px] flex items-center justify-center shadow border border-white dark:border-stone-900"
             >
-              📷
+              <CameraIcon size={11} />
             </span>
           ) : (
             <div className="avatar-hover-overlay rounded-full" aria-hidden="true">
-              <span className="text-xs">📷</span>
+              <CameraIcon size={13} />
             </div>
           )}
           <input

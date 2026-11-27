@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+// /spike is a development-only route (App.tsx registers it only when import.meta.env.DEV), so these tests can not run against the
+// production preview server Playwright starts. Run them against `npm run dev` with PLAYWRIGHT_TEST_BASE_URL set and SPIKE_DEV=1.
+// Without that the skip is reported with this reason; it is not silent.
+test.skip(!process.env.SPIKE_DEV, 'dev-only /spike route: needs the dev server and SPIKE_DEV=1');
+
 test('native pointer translation is physical in RTL and survives PNG capture', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/spike');

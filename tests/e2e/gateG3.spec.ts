@@ -3,8 +3,14 @@ import { test, expect } from '@playwright/test';
 test.describe('Gate G3 Verification Flow', () => {
   test('Complete flow on desktop: Start -> Wizard -> Editor, format/template/color/theme switching with lossless content, keyboard nav, and no console errors', async ({ page }) => {
     const consoleErrors: string[] = [];
+    // Vercel Analytics requests /_vercel/insights/script.js, which only exists on Vercel. Locally that is an
+    // expected 404 whose console line carries no URL, so network failures are checked per response instead.
+    const badResponses: string[] = [];
+    page.on('response', (res) => {
+      if (res.status() >= 400 && !res.url().includes('/_vercel/insights/')) badResponses.push(`${res.status()} ${res.url()}`);
+    });
     page.on('console', (msg) => {
-      if (msg.type() === 'error') {
+      if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource')) {
         consoleErrors.push(msg.text());
       }
     });
@@ -92,12 +98,19 @@ test.describe('Gate G3 Verification Flow', () => {
 
     // 13. Verify Zero Console Errors
     expect(consoleErrors).toEqual([]);
+    expect(badResponses).toEqual([]);
   });
 
   test('Complete flow on mobile phone viewport (390x844): Start -> Demo Project -> Mobile Editor, swipe gestures, tabs, and bottom sheet', async ({ page }) => {
     const consoleErrors: string[] = [];
+    // Vercel Analytics requests /_vercel/insights/script.js, which only exists on Vercel. Locally that is an
+    // expected 404 whose console line carries no URL, so network failures are checked per response instead.
+    const badResponses: string[] = [];
+    page.on('response', (res) => {
+      if (res.status() >= 400 && !res.url().includes('/_vercel/insights/')) badResponses.push(`${res.status()} ${res.url()}`);
+    });
     page.on('console', (msg) => {
-      if (msg.type() === 'error') {
+      if (msg.type() === 'error' && !msg.text().startsWith('Failed to load resource')) {
         consoleErrors.push(msg.text());
       }
     });
@@ -153,5 +166,6 @@ test.describe('Gate G3 Verification Flow', () => {
 
     // 8. Verify Zero Console Errors
     expect(consoleErrors).toEqual([]);
+    expect(badResponses).toEqual([]);
   });
 });

@@ -2,22 +2,23 @@ import React from 'react';
 import { useT } from '../../i18n';
 import type { TranslationKey } from '../../i18n/en';
 import type { SlideType } from '../../core/schema';
+import { ArrowRightCircleIcon, BoltIcon, ChatIcon, CloseIcon, CodeIcon, ImageIcon, StatIcon, SwapIcon, TextIcon, TitleIcon } from '../common/icons';
 
 export interface SlideTypeOption {
   type: SlideType;
-  icon: string;
+  icon: React.FC<{ size?: number; className?: string }>;
 }
 
 const ALL_SLIDE_TYPES: SlideTypeOption[] = [
-  { type: 'cover', icon: '🎯' },
-  { type: 'explain', icon: '📝' },
-  { type: 'rule', icon: '⚡' },
-  { type: 'code', icon: '💻' },
-  { type: 'compare', icon: '⚖️' },
-  { type: 'stat', icon: '📊' },
-  { type: 'quote', icon: '💬' },
-  { type: 'image', icon: '🖼️' },
-  { type: 'cta', icon: '🚀' },
+  { type: 'cover', icon: TitleIcon },
+  { type: 'explain', icon: TextIcon },
+  { type: 'rule', icon: BoltIcon },
+  { type: 'code', icon: CodeIcon },
+  { type: 'compare', icon: SwapIcon },
+  { type: 'stat', icon: StatIcon },
+  { type: 'quote', icon: ChatIcon },
+  { type: 'image', icon: ImageIcon },
+  { type: 'cta', icon: ArrowRightCircleIcon },
 ];
 
 export interface SlideTypePickerProps {
@@ -52,7 +53,7 @@ export const SlideTypePicker: React.FC<SlideTypePickerProps> = ({
             className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs p-1 rounded"
             aria-label="Close"
           >
-            ✕
+            <CloseIcon size={16} />
           </button>
         )}
       </div>
@@ -78,7 +79,7 @@ export const SlideTypePicker: React.FC<SlideTypePickerProps> = ({
               title={desc}
             >
               <span className="text-2xl mb-1.5 transition-transform group-hover:scale-110">
-                {icon}
+                {React.createElement(icon, { size: 18 })}
               </span>
               <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
                 {title}

@@ -7,6 +7,8 @@
  *   - 4:5, 1:1, 9:16 non-landscape formats are unaffected (regression guard).
  */
 import { test, expect, type Page } from '@playwright/test';
+import { openTemplateDialog } from './helpers/wizard';
+import { setDirection } from './helpers/direction';
 
 type TemplateName = 'clean-minimal' | 'heritage-geometric' | 'soft-gradient' | 'bold-marketing' | 'tech-mesh';
 
@@ -42,13 +44,10 @@ async function createLandscapeCover(page: Page, templateId: string, lang: 'en' |
   await expect(page.locator('[data-testid="start-screen"]')).toBeVisible({ timeout: 15000 });
 
   if (lang === 'ar') {
-    // Switch language to Arabic if switcher available
-    const langBtn = page.getByTestId('language-switcher');
-    if (await langBtn.count() > 0) await langBtn.click();
+    await setDirection(page, 'rtl');
   }
 
-  await page.getByTestId('start-wizard-btn').click();
-  await page.getByTestId(`template-${templateId}`).click();
+  await openTemplateDialog(page, templateId);
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_16_9').click();
@@ -87,7 +86,11 @@ test.describe('Task 2 — 16:9 cover: title/subtitle does not overlap the side c
         const cardEl = slideCanvas.locator('.slide-card').first();
         await expect(titleEl).toBeVisible();
         await expect(titleEl).toHaveText(title);
-        await expect(subEl).toBeVisible();
+        // clean-minimal is opened through Start creating, which is the Blank project: its subtitle is
+        // intentionally empty and not rendered. Assert that, instead of expecting sample content.
+        const blankBase = template === 'clean-minimal';
+        if (blankBase) await expect(subEl).toHaveCount(0);
+        else await expect(subEl).toBeVisible();
         await expect(cardEl).toBeVisible();
 
         const cardBox = await cardEl.boundingBox();
@@ -97,7 +100,7 @@ test.describe('Task 2 — 16:9 cover: title/subtitle does not overlap the side c
           boxesOverlap(titleBox, cardBox),
           `title overlaps card in template=${template} title=${titleKind}`,
         ).toBe(false);
-        const subBox = await subEl.boundingBox();
+        const subBox = blankBase ? null : await subEl.boundingBox();
         expect(
           boxesOverlap(subBox, cardBox),
           `subtitle overlaps card in template=${template} title=${titleKind}`,

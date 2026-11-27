@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useT } from '../../i18n';
 import { useCropStore } from '../../store/cropStore';
 import { calculateInteractiveCrop, renderCroppedSquare } from '../../core/media';
+import { CloseIcon } from './icons';
 
 export interface PhotoCropDialogProps {
   isOpen?: boolean;
@@ -187,7 +188,7 @@ export const PhotoCropDialog: React.FC<PhotoCropDialogProps> = (props) => {
             aria-label="Close"
             className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-lg"
           >
-            ✕
+            <CloseIcon size={16} />
           </button>
         </div>
 

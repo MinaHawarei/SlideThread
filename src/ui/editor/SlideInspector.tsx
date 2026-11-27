@@ -9,6 +9,7 @@ import { IconsPicker } from './IconsPicker';
 import { EmojiStickersPicker } from './EmojiStickersPicker';
 import { ImageExtraControls } from './ImageExtraControls';
 import { BackgroundControls } from './BackgroundControls';
+import { WarningIcon } from '../common/icons';
 
 const ALL_SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -95,7 +96,7 @@ export const SlideInspector: React.FC = () => {
           className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 space-y-2"
         >
           <div className="flex items-start gap-2">
-            <span className="text-sm">⚠️</span>
+            <WarningIcon size={16} />
             <p className="text-xs font-medium leading-relaxed">
               {t('editor.overflowWarning')}
             </p>

@@ -16,6 +16,7 @@ import {
   type ExportProgress,
 } from '../../export/pipeline';
 import type { Slide } from '../../core/schema';
+import { CheckIcon, CloseIcon, DownloadIcon, ImageIcon, LinkIcon, PackageIcon, PageIcon } from '../common/icons';
 
 export interface ExportDialogProps {
   isOpen: boolean;
@@ -220,7 +221,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               aria-label={t('common.close')}
               className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"
             >
-              ✕
+              <CloseIcon size={16} />
             </button>
           )}
         </div>
@@ -245,7 +246,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
                     : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                <span className="text-lg mb-1">🖼️</span>
+                <ImageIcon size={20} />
                 <span className="text-xs font-bold">{t('export.pngSingle')}</span>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">.png</span>
               </button>
@@ -262,7 +263,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
                     : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                <span className="text-lg mb-1">📦</span>
+                <PackageIcon size={20} />
                 <span className="text-xs font-bold">{t('export.pngZip')}</span>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">.zip</span>
               </button>
@@ -279,7 +280,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
                     : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                <span className="text-lg mb-1">📄</span>
+                <PageIcon size={20} />
                 <span className="text-xs font-bold">{t('export.pdf')}</span>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">.pdf</span>
               </button>
@@ -359,7 +360,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               </div>
               {success && (
                 <div className="flex items-center gap-2 pt-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium animate-in slide-in-from-bottom-1 duration-200">
-                  <span className="flex items-center justify-center w-4 h-4 rounded-full bg-emerald-500/20 text-[10px] font-bold">✓</span>
+                  <CheckIcon size={16} />
                   <span>{t('export.success')}</span>
                 </div>
               )}
@@ -397,7 +398,7 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               onClick={() => startExport(true)}
               className="px-4 py-2 rounded-xl text-xs font-bold border border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/10 disabled:opacity-50 transition-colors flex items-center gap-1.5"
             >
-              <span>🔗</span>
+              <LinkIcon size={16} />
               <span>{t('export.share')}</span>
             </button>
           )}
@@ -416,12 +417,12 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               </>
             ) : success ? (
               <>
-                <span>✓</span>
+                <CheckIcon size={16} />
                 <span>{t('export.success')}</span>
               </>
             ) : (
               <>
-                <span>↓</span>
+                <DownloadIcon size={16} />
                 <span>{t('export.startBtn')}</span>
               </>
             )}

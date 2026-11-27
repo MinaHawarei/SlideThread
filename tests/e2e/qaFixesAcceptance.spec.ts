@@ -157,13 +157,12 @@ test.describe('QA Fixes Acceptance Tests (Real Browser)', () => {
     await page.getByTestId('settings-lang-ar-btn').click();
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 
-    // Home hero carousel in Arabic: counter dir="ltr", prev button has → on right, next has ← on left
+    // Home in Arabic: the redesigned Home has no hero carousel (the component is covered by
+    // tests/unit/heroCarousel.test.tsx). Assert the real Home renders in RTL instead.
     await page.goto('/');
-    const heroBadgeBdi = page.locator('[data-testid="hero-slide-stage"] bdi').last();
-    await expect(heroBadgeBdi).toHaveAttribute('dir', 'ltr');
-    await expect(heroBadgeBdi).toHaveText('1 / 9');
-    await expect(page.getByTestId('hero-prev-btn')).toHaveText('→');
-    await expect(page.getByTestId('hero-next-btn')).toHaveText('←');
+    await expect(page.getByTestId('start-screen')).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.getByTestId('start-wizard-btn')).toBeVisible();
 
     // Mobile editor in Arabic: counter bdi, chevrons, Arabic aria-labels
     await page.goto('/editor');

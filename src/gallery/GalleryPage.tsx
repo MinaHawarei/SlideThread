@@ -207,7 +207,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
         </div>
 
         <main className="ed-head" style={{ paddingBottom: 40 }}>
-          {builderOpen && <TemplateBuilderDialog mode={theme} accent={effectivePrimaryColor} onClose={() => setBuilderOpen(false)} onCreated={(name) => { setBuilderOpen(false); setPackageError(undefined); setPackageNotice(`“${name}” was added to Your templates.`); }} />}
+          {builderOpen && <TemplateBuilderDialog onClose={() => setBuilderOpen(false)} onCreated={(name) => { setBuilderOpen(false); setPackageError(undefined); setPackageNotice(`“${name}” was added to Your templates.`); }} />}
           {(packageError || userLibraryError) && <p role="alert" data-testid="template-import-error" className="mt-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/30 dark:text-red-200">{packageError ?? userLibraryError}</p>}
           {packageNotice && <p role="status" data-testid="template-import-notice" className="mt-4 rounded-xl border border-emerald-300 bg-emerald-50 p-3 text-sm text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200">{packageNotice}</p>}
 

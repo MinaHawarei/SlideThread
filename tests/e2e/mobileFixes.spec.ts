@@ -34,8 +34,8 @@ for (const width of [320, 390]) {
           const toggleBox = await toggle.boundingBox();
           expect(toggleBox).not.toBeNull();
 
-          // Find logo SVG inside header (second svg in header, after hamburger svg)
-          const headerLogo = page.locator('header svg').nth(1);
+          // The brand link: a text wordmark in the app nav, a logo mark on the template preview header
+          const headerLogo = page.locator('header a[href="/"][dir="ltr"]:visible').first();
           const logoBox = await headerLogo.boundingBox();
           expect(logoBox).not.toBeNull();
 

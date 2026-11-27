@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useT } from '../../i18n';
+import { CloseIcon, KeyboardIcon } from './icons';
 
 export interface ShortcutsOverlayProps {
   isOpen: boolean;
@@ -63,7 +64,7 @@ export const ShortcutsOverlay: React.FC<ShortcutsOverlayProps> = ({ isOpen, onCl
       >
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-stone-800">
           <div className="flex items-center gap-2">
-            <span className="text-xl">⌨️</span>
+            <KeyboardIcon size={22} />
             <h2 className="font-serif font-bold text-lg text-stone-900 dark:text-stone-100">
               {t('shortcuts.title')}
             </h2>
@@ -74,7 +75,7 @@ export const ShortcutsOverlay: React.FC<ShortcutsOverlayProps> = ({ isOpen, onCl
             onClick={onClose}
             className="w-8 h-8 rounded-full flex items-center justify-center text-stone-500 hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors"
           >
-            ✕
+            <CloseIcon size={16} />
           </button>
         </div>
 

@@ -9,6 +9,10 @@ const viewports = [
   { name: '1440x900', width: 1440, height: 900 },
 ];
 
+// /layout-preview is a DEV-only route (import.meta.env.DEV), absent from the production build CI serves.
+// Run it with SPIKE_DEV=1 against the Vite dev server (PLAYWRIGHT_TEST_BASE_URL=http://localhost:5199).
+test.skip(!process.env.SPIKE_DEV, 'dev-only route /layout-preview: needs the Vite dev server, run with SPIKE_DEV=1');
+
 for (const viewport of viewports) {
   for (const theme of ['light', 'dark'] as const) {
     for (const direction of ['ltr', 'rtl'] as const) {

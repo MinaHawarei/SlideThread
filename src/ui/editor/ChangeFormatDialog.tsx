@@ -6,6 +6,7 @@ import { generatePalette } from '../../core/palette';
 import { SlideRenderer } from '../../slides/SlideRenderer';
 import type { Orientation } from '../../core/schema';
 import type { TranslationKey } from '../../i18n';
+import { CheckIcon, CloseIcon, FrameLandscapeIcon, FramePortraitIcon, InfoIcon } from '../common/icons';
 
 const FORMAT_LABELS: Record<FormatId, TranslationKey> = {
   r_4_5: 'wizard.format.portrait',
@@ -117,7 +118,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
             aria-label={t('design.changeFormat.cancel')}
             className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            ✕
+            <CloseIcon size={16} />
           </button>
         </div>
 
@@ -155,7 +156,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                       </span>
                       {isSelected && (
                         <span className="w-4 h-4 rounded-full bg-cyan-500 text-white flex items-center justify-center text-[10px] font-bold">
-                          ✓
+                          <CheckIcon size={10} />
                         </span>
                       )}
                     </div>
@@ -184,7 +185,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                         : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
                     }`}
                   >
-                    <span>▭</span>
+                    <FrameLandscapeIcon size={16} />
                     <span>{t('design.changeFormat.landscape')}</span>
                   </button>
                   <button
@@ -197,7 +198,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
                         : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
                     }`}
                   >
-                    <span>▯</span>
+                    <FramePortraitIcon size={16} />
                     <span>{t('design.changeFormat.portrait')}</span>
                   </button>
                 </div>
@@ -206,7 +207,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
             {/* Explanation Note on Per-Aspect-Class Overrides */}
             <div className="p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl text-xs space-y-2">
               <div className="flex items-start gap-2 text-slate-600 dark:text-slate-300">
-                <span className="text-cyan-500 font-bold shrink-0">ℹ️</span>
+                <InfoIcon size={16} />
                 <span>{t('design.changeFormat.overridesNotice')}</span>
               </div>
 
@@ -309,7 +310,7 @@ export const ChangeFormatDialog: React.FC<ChangeFormatDialogProps> = ({
             onClick={handleApply}
             className="min-h-[44px] py-2 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
           >
-            <span>✓</span>
+            <CheckIcon size={16} />
             <span>{t('design.changeFormat.apply')}</span>
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -34,20 +34,18 @@ test.describe('R8-3 Desktop Editor Chrome UX Screenshots', () => {
             }
           }, theme);
 
-          // Set locale if needed
-          if (locale === 'ar') {
-            const langBtn = page.getByTestId('language-switcher');
-            const isCurrentlyAr = await page.evaluate(() => document.documentElement.dir === 'rtl');
-            if (!isCurrentlyAr) {
-              await langBtn.click();
-            }
-          } else {
-            const isCurrentlyAr = await page.evaluate(() => document.documentElement.dir === 'rtl');
-            if (isCurrentlyAr) {
-              const langBtn = page.getByTestId('language-switcher');
-              await langBtn.click();
-            }
+          // Language lives in Settings (v5), not in the editor: switch there, then return.
+          const wantRtl = locale === 'ar';
+          const isRtl = await page.evaluate(() => document.documentElement.dir === 'rtl');
+          if (isRtl !== wantRtl) {
+            await page.goto('/settings');
+            await page.getByTestId(wantRtl ? 'settings-lang-ar-btn' : 'settings-lang-en-btn').click();
+            await page.goto('/editor');
+            await page.evaluate((th) => {
+              document.documentElement.classList.toggle('dark', th === 'dark');
+            }, theme);
           }
+          expect(await page.evaluate(() => document.documentElement.dir)).toBe(wantRtl ? 'rtl' : 'ltr');
 
           // Wait for editor container to be visible
           await page.waitForSelector('[data-testid="main-canvas"], [data-testid="mobile-stage-viewport"], [data-testid="editor-mobile"]');

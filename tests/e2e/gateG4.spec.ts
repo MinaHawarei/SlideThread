@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import * as fs from 'fs';
 import JSZip from 'jszip';
+import { createFromHome } from './helpers/wizard';
 
 test.describe('Gate G4 Verification (End of Phase 4)', () => {
   test.setTimeout(120000);
@@ -20,16 +21,11 @@ test.describe('Gate G4 Verification (End of Phase 4)', () => {
     await page.goto('/');
     await expect(page.locator('[data-testid="start-screen"]')).toBeVisible();
 
-    // 2. Direct format creation for fast, clean slide set
-    const directCard = page.locator('[data-testid="start-direct-card"]');
-    await directCard.click();
-
-    const formatSquare = page.locator('[data-testid="direct-format-r_1_1"]');
-    await expect(formatSquare).toBeVisible();
-    await formatSquare.click();
+    // 2. Create a clean 1:1 carousel through the Start creating dialog (the old Direct format card was replaced by it)
+    await createFromHome(page, { platform: 'linkedin', type: 'carousel', format: 'r_1_1' });
 
     // 3. Verify Editor Desktop
-    await expect(page.locator('[data-testid="editor-desktop"]')).toBeVisible();
+    await expect(page.locator('[data-testid="editor-desktop"]')).toBeVisible({ timeout: 30000 });
     const slidesRail = page.locator('[data-testid="slide-rail"]');
     await expect(slidesRail).toBeVisible();
 

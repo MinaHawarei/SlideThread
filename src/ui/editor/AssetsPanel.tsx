@@ -18,6 +18,7 @@ import {
   type AssetItem,
 } from '../../assets';
 import type { ExtraElement } from '../../core/schema';
+import { PenIcon, PencilIcon, UploadIcon } from '../common/icons';
 
 export type AssetCategory = 'all' | 'shapes' | 'icons' | 'emoji' | 'stickers' | 'recents';
 
@@ -269,7 +270,7 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
           title="Pencil: draw a freehand shape on the slide"
           className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-500 hover:bg-amber-600 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap"
         >
-          <span>✎</span>
+          <PencilIcon size={16} />
           <span>Pencil</span>
         </button>
 
@@ -280,7 +281,7 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
           title="Pen: click to place points, drag to curve"
           className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap"
         >
-          <span>✒</span>
+          <PenIcon size={16} />
           <span>Pen</span>
         </button>
 
@@ -291,7 +292,7 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
           title={t('assets.uploadTitle')}
           className="px-3 py-2 text-xs font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap"
         >
-          <span>↑</span>
+          <UploadIcon size={16} />
           <span>{t('assets.uploadBtn')}</span>
         </button>
       </div>

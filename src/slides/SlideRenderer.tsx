@@ -252,6 +252,8 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
         item.el.style.opacity = item.opacity;
       }
     };
+  // slideDims is a fresh object on every render; its width and height are the real inputs, so depend on those.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [template, overrides, aspectClass, slideDims.width, slideDims.height]);
 
   useLayoutEffect(() => {

@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+import { openTemplateDialog } from './helpers/wizard';
 
 test.describe('Task R9-1: Comprehensive Export Regression Suite', () => {
   const goldensDir = path.resolve(process.cwd(), 'docs/export-goldens');
@@ -15,8 +16,7 @@ test.describe('Task R9-1: Comprehensive Export Regression Suite', () => {
     (format: string, template: string, landscape = false): Setup =>
     async (page) => {
       await page.goto('/');
-      await page.getByTestId('start-wizard-btn').click();
-      await page.getByTestId(`template-${template}`).click();
+      await openTemplateDialog(page, template);
       await page.getByTestId('platform-linkedin').click();
       await page.getByTestId('type-carousel').click();
       await page.getByTestId(`format-${format}`).click();

@@ -8,6 +8,7 @@ import { SlideRenderer } from '../../slides/SlideRenderer';
 import { PasteSlidesDialog } from './PasteSlidesDialog';
 import { SlideTypePicker } from './SlideTypePicker';
 import type { SlideType, Slide, AspectClass } from '../../core/schema';
+import { ChevronDownIcon, ChevronUpIcon, ClipboardIcon, TrashIcon } from '../common/icons';
 
 export interface SlideRailProps {
   className?: string;
@@ -218,7 +219,7 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
               aria-label={t('editor.moveUp')}
               title={t('editor.moveUp')}
             >
-              ▲
+              <ChevronUpIcon size={16} />
             </button>
             <button
               type="button"
@@ -232,7 +233,7 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
               aria-label={t('editor.moveDown')}
               title={t('editor.moveDown')}
             >
-              ▼
+              <ChevronDownIcon size={16} />
             </button>
           </div>
         )}
@@ -266,7 +267,7 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
               aria-label={t('editor.deleteSlide')}
               title={t('editor.deleteSlide')}
             >
-              🗑
+              <TrashIcon size={16} />
             </button>
           )}
         </div>
@@ -389,7 +390,7 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
                 aria-label={t('paste.title')}
                 title={t('paste.title')}
               >
-                <span>📋</span>
+                <ClipboardIcon size={16} />
               </button>
               <div className="relative flex items-center">
                 <button

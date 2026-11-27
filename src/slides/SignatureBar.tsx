@@ -2,6 +2,7 @@ import React from 'react';
 import type { BrandSettings, SocialPlatform, SignatureConfig } from '../core/schema';
 import { formatSlideCounter } from './signatureUtils';
 import { useAvatarUpload } from '../ui/common/useAvatarUpload';
+import { CameraIcon } from '../ui/common/icons';
 
 export interface SignatureBarProps {
   brand?: Partial<BrandSettings>;
@@ -233,12 +234,12 @@ export const SignatureBar: React.FC<SignatureBarProps> = ({
           ) : (
             <div className="sig-avatar-placeholder" data-testid="sig-avatar-placeholder">
               {initial}
-              <span className="avatar-camera-badge sig-avatar-badge" aria-hidden="true">📷</span>
+              <CameraIcon size={16} />
             </div>
           )}
 
           <div className="avatar-hover-overlay" aria-hidden="true">
-            <span className="avatar-hover-icon">📷</span>
+            <CameraIcon size={16} />
           </div>
 
           <input

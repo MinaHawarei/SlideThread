@@ -19,6 +19,7 @@ import { FONT_REGISTRY, type FontId } from '../../fonts/registry';
 import { loadFont } from '../../fonts/loader';
 import { SHAPE_PALETTE_COLORS } from './shapePalette';
 import { ImageExtraControls } from './ImageExtraControls';
+import { CameraIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon, EyeIcon, EyeOffIcon, ImageIcon, LockIcon, TrashIcon, UnlockIcon } from '../common/icons';
 
 export interface ElementPropertiesPanelProps {
   onClose?: () => void;
@@ -60,7 +61,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
   const elements = useMemo(() => {
     if (!slide || !variant) return [];
     return resolveSlideElements(slideWithProjectFloating(slide, project, aspect), variant, aspect, project.templateSnapshot?.composition[slide.type]?.[aspect]?.hiddenSlots);
-  }, [slide, variant, aspect, project.templateSnapshot]);
+  }, [slide, variant, aspect, project]);
 
   const element = elements.find((el) => el.id === selectedId);
   const currentTextStyle: TextStyleOverride = element?.extra?.textStyle ?? (element?.kind === 'slot' ? slide?.overrides?.[aspect]?.[element.id]?.textStyle : undefined) ?? {};
@@ -448,7 +449,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
           title={t('editor.deselect')}
           className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 transition-colors cursor-pointer"
         >
-          ✕
+          <CloseIcon size={16} />
         </button>
       </div>
 
@@ -457,7 +458,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
         <BrandOverrideControls inline />
       )}
 
-      {element.locked && <p data-testid="sidebar-locked-notice" className="text-xs text-amber-700 dark:text-amber-400">{t('editor.unlockLayer', { id: '' }).trim()} 🔒</p>}
+      {element.locked && <p data-testid="sidebar-locked-notice" className="text-xs text-amber-700 dark:text-amber-400"><span className="inline-flex items-center gap-1">{t('editor.unlockLayer', { id: '' }).trim()} <LockIcon size={13} /></span></p>}
       <fieldset disabled={element.locked} className="contents">
       {/* 2. Position & Size ("Settings first") */}
       <div className="space-y-3">
@@ -715,7 +716,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
                 data-testid="sidebar-image-placeholder-badge"
                 className="w-14 h-14 rounded-lg border border-dashed border-stone-300 dark:border-stone-600 flex items-center justify-center text-stone-400 font-mono text-xs shrink-0 bg-stone-100 dark:bg-stone-900"
               >
-                📷
+                <CameraIcon size={20} />
               </div>
             )}
             <div className="flex-1 min-w-0">
@@ -742,7 +743,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               onClick={() => imageInputRef.current?.click()}
               className="w-full min-h-[40px] py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <span>🖼️</span>
+              <ImageIcon size={16} />
               <span>{resolvedImageUrl ? t('editor.replaceImage') : t('editor.addImage')}</span>
             </button>
 
@@ -833,7 +834,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:bg-stone-200'
               }`}
           >
-            <span>{element.locked ? '🔒' : '🔓'}</span>
+            <span>{element.locked ? <LockIcon size={16} /> : <UnlockIcon size={16} />}</span>
             <span>{element.locked ? t('editor.unlockLayer', { id: '' }).trim() : t('editor.lockLayer', { id: '' }).trim()}</span>
           </button>
 
@@ -849,7 +850,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:bg-stone-200'
               }`}
           >
-            <span>{element.hidden ? '👁️‍🗨️' : '👁️'}</span>
+            <span>{element.hidden ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}</span>
             <span>{element.hidden ? t('editor.showLayer', { id: '' }).trim() : t('editor.hideLayer', { id: '' }).trim()}</span>
           </button>
 
@@ -862,7 +863,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
             onClick={() => handleLayerOrder('up')}
             className="min-h-[40px] min-w-[40px] px-2.5 rounded-lg text-xs font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-200 flex items-center justify-center cursor-pointer"
           >
-            ▲
+            <ChevronUpIcon size={16} />
           </button>
           <button
             type="button"
@@ -872,7 +873,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
             onClick={() => handleLayerOrder('down')}
             className="min-h-[40px] min-w-[40px] px-2.5 rounded-lg text-xs font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-200 flex items-center justify-center cursor-pointer"
           >
-            ▼
+            <ChevronDownIcon size={16} />
           </button>
 
           {/* Duplicate (for extras) */}
@@ -956,7 +957,7 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
             title={t('editor.deleteElement')}
             className="w-full min-h-[44px] py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-semibold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
-            <span>🗑️</span>
+            <TrashIcon size={16} />
             <span>{t('editor.deleteElement')}</span>
           </button>
         )}

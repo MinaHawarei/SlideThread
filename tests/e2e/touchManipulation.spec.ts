@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { setDirection } from './helpers/direction';
 
 test.use({ viewport: { width: 360, height: 800 }, hasTouch: true, isMobile: true });
 
@@ -55,7 +56,7 @@ test('touch manipulation review matrix', async ({ page }) => {
       if (width < 768) await page.getByTestId('element-hit-title').click();
       else await page.getByTestId('element-hit-title').focus();
       for (const direction of ['ltr', 'rtl']) {
-        if (await page.locator('html').getAttribute('dir') !== direction) await page.getByTestId('language-switcher').click();
+        await setDirection(page, direction as 'ltr' | 'rtl');
         await expect(page.locator('html')).toHaveAttribute('dir', direction);
         await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
         await page.screenshot({ path: `docs/ux-review/R3-4/editor-${width}x${height}-${theme}-${direction}.png` });

@@ -4,23 +4,13 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { MobileNavDrawer } from './MobileNavDrawer';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import './editorial.css';
+import { applyThemeWithFade } from './themeFade';
 
 export type AppNavPath = '/' | '/gallery' | '/settings';
 
 export interface AppNavProps {
   current: AppNavPath;
   onNavigate?: (path: string) => void;
-}
-
-/** Runs a short, global colour crossfade for a theme change. Skipped when the user prefers reduced motion. */
-export function applyThemeWithFade(next: 'light' | 'dark', setAppTheme: (theme: 'light' | 'dark') => void): void {
-  const root = document.documentElement;
-  const reduce = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce) {
-    root.classList.add('theme-fade');
-    window.setTimeout(() => root.classList.remove('theme-fade'), 320);
-  }
-  setAppTheme(next);
 }
 
 const SunIcon: React.FC = () => (

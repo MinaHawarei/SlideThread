@@ -7,6 +7,7 @@ import type { ExtraElement } from '../../core/schema';
 import { getDimensions } from '../../core/formats';
 import { createDefaultPath } from '../../core/vectorPath';
 import { SHAPE_PALETTE_COLORS } from './shapePalette';
+import { ChevronDownIcon, ChevronUpIcon, RulerIcon, StarIcon } from '../common/icons';
 
 
 export const ShapesPicker: React.FC = () => {
@@ -94,7 +95,7 @@ export const ShapesPicker: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-          <span>📐</span>
+          <RulerIcon size={16} />
           <span>{t('assets.shapesTitle')}</span>
         </label>
         <button
@@ -103,7 +104,7 @@ export const ShapesPicker: React.FC = () => {
           className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
           aria-expanded={isOpen}
         >
-          {isOpen ? '▲' : '▼'}
+          {isOpen ? <ChevronUpIcon size={12} /> : <ChevronDownIcon size={12} />}
         </button>
       </div>
 
@@ -198,7 +199,7 @@ export const ShapesPicker: React.FC = () => {
                     dangerouslySetInnerHTML={{ __html: svgContent }}
                   />
                 ) : (
-                  <span className="text-xs font-bold">★</span>
+                  <StarIcon size={13} />
                 )}
               </button>
             );

@@ -7,6 +7,7 @@ import { currentAccent, recolorTemplateSnapshot } from '../../templates/accent';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import { SaveDesignDialog } from './SaveDesignDialog';
 import type { ThemeMode, TextDir, Anchor } from '../../core/schema';
+import { MoonIcon, RulerIcon, SaveIcon, SunIcon, WarningIcon } from '../common/icons';
 
 const PRESET_COLORS = [
   { name: 'Cyan (Network)', hex: '#35D0E6' },
@@ -127,7 +128,7 @@ export const DesignInspector: React.FC = () => {
                 : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <span>🌙</span>
+            <MoonIcon size={16} />
             <span>{t('design.theme.dark')}</span>
           </button>
           <button
@@ -140,7 +141,7 @@ export const DesignInspector: React.FC = () => {
                 : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <span>☀️</span>
+            <SunIcon size={16} />
             <span>{t('design.theme.light')}</span>
           </button>
         </div>
@@ -229,7 +230,7 @@ export const DesignInspector: React.FC = () => {
                 className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-xs text-amber-800 dark:text-amber-300 space-y-1"
               >
                 <div className="flex items-center gap-1.5 font-semibold">
-                  <span>⚠️</span>
+                  <WarningIcon size={16} />
                   <span>{t('counter.collisionWarning')}</span>
                 </div>
               </div>
@@ -332,7 +333,7 @@ export const DesignInspector: React.FC = () => {
           onClick={() => setIsChangeFormatOpen(true)}
           className="w-full min-h-[44px] py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-cyan-500 text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center gap-2 shadow-xs"
         >
-          <span>📐</span>
+          <RulerIcon size={16} />
           <span>{t('design.changeFormat')}</span>
         </button>
       </div>
@@ -344,7 +345,7 @@ export const DesignInspector: React.FC = () => {
           onClick={() => setIsSaveDesignOpen(true)}
           className="w-full min-h-[44px] py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-cyan-500 text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors flex items-center justify-center gap-2 shadow-xs"
         >
-          <span>💾</span>
+          <SaveIcon size={16} />
           <span>Save design as template</span>
         </button>
       </div>

@@ -14,6 +14,7 @@ import { FORMAT_REGISTRY, type FormatId } from '../core/formats';
 import { FALLBACK_PRIMARY_COLOR } from '../templates/defaults';
 import { loadTemplateProjectSnapshot, templateDefinitionFromSnapshot } from '../templates/projectSnapshot';
 import { useUserTemplateLibrary } from '../templates/useUserTemplateLibrary';
+import { SparkleIcon, WarningIcon } from '../ui/common/icons';
 
 const SLIDE_TYPES: SlideType[] = [
   'cover',
@@ -138,7 +139,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
 
         <main className="max-w-md mx-auto w-full p-8 text-center space-y-4 my-auto">
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-3xl mx-auto">
-            ⚠️
+            <WarningIcon size={30} />
           </div>
           <h2 className="text-xl font-bold font-serif text-stone-900 dark:text-stone-100">
             {t('gallery.templateNotFound')}
@@ -239,7 +240,7 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
               onClick={handleUseThisTemplate}
               className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md transition-transform hover:scale-105 flex items-center gap-1.5 cursor-pointer"
             >
-              <span>✨</span>
+              <SparkleIcon size={16} />
               <span>{t('ux.gallery.use')}</span>
             </button>
           </div>

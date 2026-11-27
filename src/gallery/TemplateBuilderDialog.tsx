@@ -4,13 +4,11 @@ import { resolveTemplatePalette, type ValidatedTemplateData } from '../templates
 import { loadFont } from '../fonts/loader';
 import { FONT_REGISTRY, type FontId } from '../fonts/registry';
 import { buildManifest, buildTemplateZip, uniqueTemplateId, validateBuilderInput, type TemplateBuilderInput } from '../templates/builder';
+import { getTemplateDefaults } from '../templates/defaults';
 import { importTemplateZip } from '../templates/importZip';
 import { listUserTemplatePackages } from '../templates/userLibrary';
 
 interface Props {
-  /** Theme mode and accent a project made from this gallery starts with, so the preview matches the result. */
-  mode: 'light' | 'dark';
-  accent: string;
   onClose: () => void;
   onCreated: (name: string) => void;
 }
@@ -18,8 +16,10 @@ interface Props {
 const FONT_IDS = Object.keys(FONT_REGISTRY) as FontId[];
 
 /** Preview drawn from the real resolved palette of the base template, the chosen heading font and the card radius. */
-async function drawPreview(form: TemplateBuilderInput, mode: 'light' | 'dark', accent: string): Promise<Blob | undefined> {
+async function drawPreview(form: TemplateBuilderInput): Promise<Blob | undefined> {
   try {
+    // A project made from a template starts with the template's own theme and accent, not the app's, so draw that.
+    const { theme: mode, primaryColor: accent } = getTemplateDefaults(form.baseId);
     const loader = STARTER_TEMPLATE_LOADERS[form.baseId];
     if (!loader) return undefined;
     const base = (await loader()) as ValidatedTemplateData;
@@ -53,7 +53,7 @@ async function drawPreview(form: TemplateBuilderInput, mode: 'light' | 'dark', a
   } catch { return undefined; }
 }
 
-export const TemplateBuilderDialog: React.FC<Props> = ({ onClose, onCreated, mode, accent }) => {
+export const TemplateBuilderDialog: React.FC<Props> = ({ onClose, onCreated }) => {
   const [form, setForm] = useState<TemplateBuilderInput>({
     nameEn: '', nameAr: '', baseId: STARTER_TEMPLATE_IDS[0] ?? 'clean-minimal',
     displayFont: 'ibm-plex-sans', bodyFont: 'ibm-plex-sans-arabic', cardRadius: 24, chipRadius: 9999, authorName: '',
@@ -72,7 +72,7 @@ export const TemplateBuilderDialog: React.FC<Props> = ({ onClose, onCreated, mod
       const existing = await listUserTemplatePackages();
       const id = uniqueTemplateId(form.nameEn, existing.map((item) => item.id));
       const manifest = buildManifest(form, id);
-      const preview = await drawPreview(form, mode, accent);
+      const preview = await drawPreview(form);
       const zip = await buildTemplateZip(manifest, preview);
       // The same import path as a hand-made ZIP: size limits, schema, contrast and full runtime resolution.
       await importTemplateZip(zip);

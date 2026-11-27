@@ -45,9 +45,9 @@ test.describe('Task R9-3: Accessibility and Keyboard-only Navigation Audit', () 
 
     await expect(page.locator('[data-testid="editor-desktop"]')).toBeVisible();
 
-    // Language switcher
-    const langSwitcher = page.getByTestId('language-switcher');
-    await expect(langSwitcher).toBeVisible();
+    // Language lives on the Settings page now (Settings v5), not in the editor header. Its buttons are
+    // covered by settingsPage.spec.ts, so the editor must not carry a second switcher.
+    await expect(page.getByTestId('language-switcher')).toHaveCount(0);
 
     // Undo / Redo controls
     const undoBtn = page.getByTestId('editor-undo-btn');

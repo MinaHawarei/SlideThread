@@ -1,0 +1,11 @@
+tsc exit 0
+lint exit 0
+validate: printed 'Validated 27 templates'; process then hangs in vite.close() in this sandbox (killed by timeout; earlier at 03:50 exit 0)
+preview exit 0
+index exit 0
+build exit 0
+vitest shard 1 exit 0       Tests  184 passed (184)
+vitest shard 2 exit 0       Tests  161 passed (161)
+vitest shard 3 exit 0       Tests  472 passed (472)
+vitest shard 4 exit 0       Tests  159 passed (159)
+FIN

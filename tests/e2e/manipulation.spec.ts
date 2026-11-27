@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { openTemplateDialog } from './helpers/wizard';
 
 test('canvas selects, moves, and resets a layout slot through normalized overrides', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await openTemplateDialog(page, 'tech-mesh');
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_4_5').click();
@@ -30,9 +29,7 @@ test('canvas selects, moves, and resets a layout slot through normalized overrid
 
 test('manipulation overlay review matrix', async ({ page }) => {
   test.setTimeout(60000);
-  await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await openTemplateDialog(page, 'tech-mesh');
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_4_5').click();
