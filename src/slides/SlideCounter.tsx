@@ -88,6 +88,7 @@ export const SlideCounter: React.FC<SlideCounterProps> = ({
     position: 'absolute',
     zIndex: 10,
     pointerEvents: 'none',
+    width: 'max-content',
     ...getAnchorStyle(),
     ...style,
   };

@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AspectClass, Slide } from '../../core/schema';
+import { measureSlots } from './measureElements';
 import { NON_TEXT_SLOT_IDS, resizeSlotGeometry, mergeTemplateSlotFrames, resolveSlideElements, snapElementGeometry, resizeElementGeometryFromHandle, rotateElementGeometry, scaleElementGeometry, rotationAngleFromPointer, SLOT_SELECTORS, slotFieldKey, type ElementGeometry, type ResolvedElement, type ResizeHandle } from '../../core/elementModel';
 import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
@@ -59,6 +60,10 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   // Touch layouts use touch-action:none, so the browser never fires dblclick. Detect the double tap ourselves.
   const lastTap = useRef<{ id: string; time: number } | null>(null);
   const [measuredGeometry, setMeasuredGeometry] = useState<Record<string, ElementGeometry>>({});
+  const [fullGeometry, setFullGeometry] = useState<Record<string, ElementGeometry>>({});
+  const [presentSlots, setPresentSlots] = useState<ReadonlySet<string>>(new Set());
+  const [measuredOnce, setMeasuredOnce] = useState(false);
+  const measuredKey = useRef('');
 
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') {
@@ -137,26 +142,38 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
     return () => window.removeEventListener('pointerdown', handlePointerDownWhileEditing, { capture: true });
   }, [editingId]);
 
-  useLayoutEffect(() => {
+  // Measure the rendered slide so the selection frames follow what is really drawn: tight around text, present only
+  // when the element has content. Re-measured after every render, on resize, on DOM changes and when fonts finish.
+  const measureNow = useRef<() => void>(() => undefined);
+  measureNow.current = () => {
     const stage = layerRef.current?.parentElement;
     const overlayRect = layerRef.current?.getBoundingClientRect();
     const canvas = stage?.querySelector<HTMLElement>('.slide-canvas');
     if (!overlayRect?.width || !overlayRect.height || !canvas) return;
-    const measured: Record<string, ElementGeometry> = {};
-    for (const [id, selector] of Object.entries(SLOT_SELECTORS)) {
-      const node = canvas.querySelector<HTMLElement>(selector);
-      if (!node) continue;
-      const rect = node.getBoundingClientRect();
-      measured[id] = {
-        x: (rect.left - overlayRect.left) / overlayRect.width,
-        y: (rect.top - overlayRect.top) / overlayRect.height,
-        w: rect.width / overlayRect.width,
-        h: rect.height / overlayRect.height,
-        rotation: 0,
-      };
-    }
-    setMeasuredGeometry(measured);
-  }, [slide.id, slide.type, slide.fields, slide.overrides, aspect, width, height, zoom]);
+    const next = measureSlots(canvas, overlayRect);
+    const key = JSON.stringify([next.tight, next.full].map((m) => Object.entries(m).map(([k, g]) => [k, Math.round(g.x * 2000), Math.round(g.y * 2000), Math.round(g.w * 2000), Math.round(g.h * 2000)])));
+    if (key === measuredKey.current) return;
+    measuredKey.current = key;
+    setMeasuredGeometry(next.tight);
+    setFullGeometry(next.full);
+    setPresentSlots(next.present);
+    setMeasuredOnce(true);
+  };
+  useLayoutEffect(() => { measureNow.current(); });
+  useEffect(() => {
+    const canvas = layerRef.current?.parentElement?.querySelector<HTMLElement>('.slide-canvas');
+    if (!canvas) return undefined;
+    let frame = 0;
+    const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(() => measureNow.current()); };
+    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(schedule) : undefined;
+    resize?.observe(canvas);
+    if (layerRef.current) resize?.observe(layerRef.current);
+    const mutation = new MutationObserver(schedule);
+    mutation.observe(canvas, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style', 'class'] });
+    void document.fonts?.ready?.then(schedule);
+    const timers = [120, 500, 1200].map((ms) => window.setTimeout(schedule, ms));
+    return () => { cancelAnimationFrame(frame); resize?.disconnect(); mutation.disconnect(); timers.forEach(window.clearTimeout); };
+  }, [slide.id, slide.type, aspect]);
 
   useLayoutEffect(() => {
     const canvas = layerRef.current?.parentElement?.querySelector<HTMLElement>('.slide-canvas');
@@ -448,10 +465,14 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   return (
     <div ref={layerRef} aria-label={t('editor.manipulationOverlay')} data-testid="manipulation-layer" onTouchStart={(event) => event.stopPropagation()} onTouchMove={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()} style={{ position: 'absolute', inset: 0, width, height, zIndex: 20, pointerEvents: 'none' }}>
       {elements.filter((item) => !item.hidden).map((modelElement) => {
-        const element = measuredGeometry[modelElement.id]
+        const isSlotWithNode = modelElement.kind === 'slot' && Boolean(SLOT_SELECTORS[modelElement.id]);
+        // A slot with nothing drawn (empty field, hidden by the template) has no frame to click.
+        if (isSlotWithNode && measuredOnce && !presentSlots.has(modelElement.id) && selectedId !== modelElement.id) return null;
+        const measuredBox = editingId === modelElement.id ? fullGeometry[modelElement.id] : measuredGeometry[modelElement.id];
+        const element = measuredBox
           ? {
               ...modelElement,
-              ...measuredGeometry[modelElement.id],
+              ...measuredBox,
               rotation: slide.overrides?.[aspect]?.[modelElement.id]?.rotation ?? modelElement.rotation ?? 0,
             }
           : modelElement;

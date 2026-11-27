@@ -242,6 +242,9 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
     for (const [slotId, frame] of Object.entries(frames)) {
       const selector = SLOT_SELECTORS[slotId];
       if (!selector) continue;
+      // The slide counter and signature are placed by the project's anchor settings (Design tab). A layout frame
+      // applied on top of those anchors pushed them outside the slide, so frames never position them.
+      if (slotId === 'counter' || slotId === 'signature') continue;
       const isFlowCoverSlot = slide.type === 'cover' && (slotId === 'title' || slotId === 'body');
       for (const element of canvas.querySelectorAll<HTMLElement>(selector)) {
         // Landscape covers reserve the right grid column for the visual card.
@@ -249,10 +252,20 @@ export const SlideRenderer: React.FC<SlideRendererProps> = React.memo((props) =>
           isFlowCoverSlot && slotId === 'body' && aspectClass === 'landscape'
             ? Math.min(frame.inlineSize, 0.5) * slideDims.width
             : frame.inlineSize * slideDims.width;
+        // Children of a pinned wrapper (stat label/note under the value, CTA name/handle beside the avatar)
+        // flow inside that wrapper. Giving them slide-fraction insets as well pushed them off the slide.
+        if (
+          (slide.type === 'stat' && frames.value && element.closest('.stat-desc-group')) ||
+          (slide.type === 'cta' && frames.media && element.closest('.cta-profile-meta'))
+        ) {
+          continue;
+        }
+        const shiftX = 0;
+        const shiftY = 0;
         setManagedStyle(element, {
           position: 'absolute',
-          insetInlineStart: `${frame.inlineStart * slideDims.width}px`,
-          insetBlockStart: `${frame.blockStart * slideDims.height}px`,
+          insetInlineStart: `${frame.inlineStart * slideDims.width - shiftX}px`,
+          insetBlockStart: `${frame.blockStart * slideDims.height - shiftY}px`,
           width: `${slotWidth}px`,
           height: isFlowCoverSlot ? 'auto' : `${frame.blockSize * slideDims.height}px`,
           textAlign: frame.align === 'start' ? (textDir === 'rtl' ? 'right' : 'left') : frame.align === 'end' ? (textDir === 'rtl' ? 'left' : 'right') : 'center',

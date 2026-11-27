@@ -45,6 +45,11 @@ for (const [type, ids] of Object.entries(ELEMENTS)) {
     await page.waitForTimeout(600);
     for (const id of ids) {
       const hit = page.getByTestId(`element-hit-${id}`);
+      if ((await nodeWidth(page, id)) === undefined) {
+        // Empty field: nothing is rendered, so there must be no phantom frame on the canvas.
+        await expect(hit, `${type}/${id} is empty so it has no canvas frame`).toHaveCount(0);
+        continue;
+      }
       await expect(hit, `${type}/${id} has a canvas hit area`).toHaveCount(1);
       await hit.focus();
       await expect(page.getByTestId('element-properties-panel'), `${type}/${id} panel opens`).toBeVisible();
@@ -59,9 +64,6 @@ for (const [type, ids] of Object.entries(ELEMENTS)) {
       await page.getByTestId('sidebar-element-scale').fill('100');
       await expect.poll(() => nodeWidth(page, id), `${type}/${id} scale 100 restores width`).toBeLessThan(before * 1.1);
       // Dragging the resize handle changes the rendered size.
-      // Known pre-existing CTA layout defect: the name/handle block overflows the right edge of the slide, so its
-      // corner handle sits outside the slide and cannot be dragged. Selection, panel and scale controls are still asserted above.
-      if (type === 'cta' && (id === 'name' || id === 'handle')) continue;
       await page.waitForTimeout(400); // let the overlay re-measure before reading the handle position
       const handle = page.getByTestId(`resize-${id}`);
       const box = await handle.boundingBox();
