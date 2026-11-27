@@ -142,7 +142,18 @@ export const Inspector: React.FC<InspectorProps> = ({
 
       {/* Tab Panels */}
       <div className="flex-1 overflow-y-auto">
-        {selectedElementId ? (
+        {selectedElementId && (currentTab === 'layers' || currentTab === 'assets') ? (
+          // The Layers list and the Assets library stay on screen while an element is selected, so picking
+          // another layer or adding another asset never needs a trip back through the tab bar.
+          <>
+            <div role="tabpanel" id={`panel-${currentTab}`} aria-labelledby={`tab-${currentTab}`}>
+              {currentTab === 'layers' ? <LayersPanel /> : <AssetsPanel />}
+            </div>
+            <div className="border-t-4 border-amber-500/30">
+              <ElementPropertiesPanel onClose={() => selectElement(undefined)} />
+            </div>
+          </>
+        ) : selectedElementId ? (
           <ElementPropertiesPanel onClose={() => selectElement(undefined)} />
         ) : (
           <>

@@ -21,8 +21,17 @@
         "ar": "خط مستقيم"
       },
       "tags": {
-        "en": ["line", "divider", "separator", "rule"],
-        "ar": ["خط", "فاصل", "مستقيم"]
+        "en": [
+          "line",
+          "divider",
+          "separator",
+          "rule"
+        ],
+        "ar": [
+          "خط",
+          "فاصل",
+          "مستقيم"
+        ]
       },
       "file": "line-straight.svg",
       "recolorable": true,
@@ -36,8 +45,17 @@
         "ar": "خط متقطع"
       },
       "tags": {
-        "en": ["dashed", "line", "divider", "separator"],
-        "ar": ["متقطع", "خط", "فاصل"]
+        "en": [
+          "dashed",
+          "line",
+          "divider",
+          "separator"
+        ],
+        "ar": [
+          "متقطع",
+          "خط",
+          "فاصل"
+        ]
       },
       "file": "line-dashed.svg",
       "recolorable": true,
@@ -51,8 +69,18 @@
         "ar": "سهم مستقيم"
       },
       "tags": {
-        "en": ["arrow", "pointer", "direction", "right"],
-        "ar": ["سهم", "مؤشر", "اتجاه", "يمين"]
+        "en": [
+          "arrow",
+          "pointer",
+          "direction",
+          "right"
+        ],
+        "ar": [
+          "سهم",
+          "مؤشر",
+          "اتجاه",
+          "يمين"
+        ]
       },
       "file": "line-arrow.svg",
       "recolorable": true,
@@ -66,8 +94,17 @@
         "ar": "سهم مزدوج الاتجاه"
       },
       "tags": {
-        "en": ["arrow", "double", "bidirectional", "connector"],
-        "ar": ["سهم", "مزدوج", "رابط"]
+        "en": [
+          "arrow",
+          "double",
+          "bidirectional",
+          "connector"
+        ],
+        "ar": [
+          "سهم",
+          "مزدوج",
+          "رابط"
+        ]
       },
       "file": "line-double-arrow.svg",
       "recolorable": true,
@@ -81,8 +118,17 @@
         "ar": "خط متعرج"
       },
       "tags": {
-        "en": ["zigzag", "wave", "accent", "separator"],
-        "ar": ["متعرج", "موجة", "فاصل"]
+        "en": [
+          "zigzag",
+          "wave",
+          "accent",
+          "separator"
+        ],
+        "ar": [
+          "متعرج",
+          "موجة",
+          "فاصل"
+        ]
       },
       "file": "line-zigzag.svg",
       "recolorable": true,
@@ -96,8 +142,17 @@
         "ar": "سهم منحنٍ"
       },
       "tags": {
-        "en": ["arrow", "curve", "callout", "pointer"],
-        "ar": ["سهم", "منحن", "تنبيه"]
+        "en": [
+          "arrow",
+          "curve",
+          "callout",
+          "pointer"
+        ],
+        "ar": [
+          "سهم",
+          "منحن",
+          "تنبيه"
+        ]
       },
       "file": "arrow-curved.svg",
       "recolorable": true,
@@ -111,8 +166,17 @@
         "ar": "سهم ملتف"
       },
       "tags": {
-        "en": ["arrow", "loop", "pointer", "creative"],
-        "ar": ["سهم", "ملتف", "إبداعي"]
+        "en": [
+          "arrow",
+          "loop",
+          "pointer",
+          "creative"
+        ],
+        "ar": [
+          "سهم",
+          "ملتف",
+          "إبداعي"
+        ]
       },
       "file": "arrow-loop.svg",
       "recolorable": true,
@@ -126,8 +190,17 @@
         "ar": "سهم عريض"
       },
       "tags": {
-        "en": ["arrow", "block", "bold", "pointer"],
-        "ar": ["سهم", "عريض", "واضح"]
+        "en": [
+          "arrow",
+          "block",
+          "bold",
+          "pointer"
+        ],
+        "ar": [
+          "سهم",
+          "عريض",
+          "واضح"
+        ]
       },
       "file": "arrow-pointer-block.svg",
       "recolorable": true,
@@ -141,8 +214,18 @@
         "ar": "إطار دائري"
       },
       "tags": {
-        "en": ["circle", "ring", "highlight", "focus"],
-        "ar": ["دائرة", "حلقة", "إطار", "تركيز"]
+        "en": [
+          "circle",
+          "ring",
+          "highlight",
+          "focus"
+        ],
+        "ar": [
+          "دائرة",
+          "حلقة",
+          "إطار",
+          "تركيز"
+        ]
       },
       "file": "circle-outline.svg",
       "recolorable": true,
@@ -156,8 +239,18 @@
         "ar": "دائرة مرسومة"
       },
       "tags": {
-        "en": ["circle", "hand-drawn", "highlight", "emphasis"],
-        "ar": ["دائرة", "مرسومة", "تأكيد", "تمييز"]
+        "en": [
+          "circle",
+          "hand-drawn",
+          "highlight",
+          "emphasis"
+        ],
+        "ar": [
+          "دائرة",
+          "مرسومة",
+          "تأكيد",
+          "تمييز"
+        ]
       },
       "file": "highlight-circle.svg",
       "recolorable": true,
@@ -171,8 +264,17 @@
         "ar": "خط تمييز سفلي"
       },
       "tags": {
-        "en": ["highlight", "underline", "marker", "hand-drawn"],
-        "ar": ["تمييز", "خط سفلي", "يدوي"]
+        "en": [
+          "highlight",
+          "underline",
+          "marker",
+          "hand-drawn"
+        ],
+        "ar": [
+          "تمييز",
+          "خط سفلي",
+          "يدوي"
+        ]
       },
       "file": "highlight-underline.svg",
       "recolorable": true,
@@ -186,8 +288,19 @@
         "ar": "شعار نجمي ثماني"
       },
       "tags": {
-        "en": ["badge", "star", "burst", "highlight", "new"],
-        "ar": ["شعار", "نجمة", "تألق", "جديد"]
+        "en": [
+          "badge",
+          "star",
+          "burst",
+          "highlight",
+          "new"
+        ],
+        "ar": [
+          "شعار",
+          "نجمة",
+          "تألق",
+          "جديد"
+        ]
       },
       "file": "badge-star.svg",
       "recolorable": true,
@@ -201,8 +314,18 @@
         "ar": "بريق مميز"
       },
       "tags": {
-        "en": ["sparkle", "star", "magic", "accent"],
-        "ar": ["بريق", "نجمة", "سحر", "تألق"]
+        "en": [
+          "sparkle",
+          "star",
+          "magic",
+          "accent"
+        ],
+        "ar": [
+          "بريق",
+          "نجمة",
+          "سحر",
+          "تألق"
+        ]
       },
       "file": "badge-sparkle.svg",
       "recolorable": true,
@@ -216,8 +339,17 @@
         "ar": "علامة متقاطعة"
       },
       "tags": {
-        "en": ["cross", "x", "accent", "cancel"],
-        "ar": ["تقاطع", "إشارة", "مميز"]
+        "en": [
+          "cross",
+          "x",
+          "accent",
+          "cancel"
+        ],
+        "ar": [
+          "تقاطع",
+          "إشارة",
+          "مميز"
+        ]
       },
       "file": "cross-x.svg",
       "recolorable": true,
@@ -231,8 +363,17 @@
         "ar": "قوس معقوف"
       },
       "tags": {
-        "en": ["bracket", "curly", "group", "callout"],
-        "ar": ["قوس", "معقوف", "تجميع"]
+        "en": [
+          "bracket",
+          "curly",
+          "group",
+          "callout"
+        ],
+        "ar": [
+          "قوس",
+          "معقوف",
+          "تجميع"
+        ]
       },
       "file": "bracket-curly.svg",
       "recolorable": true,
@@ -246,13 +387,552 @@
         "ar": "فقاعة كلام"
       },
       "tags": {
-        "en": ["bubble", "speech", "comment", "message"],
-        "ar": ["فقاعة", "كلام", "تعليق", "رسالة"]
+        "en": [
+          "bubble",
+          "speech",
+          "comment",
+          "message"
+        ],
+        "ar": [
+          "فقاعة",
+          "كلام",
+          "تعليق",
+          "رسالة"
+        ]
       },
       "file": "speech-bubble.svg",
       "recolorable": true,
       "defaultWidth": 100,
       "defaultHeight": 80
+    },
+    {
+      "id": "square",
+      "name": {
+        "en": "Square",
+        "ar": "مربع"
+      },
+      "file": "square.svg",
+      "tags": {
+        "en": [
+          "square",
+          "box",
+          "block"
+        ],
+        "ar": [
+          "مربع",
+          "صندوق",
+          "كتلة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "rounded-square",
+      "name": {
+        "en": "Rounded Square",
+        "ar": "مربع بحواف دائرية"
+      },
+      "file": "rounded-square.svg",
+      "tags": {
+        "en": [
+          "card",
+          "tile",
+          "button",
+          "rounded"
+        ],
+        "ar": [
+          "بطاقة",
+          "زر",
+          "دائري"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "circle-solid",
+      "name": {
+        "en": "Circle",
+        "ar": "دائرة"
+      },
+      "file": "circle-solid.svg",
+      "tags": {
+        "en": [
+          "circle",
+          "dot",
+          "round"
+        ],
+        "ar": [
+          "دائرة",
+          "نقطة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "pill",
+      "name": {
+        "en": "Pill",
+        "ar": "حبة"
+      },
+      "file": "pill.svg",
+      "tags": {
+        "en": [
+          "pill",
+          "badge",
+          "tag",
+          "capsule"
+        ],
+        "ar": [
+          "شارة",
+          "كبسولة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "triangle",
+      "name": {
+        "en": "Triangle",
+        "ar": "مثلث"
+      },
+      "file": "triangle.svg",
+      "tags": {
+        "en": [
+          "triangle",
+          "warning",
+          "play"
+        ],
+        "ar": [
+          "مثلث",
+          "تحذير"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "diamond",
+      "name": {
+        "en": "Diamond",
+        "ar": "معين"
+      },
+      "file": "diamond.svg",
+      "tags": {
+        "en": [
+          "diamond",
+          "rhombus",
+          "decision"
+        ],
+        "ar": [
+          "معين",
+          "قرار"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "pentagon",
+      "name": {
+        "en": "Pentagon",
+        "ar": "خماسي"
+      },
+      "file": "pentagon.svg",
+      "tags": {
+        "en": [
+          "pentagon",
+          "polygon"
+        ],
+        "ar": [
+          "خماسي",
+          "مضلع"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "hexagon",
+      "name": {
+        "en": "Hexagon",
+        "ar": "سداسي"
+      },
+      "file": "hexagon.svg",
+      "tags": {
+        "en": [
+          "hexagon",
+          "honeycomb",
+          "polygon"
+        ],
+        "ar": [
+          "سداسي",
+          "مضلع"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "octagon",
+      "name": {
+        "en": "Octagon",
+        "ar": "ثماني"
+      },
+      "file": "octagon.svg",
+      "tags": {
+        "en": [
+          "octagon",
+          "stop",
+          "polygon"
+        ],
+        "ar": [
+          "ثماني",
+          "توقف"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "star-five",
+      "name": {
+        "en": "Five-point Star",
+        "ar": "نجمة خماسية"
+      },
+      "file": "star-five.svg",
+      "tags": {
+        "en": [
+          "star",
+          "rating",
+          "favorite"
+        ],
+        "ar": [
+          "نجمة",
+          "تقييم",
+          "مفضل"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "star-four",
+      "name": {
+        "en": "Four-point Star",
+        "ar": "نجمة رباعية"
+      },
+      "file": "star-four.svg",
+      "tags": {
+        "en": [
+          "sparkle",
+          "star",
+          "shine"
+        ],
+        "ar": [
+          "لمعان",
+          "نجمة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "heart-shape",
+      "name": {
+        "en": "Heart",
+        "ar": "قلب"
+      },
+      "file": "heart-shape.svg",
+      "tags": {
+        "en": [
+          "heart",
+          "love",
+          "like"
+        ],
+        "ar": [
+          "قلب",
+          "حب",
+          "إعجاب"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "cloud",
+      "name": {
+        "en": "Cloud",
+        "ar": "سحابة"
+      },
+      "file": "cloud.svg",
+      "tags": {
+        "en": [
+          "cloud",
+          "storage",
+          "weather"
+        ],
+        "ar": [
+          "سحابة",
+          "تخزين"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "chevron-right",
+      "name": {
+        "en": "Chevron",
+        "ar": "شيفرون"
+      },
+      "file": "chevron-right.svg",
+      "tags": {
+        "en": [
+          "chevron",
+          "next",
+          "arrow"
+        ],
+        "ar": [
+          "سهم",
+          "التالي"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "arrow-block-right",
+      "name": {
+        "en": "Block Arrow",
+        "ar": "سهم عريض"
+      },
+      "file": "arrow-block-right.svg",
+      "tags": {
+        "en": [
+          "arrow",
+          "next",
+          "direction"
+        ],
+        "ar": [
+          "سهم",
+          "اتجاه"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "plus-shape",
+      "name": {
+        "en": "Plus",
+        "ar": "زائد"
+      },
+      "file": "plus-shape.svg",
+      "tags": {
+        "en": [
+          "plus",
+          "add",
+          "cross"
+        ],
+        "ar": [
+          "زائد",
+          "إضافة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "ring",
+      "name": {
+        "en": "Ring",
+        "ar": "حلقة"
+      },
+      "file": "ring.svg",
+      "tags": {
+        "en": [
+          "ring",
+          "donut",
+          "target"
+        ],
+        "ar": [
+          "حلقة",
+          "هدف"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "parallelogram",
+      "name": {
+        "en": "Parallelogram",
+        "ar": "متوازي أضلاع"
+      },
+      "file": "parallelogram.svg",
+      "tags": {
+        "en": [
+          "parallelogram",
+          "slanted",
+          "banner"
+        ],
+        "ar": [
+          "مائل",
+          "لافتة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "semicircle",
+      "name": {
+        "en": "Semicircle",
+        "ar": "نصف دائرة"
+      },
+      "file": "semicircle.svg",
+      "tags": {
+        "en": [
+          "semicircle",
+          "half",
+          "dome"
+        ],
+        "ar": [
+          "نصف دائرة",
+          "قبة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "ribbon-banner",
+      "name": {
+        "en": "Ribbon Banner",
+        "ar": "شريط"
+      },
+      "file": "ribbon-banner.svg",
+      "tags": {
+        "en": [
+          "ribbon",
+          "banner",
+          "label"
+        ],
+        "ar": [
+          "شريط",
+          "لافتة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "tag-label",
+      "name": {
+        "en": "Price Tag",
+        "ar": "بطاقة سعر"
+      },
+      "file": "tag-label.svg",
+      "tags": {
+        "en": [
+          "tag",
+          "price",
+          "label"
+        ],
+        "ar": [
+          "سعر",
+          "وسم"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "bubble-round",
+      "name": {
+        "en": "Round Speech Bubble",
+        "ar": "فقاعة كلام دائرية"
+      },
+      "file": "bubble-round.svg",
+      "tags": {
+        "en": [
+          "bubble",
+          "chat",
+          "comment"
+        ],
+        "ar": [
+          "فقاعة",
+          "محادثة",
+          "تعليق"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "lightning-bolt",
+      "name": {
+        "en": "Lightning Bolt",
+        "ar": "صاعقة"
+      },
+      "file": "lightning-bolt.svg",
+      "tags": {
+        "en": [
+          "bolt",
+          "energy",
+          "fast"
+        ],
+        "ar": [
+          "صاعقة",
+          "طاقة",
+          "سرعة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "blob",
+      "name": {
+        "en": "Soft Blob",
+        "ar": "شكل عضوي"
+      },
+      "file": "blob.svg",
+      "tags": {
+        "en": [
+          "blob",
+          "organic",
+          "background"
+        ],
+        "ar": [
+          "عضوي",
+          "خلفية"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "crescent",
+      "name": {
+        "en": "Crescent",
+        "ar": "هلال"
+      },
+      "file": "crescent.svg",
+      "tags": {
+        "en": [
+          "crescent",
+          "moon",
+          "night"
+        ],
+        "ar": [
+          "هلال",
+          "قمر",
+          "ليل"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "shield",
+      "name": {
+        "en": "Shield",
+        "ar": "درع"
+      },
+      "file": "shield.svg",
+      "tags": {
+        "en": [
+          "shield",
+          "security",
+          "trust"
+        ],
+        "ar": [
+          "درع",
+          "أمان",
+          "ثقة"
+        ]
+      },
+      "recolorable": true
     }
   ]
 }

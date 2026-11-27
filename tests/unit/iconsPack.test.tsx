@@ -95,11 +95,11 @@ describe('Icons Pack (§5.6, Task R6-3)', () => {
       expect(iconsSummary).toBeDefined();
       expect(iconsSummary?.kind).toBe('icons');
       expect(iconsSummary?.license).toBe('ISC');
-      expect(iconsSummary?.itemCount).toBe(20);
+      expect(iconsSummary?.itemCount).toBe(49);
 
       const loaded = await loadAssetPack('icons');
       expect(loaded.id).toBe('icons');
-      expect(loaded.items).toHaveLength(20);
+      expect(loaded.items).toHaveLength(49);
       expect(loaded.svgs['chart-bar']).toContain('<svg');
     });
   });

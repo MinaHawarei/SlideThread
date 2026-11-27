@@ -17,183 +17,1091 @@
   "items": [
     {
       "id": "chart-bar",
-      "name": { "en": "Bar Chart", "ar": "مخطط بياني شريطي" },
+      "name": {
+        "en": "Bar Chart",
+        "ar": "مخطط بياني شريطي"
+      },
       "file": "chart-bar.svg",
       "tags": {
-        "en": ["chart", "analytics", "graph", "metric", "data"],
-        "ar": ["مخطط", "تحليل", "رسم بياني", "مؤشر", "بيانات"]
-      }
+        "en": [
+          "chart",
+          "analytics",
+          "graph",
+          "metric",
+          "data"
+        ],
+        "ar": [
+          "مخطط",
+          "تحليل",
+          "رسم بياني",
+          "مؤشر",
+          "بيانات"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "trending-up",
-      "name": { "en": "Trending Up", "ar": "نمو متصاعد" },
+      "name": {
+        "en": "Trending Up",
+        "ar": "نمو متصاعد"
+      },
       "file": "trending-up.svg",
       "tags": {
-        "en": ["trend", "growth", "increase", "success", "analytics"],
-        "ar": ["اتجاه", "نمو", "زيادة", "نجاح", "تحليلات"]
-      }
+        "en": [
+          "trend",
+          "growth",
+          "increase",
+          "success",
+          "analytics"
+        ],
+        "ar": [
+          "اتجاه",
+          "نمو",
+          "زيادة",
+          "نجاح",
+          "تحليلات"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "lightbulb",
-      "name": { "en": "Lightbulb", "ar": "فكرة" },
+      "name": {
+        "en": "Lightbulb",
+        "ar": "فكرة"
+      },
       "file": "lightbulb.svg",
       "tags": {
-        "en": ["idea", "insight", "solution", "creativity", "tip"],
-        "ar": ["فكرة", "رؤية", "حل", "إبداع", "نصيحة"]
-      }
+        "en": [
+          "idea",
+          "insight",
+          "solution",
+          "creativity",
+          "tip"
+        ],
+        "ar": [
+          "فكرة",
+          "رؤية",
+          "حل",
+          "إبداع",
+          "نصيحة"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "rocket",
-      "name": { "en": "Rocket", "ar": "انطلاق" },
+      "name": {
+        "en": "Rocket",
+        "ar": "انطلاق"
+      },
       "file": "rocket.svg",
       "tags": {
-        "en": ["launch", "speed", "startup", "progress", "boost"],
-        "ar": ["إطلاق", "سرعة", "مشروع", "تقدم", "دفعة"]
-      }
+        "en": [
+          "launch",
+          "speed",
+          "startup",
+          "progress",
+          "boost"
+        ],
+        "ar": [
+          "إطلاق",
+          "سرعة",
+          "مشروع",
+          "تقدم",
+          "دفعة"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "target",
-      "name": { "en": "Target", "ar": "هدف" },
+      "name": {
+        "en": "Target",
+        "ar": "هدف"
+      },
       "file": "target.svg",
       "tags": {
-        "en": ["goal", "focus", "aim", "strategy", "objective"],
-        "ar": ["هدف", "تركيز", "غاية", "استراتيجية", "مقصد"]
-      }
+        "en": [
+          "goal",
+          "focus",
+          "aim",
+          "strategy",
+          "objective"
+        ],
+        "ar": [
+          "هدف",
+          "تركيز",
+          "غاية",
+          "استراتيجية",
+          "مقصد"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "shield-check",
-      "name": { "en": "Shield Check", "ar": "حماية وأمان" },
+      "name": {
+        "en": "Shield Check",
+        "ar": "حماية وأمان"
+      },
       "file": "shield-check.svg",
       "tags": {
-        "en": ["security", "verified", "protection", "safe", "privacy"],
-        "ar": ["أمان", "موثوق", "حماية", "آمن", "خصوصية"]
-      }
+        "en": [
+          "security",
+          "verified",
+          "protection",
+          "safe",
+          "privacy"
+        ],
+        "ar": [
+          "أمان",
+          "موثوق",
+          "حماية",
+          "آمن",
+          "خصوصية"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "award",
-      "name": { "en": "Award", "ar": "جائزة" },
+      "name": {
+        "en": "Award",
+        "ar": "جائزة"
+      },
       "file": "award.svg",
       "tags": {
-        "en": ["achievement", "medal", "prize", "quality", "badge"],
-        "ar": ["إنجاز", "ميدالية", "جائزة", "جودة", "شارة"]
-      }
+        "en": [
+          "achievement",
+          "medal",
+          "prize",
+          "quality",
+          "badge"
+        ],
+        "ar": [
+          "إنجاز",
+          "ميدالية",
+          "جائزة",
+          "جودة",
+          "شارة"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "zap",
-      "name": { "en": "Energy", "ar": "طاقة وسرعة" },
+      "name": {
+        "en": "Energy",
+        "ar": "طاقة وسرعة"
+      },
       "file": "zap.svg",
       "tags": {
-        "en": ["lightning", "power", "fast", "instant", "energy"],
-        "ar": ["برق", "قوة", "سريع", "فوري", "طاقة"]
-      }
+        "en": [
+          "lightning",
+          "power",
+          "fast",
+          "instant",
+          "energy"
+        ],
+        "ar": [
+          "برق",
+          "قوة",
+          "سريع",
+          "فوري",
+          "طاقة"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "users",
-      "name": { "en": "Team", "ar": "فريق ومجتمع" },
+      "name": {
+        "en": "Team",
+        "ar": "فريق ومجتمع"
+      },
       "file": "users.svg",
       "tags": {
-        "en": ["people", "community", "collaboration", "network", "audience"],
-        "ar": ["أشخاص", "مجتمع", "تعاون", "شبكة", "جمهور"]
-      }
+        "en": [
+          "people",
+          "community",
+          "collaboration",
+          "network",
+          "audience"
+        ],
+        "ar": [
+          "أشخاص",
+          "مجتمع",
+          "تعاون",
+          "شبكة",
+          "جمهور"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "check-circle",
-      "name": { "en": "Check Circle", "ar": "مكتمل ومؤكد" },
+      "name": {
+        "en": "Check Circle",
+        "ar": "مكتمل ومؤكد"
+      },
       "file": "check-circle.svg",
       "tags": {
-        "en": ["done", "success", "confirmed", "correct", "approve"],
-        "ar": ["منجز", "نجاح", "مؤكد", "صحيح", "موافقة"]
-      }
+        "en": [
+          "done",
+          "success",
+          "confirmed",
+          "correct",
+          "approve"
+        ],
+        "ar": [
+          "منجز",
+          "نجاح",
+          "مؤكد",
+          "صحيح",
+          "موافقة"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "alert-circle",
-      "name": { "en": "Alert Circle", "ar": "تنبيه" },
+      "name": {
+        "en": "Alert Circle",
+        "ar": "تنبيه"
+      },
       "file": "alert-circle.svg",
       "tags": {
-        "en": ["warning", "caution", "notice", "important", "info"],
-        "ar": ["تحذير", "انتباه", "ملاحظة", "هام", "معلومة"]
-      }
+        "en": [
+          "warning",
+          "caution",
+          "notice",
+          "important",
+          "info"
+        ],
+        "ar": [
+          "تحذير",
+          "انتباه",
+          "ملاحظة",
+          "هام",
+          "معلومة"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "help-circle",
-      "name": { "en": "Help Circle", "ar": "استفسار" },
+      "name": {
+        "en": "Help Circle",
+        "ar": "استفسار"
+      },
       "file": "help-circle.svg",
       "tags": {
-        "en": ["question", "support", "faq", "why", "curiosity"],
-        "ar": ["سؤال", "دعم", "أسئلة شائعة", "لماذا", "استفسار"]
-      }
+        "en": [
+          "question",
+          "support",
+          "faq",
+          "why",
+          "curiosity"
+        ],
+        "ar": [
+          "سؤال",
+          "دعم",
+          "أسئلة شائعة",
+          "لماذا",
+          "استفسار"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "sparkles",
-      "name": { "en": "Sparkles", "ar": "بريق وميزة" },
+      "name": {
+        "en": "Sparkles",
+        "ar": "بريق وميزة"
+      },
       "file": "sparkles.svg",
       "tags": {
-        "en": ["magic", "ai", "feature", "shine", "premium"],
-        "ar": ["سحر", "ذكاء اصطناعي", "ميزة", "لمعان", "مميز"]
-      }
+        "en": [
+          "magic",
+          "ai",
+          "feature",
+          "shine",
+          "premium"
+        ],
+        "ar": [
+          "سحر",
+          "ذكاء اصطناعي",
+          "ميزة",
+          "لمعان",
+          "مميز"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "heart",
-      "name": { "en": "Heart", "ar": "إعجاب وشغف" },
+      "name": {
+        "en": "Heart",
+        "ar": "إعجاب وشغف"
+      },
       "file": "heart.svg",
       "tags": {
-        "en": ["like", "favorite", "love", "health", "care"],
-        "ar": ["إعجاب", "مفضل", "حب", "صحة", "اهتمام"]
-      }
+        "en": [
+          "like",
+          "favorite",
+          "love",
+          "health",
+          "care"
+        ],
+        "ar": [
+          "إعجاب",
+          "مفضل",
+          "حب",
+          "صحة",
+          "اهتمام"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "clock",
-      "name": { "en": "Clock", "ar": "وقت وموعد" },
+      "name": {
+        "en": "Clock",
+        "ar": "وقت وموعد"
+      },
       "file": "clock.svg",
       "tags": {
-        "en": ["time", "schedule", "deadline", "speed", "history"],
-        "ar": ["وقت", "جدول", "موعد نهائي", "سرعة", "تاريخ"]
-      }
+        "en": [
+          "time",
+          "schedule",
+          "deadline",
+          "speed",
+          "history"
+        ],
+        "ar": [
+          "وقت",
+          "جدول",
+          "موعد نهائي",
+          "سرعة",
+          "تاريخ"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "quote",
-      "name": { "en": "Quote Marks", "ar": "علامات الاقتباس" },
+      "name": {
+        "en": "Quote Marks",
+        "ar": "علامات الاقتباس"
+      },
       "file": "quote.svg",
       "tags": {
-        "en": ["testimonial", "speech", "citation", "message", "saying"],
-        "ar": ["شهادة", "حديث", "اقتباس", "رسالة", "قول"]
-      }
+        "en": [
+          "testimonial",
+          "speech",
+          "citation",
+          "message",
+          "saying"
+        ],
+        "ar": [
+          "شهادة",
+          "حديث",
+          "اقتباس",
+          "رسالة",
+          "قول"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "compass",
-      "name": { "en": "Compass", "ar": "بوصلة وتوجيه" },
+      "name": {
+        "en": "Compass",
+        "ar": "بوصلة وتوجيه"
+      },
       "file": "compass.svg",
       "tags": {
-        "en": ["direction", "navigation", "strategy", "vision", "guide"],
-        "ar": ["اتجاه", "ملاحة", "استراتيجية", "رؤية", "دليل"]
-      }
+        "en": [
+          "direction",
+          "navigation",
+          "strategy",
+          "vision",
+          "guide"
+        ],
+        "ar": [
+          "اتجاه",
+          "ملاحة",
+          "استراتيجية",
+          "رؤية",
+          "دليل"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "code",
-      "name": { "en": "Code", "ar": "برمجة وشفرة" },
+      "name": {
+        "en": "Code",
+        "ar": "برمجة وشفرة"
+      },
       "file": "code.svg",
       "tags": {
-        "en": ["tech", "developer", "syntax", "software", "api"],
-        "ar": ["تقنية", "مطور", "شفرة", "برمجيات", "واجهة برمجية"]
-      }
+        "en": [
+          "tech",
+          "developer",
+          "syntax",
+          "software",
+          "api"
+        ],
+        "ar": [
+          "تقنية",
+          "مطور",
+          "شفرة",
+          "برمجيات",
+          "واجهة برمجية"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "share",
-      "name": { "en": "Share", "ar": "مشاركة ونشر" },
+      "name": {
+        "en": "Share",
+        "ar": "مشاركة ونشر"
+      },
       "file": "share.svg",
       "tags": {
-        "en": ["social", "spread", "distribution", "reach", "export"],
-        "ar": ["مشاركة", "نشر", "توزيع", "وصول", "تصدير"]
-      }
+        "en": [
+          "social",
+          "spread",
+          "distribution",
+          "reach",
+          "export"
+        ],
+        "ar": [
+          "مشاركة",
+          "نشر",
+          "توزيع",
+          "وصول",
+          "تصدير"
+        ]
+      },
+      "recolorable": true
     },
     {
       "id": "bookmark",
-      "name": { "en": "Bookmark", "ar": "حفظ وإشارة" },
+      "name": {
+        "en": "Bookmark",
+        "ar": "حفظ وإشارة"
+      },
       "file": "bookmark.svg",
       "tags": {
-        "en": ["save", "keep", "reference", "later", "tag"],
-        "ar": ["حفظ", "إبقاء", "مرجع", "لاحقا", "إشارة"]
-      }
+        "en": [
+          "save",
+          "keep",
+          "reference",
+          "later",
+          "tag"
+        ],
+        "ar": [
+          "حفظ",
+          "إبقاء",
+          "مرجع",
+          "لاحقا",
+          "إشارة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "home",
+      "name": {
+        "en": "Home",
+        "ar": "الرئيسية"
+      },
+      "file": "home.svg",
+      "tags": {
+        "en": [
+          "home",
+          "house",
+          "start"
+        ],
+        "ar": [
+          "الرئيسية",
+          "منزل",
+          "بداية"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "search",
+      "name": {
+        "en": "Search",
+        "ar": "بحث"
+      },
+      "file": "search.svg",
+      "tags": {
+        "en": [
+          "search",
+          "find",
+          "magnifier"
+        ],
+        "ar": [
+          "بحث",
+          "عدسة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "mail",
+      "name": {
+        "en": "Mail",
+        "ar": "بريد"
+      },
+      "file": "mail.svg",
+      "tags": {
+        "en": [
+          "mail",
+          "email",
+          "message"
+        ],
+        "ar": [
+          "بريد",
+          "رسالة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "phone",
+      "name": {
+        "en": "Phone",
+        "ar": "هاتف"
+      },
+      "file": "phone.svg",
+      "tags": {
+        "en": [
+          "phone",
+          "call",
+          "contact"
+        ],
+        "ar": [
+          "هاتف",
+          "اتصال"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "calendar",
+      "name": {
+        "en": "Calendar",
+        "ar": "تقويم"
+      },
+      "file": "calendar.svg",
+      "tags": {
+        "en": [
+          "calendar",
+          "date",
+          "schedule"
+        ],
+        "ar": [
+          "تقويم",
+          "تاريخ",
+          "جدول"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "camera",
+      "name": {
+        "en": "Camera",
+        "ar": "كاميرا"
+      },
+      "file": "camera.svg",
+      "tags": {
+        "en": [
+          "camera",
+          "photo",
+          "picture"
+        ],
+        "ar": [
+          "كاميرا",
+          "صورة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "image",
+      "name": {
+        "en": "Image",
+        "ar": "صورة"
+      },
+      "file": "image.svg",
+      "tags": {
+        "en": [
+          "image",
+          "picture",
+          "gallery"
+        ],
+        "ar": [
+          "صورة",
+          "معرض"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "link",
+      "name": {
+        "en": "Link",
+        "ar": "رابط"
+      },
+      "file": "link.svg",
+      "tags": {
+        "en": [
+          "link",
+          "url",
+          "chain"
+        ],
+        "ar": [
+          "رابط",
+          "سلسلة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "lock",
+      "name": {
+        "en": "Lock",
+        "ar": "قفل"
+      },
+      "file": "lock.svg",
+      "tags": {
+        "en": [
+          "lock",
+          "secure",
+          "private"
+        ],
+        "ar": [
+          "قفل",
+          "آمن",
+          "خاص"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "user",
+      "name": {
+        "en": "User",
+        "ar": "مستخدم"
+      },
+      "file": "user.svg",
+      "tags": {
+        "en": [
+          "user",
+          "person",
+          "profile"
+        ],
+        "ar": [
+          "مستخدم",
+          "شخص",
+          "ملف"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "settings",
+      "name": {
+        "en": "Settings",
+        "ar": "إعدادات"
+      },
+      "file": "settings.svg",
+      "tags": {
+        "en": [
+          "settings",
+          "gear",
+          "config"
+        ],
+        "ar": [
+          "إعدادات",
+          "ترس"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "globe",
+      "name": {
+        "en": "Globe",
+        "ar": "العالم"
+      },
+      "file": "globe.svg",
+      "tags": {
+        "en": [
+          "globe",
+          "world",
+          "web"
+        ],
+        "ar": [
+          "العالم",
+          "ويب"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "play",
+      "name": {
+        "en": "Play",
+        "ar": "تشغيل"
+      },
+      "file": "play.svg",
+      "tags": {
+        "en": [
+          "play",
+          "video",
+          "start"
+        ],
+        "ar": [
+          "تشغيل",
+          "فيديو"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "pause",
+      "name": {
+        "en": "Pause",
+        "ar": "إيقاف مؤقت"
+      },
+      "file": "pause.svg",
+      "tags": {
+        "en": [
+          "pause",
+          "stop",
+          "wait"
+        ],
+        "ar": [
+          "إيقاف",
+          "انتظار"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "download",
+      "name": {
+        "en": "Download",
+        "ar": "تنزيل"
+      },
+      "file": "download.svg",
+      "tags": {
+        "en": [
+          "download",
+          "save",
+          "get"
+        ],
+        "ar": [
+          "تنزيل",
+          "حفظ"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "upload",
+      "name": {
+        "en": "Upload",
+        "ar": "رفع"
+      },
+      "file": "upload.svg",
+      "tags": {
+        "en": [
+          "upload",
+          "send",
+          "share"
+        ],
+        "ar": [
+          "رفع",
+          "إرسال"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "star",
+      "name": {
+        "en": "Star",
+        "ar": "نجمة"
+      },
+      "file": "star.svg",
+      "tags": {
+        "en": [
+          "star",
+          "favorite",
+          "rating"
+        ],
+        "ar": [
+          "نجمة",
+          "مفضل",
+          "تقييم"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "flag",
+      "name": {
+        "en": "Flag",
+        "ar": "علم"
+      },
+      "file": "flag.svg",
+      "tags": {
+        "en": [
+          "flag",
+          "milestone",
+          "report"
+        ],
+        "ar": [
+          "علم",
+          "معلم"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "thumbs-up-icon",
+      "name": {
+        "en": "Thumbs Up",
+        "ar": "إعجاب"
+      },
+      "file": "thumbs-up-icon.svg",
+      "tags": {
+        "en": [
+          "like",
+          "thumbs",
+          "approve"
+        ],
+        "ar": [
+          "إعجاب",
+          "موافقة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "gift",
+      "name": {
+        "en": "Gift",
+        "ar": "هدية"
+      },
+      "file": "gift.svg",
+      "tags": {
+        "en": [
+          "gift",
+          "bonus",
+          "present"
+        ],
+        "ar": [
+          "هدية",
+          "مكافأة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "cart",
+      "name": {
+        "en": "Shopping Cart",
+        "ar": "عربة تسوق"
+      },
+      "file": "cart.svg",
+      "tags": {
+        "en": [
+          "cart",
+          "shop",
+          "buy"
+        ],
+        "ar": [
+          "عربة",
+          "تسوق",
+          "شراء"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "map-pin",
+      "name": {
+        "en": "Location Pin",
+        "ar": "موقع"
+      },
+      "file": "map-pin.svg",
+      "tags": {
+        "en": [
+          "location",
+          "pin",
+          "map"
+        ],
+        "ar": [
+          "موقع",
+          "خريطة"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "book",
+      "name": {
+        "en": "Book",
+        "ar": "كتاب"
+      },
+      "file": "book.svg",
+      "tags": {
+        "en": [
+          "book",
+          "read",
+          "learn"
+        ],
+        "ar": [
+          "كتاب",
+          "قراءة",
+          "تعلم"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "key",
+      "name": {
+        "en": "Key",
+        "ar": "مفتاح"
+      },
+      "file": "key.svg",
+      "tags": {
+        "en": [
+          "key",
+          "access",
+          "password"
+        ],
+        "ar": [
+          "مفتاح",
+          "دخول"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "bell",
+      "name": {
+        "en": "Bell",
+        "ar": "جرس"
+      },
+      "file": "bell.svg",
+      "tags": {
+        "en": [
+          "bell",
+          "notification",
+          "alert"
+        ],
+        "ar": [
+          "جرس",
+          "إشعار"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "megaphone",
+      "name": {
+        "en": "Megaphone",
+        "ar": "مكبر صوت"
+      },
+      "file": "megaphone.svg",
+      "tags": {
+        "en": [
+          "announce",
+          "megaphone",
+          "marketing"
+        ],
+        "ar": [
+          "إعلان",
+          "تسويق"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "layers-icon",
+      "name": {
+        "en": "Layers",
+        "ar": "طبقات"
+      },
+      "file": "layers-icon.svg",
+      "tags": {
+        "en": [
+          "layers",
+          "stack",
+          "design"
+        ],
+        "ar": [
+          "طبقات",
+          "تصميم"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "puzzle",
+      "name": {
+        "en": "Puzzle",
+        "ar": "أحجية"
+      },
+      "file": "puzzle.svg",
+      "tags": {
+        "en": [
+          "puzzle",
+          "solution",
+          "integrate"
+        ],
+        "ar": [
+          "أحجية",
+          "حل"
+        ]
+      },
+      "recolorable": true
+    },
+    {
+      "id": "trophy",
+      "name": {
+        "en": "Trophy",
+        "ar": "كأس"
+      },
+      "file": "trophy.svg",
+      "tags": {
+        "en": [
+          "trophy",
+          "win",
+          "success"
+        ],
+        "ar": [
+          "كأس",
+          "فوز",
+          "نجاح"
+        ]
+      },
+      "recolorable": true
     }
   ]
 }

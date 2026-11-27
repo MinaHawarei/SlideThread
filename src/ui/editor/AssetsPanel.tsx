@@ -379,35 +379,46 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
         </div>
       ) : (
         <div
-          className="grid grid-cols-4 gap-2 overflow-y-auto max-h-[500px] p-1 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800"
+          className="space-y-3 p-2 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800"
           data-testid="assets-grid"
         >
-          {filteredItems.map((item) => {
-            const svg = getSvgForAsset(item.packId, item.id);
-            const name = locale === 'ar' ? item.name.ar : item.name.en;
-            const isSticker = item.packId === 'stickers';
-
+          {(['shapes', 'icons', 'emoji', 'stickers'] as const).map((packId) => {
+            const group = filteredItems.filter((item) => item.packId === packId);
+            if (group.length === 0) return null;
+            const heading = { shapes: 'Shapes', icons: 'Icons', emoji: 'Emoji', stickers: 'Stickers' }[packId];
             return (
-              <button
-                key={`${item.packId}-${item.id}`}
-                type="button"
-                draggable
-                data-testid={`asset-item-${item.id}`}
-                title={`${name} (${item.packId})`}
-                onClick={() => handleAddAsset(item.packId, item.id)}
-                onDragStart={(e) => handleDragStart(e, item.packId, item.id)}
-                className={`flex items-center justify-center p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-400 hover:shadow-sm transition-all group cursor-grab active:cursor-grabbing ${
-                  isSticker ? 'col-span-2 h-12' : 'h-14'
-                }`}
-              >
-                <div
-                  className={`flex items-center justify-center pointer-events-none ${
-                    isSticker ? 'w-full h-8' : item.packId === 'emoji' ? 'w-8 h-8' : 'w-6 h-6 text-slate-700 dark:text-slate-200'
-                  }`}
-                  dangerouslySetInnerHTML={{ __html: svg || '' }}
-                />
-                <span className="sr-only">{name}</span>
-              </button>
+              <section key={packId} data-testid={`assets-group-${packId}`} aria-label={heading}>
+                {category !== packId && (
+                  <h4 className="px-1 pb-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">{heading} <span className="font-mono font-normal opacity-70">({group.length})</span></h4>
+                )}
+                <div className="grid grid-cols-3 gap-2">
+                  {group.map((item) => {
+                    const svg = getSvgForAsset(item.packId, item.id);
+                    const name = locale === 'ar' ? item.name.ar : item.name.en;
+                    const isSticker = item.packId === 'stickers';
+                    return (
+                      <button
+                        key={`${item.packId}-${item.id}`}
+                        type="button"
+                        draggable
+                        data-testid={`asset-item-${item.id}`}
+                        title={`${name} (${item.packId})`}
+                        onClick={() => handleAddAsset(item.packId, item.id)}
+                        onDragStart={(e) => handleDragStart(e, item.packId, item.id)}
+                        className={`flex flex-col items-center justify-center gap-1 p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-400 hover:shadow-sm transition-all cursor-grab active:cursor-grabbing min-h-[76px] ${isSticker ? 'col-span-3' : ''}`}
+                      >
+                        <div
+                          className={`flex items-center justify-center pointer-events-none [&>svg]:w-full [&>svg]:h-full ${
+                            isSticker ? 'w-full h-10' : item.packId === 'emoji' ? 'w-9 h-9' : 'w-9 h-9 text-slate-700 dark:text-slate-200'
+                          }`}
+                          dangerouslySetInnerHTML={{ __html: svg || '' }}
+                        />
+                        <span className="w-full truncate text-center text-[10px] leading-tight text-slate-600 dark:text-slate-300">{name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
             );
           })}
         </div>

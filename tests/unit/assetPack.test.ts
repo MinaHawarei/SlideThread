@@ -247,13 +247,13 @@ describe('Asset Pack Format & Validator (§5.6, REQ-10, Task R6-1)', () => {
       expect(shapesSummary?.license).toBe('MIT');
       expect(shapesSummary?.name.en).toBe('Essential Shapes & Lines');
       expect(shapesSummary?.name.ar).toBe('الأشكال والخطوط الأساسية');
-      expect(shapesSummary?.itemCount).toBe(16);
+      expect(shapesSummary?.itemCount).toBe(42);
     });
 
     it('loads the built-in "shapes" pack lazily with sanitized SVGs', async () => {
       const pack = await loadAssetPack('shapes');
       expect(pack.id).toBe('shapes');
-      expect(pack.items).toHaveLength(16);
+      expect(pack.items).toHaveLength(42);
 
       // Check all 16 SVG contents are sanitized and present
       for (const item of pack.items) {
