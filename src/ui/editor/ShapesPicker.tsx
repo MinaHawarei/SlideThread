@@ -19,8 +19,8 @@ export const ShapesPicker: React.FC = () => {
   const selectedElementId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);
 
-  const penActive = useSelectionStore((state) => state.penActive);
-  const setPenActive = useSelectionStore((state) => state.setPenActive);
+  const penMode = useSelectionStore((state) => state.penMode);
+  const setPenMode = useSelectionStore((state) => state.setPenMode);
   const [isOpen, setIsOpen] = useState(true);
 
   if (!activeSlide) return null;
@@ -167,9 +167,13 @@ export const ShapesPicker: React.FC = () => {
       {/* Shapes Grid */}
       {isOpen && (
         <div className="grid grid-cols-4 gap-2 pt-1" data-testid="shapes-grid">
-          <button type="button" data-testid="pen-tool" aria-pressed={penActive} onClick={() => setPenActive(!penActive)} title="Pen: draw a freehand shape on the slide (Esc to stop)" aria-label="Pen tool" className={`p-2 h-14 rounded-xl border bg-white dark:bg-slate-800 flex flex-col items-center justify-center cursor-pointer text-[10px] gap-0.5 ${penActive ? 'border-cyan-500 ring-2 ring-cyan-400/50' : 'border-slate-200 dark:border-slate-800 hover:border-cyan-500'}`}>
+          <button type="button" data-testid="pen-tool" aria-pressed={penMode === 'pencil'} onClick={() => setPenMode(penMode === 'pencil' ? 'off' : 'pencil')} title="Pencil: draw a freehand shape on the slide (Esc to stop)" aria-label="Pencil tool" className={`p-2 h-14 rounded-xl border bg-white dark:bg-slate-800 flex flex-col items-center justify-center cursor-pointer text-[10px] gap-0.5 ${penMode === 'pencil' ? 'border-cyan-500 ring-2 ring-cyan-400/50' : 'border-slate-200 dark:border-slate-800 hover:border-cyan-500'}`}>
             <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"><path d="M6 26l2-7L22 5l5 5L13 24z M19 8l5 5" /></svg>
-            {penActive ? 'Drawing…' : 'Pen'}
+            {penMode === 'pencil' ? 'Drawing…' : 'Pencil'}
+          </button>
+          <button type="button" data-testid="bezier-tool" aria-pressed={penMode === 'pen'} onClick={() => setPenMode(penMode === 'pen' ? 'off' : 'pen')} title="Pen: click points, drag to curve, Enter to finish" aria-label="Pen tool" className={`p-2 h-14 rounded-xl border bg-white dark:bg-slate-800 flex flex-col items-center justify-center cursor-pointer text-[10px] gap-0.5 ${penMode === 'pen' ? 'border-cyan-500 ring-2 ring-cyan-400/50' : 'border-slate-200 dark:border-slate-800 hover:border-cyan-500'}`}>
+            <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"><path d="M6 26l2-7L22 5l5 5L13 24z M19 8l5 5" /></svg>
+            {penMode === 'pen' ? 'Pen on' : 'Pen'}
           </button>
           <button type="button" data-testid="add-path-shape" onClick={handleAddPath} title={t('assets.addPath')} aria-label={t('assets.addPath')} className="p-2 h-14 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:border-cyan-500 flex items-center justify-center cursor-pointer">
             <svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 24 C 10 4, 18 28, 28 8" /></svg>

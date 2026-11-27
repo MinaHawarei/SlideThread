@@ -1,4 +1,5 @@
 import { getShapeSvg, getIconSvg } from '../../assets';
+import { extraToPath } from '../../core/convertToPath';
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useT } from '../../i18n';
 import { useProjectStore, useActiveSlide, useEffectiveBrand } from '../../store/projectStore';
@@ -613,6 +614,43 @@ export const ElementPropertiesPanel: React.FC<ElementPropertiesPanelProps> = ({
               className="w-7 h-7 p-0 rounded-md border border-stone-300 dark:border-stone-700 cursor-pointer"
             />
           </div>
+        </div>
+      )}
+      {extra?.kind === 'shape' && extra.shape !== 'path' && (() => {
+        const converted = extraToPath(extra, (id) => getShapeSvg(id));
+        if (!converted) return null;
+        return (
+          <div data-testid="convert-to-path-controls" className="space-y-1 pt-2 border-t border-stone-200 dark:border-stone-800">
+            <button
+              type="button"
+              data-testid="convert-to-path"
+              onClick={() => {
+                if (element.locked) return;
+                const { assetId: _assetId, ...rest } = extra;
+                void _assetId;
+                const outline = extra.strokeColor ?? extra.fill;
+                updateExtraElement(slide.id, {
+                  ...rest,
+                  shape: 'path',
+                  path: converted,
+                  ...(extra.assetId ? { fill: outline, strokeColor: outline, strokeWidth: extra.strokeWidth ?? 4, innerFill: extra.innerFill ?? 'none' } : {}),
+                });
+              }}
+              className="w-full px-3 py-2 text-xs font-semibold rounded-lg border border-cyan-600 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/30"
+            >
+              Convert to editable path (anchor points)
+            </button>
+            <p className="text-[11px] text-stone-500">Turns this shape into a path so you can move its points and pull curve handles. You can undo this with Undo.</p>
+          </div>
+        );
+      })()}
+      {extra?.kind === 'shape' && extra.shape === 'path' && extra.path?.closed && (
+        <div data-testid="path-fill-controls" className="flex items-center justify-between text-xs pt-2 border-t border-stone-200 dark:border-stone-800">
+          <span>Fill</span>
+          <span className="flex items-center gap-1.5">
+            <button type="button" data-testid="path-fill-none" aria-pressed={extra.innerFill === 'none'} onClick={() => updateExtra({ innerFill: 'none', strokeWidth: extra.strokeWidth || 4 })} className={`px-2 py-1 rounded border text-[11px] ${extra.innerFill === 'none' ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-950/30' : 'border-stone-300 dark:border-stone-700'}`}>No fill</button>
+            <input data-testid="path-fill-color" aria-label="Fill color" type="color" value={(extra.innerFill ?? extra.fill)?.startsWith('#') ? (extra.innerFill ?? extra.fill) : '#0891b2'} onChange={(e) => updateExtra({ innerFill: e.target.value, fill: e.target.value })} className="w-7 h-7 p-0 rounded-md border border-stone-300 dark:border-stone-700 cursor-pointer" />
+          </span>
         </div>
       )}
       {extra?.kind === 'shape' && extra.assetId && Boolean(getShapeSvg(extra.assetId) || getIconSvg(extra.assetId)) && (

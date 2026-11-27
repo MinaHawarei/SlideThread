@@ -6,6 +6,7 @@ import { getLayoutArchetype } from '../../templates/layouts/registry';
 import { useProjectStore } from '../../store/projectStore';
 import { useSelectionStore } from '../../store/selectionStore';
 import { PenSurface } from './PenSurface';
+import { BezierPenSurface } from './BezierPenSurface';
 import { useT } from '../../i18n';
 import { RichTextEditor } from './RichTextEditor';
 import { BrandOverridePopover } from './BrandOverridePopover';
@@ -43,7 +44,7 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
   const elements = useMemo(() => variant ? resolveSlideElements(slide, variant, aspect, hiddenSlots) : [], [slide, variant, aspect, hiddenSlots]);
   const selectedId = useSelectionStore((state) => state.selectedElementId);
   const selectElement = useSelectionStore((state) => state.selectElement);
-  const penActive = useSelectionStore((state) => state.penActive);
+  const penMode = useSelectionStore((state) => state.penMode);
   // A touch tap can shift the layout (selection toolbar), so the compatibility focus/mouse events land on a different
   // element. Focus caused by a touch must not change the selection the tap just made.
   const lastTouchAt = useRef(0);
@@ -466,7 +467,8 @@ export const CanvasManipulationLayer: React.FC<CanvasManipulationLayerProps> = (
 
   return (
     <div ref={layerRef} aria-label={t('editor.manipulationOverlay')} data-testid="manipulation-layer" onTouchStart={(event) => event.stopPropagation()} onTouchMove={(event) => event.stopPropagation()} onTouchEnd={(event) => event.stopPropagation()} style={{ position: 'absolute', inset: 0, width, height, zIndex: 20, pointerEvents: 'none' }}>
-      {penActive && <PenSurface />}
+      {penMode === 'pencil' && <PenSurface />}
+      {penMode === 'pen' && <BezierPenSurface />}
       {elements.filter((item) => !item.hidden).map((modelElement) => {
         const isSlotWithNode = modelElement.kind === 'slot' && Boolean(SLOT_SELECTORS[modelElement.id]);
         // A slot with nothing drawn (empty field, hidden by the template) has no frame to click.

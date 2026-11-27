@@ -134,7 +134,9 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
       }
       if (extra.shape === 'path' && extra.path) {
         const stroke = themeColor(extra.strokeColor) ?? fill;
-        const strokeWidth = extra.strokeWidth ?? (extra.path.closed ? 0 : 4);
+        const hollow = extra.path.closed && extra.innerFill === 'none';
+        const pathFill = extra.path.closed ? (hollow ? 'none' : themeColor(extra.innerFill) ?? fill) : 'none';
+        const strokeWidth = extra.strokeWidth ?? (extra.path.closed && !hollow ? 0 : 4);
         return (
           <svg
             data-testid={`shape-path-${extra.id}`}
@@ -144,7 +146,7 @@ function renderExtraContent(extra: ExtraElement, assets?: Record<string, string>
           >
             <path
               d={pathToD(extra.path, 100, 100)}
-              fill={extra.path.closed ? fill : 'none'}
+              fill={pathFill}
               stroke={strokeWidth > 0 ? stroke : undefined}
               strokeWidth={strokeWidth}
               strokeLinecap="round"

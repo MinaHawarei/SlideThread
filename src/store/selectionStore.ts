@@ -1,10 +1,16 @@
 import { create } from 'zustand';
 
+export type PenMode = 'off' | 'pencil' | 'pen';
+
 export interface SelectionState {
   selectedElementId?: string;
   selectElement: (id?: string) => void;
-  /** True while the freehand pen tool is active on the canvas. */
+  /** Active drawing tool: pencil is freehand, pen is the Bezier pen (anchors and handles). */
+  penMode: PenMode;
+  setPenMode: (mode: PenMode) => void;
+  /** True while any drawing tool is active on the canvas. */
   penActive: boolean;
+  /** Turns the freehand pencil on or off. */
   setPenActive: (active: boolean) => void;
 }
 
@@ -12,6 +18,8 @@ export interface SelectionState {
 export const useSelectionStore = create<SelectionState>((set) => ({
   selectedElementId: undefined,
   selectElement: (selectedElementId) => set({ selectedElementId }),
+  penMode: 'off',
   penActive: false,
-  setPenActive: (penActive) => set(penActive ? { penActive, selectedElementId: undefined } : { penActive }),
+  setPenMode: (penMode) => set(penMode === 'off' ? { penMode, penActive: false } : { penMode, penActive: true, selectedElementId: undefined }),
+  setPenActive: (active) => set(active ? { penMode: 'pencil', penActive: true, selectedElementId: undefined } : { penMode: 'off', penActive: false }),
 }));
