@@ -1,7 +1,7 @@
 # SlideThread Specification v2
 
 > Consolidated functional and technical specification incorporating all amendments from Revision Plan §2 (REQ-01 through REQ-13).  
-> Archived v1 baseline is preserved in [`docs/history/Spec.v1.md`](docs/history/Spec.v1.md).
+> Archived v1 baseline is preserved in [`docs/history/Spec.v1.md`](history/Spec.v1.md).
 
 ---
 
@@ -12,7 +12,7 @@ SlideThread is a client-side visual design studio for creators, developers, educ
 ### 1.1 Guiding Principles
 1. **Canvas First:** Chrome recedes; the design is the hero.
 2. **Characterful, Not Generic:** Direction A (Atelier) visual identity with warm stone surfaces, serif headings, and warm amber accents.
-3. **Bilingual Parity:** English (LTR) and Arabic (RTL) typography, microcopy, layout mirroring, and touch swipe gestures have equal status.
+3. **Bilingual Parity:** English (LTR) and Arabic (RTL) typography, microcopy, text direction, and touch swipe direction have equal status. The page layout does not mirror when the language switches to Arabic (a deliberate decision); only text direction and swipe direction follow the language.
 4. **Data-Driven Templates:** Templates are structured data (JSON + assets); adding templates requires zero app code.
 5. **Direct Manipulation with Guardrails:** Elements can be freely moved, resized, and rotated, with snapping and one-click "Reset Layout".
 6. **Zero-Backend Privacy:** All project data, images, and brand settings reside strictly in the user's browser.
@@ -67,12 +67,8 @@ Four supported aspect ratios with pre-tuned dimension presets:
 ---
 
 ## 4. Template Platform & Archetypes
-- **5 Canonical Starter Templates:**
-  - `tech-mesh` ("Weave", ar: "نسيج")
-  - `bold-signal`
-  - `clean-editorial`
-  - `coptic-heritage`
-  - `islamic-geometric`
+- **Starter Templates:** The gallery currently ships 107 starter templates, each a folder in `src/templates/starters/<id>/` (see the [Template contribution guide](TEMPLATE_GUIDE.md)). The original starters are `tech-mesh`, `bold-marketing`, `clean-minimal`, `golden-hour-viral`, `heritage-geometric`, `neon-grid-process` and `soft-gradient`. Later additions are released in groups of ten (`dt-*`, `pk-*`, then `g3-*` to `g10-*`).
+- **Gallery Order:** Each template may set an optional numeric `priority`. Higher numbers show first, ties fall back to the template id, and a template without `priority` counts as 1. Group priority equals the group number (`dt-*` 1, `pk-*` 2, `g3-*` 3 and so on up to `g10-*` 10), so newer groups show first.
 - **Continuous Patterns:** Reusable mathematical SVG generators (e.g. `mesh`, `geometric`) that flow smoothly across consecutive carousel slides.
 - **Archetype Layouts:** Distinct archetype layouts per slide type (`cover`, `explain`, `rule`, `compare`, `code`, `stat`, `quote`, `image`, `cta`) across all four aspect classes.
 
@@ -88,11 +84,12 @@ Four supported aspect ratios with pre-tuned dimension presets:
 
 ## 6. Typography & Rich Text
 - **In-Place Rich Text Editing:** Tiptap-powered editor supporting inline font sizes, colors, font weights, italic, underline, and list bullets.
-- **Script-Aware Font Allowlist:** Bundled local font families:
-  - `IBM Plex Sans` (Latin)
+- **Script-Aware Font Allowlist:** Bundled local font families, all under the SIL Open Font License (licenses in `src/fonts/licenses`). The registry in `src/fonts/registry.ts` is the source of truth and currently has 20 families:
+  - `IBM Plex Sans` and `IBM Plex Serif` (Latin)
   - `IBM Plex Sans Arabic` (Arabic)
   - `JetBrains Mono` (Monospace code snippets)
   - `Noto Sans Coptic` (Coptic script)
+  - Additional display and Arabic families (for example `Anton`, `Amiri`, `Changa`, `Vazirmatn`), listed in the registry. Template themes may only use font ids from the registry.
 
 ---
 

@@ -52,15 +52,15 @@ Templates are untrusted data. The CI validator checks the JSON Schema and Zod sc
 
    Visit the URL printed by Vite. Editing `template.json` hot reloads the page.
 
-5. Generate the committed preview and run validation:
+5. Generate the committed preview and run validation (pass ids to limit validation and the stress render to those templates):
 
    ```bash
    npm run template:preview -- creator-notes
-   npm run template:validate
+   npm run template:validate -- creator-notes
    npm run template:index
    ```
 
-6. Review the generated WebP, then run `npm run template:preview -- --check`. Commit the folder. The gallery, wizard and names are discovered from `src/templates/starters/<id>/` at build time, so there is no index or code to edit. Deleting the folder removes the template.
+6. Review the generated WebP, then run `npm run template:validate` (all templates) and `npm run template:preview -- --check`. Commit the folder. The gallery, wizard and names are discovered from `src/templates/starters/<id>/` at build time, so there is no index or code to edit. Deleting the folder removes the template.
 
 This example deliberately adds no app code, registered layout, decoration, or asset. The `colorFlexible` flag lets the app generate light and dark palettes from a creator color; fixed palettes should provide complete `theme.modes.dark` and `theme.modes.light` values that pass contrast validation.
 
@@ -140,11 +140,16 @@ Use `extends` only when a template is a genuine variant of another template. The
 
 Do not copy a full template just to change its accent or radius.
 
+## Gallery order and groups
+
+`template.json` accepts an optional numeric `priority`. The gallery shows higher numbers first, breaks ties by id, and treats a missing `priority` as 1. New templates are added in groups of ten, and a group's priority is its group number (currently up to 10), so newer groups show first. Leave `priority` out for a template that should stay at the default position.
+
 ## Validation and previews
 
-- `npm run template:validate` checks schema, security, contrast, assets, licenses, preview presence/size, and stress-renders each template across both themes, both scripts/directions, and all four aspect classes.
-- `npm run template:preview -- <id>` captures an 864×1080 WebP and reduces encoding quality as needed to stay at or below 40 KB.
-- `npm run template:preview -- --check` verifies that committed previews are current with a tolerant pixel comparison.
+- `npm run template:validate [-- <id>...]` checks schema, security, contrast, assets, licenses, preview presence/size, and stress-renders each selected template (all of them when no id is given) across both themes, both scripts/directions, and all four aspect classes.
+- `npm run template:preview -- <id>...` captures an 864×1080 WebP and reduces encoding quality as needed to stay at or below 40 KB.
+- `npm run template:preview -- --check` verifies that committed previews are current with a tolerant pixel comparison: it fails when the mean pixel difference from a fresh render is above 12. It also accepts ids. The render is deterministic, so a high number means the preview is stale, not that CI renders differently.
+- After any change to the renderer, text alignment, fonts or shared styles, regenerate the previews of the affected templates with `npm run template:preview -- <id>...` and review them before committing. Stale previews sit just under the limit for a while and then fail CI.
 - `npm run template:index` is a no-op kept for compatibility: the registry is discovered from the template folders at build time.
 - `npm run template:dev -- <id>` serves the template lab with hot reload and English/Arabic sample content.
 
