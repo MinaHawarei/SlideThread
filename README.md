@@ -17,9 +17,9 @@
 **SlideThread** is a client-side visual design studio created for founders, creators, developers, and educators to design publication-grade social slide decks, multi-slide carousels, and stories for LinkedIn, Instagram, Facebook, and X.
 
 - **100% Client-Side Privacy:** Zero backend, zero database, zero external tracking. All drafts, photos, and assets remain securely in browser storage (`localStorage` + IndexedDB).
-- **Native Bilingual Support:** Comprehensive English (LTR) and Arabic (RTL) typography, microcopy, layout mirroring, and touch swipe gesture directionality.
+- **Native Bilingual Support:** English and Arabic typography and microcopy with RTL text. The page layout does not mirror when you switch to Arabic (a deliberate decision); text direction and swipe direction follow the language.
 - **Direction A (Atelier) Aesthetic:** Warm stone surfaces, serif headings, vibrant amber accents, and paper-lift shadow elevation.
-- **Data-Driven Template Platform:** Extensible JSON templates, 5 canonical starter templates, seamless multi-slide continuous patterns, and archetype layouts.
+- **Data-Driven Template Platform:** Extensible JSON templates: 107 built-in templates (each a folder under `src/templates/starters/`), shown in a paginated gallery (24 per page) ordered by a per-template `priority` (higher number first, missing = 1). Drop a folder in to add one.
 - **Direct Canvas Manipulation:** Move, resize, and rotate elements with intelligent snap guides, safe zones, and one-click "Reset Layout" safety.
 - **Rich Text & Typography:** In-place rich-text formatting with custom font size, weight, color highlights, and bullet lists.
 - **Asset Ecosystem:** Curated canonical packs for shapes, presentation icons, reaction emojis, stickers, and sanitized SVG uploads.
@@ -45,7 +45,7 @@ npm install
 # Start development server
 npm run dev
 ```
-Open [http://localhost:5174](http://localhost:5174) in your browser.
+Open the local URL that Vite prints (http://localhost:5173 by default).
 
 ---
 
@@ -55,8 +55,11 @@ Open [http://localhost:5174](http://localhost:5174) in your browser.
 |---------|---------|
 | `npm run dev` | Starts Vite development server with HMR. |
 | `npm run build` | Builds strict production bundle into `dist/`. |
-| `npm test` | Runs full Vitest unit & integration test suite (77 files, 650+ tests). |
+| `npm test` | Runs full Vitest unit & integration test suite (about 96 test files, 1,690+ tests). |
 | `npm run test:e2e` | Runs Playwright end-to-end browser tests across viewports. |
+| `npm run template:validate -- [id ...]` | Validates all templates, or only the given ids (schema, security, contrast, asset size, licenses, previews, stress render). |
+| `npm run template:preview -- <id ...>` | Generates the WebP gallery preview (max 40 KB) for the given templates. |
+| `npm run template:new -- <id>` / `template:dev -- <id>` | Scaffolds a template / opens the template lab with hot reload. |
 | `npm run lint` | Runs ESLint 9 with strict flat config. |
 | `npm run typecheck` | Validates TypeScript types across the codebase. |
 
@@ -76,4 +79,6 @@ Open [http://localhost:5174](http://localhost:5174) in your browser.
 
 ## 📜 License & Provenance
 SlideThread is open source under the [MIT License](LICENSE).  
-Bundled open-source fonts are licensed under the SIL Open Font License (OFL).
+Bundled fonts (20 `@fontsource` packages, including Arabic fonts such as Marhey) are open source under the SIL Open Font License (OFL). After pulling changes that add font packages, run `npm install` again.
+
+The page ships static, visually hidden descriptive text in `index.html` for crawlers and no-JS visitors; a small loading screen shows until the app mounts.

@@ -35,14 +35,14 @@ interface DockCardProps {
 const DockCard: React.FC<DockCardProps> = ({ title, hint, testId, collapsed, onToggle, children }) => (
   <section
     data-testid={testId}
-    className="rounded-2xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950 overflow-hidden shrink-0"
+    className={`rounded-2xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950 overflow-hidden flex flex-col ${collapsed ? 'shrink-0' : 'shrink min-h-[132px]'}`}
   >
     <button
       type="button"
       data-testid={`${testId}-head`}
       onClick={onToggle}
       aria-expanded={!collapsed}
-      className="w-full flex items-center gap-2 px-3.5 py-3 text-left hover:bg-stone-100 dark:hover:bg-stone-800/60 transition-colors"
+      className="w-full shrink-0 flex items-center gap-2 px-3.5 py-3 text-left hover:bg-stone-100 dark:hover:bg-stone-800/60 transition-colors"
     >
       <CollapseChevron
         direction={collapsed ? 'right' : 'down'}
@@ -58,7 +58,7 @@ const DockCard: React.FC<DockCardProps> = ({ title, hint, testId, collapsed, onT
         </span>
       )}
     </button>
-    {!collapsed && <div className="pb-1">{children}</div>}
+    {!collapsed && <div className="pb-1 flex-1 min-h-0 overflow-y-auto">{children}</div>}
   </section>
 );
 
@@ -157,7 +157,7 @@ export const EditorDock: React.FC<EditorDockProps> = ({ request, className = '' 
         <CollapseChevron direction="right" size={13} />
       </button>
 
-      <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
+      <div className="flex-1 min-h-0 overflow-hidden p-3 flex flex-col gap-3">
         {/* Card 1: Properties | Slide */}
         <DockCard
           title={t('dock.propsSlide')}
