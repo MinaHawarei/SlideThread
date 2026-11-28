@@ -33,7 +33,7 @@ export interface GalleryPageProps {
 }
 
 export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
-  const { t, dir, locale } = useT();
+  const { t, locale } = useT();
   const appTheme = useSettingsStore((state) => state.settings.appTheme);
 
   const [query, setQuery] = useState('');
@@ -41,7 +41,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState<string[]>(() => readTemplateFavorites());
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [page, setPage] = useState(1);
   const [simulatedState, setSimulatedState] = useState<'templates' | 'empty' | 'loading' | 'error'>('templates');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { templates: userTemplates, loading: userTemplatesLoading, error: userLibraryError } = useUserTemplateLibrary();
@@ -120,8 +120,13 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   const availableCategories = getAvailableCategories(TEMPLATE_CATEGORIES, TEMPLATE_GALLERY_INDEX.templates);
 
   const visibleTemplates = useMemo(() => {
-    // Weave (tech-mesh) is the app's default look, so it leads the gallery instead of sorting last by id.
-    const ordered = [...TEMPLATE_GALLERY_INDEX.templates].sort((a, b) => Number(b.id === 'tech-mesh') - Number(a.id === 'tech-mesh'));
+    // Gallery order (approved): higher priority number first, ties fall back to id
+    // for a stable order. Templates without a priority count as 1.
+    // Edit priority per template in src/templates/starters/<id>/template.json.
+    const ordered = [...TEMPLATE_GALLERY_INDEX.templates].sort((a, b) => {
+      const byPriority = (b.priority ?? 1) - (a.priority ?? 1);
+      return byPriority !== 0 ? byPriority : a.id.localeCompare(b.id);
+    });
     return filterGalleryTemplates(ordered, {
       query,
       categoryId: categoryId === 'all' ? undefined : categoryId,
@@ -131,9 +136,25 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
     });
   }, [query, categoryId, locale, favoritesOnly, favoriteIds]);
 
+  // Numbered pagination (approved redesign): PAGE_SIZE cards per page
+  const totalPages = Math.max(1, Math.ceil(visibleTemplates.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
   const displayedTemplates = useMemo(() => {
-    return visibleTemplates.slice(0, visibleCount);
-  }, [visibleTemplates, visibleCount]);
+    return visibleTemplates.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  }, [visibleTemplates, safePage]);
+
+  // Page numbers with ellipsis: 1 ... c-1 c c+1 ... N
+  const pageItems: (number | 'ellipsis')[] = useMemo(() => {
+    const items: (number | 'ellipsis')[] = [];
+    for (let n = 1; n <= totalPages; n++) {
+      if (n === 1 || n === totalPages || Math.abs(n - safePage) <= 1) {
+        items.push(n);
+      } else if (items[items.length - 1] !== 'ellipsis') {
+        items.push('ellipsis');
+      }
+    }
+    return items;
+  }, [totalPages, safePage]);
 
   const updateFavorite = (id: string) => setFavoriteIds(toggleTemplateFavorite(id));
 
@@ -159,7 +180,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
     setQuery('');
     setCategoryId('all');
     setFavoritesOnly(false);
-    setVisibleCount(PAGE_SIZE);
+    setPage(1);
     setSimulatedState('templates');
   };
 
@@ -181,7 +202,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
   );
 
   return (
-    <div dir={dir} data-testid="gallery-page" className="ed-page flex flex-col justify-between">
+    <div data-testid="gallery-page" className="ed-page flex flex-col justify-between">
       <div>
         <AppNav current="/gallery" onNavigate={navigateTo} />
 
@@ -197,10 +218,10 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
             <div className="gl-acts">
               <input ref={fileInputRef} type="file" accept=".zip,application/zip" className="hidden" data-testid="template-zip-input" onChange={(event) => void handleImportPackage(event.currentTarget.files?.[0])} />
               <button type="button" data-testid="import-template-zip" disabled={packageAction} onClick={() => fileInputRef.current?.click()}>
-                {packageAction ? 'Validating ZIP…' : 'Import template ZIP'}
+                {packageAction ? t('gallery.validatingZip') : t('gallery.importZip')}
               </button>
               <button type="button" data-testid="open-template-builder" onClick={() => setBuilderOpen(true)}>
-                Create template
+                {t('gallery.createTemplate')}
               </button>
             </div>
           </div>
@@ -315,7 +336,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
-                  setVisibleCount(PAGE_SIZE);
+                  setPage(1);
                 }}
                 placeholder={t('gallery.searchPlaceholder')}
                 aria-label={t('gallery.searchPlaceholder')}
@@ -323,7 +344,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
             </div>
             <label className="sr-only-select">
               <span>{t('gallery.category')}</span>
-              <select data-testid="gallery-category" value={categoryId} onChange={(e) => { setCategoryId(e.target.value); setVisibleCount(PAGE_SIZE); }}>
+              <select data-testid="gallery-category" value={categoryId} onChange={(e) => { setCategoryId(e.target.value); setPage(1); }}>
                 <option value="all">{t('gallery.allCategories')}</option>
                 {availableCategories.map((category) => (
                   <option key={category.id} value={category.id}>{category.name[locale]}</option>
@@ -336,7 +357,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
               aria-pressed={favoritesOnly}
               onClick={() => {
                 setFavoritesOnly(!favoritesOnly);
-                setVisibleCount(PAGE_SIZE);
+                setPage(1);
               }}
               className="gl-pill"
             >
@@ -349,11 +370,11 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
           </section>
 
           <div className="flex flex-wrap gap-2" role="toolbar" aria-label={t('gallery.category')}>
-            <button type="button" className="gl-pill" aria-pressed={categoryId === 'all'} onClick={() => { setCategoryId('all'); setVisibleCount(PAGE_SIZE); }}>
+            <button type="button" className="gl-pill" aria-pressed={categoryId === 'all'} onClick={() => { setCategoryId('all'); setPage(1); }}>
               {t('gallery.allCategories')}
             </button>
             {availableCategories.map((category) => (
-              <button key={category.id} type="button" className="gl-pill" aria-pressed={categoryId === category.id} onClick={() => { setCategoryId(category.id); setVisibleCount(PAGE_SIZE); }}>
+              <button key={category.id} type="button" className="gl-pill" aria-pressed={categoryId === category.id} onClick={() => { setCategoryId(category.id); setPage(1); }}>
                 {category.name[locale]}
               </button>
             ))}
@@ -465,12 +486,47 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onNavigate }) => {
                     })}
                   </div>
 
-                  {visibleCount < visibleTemplates.length && (
-                    <div className="flex justify-center pt-8">
-                      <button type="button" data-testid="gallery-load-more" onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)} className="gl-pill">
-                        Load More Templates ({visibleTemplates.length - visibleCount} remaining)
+                  {totalPages > 1 && (
+                    <nav data-testid="gallery-pagination" aria-label="Pagination" className="flex flex-wrap items-center justify-center gap-2 pt-8">
+                      <button
+                        type="button"
+                        data-testid="gallery-page-prev"
+                        disabled={safePage === 1}
+                        onClick={() => setPage(safePage - 1)}
+                        className="gl-pill"
+                        aria-label={t('gallery.prevPage')}
+                      >
+                        ‹
                       </button>
-                    </div>
+                      {pageItems.map((item, idx) =>
+                        item === 'ellipsis' ? (
+                          <span key={`ellipsis-${idx}`} className="px-1 text-sm" style={{ color: 'var(--ed-mut)' }} aria-hidden="true">…</span>
+                        ) : (
+                          <button
+                            key={item}
+                            type="button"
+                            data-testid={`gallery-page-${item}`}
+                            aria-current={item === safePage ? 'page' : undefined}
+                            aria-label={t('gallery.goToPage', { page: item })}
+                            onClick={() => setPage(item)}
+                            className={`gl-pill${item === safePage ? ' on' : ''}`}
+                            style={{ minWidth: 40, justifyContent: 'center' }}
+                          >
+                            {item}
+                          </button>
+                        )
+                      )}
+                      <button
+                        type="button"
+                        data-testid="gallery-page-next"
+                        disabled={safePage === totalPages}
+                        onClick={() => setPage(safePage + 1)}
+                        className="gl-pill"
+                        aria-label={t('gallery.nextPage')}
+                      >
+                        ›
+                      </button>
+                    </nav>
                   )}
                 </>
               )}

@@ -1,9 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
+import { selectGalleryTemplate } from './helpers/wizard';
 
 async function create(page: Page, fmt: string) {
   await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId(fmt === 'r_9_16' ? 'platform-instagram' : 'platform-linkedin').click();
   await page.getByTestId(fmt === 'r_9_16' ? 'type-story' : 'type-carousel').click();
   await page.getByTestId(`format-${fmt}`).click();
@@ -18,6 +18,7 @@ for (const fmt of ['r_9_16', 'r_16_9', 'r_1_1']) {
     await page.setViewportSize({ width: 1440, height: 900 });
     await create(page, fmt);
     await page.getByTestId('rail-tool-elements').click();
+    await page.getByTestId('rail-tool-draw').click();
     await page.getByTestId('rail-tool-bezier').click();
     const b = (await page.getByTestId('bezier-pen-surface').boundingBox())!;
     for (const [x, y] of [[0.25, 0.25], [0.75, 0.25], [0.75, 0.75], [0.25, 0.25]] as Array<[number, number]>) await page.mouse.click(b.x + b.width * x, b.y + b.height * y);
@@ -31,6 +32,7 @@ for (const fmt of ['r_9_16', 'r_16_9', 'r_1_1']) {
     expect(pathBox.width / slide.width).toBeGreaterThan(0.35);
     expect(pathBox.height / slide.height).toBeGreaterThan(0.35);
 
+    await page.getByTestId('rail-tool-elements').click();
     await page.getByTestId('assets-search-input').fill('hexagon');
     await page.getByTestId('assets-grid').getByRole('button').first().click();
     await page.getByTestId('convert-to-path').click();

@@ -1,4 +1,14 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+/** Walks the numbered pagination until the template card is on screen (alphabetical sort puts tech-mesh on page 2). */
+async function goToGalleryTemplatePage(page: Page, id: string): Promise<void> {
+  const card = page.locator(`[data-testid="gallery-template-card"][data-template-id="${id}"]`);
+  for (let i = 0; i < 10; i++) {
+    if (await card.isVisible().catch(() => false)) return;
+    await page.getByTestId('gallery-page-next').click();
+  }
+  throw new Error(`template ${id} not found in any gallery page`);
+}
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -28,18 +38,27 @@ test.describe('Component Gallery Route (/gallery)', () => {
     // Marketing: every shipped template whose manifest lists it (the gallery shows all of them on one page).
     const marketing = idsInCategory('marketing');
     expect(marketing).toContain('bold-marketing');
-    await expect(page.getByTestId('gallery-template-card')).toHaveCount(marketing.length);
-    await expect(page.locator('[data-testid="gallery-template-card"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-template-id')).sort()))
-      .resolves.toEqual(marketing);
+    // The gallery is paginated (24 per page): walk every page and compare the union with the manifests.
+    const seen: string[] = [];
+    for (let i = 0; i < 20; i++) {
+      seen.push(...await page.locator('[data-testid="gallery-template-card"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-template-id') as string)));
+      const next = page.getByTestId('gallery-page-next');
+      if (!(await next.isVisible().catch(() => false)) || await next.isDisabled()) break;
+      await next.click();
+    }
+    expect([...seen].sort()).toEqual(marketing);
 
     await page.getByTestId('gallery-category').selectOption('all');
+    await goToGalleryTemplatePage(page, 'tech-mesh');
     await page.getByTestId('favorite-tech-mesh').click();
     await page.getByTestId('favorites-filter').click();
     await expect(page.getByTestId('gallery-template-card')).toHaveCount(1);
     await expect(page.getByTestId('gallery-template-card')).toHaveAttribute('data-template-id', 'tech-mesh');
     await page.reload();
+    await goToGalleryTemplatePage(page, 'tech-mesh');
     await expect(page.getByTestId('favorite-tech-mesh')).toHaveAttribute('aria-pressed', 'true');
     await page.getByTestId('favorites-filter').click();
+    await goToGalleryTemplatePage(page, 'tech-mesh');
     await page.getByTestId('favorite-tech-mesh').click();
   });
 
@@ -52,6 +71,7 @@ test.describe('Component Gallery Route (/gallery)', () => {
     await page.route('**/_vercel/insights/**', (route) => route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
     page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
     await page.goto('/gallery');
+    await goToGalleryTemplatePage(page, 'tech-mesh');
     await page.getByTestId('preview-template-tech-mesh').click();
     await expect(page.getByTestId('template-preview-page')).toBeVisible();
     const types = ['cover', 'explain', 'rule', 'compare', 'code', 'stat', 'quote', 'image', 'cta'];
@@ -76,6 +96,7 @@ test.describe('Component Gallery Route (/gallery)', () => {
     await page.route('**/_vercel/insights/**', (route) => route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
     page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
     await page.goto('/gallery');
+    await goToGalleryTemplatePage(page, 'tech-mesh');
     await page.getByTestId('preview-template-tech-mesh').click();
     await expect(page.getByTestId('template-preview-page')).toBeVisible();
     await page.getByTestId('slide-type-filter').selectOption('cover');

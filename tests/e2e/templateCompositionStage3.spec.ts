@@ -42,7 +42,6 @@ test('ZIP composition creates isolated editable native layers that persist after
   await finishLockedWizard(page);
   await expect(page.getByTestId('editor-desktop')).toBeVisible();
   for (const selector of ['.slide-tag', '.slide-title-h1', '.slide-sub', '.slide-mono-line']) await expect(page.getByTestId('main-canvas').locator(selector)).toHaveCount(0);
-  await page.getByTestId('tab-layers').click();
 
   for (const elementId of ['fixture-tag', 'fixture-chip', 'fixture-text', 'fixture-image', 'fixture-shape']) {
     await expect(page.getByTestId(`layer-row-${elementId}`)).toBeVisible();
@@ -55,7 +54,6 @@ test('ZIP composition creates isolated editable native layers that persist after
   const tagEditor = page.getByTestId('rich-text-contenteditable');
   await expect(tagEditor).toBeVisible();
   await tagEditor.fill('UPDATED TAG');
-  await page.getByTestId('tab-layers').click();
   const fixtureText = page.getByTestId('main-canvas').getByTestId('text-extra-fixture-text');
   const paragraphStyles = await fixtureText.locator('.rich-text-paragraph').evaluateAll((nodes) => nodes.map((node) => ({ size: getComputedStyle(node).fontSize, lineHeight: getComputedStyle(node).lineHeight })));
   expect(paragraphStyles).toEqual([{ size: '20px', lineHeight: '24px' }, { size: '20px', lineHeight: '24px' }]);
@@ -63,14 +61,11 @@ test('ZIP composition creates isolated editable native layers that persist after
   await page.getByTestId('sidebar-typography-font').selectOption('ibm-plex-serif');
   await page.getByTestId('sidebar-typography-weight').selectOption('700');
   await page.getByTestId('sidebar-typography-italic').check();
-  await page.getByTestId('tab-layers').click();
   await page.getByTestId('layer-row-fixture-shape').getByRole('button').first().click();
   await page.getByTestId('sidebar-corner-radius').fill('18');
-  await page.getByTestId('tab-layers').click();
   await page.getByTestId('layer-row-fixture-image').getByRole('button').first().click();
   await page.getByTestId('sidebar-image-filters').locator('input[type=range]').first().fill('120');
   await expect(page.getByTestId('main-canvas').getByTestId('image-extra-mask-fixture-image')).toBeVisible();
-  await page.getByTestId('tab-layers').click();
   await page.getByTestId('layer-row-fixture-shape').getByRole('button').first().click();
   const shapeLayer = page.getByTestId('main-canvas').getByTestId('extra-element-fixture-shape');
   await page.getByTestId('sidebar-x-position').fill('52');
@@ -82,7 +77,6 @@ test('ZIP composition creates isolated editable native layers that persist after
   await expect.poll(async () => shapeLayer.evaluate((node) => (node as HTMLElement).style.transform)).toBe('rotate(0deg)');
   await page.getByTestId('editor-redo-btn').click();
   await expect.poll(async () => shapeLayer.evaluate((node) => (node as HTMLElement).style.transform)).toBe('rotate(15deg)');
-  await page.getByTestId('tab-layers').click();
   await page.getByTestId('layer-row-fixture-shape').getByRole('button').first().click();
   await page.getByTestId('sidebar-lock-btn').click();
   await expect(page.getByTestId('sidebar-lock-btn')).toContainText('Unlock');
@@ -95,17 +89,13 @@ test('ZIP composition creates isolated editable native layers that persist after
   await page.getByTestId('sidebar-layer-up').click();
   await expect.poll(async () => shapeLayer.evaluate((node) => (node as HTMLElement).style.zIndex)).not.toBe(oldZ);
   await page.getByTestId('sidebar-duplicate-btn').click();
-  await page.getByTestId('tab-layers').click();
   const duplicateRows = page.getByTestId('layers-list').locator('[data-testid^="layer-row-fixture-shape_copy_"]');
   await expect(duplicateRows).toHaveCount(1);
   await page.getByTestId('editor-undo-btn').click();
-  await page.getByTestId('tab-layers').click();
   await expect(duplicateRows).toHaveCount(0);
   await page.getByTestId('editor-redo-btn').click();
-  await page.getByTestId('tab-layers').click();
   await expect(duplicateRows).toHaveCount(1);
   await page.getByTestId('editor-undo-btn').click();
-  await page.getByTestId('tab-layers').click();
   await expect(duplicateRows).toHaveCount(0);
 
   // Missing square-specific composition falls back to the existing normalized instance geometry.
@@ -116,13 +106,13 @@ test('ZIP composition creates isolated editable native layers that persist after
   await expect.poll(async () => page.getByTestId('main-canvas').getByTestId('extra-element-fixture-shape').evaluate((node) => (node as HTMLElement).style.width)).toBe('20%');
   await page.reload();
   await expect(page.getByTestId('editor-desktop')).toBeVisible();
-  await page.getByTestId('tab-layers').click();
   await expect(page.getByTestId('layer-row-fixture-chip')).toBeVisible();
   await page.getByTestId('layer-row-fixture-tag').getByRole('button').first().click();
   await expect(page.getByTestId('main-canvas').getByTestId('text-extra-fixture-tag')).toContainText('UPDATED TAG');
   await expect(page.getByTestId('main-canvas').getByTestId('shape-rectangle-fixture-shape')).toHaveCSS('border-radius', '18px');
 
   await page.getByTestId('editor-export-btn').click();
+  await page.getByTestId('export-menu-images').click();
   await page.getByTestId('export-format-png').click();
   const [pngDownload] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-start-btn').click()]);
   const pngPath = await pngDownload.path();
@@ -134,6 +124,7 @@ test('ZIP composition creates isolated editable native layers that persist after
   expect(data.some((value, index) => index % info.channels === 0 && value > 200)).toBe(true);
 
   await page.getByTestId('editor-export-btn').click();
+  await page.getByTestId('export-menu-images').click();
   await page.getByTestId('export-format-pdf').click();
   const [pdfDownload] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-start-btn').click()]);
   const pdfPath = await pdfDownload.path();

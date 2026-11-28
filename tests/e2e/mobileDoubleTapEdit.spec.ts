@@ -1,4 +1,5 @@
 import { test, expect, type Locator, type Page } from '@playwright/test';
+import { selectGalleryTemplate } from './helpers/wizard';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
@@ -18,8 +19,7 @@ async function stableCenter(locator: Locator) {
 
 async function createCarousel(page: Page) {
   await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_4_5').click();

@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-phosphor-terminal",
+  "priority": 1,
   "name": {
     "en": "Phosphor Terminal",
     "ar": "شاشة الفوسفور"

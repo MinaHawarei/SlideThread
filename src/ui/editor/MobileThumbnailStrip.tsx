@@ -8,12 +8,14 @@ import { SlideRenderer } from '../../slides/SlideRenderer';
 import { PasteSlidesDialog } from './PasteSlidesDialog';
 import { SlideTypePicker } from './SlideTypePicker';
 import { MobileBottomSheet } from './MobileBottomSheet';
-import { DirectionalNavButton } from '../common/SlideNavControls';
 import type { SlideType, Slide, CounterConfig, SignatureConfig, ThemeMode, AspectClass } from '../../core/schema';
-import { ClipboardIcon, SparkleIcon } from '../common/icons';
+import { ClipboardIcon, SparkleIcon, CollapseChevron } from '../common/icons';
 
 export interface MobileThumbnailStripProps {
   className?: string;
+  /** Collapses the strip to a thin bar (mobile redesign). */
+  collapsed?: boolean;
+  onToggleCollapsed?: () => void;
 }
 
 interface MobileThumbItemProps {
@@ -35,9 +37,12 @@ interface MobileThumbItemProps {
   signatureConfig?: SignatureConfig;
   templateId: string;
   themeMode: ThemeMode;
+  canDelete: boolean;
   onSelect: (id: string) => void;
   onMoveEarlier: (idx: number) => void;
   onMoveLater: (idx: number) => void;
+  onDuplicate: () => void;
+  onDelete: () => void;
 }
 
 const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
@@ -59,10 +64,14 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
   signatureConfig,
   templateId,
   themeMode,
+  canDelete,
   onSelect,
   onMoveEarlier,
   onMoveLater,
+  onDuplicate,
+  onDelete,
 }) => {
+  const { t } = useT();
   const controls = useDragControls();
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -181,12 +190,63 @@ const MobileThumbItem: React.FC<MobileThumbItemProps> = React.memo(({
       >
         {slideNumber}
       </span>
+
+      {/* Touch has no hover: the selected card carries its actions inline */}
+      {isActive && !isPost && (
+        <div className="absolute inset-x-0 bottom-0 grid grid-cols-2 gap-0.5 p-0.5 bg-gradient-to-t from-black/80 to-transparent">
+          <button
+            type="button"
+            data-testid="mobile-move-earlier-btn"
+            disabled={idx === 0}
+            onClick={(e) => { e.stopPropagation(); onMoveEarlier(idx); }}
+            aria-label={t('editor.moveUp')}
+            title={t('editor.moveUp')}
+            className="h-5.5 min-h-[22px] rounded-md bg-white/90 text-stone-800 flex items-center justify-center disabled:opacity-30"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5m6-6-6 6 6 6" /></svg>
+          </button>
+          <button
+            type="button"
+            data-testid="mobile-move-later-btn"
+            disabled={idx === totalSlides - 1}
+            onClick={(e) => { e.stopPropagation(); onMoveLater(idx); }}
+            aria-label={t('editor.moveDown')}
+            title={t('editor.moveDown')}
+            className="h-5.5 min-h-[22px] rounded-md bg-white/90 text-stone-800 flex items-center justify-center disabled:opacity-30"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+          </button>
+          <button
+            type="button"
+            data-testid="mobile-duplicate-slide-btn"
+            onClick={(e) => { e.stopPropagation(); onDuplicate(); }}
+            aria-label={t('editor.duplicateSlide')}
+            title={t('editor.duplicateSlide')}
+            className="h-5.5 min-h-[22px] rounded-md bg-white/90 text-stone-800 flex items-center justify-center"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg>
+          </button>
+          <button
+            type="button"
+            data-testid="mobile-delete-slide-btn"
+            disabled={!canDelete}
+            onClick={(e) => { e.stopPropagation(); onDelete(); }}
+            aria-label={t('editor.deleteSlide')}
+            title={t('editor.deleteSlide')}
+            className="h-5.5 min-h-[22px] rounded-md bg-white/90 text-red-600 flex items-center justify-center disabled:opacity-30"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l.8 12.5h9.4L17.5 7" /><path d="M10 11v5M14 11v5" /></svg>
+          </button>
+        </div>
+      )}
     </Reorder.Item>
   );
 });
 
 export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
   className = '',
+  collapsed = false,
+  onToggleCollapsed,
 }) => {
   const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
@@ -277,6 +337,32 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
     }
   };
 
+  if (collapsed) {
+    return (
+      <div
+        data-testid="mobile-thumbnail-strip"
+        className={`border-b border-stone-200/80 dark:border-stone-800 bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur-sm px-3 flex items-center justify-between h-8 shrink-0 select-none ${className}`}
+      >
+        <span className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[1.4px] text-stone-500 dark:text-stone-400">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M4 9.5h16M9.5 9.5V20" /></svg>
+          {t('editor.mobileTabSlides')}
+          <span className="bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-200 rounded-full px-2 py-px text-[10px] tracking-normal">
+            {slides.length}
+          </span>
+        </span>
+        <button
+          type="button"
+          data-testid="mobile-strip-expand-btn"
+          onClick={onToggleCollapsed}
+          className="min-h-[32px] min-w-[32px] flex items-center justify-center rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors"
+          aria-label={t('dock.expand')}
+        >
+          <CollapseChevron direction="down" size={14} />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <MotionConfig reducedMotion="user">
       <div
@@ -294,13 +380,14 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
           {announcement}
         </div>
 
-        {/* Horizontal Thumbnails Row with Reorder.Group */}
+        {/* Horizontal Thumbnails Row with Reorder.Group + collapse chevron */}
+        <div className="flex items-center gap-1">
         <Reorder.Group
           as="div"
           axis="x"
           values={slides}
           onReorder={handleReorder}
-          className="flex items-center gap-2 overflow-x-auto py-1 px-1 scrollbar-none"
+          className="flex-1 min-w-0 flex items-center gap-2 overflow-x-auto py-1 px-1 scrollbar-none"
         >
           {slides.map((slide, idx) => (
             <MobileThumbItem
@@ -324,8 +411,11 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
               templateId={project.templateId}
               themeMode={project.theme}
               onSelect={setActiveSlideId}
+              canDelete={slides.length > 1}
               onMoveEarlier={() => handleMoveEarlier()}
               onMoveLater={() => handleMoveLater()}
+              onDuplicate={handleDuplicate}
+              onDelete={handleDelete}
             />
           ))}
 
@@ -365,74 +455,17 @@ export const MobileThumbnailStrip: React.FC<MobileThumbnailStripProps> = ({
           )}
         </Reorder.Group>
 
-        {/* Slide Operations Toolbar (Duplicate, Delete, Move Earlier, Move Later) */}
-        <div className="flex items-center justify-between px-1 text-xs text-stone-500 dark:text-stone-400">
-          <span className="font-semibold text-[11px] font-mono text-stone-600 dark:text-stone-300">
-            <bdi dir="ltr">{validIndex + 1} / {slides.length}</bdi>
-          </span>
-
-          <div className="flex items-center gap-1">
-            {/* Accessible Reorder Earlier */}
-            {!isPost && (
-              <DirectionalNavButton
-                roleType="prev"
-                variant="arrow"
-                data-testid="mobile-move-earlier-btn"
-                disabled={validIndex === 0}
-                onClick={handleMoveEarlier}
-                aria-label={t('editor.moveUp')}
-                title={t('editor.moveUp')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-              />
-            )}
-
-            {/* Accessible Reorder Later */}
-            {!isPost && (
-              <DirectionalNavButton
-                roleType="next"
-                variant="arrow"
-                data-testid="mobile-move-later-btn"
-                disabled={validIndex === slides.length - 1}
-                onClick={handleMoveLater}
-                aria-label={t('editor.moveDown')}
-                title={t('editor.moveDown')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-              />
-            )}
-
-            {/* Duplicate Slide */}
-            {!isPost && (
-              <button
-                type="button"
-                data-testid="mobile-duplicate-slide-btn"
-                onClick={handleDuplicate}
-                aria-label={t('editor.duplicateSlide')}
-                title={t('editor.duplicateSlide')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              </button>
-            )}
-
-            {/* Delete Slide */}
-            {!isPost && (
-              <button
-                type="button"
-                data-testid="mobile-delete-slide-btn"
-                disabled={slides.length <= 1}
-                onClick={handleDelete}
-                aria-label={t('editor.deleteSlide')}
-                title={t('editor.deleteSlide')}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-red-500/10 text-red-600 dark:text-red-400 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            )}
-          </div>
+        {onToggleCollapsed && (
+          <button
+            type="button"
+            data-testid="mobile-strip-collapse-btn"
+            onClick={onToggleCollapsed}
+            className="shrink-0 min-h-[32px] min-w-[32px] flex items-center justify-center rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-200/60 dark:hover:bg-stone-800 transition-colors"
+            aria-label={t('dock.collapse')}
+          >
+            <CollapseChevron direction="up" size={14} />
+          </button>
+        )}
         </div>
 
         {/* Paste to Slides Dialog */}

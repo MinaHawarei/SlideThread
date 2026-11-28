@@ -3,12 +3,11 @@
  * reports skipped content, the saved package survives reload, and a new project from it reproduces the design.
  */
 import { test, expect, type Page } from '@playwright/test';
-import { finishLockedWizard } from './helpers/wizard';
+import { finishLockedWizard, selectGalleryTemplate } from './helpers/wizard';
 
 async function createEditor(page: Page) {
   await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_4_5').click();
@@ -41,7 +40,6 @@ test('saved design reproduces moved title, hidden body and an added shape', asyn
   const moved = await relBox(page, '.slide-title-h1');
   expect(moved.x).toBeGreaterThan(base.x + 3);
   expect(moved.y).toBeGreaterThan(base.y + 3);
-  await page.getByTestId('tab-layers').click();
   await page.getByRole('button', { name: 'Hide Subtitle' }).click();
   await page.getByTestId('tab-slide').click();
   await page.getByTestId('add-shape-line-arrow').click();

@@ -8,10 +8,13 @@ import { SlideRenderer } from '../../slides/SlideRenderer';
 import { PasteSlidesDialog } from './PasteSlidesDialog';
 import { SlideTypePicker } from './SlideTypePicker';
 import type { SlideType, Slide, AspectClass } from '../../core/schema';
-import { ChevronDownIcon, ChevronUpIcon, ClipboardIcon, TrashIcon } from '../common/icons';
+import { ChevronDownIcon, ChevronUpIcon, ClipboardIcon, TrashIcon, CollapseChevron } from '../common/icons';
 
 export interface SlideRailProps {
   className?: string;
+  /** Collapses the strip to a thin vertical rail (desktop redesign). */
+  collapsed?: boolean;
+  onToggleCollapsed?: () => void;
 }
 
 interface SlideRailItemProps {
@@ -199,10 +202,10 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
         </div>
       </div>
 
-      {/* Actions Row */}
+      {/* Actions Row — hover/focus only, per the approved redesign */}
       <div
         data-testid={`rail-actions-${slide.id}`}
-        className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/80 flex items-center justify-between text-xs"
+        className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/80 flex items-center justify-between text-xs opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity"
       >
         {/* Keyboard Reordering (Accessible per Spec §10.1 & §10.2) */}
         {!isPost && (
@@ -276,7 +279,11 @@ const SlideRailItem: React.FC<SlideRailItemProps> = React.memo(({
   );
 });
 
-export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
+export const SlideRail: React.FC<SlideRailProps> = ({
+  className = '',
+  collapsed = false,
+  onToggleCollapsed,
+}) => {
   const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const activeSlideId = useProjectStore((state) => state.activeSlideId);
@@ -355,6 +362,36 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
     }
   };
 
+  if (collapsed) {
+    return (
+      <aside
+        data-testid="slide-rail"
+        aria-label={t('editor.slideThumbnails')}
+        className={`w-12 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col items-center py-3 gap-3 shrink-0 select-none ${className}`}
+      >
+        <button
+          type="button"
+          data-testid="rail-expand-btn"
+          onClick={onToggleCollapsed}
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+          title={t('editor.mobileTabSlides')}
+          aria-label={t('editor.mobileTabSlides')}
+        >
+          <CollapseChevron direction="right" size={14} />
+        </button>
+        <span
+          className="text-[11px] font-bold uppercase tracking-[2px] text-stone-400 dark:text-stone-500"
+          style={{ writingMode: 'vertical-rl' }}
+        >
+          {t('editor.mobileTabSlides')}
+        </span>
+        <span className="text-[10.5px] font-bold font-mono bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded-full px-1.5 py-0.5">
+          {slides.length}
+        </span>
+      </aside>
+    );
+  }
+
   return (
     <MotionConfig reducedMotion="user">
       <aside
@@ -375,7 +412,19 @@ export const SlideRail: React.FC<SlideRailProps> = ({ className = '' }) => {
 
         {/* Rail Header */}
         <div className="p-4 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+          <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+            {onToggleCollapsed && (
+              <button
+                type="button"
+                data-testid="rail-collapse-btn"
+                onClick={onToggleCollapsed}
+                className="w-6 h-6 rounded-md flex items-center justify-center text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                title={t('dock.collapse')}
+                aria-label={t('dock.collapse')}
+              >
+                <CollapseChevron direction="left" size={13} />
+              </button>
+            )}
             {t('rail.slidesCount', { count: slides.length })}
           </span>
 

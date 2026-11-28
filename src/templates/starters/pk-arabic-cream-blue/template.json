@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-arabic-cream-blue",
+  "priority": 2,
   "name": {
     "en": "Arabic Cream Blue",
     "ar": "كريمي أزرق عربي"

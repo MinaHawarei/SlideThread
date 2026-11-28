@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-arabic-navy",
+  "priority": 1,
   "name": {
     "en": "Arabic Navy",
     "ar": "كحلي عربي"

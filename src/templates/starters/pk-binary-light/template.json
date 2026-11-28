@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-binary-light",
+  "priority": 2,
   "name": {
     "en": "Binary Light",
     "ar": "ثنائي فاتح"

@@ -50,6 +50,7 @@ test.describe('Task R9-1: Comprehensive Export Regression Suite', () => {
       const exportBtn = page.locator('[data-testid="editor-export-btn"]');
       await expect(exportBtn).toBeVisible();
       await exportBtn.click();
+      await page.getByTestId('export-menu-images').click();
 
       const dialog = page.locator('[data-testid="export-dialog"]');
       await expect(dialog).toBeVisible();

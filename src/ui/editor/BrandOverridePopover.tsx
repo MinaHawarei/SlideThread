@@ -168,8 +168,6 @@ export const BrandOverridePopover: React.FC<BrandOverridePopoverProps> = ({
   zoom = 1,
   position = 'top',
 }) => {
-  const { dir } = useT();
-
   return (
     <div
       data-testid="brand-override-popover"
@@ -177,7 +175,6 @@ export const BrandOverridePopover: React.FC<BrandOverridePopoverProps> = ({
       aria-labelledby="brand-override-title"
       onPointerDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
-      dir={dir}
       style={{
         position: 'absolute',
         top: position === 'bottom' ? 'calc(100% + 8px)' : undefined,

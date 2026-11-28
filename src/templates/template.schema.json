@@ -87,6 +87,10 @@
     "colorFlexible": {
       "type": "boolean"
     },
+    "priority": {
+      "type": "number",
+      "description": "Gallery ordering: higher first, default 1"
+    },
     "theme": {
       "type": "object",
       "additionalProperties": false,

@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "golden-hour-viral",
+  "priority": 1,
   "name": {
     "en": "Golden Hour Viral (full carousel)",
     "ar": "الساعة الذهبية (كاروسيل كامل)"

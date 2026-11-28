@@ -4,6 +4,14 @@ import { useCreateDialogStore } from '../../src/store/createDialogStore';
 import { GalleryPage } from '../../src/gallery/GalleryPage';
 import { useI18nStore } from '../../src/i18n';
 
+function goToTemplatePage(id: string): void {
+  for (let i = 0; i < 10 && !screen.queryByTestId(`favorite-${id}`); i++) {
+    const next = screen.queryByTestId('gallery-page-next');
+    if (!next) break;
+    fireEvent.click(next);
+  }
+}
+
 describe('GalleryPage component (Task R8-2)', () => {
   beforeEach(() => {
     useI18nStore.getState().setLocale('en');
@@ -54,6 +62,8 @@ describe('GalleryPage component (Task R8-2)', () => {
   it('toggles template favorites and filters by favorites only', () => {
     render(<GalleryPage />);
 
+    // The gallery is paginated (24 per page) and higher-priority groups come first; walk pages until tech-mesh shows.
+    goToTemplatePage('tech-mesh');
     const favBtn = screen.getByTestId('favorite-tech-mesh');
     expect(favBtn).toHaveAttribute('aria-pressed', 'false');
 
@@ -95,6 +105,8 @@ describe('GalleryPage component (Task R8-2)', () => {
     const onNavigate = vi.fn();
     render(<GalleryPage onNavigate={onNavigate} />);
 
+    // The gallery is paginated (24 per page) and higher-priority groups come first; walk pages until tech-mesh shows.
+    goToTemplatePage('tech-mesh');
     const techMeshCard = screen.getAllByTestId('gallery-template-card').find(
       (c) => c.getAttribute('data-template-id') === 'tech-mesh'
     )!;

@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-magenta-noir",
+  "priority": 1,
   "name": {
     "en": "Magenta Noir",
     "ar": "نوار الماجنتا"

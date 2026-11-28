@@ -33,7 +33,7 @@ for (const viewport of viewports) {
         await page.goto('/settings');
         // Settings v5: real controls drive direction and theme (the old .settings-shell attribute hack is gone).
         await page.getByTestId(direction === 'rtl' ? 'settings-lang-ar-btn' : 'settings-lang-en-btn').click();
-        await expect(page.locator('html')).toHaveAttribute('dir', direction);
+        await expect(page.locator('html')).toHaveAttribute('lang', direction === 'rtl' ? 'ar' : 'en');
         await expect(page.getByRole('heading', { level: 1 })).toHaveText(direction === 'rtl' ? /اجعله\s*يعبر عنك/ : /\S/);
         const wantDark = theme === 'dark';
         const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'));

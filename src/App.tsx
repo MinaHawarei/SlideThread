@@ -29,7 +29,7 @@ const TemplateDevPage = import.meta.env.DEV
 export const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(() => typeof window !== 'undefined' ? window.location.pathname : '/');
   const [initialFontLoaded, setInitialFontLoaded] = useState(false);
-  const { locale, dir } = useT();
+  const { locale } = useT();
   const appTheme = useSettingsStore((state) => state.settings.appTheme || 'light');
 
   const navigate = (path: string) => {
@@ -44,9 +44,10 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     document.documentElement.lang = locale;
-    document.documentElement.dir = dir;
-    document.documentElement.classList.toggle('rtl', dir === 'rtl');
-  }, [locale, dir]);
+    // The UI layout never mirrors on language switch (see i18n setLocale).
+    document.documentElement.dir = 'ltr';
+    document.documentElement.classList.remove('rtl');
+  }, [locale]);
 
   useEffect(() => {
     let active = true;

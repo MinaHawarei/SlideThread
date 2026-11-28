@@ -8,19 +8,23 @@ import { SizeWarningModal } from '../common/SizeWarningModal';
 import { ChangeFormatDialog } from './ChangeFormatDialog';
 import { SlideRail } from './SlideRail';
 import { MainCanvas } from './MainCanvas';
-import { Inspector, type InspectorTab } from './Inspector';
+import { EditorDock, type DockRequest } from './EditorDock';
+import { AssetsPanel } from './AssetsPanel';
+import { ExportMenu } from './ExportMenu';
 import { FORMAT_REGISTRY, type FormatId } from '../../core/formats';
 import { StorageQuotaBanner } from '../common/StorageQuotaBanner';
 import { ShortcutsOverlay } from '../common/ShortcutsOverlay';
 import { OnboardingModal } from '../common/OnboardingModal';
 import { APP_NAME } from '../../config/site';
 import { LogoMark } from '../brand/LogoMark';
-import { BrandIcon, BulbIcon, DownloadIcon, KeyboardIcon, LayoutIcon, PageIcon, PenIcon, PencilIcon, RedoIcon, ShapesIcon, SlidesIcon, TemplateIcon, UndoIcon, UploadIcon } from '../common/icons';
+import { BulbIcon, ChevronLeftIcon, ImageIcon, KeyboardIcon, LayoutIcon, PencilIcon, PenIcon, ShapesIcon, SlidesIcon, TemplateIcon, TextIcon, UndoIcon, RedoIcon } from '../common/icons';
 
 export interface EditorDesktopProps {
   onHome?: () => void;
-  onOpenExport?: () => void;
+  onOpenExport?: (format?: 'png' | 'zip' | 'pdf') => void;
 }
+
+type FlyoutId = 'elements' | 'media' | 'draw' | null;
 
 export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   onHome,
@@ -34,8 +38,9 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
   const canUndo = useHistoryStore((state) => state.canUndo);
   const canRedo = useHistoryStore((state) => state.canRedo);
 
-  const [activeTab, setActiveTab] = useState<InspectorTab>('slide');
   const [isSlideRailVisible, setIsSlideRailVisible] = useState(true);
+  const [flyout, setFlyout] = useState<FlyoutId>(null);
+  const [dockRequest, setDockRequest] = useState<DockRequest | null>(null);
   const [isFormatDialogOpen, setIsFormatDialogOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
@@ -66,6 +71,27 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
       });
     });
   };
+
+  const isSingleSlide = project.slides.length <= 1 || project.contentType === 'post';
+
+  const requestDock = (card: DockRequest['card'], tab: DockRequest['tab']) => {
+    setFlyout(null);
+    setDockRequest((prev) => ({ card, tab, nonce: (prev?.nonce ?? 0) + 1 }));
+  };
+
+  const toggleFlyout = (id: Exclude<FlyoutId, null>) => {
+    setFlyout((prev) => (prev === id ? null : id));
+  };
+
+  const railBtnClass = (active: boolean) =>
+    `w-12 rounded-xl flex flex-col items-center justify-center gap-1 py-2 text-[9px] font-semibold transition-colors border ${
+      active
+        ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/40'
+        : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border-transparent'
+    }`;
+
+  const flyoutTitle =
+    flyout === 'elements' ? t('rail.elements') : flyout === 'media' ? t('rail.media') : t('rail.draw');
 
   return (
     <div
@@ -150,7 +176,7 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
           </button>
         </div>
 
-        {/* Right: Quick Actions */}
+        {/* Right: Quick Actions + single Export menu */}
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -174,163 +200,99 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
             <BulbIcon size={16} />
           </button>
 
-          <button
-            type="button"
-            data-testid="editor-export-json-btn"
-            onClick={handleExportJson}
-            className="py-1.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 font-medium text-xs transition-colors flex items-center gap-1.5"
-            title={t('io.exportJson')}
-          >
-            <PageIcon size={16} />
-            <span>{t('io.exportJson')}</span>
-          </button>
-
-          <button
-            type="button"
-            data-testid="editor-export-btn"
-            onClick={onOpenExport}
-            className="py-1.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5"
-          >
-            <DownloadIcon size={16} />
-            <span>{t('editor.export')}</span>
-          </button>
+          <ExportMenu
+            onOpenExport={onOpenExport}
+            onExportJson={handleExportJson}
+            isSingleSlide={isSingleSlide}
+          />
         </div>
       </header>
 
-      {/* Main Studio Workspace: Tool Rail | Slide Rail | Canvas | Inspector */}
+      {/* Main Studio Workspace: Slide Strip | Tool Rail | Canvas (+ flyout) | Dock */}
       <div className="flex-1 flex overflow-hidden">
+        {/* Collapsible Slides strip (far left) */}
+        <SlideRail
+          collapsed={!isSlideRailVisible}
+          onToggleCollapsed={() => setIsSlideRailVisible((prev) => !prev)}
+        />
+
         {/* Left Tool Rail (Studio Capabilities) */}
         <aside
           data-testid="left-tool-rail"
           aria-label="Studio tools"
-          className="w-14 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col items-center py-3 gap-2 shrink-0 z-10"
+          className="w-16 border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 flex flex-col items-center py-3 gap-1.5 shrink-0 z-10"
         >
           <button
             type="button"
             data-testid="rail-tool-template"
-            onClick={() => {
-              setActiveTab('design');
-            }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'design'
-              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-              }`}
-            title="Templates & Layouts"
-            aria-label="Templates & Layouts"
+            onClick={() => requestDock('designBrand', 'design')}
+            className={railBtnClass(false)}
+            title={t('rail.templates')}
+            aria-label={t('rail.templates')}
           >
-            <TemplateIcon size={16} />
-            <span className="text-[9px] scale-90">{t('rail.tmpl')}</span>
+            <TemplateIcon size={19} />
+            <span>{t('rail.templates')}</span>
           </button>
 
           <button
             type="button"
             data-testid="rail-tool-elements"
-            onClick={() => {
-              setActiveTab('assets');
-            }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'assets'
-              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-              }`}
-            title="Shapes & Stickers"
-            aria-label="Shapes & Stickers"
+            onClick={() => toggleFlyout('elements')}
+            className={railBtnClass(flyout === 'elements')}
+            title={t('rail.elements')}
+            aria-label={t('rail.elements')}
           >
-            <ShapesIcon size={16} />
-            <span className="text-[9px] scale-90">{t('rail.shapes')}</span>
+            <ShapesIcon size={19} />
+            <span>{t('rail.elements')}</span>
           </button>
 
           <button
             type="button"
-            data-testid="rail-tool-pen"
-            aria-pressed={penMode === 'pencil'}
-            onClick={() => setPenMode(penMode === 'pencil' ? 'off' : 'pencil')}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${penMode === 'pencil'
-              ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold ring-2 ring-amber-400/60'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-              }`}
-            title="Pencil: draw a freehand shape on the slide (Esc to stop)"
-            aria-label="Pencil tool"
+            data-testid="rail-tool-draw"
+            aria-pressed={penMode !== 'off'}
+            onClick={() => toggleFlyout('draw')}
+            className={railBtnClass(flyout === 'draw' || penMode !== 'off')}
+            title={t('rail.draw')}
+            aria-label={t('rail.draw')}
           >
-            <PencilIcon size={16} />
-            <span className="text-[9px] scale-90">Pencil</span>
-          </button>
-
-          <button
-            type="button"
-            data-testid="rail-tool-bezier"
-            aria-pressed={penMode === 'pen'}
-            onClick={() => setPenMode(penMode === 'pen' ? 'off' : 'pen')}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${penMode === 'pen'
-              ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold ring-2 ring-amber-400/60'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-              }`}
-            title="Pen: click to place points, drag to curve, click the first point to close, Enter to finish"
-            aria-label="Pen tool"
-          >
-            <PenIcon size={16} />
-            <span className="text-[9px] scale-90">Pen</span>
+            <PencilIcon size={19} />
+            <span>{t('rail.draw')}</span>
           </button>
 
           <button
             type="button"
             data-testid="rail-tool-text"
-            onClick={() => {
-              setActiveTab('slide');
-            }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'slide'
-              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-              }`}
-            title="Slide Text & Fields"
-            aria-label="Slide Text & Fields"
+            onClick={() => requestDock('propsSlide', 'slide')}
+            className={railBtnClass(false)}
+            title={t('rail.text')}
+            aria-label={t('rail.text')}
           >
-            <span className="text-sm font-bold">T</span>
-            <span className="text-[9px] scale-90">{t('rail.text')}</span>
+            <TextIcon size={19} />
+            <span>{t('rail.text')}</span>
           </button>
 
           <button
             type="button"
-            data-testid="rail-tool-uploads"
-            onClick={() => {
-              setActiveTab('assets');
-            }}
-            className="w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-            title="Upload Assets"
-            aria-label="Upload Assets"
+            data-testid="rail-tool-media"
+            onClick={() => toggleFlyout('media')}
+            className={railBtnClass(flyout === 'media')}
+            title={t('rail.media')}
+            aria-label={t('rail.media')}
           >
-            <UploadIcon size={16} />
-            <span className="text-[9px] scale-90">{t('rail.upload')}</span>
-          </button>
-
-          <button
-            type="button"
-            data-testid="rail-tool-brand"
-            onClick={() => {
-              setActiveTab('brand');
-            }}
-            className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${activeTab === 'brand'
-              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
-              }`}
-            title="Brand Kit"
-            aria-label="Brand Kit"
-          >
-            <BrandIcon size={16} />
-            <span className="text-[9px] scale-90">{t('rail.brand')}</span>
+            <ImageIcon size={19} />
+            <span>{t('rail.media')}</span>
           </button>
 
           <button
             type="button"
             data-testid="rail-tool-layout"
-            onClick={() => {
-              setActiveTab('design');
-            }}
-            className="w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-            title="Layout Design"
-            aria-label="Layout Design"
+            onClick={() => requestDock('designBrand', 'design')}
+            className={railBtnClass(false)}
+            title={t('rail.layout')}
+            aria-label={t('rail.layout')}
           >
-            <LayoutIcon size={16} />
-            <span className="text-[9px] scale-90">{t('rail.layout')}</span>
+            <LayoutIcon size={19} />
+            <span>{t('rail.layout')}</span>
           </button>
 
           <div className="mt-auto pt-2 border-t border-stone-200 dark:border-stone-800 w-full flex justify-center">
@@ -338,30 +300,102 @@ export const EditorDesktop: React.FC<EditorDesktopProps> = ({
               type="button"
               data-testid="rail-tool-slides"
               onClick={() => setIsSlideRailVisible((prev) => !prev)}
-              className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center text-[10px] font-medium transition-colors ${isSlideRailVisible
-                ? 'text-amber-600 dark:text-amber-400'
-                : 'text-stone-400 hover:text-stone-600'
-                }`}
-              title="Toggle Slide Rail"
-              aria-label="Toggle Slide Rail"
+              className={`w-12 rounded-xl flex flex-col items-center justify-center gap-1 py-2 text-[9px] font-semibold transition-colors ${
+                isSlideRailVisible
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
+              }`}
+              title={t('editor.mobileTabSlides')}
+              aria-label={t('editor.mobileTabSlides')}
             >
-              <SlidesIcon size={16} />
-              <span className="text-[9px] scale-90">Rail</span>
+              <SlidesIcon size={19} />
+              <span>{t('editor.mobileTabSlides')}</span>
             </button>
           </div>
         </aside>
 
-        {/* Slide Rail */}
-        {isSlideRailVisible && <SlideRail />}
+        {/* Canvas column with the tool flyout overlaying its left edge */}
+        <div className="flex-1 relative min-w-0 flex">
+          <MainCanvas />
 
-        {/* Main Canvas */}
-        <MainCanvas />
+          {flyout && (
+            <div
+              data-testid="rail-flyout"
+              className="absolute left-0 top-0 bottom-0 w-72 z-20 bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-700 shadow-2xl flex flex-col"
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-stone-200 dark:border-stone-800 shrink-0">
+                <span className="font-serif font-bold text-[15px]">{flyoutTitle}</span>
+                <button
+                  type="button"
+                  data-testid="rail-flyout-close"
+                  onClick={() => setFlyout(null)}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                  aria-label={t('editor.closeInspector')}
+                >
+                  <ChevronLeftIcon size={14} />
+                </button>
+              </div>
 
-        {/* Inspector Panel */}
-        <Inspector
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
+              {flyout === 'draw' ? (
+                <div className="p-3 flex flex-col gap-2">
+                  <button
+                    type="button"
+                    data-testid="rail-tool-pen"
+                    aria-pressed={penMode === 'pencil'}
+                    onClick={() => {
+                      setPenMode(penMode === 'pencil' ? 'off' : 'pencil');
+                      setFlyout(null);
+                    }}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left text-[13px] font-semibold transition-colors ${
+                      penMode === 'pencil'
+                        ? 'border-amber-500/60 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+                        : 'border-stone-200 dark:border-stone-700 hover:border-amber-500/50 text-stone-700 dark:text-stone-200'
+                    }`}
+                  >
+                    <PencilIcon size={17} />
+                    <span>
+                      Pencil
+                      <span className="block text-[11px] font-normal text-stone-400 dark:text-stone-500">
+                        {t('rail.pencilHint')}
+                      </span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="rail-tool-bezier"
+                    aria-pressed={penMode === 'pen'}
+                    onClick={() => {
+                      setPenMode(penMode === 'pen' ? 'off' : 'pen');
+                      setFlyout(null);
+                    }}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left text-[13px] font-semibold transition-colors ${
+                      penMode === 'pen'
+                        ? 'border-amber-500/60 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+                        : 'border-stone-200 dark:border-stone-700 hover:border-amber-500/50 text-stone-700 dark:text-stone-200'
+                    }`}
+                  >
+                    <PenIcon size={17} />
+                    <span>
+                      Pen
+                      <span className="block text-[11px] font-normal text-stone-400 dark:text-stone-500">
+                        {t('rail.penHint')}
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex-1 overflow-y-auto">
+                  <AssetsPanel
+                    initialCategory={flyout === 'elements' ? 'shapes' : 'all'}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Right dock: card-separated, collapsible panels */}
+        <EditorDock request={dockRequest} />
       </div>
 
       {/* Format Changer Dialog */}

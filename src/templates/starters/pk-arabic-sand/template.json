@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-arabic-sand",
+  "priority": 2,
   "name": {
     "en": "Arabic Sand",
     "ar": "رمل عربي"

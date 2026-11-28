@@ -15,7 +15,7 @@ export interface FontDefinition {
   attribution: string;
 }
 
-export type FontId = 'ibm-plex-sans' | 'ibm-plex-sans-arabic' | 'jetbrains-mono' | 'noto-sans-coptic' | 'ibm-plex-serif' | 'anton';
+export type FontId = 'ibm-plex-sans' | 'ibm-plex-sans-arabic' | 'jetbrains-mono' | 'noto-sans-coptic' | 'ibm-plex-serif' | 'anton' | 'marhey' | 'noto-naskh-arabic' | 'amiri' | 'markazi-text' | 'el-messiri' | 'scheherazade-new' | 'harmattan' | 'aref-ruqaa' | 'rakkas' | 'lalezar' | 'lemonada' | 'changa' | 'reem-kufi' | 'vazirmatn';
 
 export const FONT_REGISTRY: Record<FontId, FontDefinition> = {
   'ibm-plex-sans': {
@@ -69,6 +69,63 @@ export const FONT_REGISTRY: Record<FontId, FontDefinition> = {
   anton: {
     id: 'anton', family: 'Anton', scripts: ['latin'], weights: [400], styles: ['normal'],
     license: 'OFL-1.1', npmSource: '@fontsource/anton', version: '5.3.0', attribution: 'Copyright 2020 The Anton Project Authors.',
+  },
+
+  'marhey': {
+    id: 'marhey', family: 'Marhey', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/marhey', version: '5.3.0', attribution: 'Copyright 2022 The Marhey Project Authors (https://github.com/namelatype/Marhey)',
+  },
+  'noto-naskh-arabic': {
+    id: 'noto-naskh-arabic', family: 'Noto Naskh Arabic', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/noto-naskh-arabic', version: '5.3.0', attribution: 'Copyright 2022 The Noto Project Authors (https://github.com/notofonts/arabic)',
+  },
+  'amiri': {
+    id: 'amiri', family: 'Amiri', scripts: ['arabic', 'latin'], weights: [400, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/amiri', version: '5.3.0', attribution: 'Copyright 2010-2022 The Amiri Project Authors (https://github.com/aliftype/amiri)',
+  },
+  'markazi-text': {
+    id: 'markazi-text', family: 'Markazi Text', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/markazi-text', version: '5.3.0', attribution: 'Copyright 2017 The Markazi Text Project Authors (https://github.com/BornaIz/markazitext)',
+  },
+  'el-messiri': {
+    id: 'el-messiri', family: 'El Messiri', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/el-messiri', version: '5.3.0', attribution: 'Copyright 2015 The El Messiri Project Authors (https://github.com/Gue3bara/El-Messiri)',
+  },
+  'scheherazade-new': {
+    id: 'scheherazade-new', family: 'Scheherazade New', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/scheherazade-new', version: '5.3.0', attribution: 'Copyright (c) 1994-2026, SIL Global (https://www.sil.org/), with Reserved Font Names "Scheherazade" and "SIL".',
+  },
+  'harmattan': {
+    id: 'harmattan', family: 'Harmattan', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/harmattan', version: '5.3.0', attribution: 'Copyright (c) 2007-2008, The C&MA Guinea Fulbe Team;',
+  },
+  'aref-ruqaa': {
+    id: 'aref-ruqaa', family: 'Aref Ruqaa', scripts: ['arabic', 'latin'], weights: [400, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/aref-ruqaa', version: '5.3.0', attribution: 'Copyright 2015-2021 The Aref Ruqaa Project Authors (https://github.com/alif-type/aref-ruqaa), with Reserved Font Name EURM10',
+  },
+  'rakkas': {
+    id: 'rakkas', family: 'Rakkas', scripts: ['arabic', 'latin'], weights: [400], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/rakkas', version: '5.3.0', attribution: 'Copyright 2017 The Rakkas Project Authors (https://github.com/zeynepakay/Rakkas)',
+  },
+  'lalezar': {
+    id: 'lalezar', family: 'Lalezar', scripts: ['arabic', 'latin'], weights: [400], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/lalezar', version: '5.3.0', attribution: 'Copyright 2015 The Lalezar Project Authors (https://github.com/BornaIz/Lalezar)',
+  },
+  'lemonada': {
+    id: 'lemonada', family: 'Lemonada', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/lemonada', version: '5.3.0', attribution: 'Copyright 2011 The Lemonada Project Authors (https://github.com/Gue3bara/Lemonada)',
+  },
+  'changa': {
+    id: 'changa', family: 'Changa', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/changa', version: '5.3.0', attribution: 'Copyright 2018 The Changa Project Authors (https://github.com/eliheuer/changa-vf)',
+  },
+  'reem-kufi': {
+    id: 'reem-kufi', family: 'Reem Kufi', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/reem-kufi', version: '5.3.0', attribution: 'Copyright 2015-2022 The Reem Kufi Project Authors (https://github.com/aliftype/reem-kufi).',
+  },
+  'vazirmatn': {
+    id: 'vazirmatn', family: 'Vazirmatn', scripts: ['arabic', 'latin'], weights: [400, 500, 600, 700], styles: ['normal'],
+    license: 'OFL-1.1', npmSource: '@fontsource/vazirmatn', version: '5.3.0', attribution: 'Copyright 2015 The Vazirmatn Project Authors (https://github.com/rastikerdar/vazirmatn)',
   },
 };
 

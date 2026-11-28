@@ -7,7 +7,7 @@ test('text extra typography persists and reaches PNG/PDF export with local itali
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/editor');
   await expect(page.getByTestId('editor-desktop')).toBeVisible();
-  await page.getByTestId('tab-assets').click();
+  await page.getByTestId('rail-tool-media').click();
   await page.getByTestId('add-text-btn').click();
   const richEditor = page.getByTestId('rich-text-contenteditable');
   await richEditor.fill('Typography export check — هذا نص عربي طويل mixed with English to verify shaping, bidi order, and wrapping across several words. مرحباً بالعالم.');
@@ -40,6 +40,7 @@ test('text extra typography persists and reaches PNG/PDF export with local itali
   await expect.poll(async () => page.evaluate(() => document.fonts.check('italic 600 30px "IBM Plex Serif"', 'مرحبا Hello'))).toBe(true);
 
   await page.getByTestId('editor-export-btn').click();
+  await page.getByTestId('export-menu-images').click();
   await page.getByTestId('export-format-png').click();
   const [pngDownload] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-start-btn').click()]);
   const pngPath = await pngDownload.path();
@@ -55,6 +56,7 @@ test('text extra typography persists and reaches PNG/PDF export with local itali
   expect(magentaPixels).toBeGreaterThan(80);
 
   await page.getByTestId('editor-export-btn').click();
+  await page.getByTestId('export-menu-images').click();
   await page.getByTestId('export-format-pdf').click();
   const [pdfDownload] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-start-btn').click()]);
   const pdfPath = await pdfDownload.path();

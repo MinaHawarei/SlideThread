@@ -36,6 +36,7 @@ test.describe('Emoji and Stickers Pack E2E (§5.6, Task R6-4)', () => {
     // Adding an element selects it and swaps the inspector to element properties.
     // Escape deselects, which brings the slide inspector (and the picker) back.
     await page.keyboard.press('Escape');
+    await page.getByTestId('tab-slide').click();
     await expect(picker).toBeVisible();
 
     // 2. Switch to stickers tab and add pro tip badge
@@ -53,6 +54,7 @@ test.describe('Emoji and Stickers Pack E2E (§5.6, Task R6-4)', () => {
     // 3. Test export with emoji & stickers rendered
     const exportBtn = page.getByTestId('editor-export-btn');
     await exportBtn.click();
+    await page.getByTestId('export-menu-images').click();
 
     const exportDialog = page.getByTestId('export-dialog');
     await expect(exportDialog).toBeVisible();

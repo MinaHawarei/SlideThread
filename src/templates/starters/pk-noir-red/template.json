@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-noir-red",
+  "priority": 2,
   "name": {
     "en": "Noir Red",
     "ar": "نوار أحمر"

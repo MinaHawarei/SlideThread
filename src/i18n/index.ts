@@ -22,14 +22,11 @@ export const useI18nStore = create<I18nStoreState>()(
       setLocale: (locale: Locale) => {
         set({ locale });
         if (typeof document !== 'undefined') {
-          const dir: TextDirection = locale === 'ar' ? 'rtl' : 'ltr';
           document.documentElement.lang = locale;
-          document.documentElement.dir = dir;
-          if (dir === 'rtl') {
-            document.documentElement.classList.add('rtl');
-          } else {
-            document.documentElement.classList.remove('rtl');
-          }
+          // The UI layout never mirrors: panels keep their physical positions in
+          // both languages; only text content follows the language direction.
+          document.documentElement.dir = 'ltr';
+          document.documentElement.classList.remove('rtl');
         }
       },
     }),

@@ -209,7 +209,9 @@ async function renderStressMatrix(manifests) {
   await withBrowserServer(async (browser, baseUrl) => {
     const page = await browser.newPage({ viewport: { width: 1500, height: 1200 } });
     page.on('pageerror', (error) => failures.push(error.message));
+    let done = 0;
     for (const manifest of manifests) {
+      console.log(`Stress render ${++done}/${manifests.length}: ${manifest.id}`);
       for (const aspect of Object.keys(dimensions)) {
         for (const theme of ['light', 'dark']) {
           for (const locale of ['en', 'ar']) {
@@ -339,7 +341,9 @@ async function main() {
   }
   if (command === 'validate') {
     const manifests = await validateAll();
-    await renderStressMatrix(manifests);
+    const only = positional.length ? manifests.filter((template) => positional.includes(template.id)) : manifests;
+    if (positional.length && only.length !== positional.length) throw new Error('Unknown template id in validate arguments');
+    await renderStressMatrix(only);
     return;
   }
   if (command === 'preview') {

@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-ai-violet",
+  "priority": 2,
   "name": {
     "en": "AI Violet",
     "ar": "بنفسجي ذكي"

@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-sunny-pop",
+  "priority": 2,
   "name": {
     "en": "Sunny Pop",
     "ar": "بوب مشمس"

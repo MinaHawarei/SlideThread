@@ -5,6 +5,7 @@
  * titles stay inside the slide.
  */
 import { test, expect } from '@playwright/test';
+import { goToGalleryTemplatePage } from './helpers/wizard';
 import { finishLockedWizard } from './helpers/wizard';
 
 const PACKS = ['golden-hour-viral', 'neon-grid-process'] as const;
@@ -20,6 +21,7 @@ for (const id of PACKS) {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/gallery');
     // Built-in: no import needed, the pack ships with the app next to the other starters.
+    await goToGalleryTemplatePage(page, id);
     await expect(page.getByTestId(`preview-template-${id}`)).toBeVisible({ timeout: 20000 });
     await page.getByTestId(`preview-template-${id}`).click();
     await expect(page.getByTestId('template-preview-page')).toBeVisible();

@@ -39,11 +39,8 @@ for (const width of [320, 390]) {
           const logoBox = await headerLogo.boundingBox();
           expect(logoBox).not.toBeNull();
 
-          if (lang === 'en') {
-            expect(toggleBox!.x, `EN hamburger left of logo on ${route}`).toBeLessThan(logoBox!.x);
-          } else {
-            expect(toggleBox!.x, `AR hamburger right of logo on ${route}`).toBeGreaterThan(logoBox!.x);
-          }
+          // The layout never mirrors: the hamburger stays left of the logo in both languages.
+          expect(toggleBox!.x, `${lang} hamburger left of logo on ${route}`).toBeLessThan(logoBox!.x);
 
           // Open drawer and check it opens from the button's side
           await toggle.click();
@@ -51,11 +48,8 @@ for (const width of [320, 390]) {
           await expect(drawer).toBeVisible();
           const drawerBox = await drawer.boundingBox();
           expect(drawerBox).not.toBeNull();
-          if (lang === 'en') {
-            expect(drawerBox!.x).toBeLessThanOrEqual(2);
-          } else {
-            expect(drawerBox!.x + drawerBox!.width).toBeGreaterThanOrEqual(width - 2);
-          }
+          // The layout never mirrors: the drawer opens from the left in both languages.
+          expect(drawerBox!.x).toBeLessThanOrEqual(2);
 
           await page.getByTestId('mobile-nav-close').click();
           await expect(drawer).not.toBeVisible();
@@ -81,13 +75,9 @@ for (const width of [320, 390]) {
         await expect(undoBtn).toBeDisabled();
         await expect(redoBtn).toBeDisabled();
 
-        if (lang === 'en') {
-          await expect(undoBtn).toHaveText('↺');
-          await expect(redoBtn).toHaveText('↻');
-        } else {
-          await expect(undoBtn).toHaveText('↻');
-          await expect(redoBtn).toHaveText('↺');
-        }
+        // Icons are SVG now (approved mobile redesign); RTL swaps them in code.
+        await expect(undoBtn.locator('svg')).toBeVisible();
+        await expect(redoBtn.locator('svg')).toBeVisible();
 
         // Tap signature element on canvas -> should NOT open floating popover, SHOULD open Edit sheet with inline branding controls
         const sigHit = page.getByTestId('element-hit-signature');
@@ -125,7 +115,7 @@ for (const width of [320, 390]) {
         await expect(sheet).not.toBeVisible();
 
         // Add text element via Assets tab to create a history entry
-        await page.getByTestId('mobile-tab-assets').click();
+        await page.getByTestId('mobile-tab-media').click();
         await page.getByTestId('add-text-btn').click();
         await expect(undoBtn).toBeEnabled();
         await undoBtn.click();

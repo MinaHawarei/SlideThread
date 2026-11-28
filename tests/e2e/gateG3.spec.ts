@@ -26,6 +26,10 @@ test.describe('Gate G3 Verification Flow', () => {
 
     // 2. Click Start Guided Flow to enter Wizard
     await page.goto('/gallery');
+    await page.getByTestId('gallery-template-card').first().waitFor();
+    // Gallery is paginated now; walk pages until the tech-mesh card exists.
+    const galleryNext = page.getByTestId('gallery-page-next');
+    for (let i = 0; i < 10 && (await page.getByTestId('use-template-tech-mesh').count()) === 0 && (await galleryNext.count()) > 0 && (await galleryNext.isEnabled()); i++) await galleryNext.click();
     await page.getByTestId('use-template-tech-mesh').click({ force: true });
     await page.getByTestId('platform-linkedin').click();
     await page.getByTestId('type-carousel').click();
@@ -146,12 +150,13 @@ test.describe('Gate G3 Verification Flow', () => {
     await page.locator('[data-testid="mobile-sheet-close-btn"]').click();
     await expect(page.locator('[data-testid="mobile-bottom-sheet"]')).not.toBeVisible();
 
-    // 6. Open Design Tab -> Bottom Sheet opens with subtabs
-    await page.locator('[data-testid="mobile-tab-design"]').click();
+    // 6. Templates tool -> Bottom Sheet opens with Design inspector
+    await page.locator('[data-testid="mobile-tab-templates"]').click();
     await expect(page.locator('[data-testid="mobile-bottom-sheet"]')).toBeVisible();
     await expect(page.locator('[data-testid="design-inspector"]')).toBeVisible();
 
-    // Switch to Brand subtab
+    // Brand subtab lives in the Edit sheet's Design card now
+    await page.locator('[data-testid="mobile-tab-edit"]').click();
     await page.locator('[data-testid="mobile-design-subtab-brand"]').click();
     await expect(page.locator('[data-testid="brand-inspector"]')).toBeVisible();
 
@@ -159,10 +164,10 @@ test.describe('Gate G3 Verification Flow', () => {
     await page.keyboard.press('Escape');
     await expect(page.locator('[data-testid="mobile-bottom-sheet"]')).not.toBeVisible();
 
-    // 7. Open Export Tab
-    await page.locator('[data-testid="mobile-tab-export"]').click();
+    // 7. Open Export sheet from the top-bar Export button
+    await page.locator('[data-testid="mobile-export-btn"]').click();
     await expect(page.locator('[data-testid="mobile-bottom-sheet"]')).toBeVisible();
-    await expect(page.locator('[data-testid="mobile-start-export-btn"]')).toBeVisible();
+    await expect(page.locator('[data-testid="mobile-export-images"]')).toBeVisible();
 
     // 8. Verify Zero Console Errors
     expect(consoleErrors).toEqual([]);

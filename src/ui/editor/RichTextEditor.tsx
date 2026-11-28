@@ -75,6 +75,20 @@ const FONT_OPTIONS = [
   { id: 'noto-sans-coptic', label: 'Noto Sans Coptic' },
   { id: 'ibm-plex-serif', label: 'IBM Plex Serif' },
   { id: 'anton', label: 'Anton' },
+  { id: 'marhey', label: 'Marhey' },
+  { id: 'noto-naskh-arabic', label: 'Noto Naskh Arabic' },
+  { id: 'amiri', label: 'Amiri' },
+  { id: 'markazi-text', label: 'Markazi Text' },
+  { id: 'el-messiri', label: 'El Messiri' },
+  { id: 'scheherazade-new', label: 'Scheherazade New' },
+  { id: 'harmattan', label: 'Harmattan' },
+  { id: 'aref-ruqaa', label: 'Aref Ruqaa' },
+  { id: 'rakkas', label: 'Rakkas' },
+  { id: 'lalezar', label: 'Lalezar' },
+  { id: 'lemonada', label: 'Lemonada' },
+  { id: 'changa', label: 'Changa' },
+  { id: 'reem-kufi', label: 'Reem Kufi' },
+  { id: 'vazirmatn', label: 'Vazirmatn' },
 ];
 
 const SIZE_OPTIONS = [

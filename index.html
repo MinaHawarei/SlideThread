@@ -8,6 +8,43 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/brand/slidethread-icon/light-mode/favicon-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/brand/slidethread-icon/light-mode/favicon-180.png" />
     <style>
+      /* Static, crawlable content: visible to crawlers and no-JS visitors; React replaces it on boot. */
+      .seo-static {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 56px 24px 40px;
+        font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: #1c1917;
+        line-height: 1.55;
+      }
+      .seo-header { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
+      .seo-wordmark { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+      .seo-loading { margin-left: auto; font-size: 13px; color: #78716c; }
+      .seo-hero h1 { font-size: 44px; line-height: 1.12; letter-spacing: -1.2px; margin: 0 0 18px; }
+      .seo-hero p { font-size: 19px; color: #57534e; margin: 0 0 56px; max-width: 720px; }
+      .seo-static h2 { font-size: 26px; letter-spacing: -0.5px; margin: 0 0 18px; }
+      .seo-features { list-style: none; margin: 0 0 56px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 32px; }
+      .seo-features li { padding-left: 22px; position: relative; color: #44403c; }
+      .seo-features li::before { content: ''; position: absolute; left: 0; top: 9px; width: 8px; height: 8px; border-radius: 2px; background: #F2993A; }
+      .seo-features strong { color: #1c1917; }
+      .seo-faq details { border-top: 1px solid #e7e5e4; padding: 14px 0; }
+      .seo-faq details:last-of-type { border-bottom: 1px solid #e7e5e4; }
+      .seo-faq summary { cursor: pointer; font-weight: 600; font-size: 16px; }
+      .seo-faq p { margin: 10px 0 4px; color: #57534e; }
+      .seo-footer { margin-top: 56px; font-size: 14px; color: #78716c; }
+      @media (max-width: 640px) {
+        .seo-hero h1 { font-size: 32px; }
+        .seo-features { grid-template-columns: 1fr; }
+      }
+      @media (prefers-color-scheme: dark) {
+        .seo-static { color: #f5f5f4; }
+        .seo-hero p, .seo-faq p { color: #a8a29e; }
+        .seo-features li { color: #d6d3d1; }
+        .seo-features strong { color: #f5f5f4; }
+        .seo-faq details { border-color: #292524; }
+        .seo-faq details:last-of-type { border-color: #292524; }
+        .seo-loading, .seo-footer { color: #78716c; }
+      }
       #root:empty {
         display: flex;
         align-items: center;
@@ -33,41 +70,98 @@
         .splash-anim { animation: none !important; }
       }
       @media (prefers-color-scheme: dark) {
-        body { background-color: #0c0a09; color: #f5f5f4; }
+        body { background-color: #0c0a09 !important; color: #f5f5f4 !important; }
         .splash-stone { fill: #F5F0E8 !important; }
       }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="SlideThread — Privacy-first, local-first carousel & post creator for LinkedIn, Instagram, and social feeds." />
+    <link rel="canonical" href="https://slide-thread.vercel.app/" />
     <!-- Open Graph Metadata -->
     <meta property="og:site_name" content="SlideThread" />
     <meta property="og:title" content="SlideThread — Free Carousel & Post Maker" />
     <meta property="og:description" content="Privacy-first, local-first carousel & post creator for LinkedIn, Instagram, and social feeds." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://slide-thread.vercel.app/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ar_AR" />
+    <meta property="og:image" content="https://slide-thread.vercel.app/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="SlideThread — carousel and post maker: slide canvas with cover slide and editing panels" />
     <!-- Twitter Metadata -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="SlideThread — Free Carousel & Post Maker" />
     <meta name="twitter:description" content="Privacy-first, local-first carousel & post creator for LinkedIn, Instagram, and social feeds." />
+    <meta name="twitter:image" content="https://slide-thread.vercel.app/og-image.png" />
     <title>SlideThread — Free Carousel & Post Maker</title>
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased">
     <div id="root">
-      <div class="initial-splash" role="status" aria-label="Loading SlideThread">
-        <svg class="splash-anim" width="56" height="56" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g transform="translate(143.36 326.9199175257732) scale(0.7600824742268041)">
-            <defs>
-              <clipPath id="k-init">
-                <path clip-rule="evenodd" d="M-10 -10H980V497H-10Z M202.0 198.5H768.0A45.0 45.0 0 0 1 768.0 288.5H202.0A45.0 45.0 0 0 1 202.0 198.5Z"/>
-              </clipPath>
-            </defs>
-            <g clip-path="url(#k-init)">
-              <rect class="splash-stone" width="447" height="487" rx="78" fill="#44403C"/>
-              <rect x="523" width="447" height="487" rx="78" fill="#F2993A"/>
+      <main class="seo-static" aria-label="About SlideThread">
+        <header class="seo-header">
+          <svg class="splash-anim" width="40" height="40" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g transform="translate(143.36 326.9199175257732) scale(0.7600824742268041)">
+              <defs>
+                <clipPath id="k-init">
+                  <path clip-rule="evenodd" d="M-10 -10H980V497H-10Z M202.0 198.5H768.0A45.0 45.0 0 0 1 768.0 288.5H202.0A45.0 45.0 0 0 1 202.0 198.5Z"/>
+                </clipPath>
+              </defs>
+              <g clip-path="url(#k-init)">
+                <rect class="splash-stone" width="447" height="487" rx="78" fill="#44403C"/>
+                <rect x="523" width="447" height="487" rx="78" fill="#F2993A"/>
+              </g>
+              <rect class="splash-stone" x="181" y="222.5" width="608" height="42" rx="21" fill="#44403C"/>
             </g>
-            <rect class="splash-stone" x="181" y="222.5" width="608" height="42" rx="21" fill="#44403C"/>
-          </g>
-        </svg>
-      </div>
+          </svg>
+          <span class="seo-wordmark">SlideThread</span>
+          <span class="seo-loading" role="status">Loading the studio&hellip;</span>
+        </header>
+        <section class="seo-hero">
+          <h1>Design scroll-stopping carousels in seconds</h1>
+          <p>SlideThread is a free, privacy-first studio for carousels, posts, and stories for LinkedIn, Instagram, and Facebook &mdash; in English and Arabic. Everything runs in your browser, and your designs never leave your device.</p>
+        </section>
+        <section aria-label="Features">
+          <h2>What you can do with SlideThread</h2>
+          <ul class="seo-features">
+            <li><strong>Ready-made templates.</strong> Start from a gallery of carousel and post templates and make them yours.</li>
+            <li><strong>A full design editor.</strong> Layers, typography, colors, and brand styles with precise control over every element.</li>
+            <li><strong>English &amp; Arabic.</strong> Native right-to-left support with Arabic fonts, so bilingual content just works.</li>
+            <li><strong>Paste text to slides.</strong> Turn an outline or draft into a structured slide deck automatically.</li>
+            <li><strong>Export anywhere.</strong> Crisp PNG images, multi-page PDFs, and project files you can back up and reimport.</li>
+            <li><strong>Private by design.</strong> Local-first: projects autosave on your device. No account, no uploads.</li>
+          </ul>
+        </section>
+        <section class="seo-faq" aria-label="Frequently asked questions">
+          <h2>Frequently asked questions</h2>
+          <details>
+            <summary>What is SlideThread?</summary>
+            <p>A free browser-based studio for designing social media carousels, posts, and stories &mdash; from a quick single post to a full multi-slide carousel.</p>
+          </details>
+          <details>
+            <summary>Is SlideThread free?</summary>
+            <p>Yes. You can design and export without paying anything.</p>
+          </details>
+          <details>
+            <summary>Do I need to create an account?</summary>
+            <p>No. Open the studio and start designing; your projects are saved automatically on your own device.</p>
+          </details>
+          <details>
+            <summary>Where is my content stored?</summary>
+            <p>On your device. SlideThread is local-first, so your text, images, and designs stay in your browser unless you choose to export them.</p>
+          </details>
+          <details>
+            <summary>Which platforms and formats does it support?</summary>
+            <p>Carousels, posts, and stories sized for LinkedIn, Instagram, and Facebook, in square, portrait, story, and wide aspect ratios. Export as PNG images or a multi-page PDF.</p>
+          </details>
+          <details>
+            <summary>Does SlideThread support Arabic?</summary>
+            <p>Yes. The studio works fully in English and Arabic, with right-to-left text and Arabic fonts built in.</p>
+          </details>
+        </section>
+        <footer class="seo-footer">SlideThread &mdash; free carousel &amp; post maker. Runs entirely in your browser.</footer>
+      </main>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

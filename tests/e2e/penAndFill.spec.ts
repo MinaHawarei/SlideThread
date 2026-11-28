@@ -10,6 +10,7 @@ async function open(page: import('@playwright/test').Page) {
 test('pen tool draws a freehand path that is added as an editable shape', async ({ page }) => {
   test.setTimeout(90000);
   await open(page);
+  await page.getByTestId('rail-tool-draw').click();
   await page.getByTestId('rail-tool-pen').click();
   const surface = page.getByTestId('pen-draw-surface');
   await expect(surface).toBeVisible();
@@ -57,9 +58,10 @@ test('mobile: the Assets sheet offers the Pen tool and its category pills are fu
   await page.addInitScript(() => { if (!sessionStorage.getItem('seeded')) { localStorage.clear(); sessionStorage.setItem('seeded', '1'); } });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/editor');
-  await page.getByTestId('mobile-tab-assets').click();
+  await page.getByTestId('mobile-tab-media').click();
   const pills = (await page.getByTestId('asset-categories').boundingBox())!;
   expect(pills.height, 'category pills row is not squashed').toBeGreaterThan(24);
-  await page.getByTestId('assets-pen-btn').click();
+  await page.getByTestId('mobile-tab-draw').click();
+  await page.getByTestId('mobile-draw-pencil').click();
   await expect(page.getByTestId('pen-draw-surface')).toBeVisible();
 });

@@ -6,13 +6,12 @@
  *  4. Using a template in the Gallery opens the create dialog with that template already chosen.
  */
 import { test, expect, type Page } from '@playwright/test';
-import { finishLockedWizard } from './helpers/wizard';
+import { finishLockedWizard, selectGalleryTemplate } from './helpers/wizard';
 
 const stub = (page: Page) => page.route('**/_vercel/insights/**', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
 
 async function startFromGallery(page: Page, id: string) {
-  await page.goto('/gallery');
-  await page.getByTestId(`use-template-${id}`).click();
+  await selectGalleryTemplate(page, id);
   await expect(page.getByTestId('create-dialog')).toBeVisible();
   await finishLockedWizard(page);
   await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 20000 });
@@ -25,7 +24,10 @@ test('gallery Use opens the create dialog with the template; orientation is requ
   await stub(page);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/gallery');
-  await page.getByTestId('gallery-template-card').first().hover();
+  // The gallery is paginated and newer groups sort first: walk the pages until the template card shows.
+  const card = page.locator('[data-testid="gallery-template-card"][data-template-id="golden-hour-viral"]');
+  for (let i = 0; i < 10 && !(await card.isVisible().catch(() => false)); i++) await page.getByTestId('gallery-page-next').click();
+  await card.hover();
   await page.getByTestId('use-template-golden-hour-viral').click({ force: true });
   await expect(page).toHaveURL(/\/gallery/);
   await expect(page.getByTestId('create-dialog')).toContainText('Golden Hour Viral');

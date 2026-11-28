@@ -1,9 +1,10 @@
 import { test, expect, type Page } from '@playwright/test';
+import { selectGalleryTemplate } from './helpers/wizard';
+import { setDirection } from './helpers/direction';
 
 async function createEditor(page: Page) {
   await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_4_5').click();
@@ -16,16 +17,14 @@ async function toggleLayers(page: Page) {
   const size = page.viewportSize();
   const isMobile = size ? size.width < 768 : false;
   if (isMobile) {
-    await page.getByTestId('mobile-tab-layers').click();
-  } else {
-    await page.getByTestId('tab-layers').click();
+    // Layers live in the Edit sheet on mobile; always visible in the desktop dock
+    await page.getByTestId('mobile-tab-edit').click();
   }
 }
 
 test('layers panel locks, hides, and reorders template slots', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await createEditor(page);
-  await page.getByTestId('tab-layers').click();
   const title = page.locator('[data-testid="main-canvas"] .slide-canvas .slide-title-h1');
   await page.getByRole('button', { name: 'Hide title' }).click();
   await expect(title).toHaveCSS('visibility', 'hidden');
@@ -46,7 +45,7 @@ test('selection and layers review matrix', async ({ page }) => {
     await page.setViewportSize({ width, height });
     await expect(page.getByTestId(width < 768 ? 'mobile-bottom-tabs' : 'tab-design')).toBeVisible();
     for (const theme of ['light', 'dark']) {
-      if (width < 768) await page.getByTestId('mobile-tab-design').click();
+      if (width < 768) await page.getByTestId('mobile-tab-templates').click();
       else await page.getByTestId('tab-design').click();
       await page.getByTestId(`design-theme-${theme}`).click();
       if (width < 768) {
@@ -60,8 +59,8 @@ test('selection and layers review matrix', async ({ page }) => {
         if (width < 768 && await page.getByTestId('mobile-sheet-close-btn').isVisible()) {
           await page.getByTestId('mobile-sheet-close-btn').click();
         }
-        await page.evaluate((dir) => { document.documentElement.dir = dir; }, direction);
-        await expect(page.locator('html')).toHaveAttribute('dir', direction);
+        await setDirection(page, direction as 'ltr' | 'rtl');
+        await expect(page.locator('html')).toHaveAttribute('lang', direction === 'rtl' ? 'ar' : 'en');
         await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
         if (!await page.getByTestId('layers-panel').isVisible()) await toggleLayers(page);
         await expect(page.getByTestId('layers-panel')).toBeVisible();
@@ -77,7 +76,6 @@ test('selection and layers review matrix', async ({ page }) => {
 test('layers: friendly names, thumbnails, front-on-top order, drag-and-drop reorder and select button', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await createEditor(page);
-  await page.getByTestId('tab-layers').click();
   const panel = page.getByTestId('layers-panel');
   await expect(panel.getByText('Subtitle').first()).toBeVisible();
   await expect(page.getByTestId('layer-thumb-title')).toBeVisible();

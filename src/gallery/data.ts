@@ -3,6 +3,7 @@ import categoryRegistry from '../templates/registry/categories.json';
 
 export interface GalleryTemplate {
   id: string;
+  priority?: number;
   name: { en: string; ar: string };
   description: { en?: string; ar?: string };
   categories: string[];

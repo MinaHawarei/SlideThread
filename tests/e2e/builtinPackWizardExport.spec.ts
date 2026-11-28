@@ -20,6 +20,7 @@ for (const id of ['golden-hour-viral', 'neon-grid-process']) {
     await page.getByTestId('create-submit').click();
     await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 15000 });
     await page.getByTestId('editor-export-btn').click();
+    await page.getByTestId('export-menu-images').click();
     await page.getByTestId('export-format-png').click();
     const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-start-btn').click()]);
     const bytes = await fs.promises.readFile((await download.path())!);

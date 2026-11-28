@@ -1,8 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
+import { selectGalleryTemplate } from './helpers/wizard';
 
 async function createEditor(page: Page) {
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId('orientation-portrait').click();
   await page.getByTestId('create-submit').click();
   await page.setViewportSize({ width: 1440, height: 900 });

@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-purple-code",
+  "priority": 1,
   "name": {
     "en": "Purple Code",
     "ar": "كود بنفسجي"

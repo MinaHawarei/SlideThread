@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "neon-grid-process",
+  "priority": 1,
   "name": {
     "en": "Neon Grid Process (full carousel)",
     "ar": "شبكة النيون (كاروسيل كامل)"

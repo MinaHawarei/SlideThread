@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { EditorDesktop } from './EditorDesktop';
 import { EditorMobile } from './EditorMobile';
 import { ExportDialog } from './ExportDialog';
+import type { ExportFormat } from '../../export/pipeline';
 
 export interface EditorProps {
   onHome?: () => void;
-  onOpenExport?: () => void;
+  onOpenExport?: (initialFormat?: ExportFormat) => void;
 }
 
 export const Editor: React.FC<EditorProps> = (props) => {
@@ -17,6 +18,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   });
 
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [exportInitialFormat, setExportInitialFormat] = useState<ExportFormat | undefined>(undefined);
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,10 +29,11 @@ export const Editor: React.FC<EditorProps> = (props) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleOpenExport = () => {
+  const handleOpenExport = (initialFormat?: ExportFormat) => {
     if (props.onOpenExport) {
-      props.onOpenExport();
+      props.onOpenExport(initialFormat);
     } else {
+      setExportInitialFormat(initialFormat);
       setIsExportOpen(true);
     }
   };
@@ -46,6 +49,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
       <ExportDialog
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}
+        initialFormat={exportInitialFormat}
       />
     </>
   );

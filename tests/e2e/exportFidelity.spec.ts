@@ -23,6 +23,7 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     const exportBtn = page.locator('[data-testid="editor-export-btn"]');
     await expect(exportBtn).toBeVisible();
     await exportBtn.click();
+    await page.locator('[data-testid="export-menu-images"]').click();
 
     const exportDialog = page.locator('[data-testid="export-dialog"]');
     await expect(exportDialog).toBeVisible();
@@ -55,6 +56,7 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     const exportBtn = page.locator('[data-testid="editor-export-btn"]');
     await expect(exportBtn).toBeVisible();
     await exportBtn.click();
+    await page.locator('[data-testid="export-menu-images"]').click();
 
     const exportDialog = page.locator('[data-testid="export-dialog"]');
     await expect(exportDialog).toBeVisible();
@@ -95,6 +97,7 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     const exportBtn = page.locator('[data-testid="editor-export-btn"]');
     await expect(exportBtn).toBeVisible();
     await exportBtn.click();
+    await page.locator('[data-testid="export-menu-images"]').click();
 
     const exportDialog = page.locator('[data-testid="export-dialog"]');
     await expect(exportDialog).toBeVisible();
@@ -126,7 +129,6 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     await page.setViewportSize({ width: 1440, height: 900 });
 
     // Open layers panel to toggle visibility and produce slot overrides
-    await page.getByTestId('tab-layers').click();
     const hideTitleBtn = page.getByRole('button', { name: 'Hide title' });
     await expect(hideTitleBtn).toBeVisible();
     await hideTitleBtn.click();
@@ -143,6 +145,7 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     const exportBtn = page.locator('[data-testid="editor-export-btn"]');
     await expect(exportBtn).toBeVisible();
     await exportBtn.click();
+    await page.locator('[data-testid="export-menu-images"]').click();
 
     const exportDialog = page.locator('[data-testid="export-dialog"]');
     await expect(exportDialog).toBeVisible();
@@ -174,6 +177,7 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     const exportBtn = page.locator('[data-testid="editor-export-btn"]');
     await expect(exportBtn).toBeVisible();
     await exportBtn.click();
+    await page.locator('[data-testid="export-menu-images"]').click();
 
     const exportDialog = page.locator('[data-testid="export-dialog"]');
     await expect(exportDialog).toBeVisible();
@@ -200,9 +204,11 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
     test.setTimeout(120000);
     for (const [width, height] of [[360, 800], [768, 1024], [1440, 900]] as const) {
       await page.setViewportSize({ width, height });
-      await expect(page.getByTestId(width < 768 ? 'mobile-bottom-tabs' : 'tab-design')).toBeVisible();
+      // The editor remounts after each settings roundtrip and waits on the interface font;
+      // give it longer than the default 5s before judging which layout is shown.
+      await expect(page.getByTestId(width < 768 ? 'mobile-bottom-tabs' : 'tab-design')).toBeVisible({ timeout: 15000 });
       for (const theme of ['light', 'dark']) {
-        if (width < 768) await page.getByTestId('mobile-tab-design').click();
+        if (width < 768) await page.getByTestId('mobile-tab-templates').click();
         else await page.getByTestId('tab-design').click();
         await page.getByTestId(`design-theme-${theme}`).click();
         if (width < 768) {
@@ -211,7 +217,10 @@ test.describe('Export Fidelity & Multi-format Pipeline (Spec §9 & Task P4-5)', 
         }
         for (const direction of ['ltr', 'rtl']) {
           await setDirection(page, direction as 'ltr' | 'rtl');
-          await expect(page.locator('html')).toHaveAttribute('dir', direction);
+          await expect(page.locator('html')).toHaveAttribute('lang', direction === 'rtl' ? 'ar' : 'en');
+          // Wait for the editor to finish its post-navigation remount (font-gated) so the
+          // screenshot shows the real editor, not the loading gap.
+          await expect(page.locator('[data-testid="editor-desktop"], [data-testid="editor-mobile"]')).toBeVisible({ timeout: 15000 });
           await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
           await page.screenshot({ path: `docs/ux-review/R3-6/editor-${width}x${height}-${theme}-${direction}.png` });
         }

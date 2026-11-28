@@ -22,11 +22,14 @@ describe('Editor Mobile Layout (Spec §10.2, Task P3-6)', () => {
     expect(screen.getByTestId('mobile-editor-project-title')).toBeInTheDocument();
     expect(screen.getByTestId('mobile-bottom-tabs')).toBeInTheDocument();
 
-    // 4 tabs per Spec §10.2
+    // 7 tools in the bottom bar (approved mobile redesign)
     expect(screen.getByTestId('mobile-tab-slides')).toBeInTheDocument();
+    expect(screen.getByTestId('mobile-tab-templates')).toBeInTheDocument();
+    expect(screen.getByTestId('mobile-tab-elements')).toBeInTheDocument();
+    expect(screen.getByTestId('mobile-tab-draw')).toBeInTheDocument();
+    expect(screen.getByTestId('mobile-tab-text')).toBeInTheDocument();
+    expect(screen.getByTestId('mobile-tab-media')).toBeInTheDocument();
     expect(screen.getByTestId('mobile-tab-edit')).toBeInTheDocument();
-    expect(screen.getByTestId('mobile-tab-design')).toBeInTheDocument();
-    expect(screen.getByTestId('mobile-tab-export')).toBeInTheDocument();
   });
 
   it('updates project title when edited in mobile header', () => {
@@ -121,16 +124,17 @@ describe('Editor Mobile Layout (Spec §10.2, Task P3-6)', () => {
     expect(screen.queryByTestId('mobile-bottom-sheet')).not.toBeInTheDocument();
   });
 
-  it('opens bottom-sheet inspector when Design tab is clicked, with subtab toggle for Design/Brand', () => {
+  it('opens Design sheet from Templates tool, and Design/Brand subtabs live in the Edit sheet', () => {
     render(<EditorMobile />);
 
-    // Click Design tab
-    fireEvent.click(screen.getByTestId('mobile-tab-design'));
+    // Templates tool opens the Design inspector sheet
+    fireEvent.click(screen.getByTestId('mobile-tab-templates'));
 
     expect(screen.getByTestId('mobile-bottom-sheet')).toBeInTheDocument();
     expect(screen.getByTestId('design-inspector')).toBeInTheDocument();
 
-    // Switch to Brand subtab
+    // Edit sheet hosts the Design/Brand subtab toggle in its Design card
+    fireEvent.click(screen.getByTestId('mobile-tab-edit'));
     const brandSubtab = screen.getByTestId('mobile-design-subtab-brand');
     fireEvent.click(brandSubtab);
 
@@ -147,14 +151,16 @@ describe('Editor Mobile Layout (Spec §10.2, Task P3-6)', () => {
     const onOpenExport = vi.fn();
     render(<EditorMobile onOpenExport={onOpenExport} />);
 
-    fireEvent.click(screen.getByTestId('mobile-tab-export'));
+    // Export lives in the top-bar amber button now
+    fireEvent.click(screen.getByTestId('mobile-export-btn'));
 
     expect(screen.getByTestId('mobile-export-sheet')).toBeInTheDocument();
 
-    const startExportBtn = screen.getByTestId('mobile-start-export-btn');
-    fireEvent.click(startExportBtn);
+    const imagesBtn = screen.getByTestId('mobile-export-images');
+    fireEvent.click(imagesBtn);
 
     expect(onOpenExport).toHaveBeenCalledTimes(1);
+    expect(onOpenExport).toHaveBeenCalledWith('zip');
     expect(screen.queryByTestId('mobile-bottom-sheet')).not.toBeInTheDocument();
   });
 
@@ -199,9 +205,12 @@ describe('Editor Mobile Layout (Spec §10.2, Task P3-6)', () => {
     // Bottom tabs have min-h-[44px] and min-w-[44px]
     const tabs = [
       screen.getByTestId('mobile-tab-slides'),
+      screen.getByTestId('mobile-tab-templates'),
+      screen.getByTestId('mobile-tab-elements'),
+      screen.getByTestId('mobile-tab-draw'),
+      screen.getByTestId('mobile-tab-text'),
+      screen.getByTestId('mobile-tab-media'),
       screen.getByTestId('mobile-tab-edit'),
-      screen.getByTestId('mobile-tab-design'),
-      screen.getByTestId('mobile-tab-export'),
     ];
 
     for (const tab of tabs) {

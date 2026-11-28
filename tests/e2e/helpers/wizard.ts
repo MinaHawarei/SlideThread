@@ -27,6 +27,16 @@ export async function createFromHome(
   await page.getByTestId('create-submit').click();
 }
 
+/** Goes to the Gallery and clicks a template card's Use button, walking the paginated pages until the card exists. */
+export async function selectGalleryTemplate(page: Page, id: string): Promise<void> {
+  await page.goto('/gallery');
+  await page.getByTestId('gallery-template-card').first().waitFor({ state: 'visible', timeout: 15000 });
+  const use = page.getByTestId(`use-template-${id}`);
+  const next = page.getByTestId('gallery-page-next');
+  for (let i = 0; i < 20 && (await use.count()) === 0 && (await next.count()) > 0 && (await next.isEnabled()); i++) await next.click();
+  await use.click({ force: true });
+}
+
 /**
  * Opens the create dialog for a built-in template. Gallery templates use their card's Use button;
  * clean-minimal is not in the Gallery, it is the base of the Blank project, so it opens through Start creating.
@@ -40,8 +50,19 @@ export async function openTemplateDialog(page: Page, id: string): Promise<void> 
   await page.goto('/gallery');
   await page.getByTestId('gallery-template-card').first().waitFor({ state: 'visible', timeout: 15000 });
   const use = page.getByTestId(`use-template-${id}`);
-  const more = page.getByTestId('gallery-load-more');
-  // The Gallery shows one page of cards at a time; reveal more until this template's card exists.
-  for (let i = 0; i < 10 && (await use.count()) === 0 && (await more.count()) > 0; i++) await more.click();
+  const next = page.getByTestId('gallery-page-next');
+  // The Gallery is paginated; walk pages until this template's card exists.
+  for (let i = 0; i < 20 && (await use.count()) === 0 && (await next.count()) > 0 && (await next.isEnabled()); i++) await next.click();
   await use.click({ force: true });
+}
+
+/** Walks the numbered Gallery pagination until the template card is on screen (the sort puts tech-mesh on page 2). */
+export async function goToGalleryTemplatePage(page: Page, id: string): Promise<void> {
+  const card = page.locator(`[data-testid="gallery-template-card"][data-template-id="${id}"]`);
+  await page.getByTestId('gallery-template-card').first().waitFor({ state: 'visible', timeout: 15000 });
+  for (let i = 0; i < 10; i++) {
+    if (await card.isVisible().catch(() => false)) return;
+    await page.getByTestId('gallery-page-next').click();
+  }
+  throw new Error(`template ${id} not found in any gallery page`);
 }

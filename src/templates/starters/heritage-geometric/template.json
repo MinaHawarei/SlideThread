@@ -1,26 +1,108 @@
 {
   "schema": 1,
   "id": "heritage-geometric",
+  "priority": 1,
   "className": "heritage",
-  "name": { "en": "Heritage Geometric", "ar": "هندسة تراثية" },
-  "description": { "en": "Arabic-first forms with original geometric tessellation.", "ar": "أشكال عربية أولاً مع زخرفة هندسية أصلية." },
-  "author": { "name": "SlideThread" },
+  "name": {
+    "en": "Heritage Geometric",
+    "ar": "هندسة تراثية"
+  },
+  "description": {
+    "en": "Arabic-first forms with original geometric tessellation.",
+    "ar": "أشكال عربية أولاً مع زخرفة هندسية أصلية."
+  },
+  "author": {
+    "name": "SlideThread"
+  },
   "license": "MIT",
-  "categories": ["arabic-heritage"],
-  "tags": ["arabic-first", "geometric", "warm"],
+  "categories": [
+    "arabic-heritage"
+  ],
+  "tags": [
+    "arabic-first",
+    "geometric",
+    "warm"
+  ],
   "colorFlexible": false,
   "theme": {
     "modes": {
-      "dark": { "bg": "#241D18", "bg2": "#342821", "ink": "#FAF2E7", "mute": "#C6B6A3", "acc": "#D89B52", "acc2": "#65A89A", "line": "#785E47", "card": "#31271F", "ok": "#7DBD91", "bad": "#E47E6F", "onAcc": "#241D18" },
-      "light": { "bg": "#FAF4E8", "bg2": "#F0E4D3", "ink": "#2B2019", "mute": "#68584A", "acc": "#A75C2B", "acc2": "#287565", "line": "#D2BCA3", "card": "#FFFFFF", "ok": "#2B7A49", "bad": "#A53C30", "onAcc": "#FFFFFF" }
+      "dark": {
+        "bg": "#241D18",
+        "bg2": "#342821",
+        "ink": "#FAF2E7",
+        "mute": "#C6B6A3",
+        "acc": "#D89B52",
+        "acc2": "#65A89A",
+        "line": "#785E47",
+        "card": "#31271F",
+        "ok": "#7DBD91",
+        "bad": "#E47E6F",
+        "onAcc": "#241D18"
+      },
+      "light": {
+        "bg": "#FAF4E8",
+        "bg2": "#F0E4D3",
+        "ink": "#2B2019",
+        "mute": "#68584A",
+        "acc": "#A75C2B",
+        "acc2": "#287565",
+        "line": "#D2BCA3",
+        "card": "#FFFFFF",
+        "ok": "#2B7A49",
+        "bad": "#A53C30",
+        "onAcc": "#FFFFFF"
+      }
     },
-    "fonts": { "display": "ibm-plex-sans-arabic", "body": "ibm-plex-sans-arabic", "mono": "jetbrains-mono" },
-    "typeScale": { "h1": 104, "h2": 72, "body": 42, "small": 28, "mono": 32 },
-    "radius": { "card": 20, "chip": 12 }
+    "fonts": {
+      "display": "ibm-plex-sans-arabic",
+      "body": "ibm-plex-sans-arabic",
+      "mono": "jetbrains-mono"
+    },
+    "typeScale": {
+      "h1": 104,
+      "h2": 72,
+      "body": 42,
+      "small": 28,
+      "mono": 32
+    },
+    "radius": {
+      "card": 20,
+      "chip": 12
+    }
   },
-  "layouts": { "cover": "cover-centered", "explain": "explain-editorial", "rule": "rule-centered", "compare": "compare-editorial", "code": "code-centered", "stat": "stat-centered", "quote": "quote-centered", "image": "image-editorial", "cta": "cta-centered" },
-  "decor": { "background": { "id": "geometric", "params": { "rows": 4, "columns": 5 }, "intensity": 0.42 } },
-  "counter": { "styles": ["number", "dots"], "defaultStyle": "number" },
-  "assets": { "cornerAccent": "assets/flourish-corner.svg" },
-  "formats": ["post", "carousel"]
+  "layouts": {
+    "cover": "cover-centered",
+    "explain": "explain-editorial",
+    "rule": "rule-centered",
+    "compare": "compare-editorial",
+    "code": "code-centered",
+    "stat": "stat-centered",
+    "quote": "quote-centered",
+    "image": "image-editorial",
+    "cta": "cta-centered"
+  },
+  "decor": {
+    "background": {
+      "id": "geometric",
+      "params": {
+        "rows": 4,
+        "columns": 5
+      },
+      "intensity": 0.42
+    }
+  },
+  "counter": {
+    "styles": [
+      "number",
+      "dots"
+    ],
+    "defaultStyle": "number"
+  },
+  "assets": {
+    "cornerAccent": "assets/flourish-corner.svg"
+  },
+  "formats": [
+    "post",
+    "carousel"
+  ]
 }

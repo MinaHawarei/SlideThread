@@ -104,7 +104,6 @@ test('locked element is not selectable on the canvas but can be unlocked from th
   // Keyboard focus cannot reach it either.
   await expect(hit).toHaveAttribute('tabindex', '-1');
   // Layers tab still lists it and can unlock it.
-  await page.getByTestId('tab-layers').click();
   await expect(page.getByTestId('layer-row-title')).toBeVisible();
   await page.getByRole('button', { name: /unlock/i }).first().click();
   await expect(page.getByTestId('element-hit-title')).not.toHaveAttribute('data-locked', 'true');

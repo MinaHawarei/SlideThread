@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-arabic-green",
+  "priority": 1,
   "name": {
     "en": "Arabic Green",
     "ar": "أخضر عربي"

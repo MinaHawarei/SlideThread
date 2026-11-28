@@ -1,10 +1,10 @@
 import { test, expect, type Page } from '@playwright/test';
+import { selectGalleryTemplate } from './helpers/wizard';
 import { setDirection } from './helpers/direction';
 
 async function createEditor(page: Page) {
   await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_4_5').click();
@@ -77,7 +77,7 @@ test('rich text in-place editing 12-state review matrix (R4-2)', async ({ page }
     await expect(page.getByTestId(width < 768 ? 'mobile-bottom-tabs' : 'tab-design')).toBeVisible();
 
     for (const theme of ['light', 'dark']) {
-      if (width < 768) await page.getByTestId('mobile-tab-design').click();
+      if (width < 768) await page.getByTestId('mobile-tab-templates').click();
       else await page.getByTestId('tab-design').click();
       await page.getByTestId(`design-theme-${theme}`).click();
 
@@ -93,7 +93,7 @@ test('rich text in-place editing 12-state review matrix (R4-2)', async ({ page }
 
       for (const direction of ['ltr', 'rtl']) {
         await setDirection(page, direction as 'ltr' | 'rtl');
-        await expect(page.locator('html')).toHaveAttribute('dir', direction);
+        await expect(page.locator('html')).toHaveAttribute('lang', direction === 'rtl' ? 'ar' : 'en');
         await page.evaluate(({ mode }) => { document.documentElement.dataset.theme = mode; }, { mode: theme });
 
         await page.screenshot({ path: `docs/ux-review/R4-2/editor-${width}x${height}-${theme}-${direction}.png` });

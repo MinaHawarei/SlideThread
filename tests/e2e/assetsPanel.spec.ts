@@ -16,7 +16,7 @@ test.describe('Assets Panel E2E (§5.6, Task R6-5)', () => {
     await expect(canvas).toBeVisible();
 
     // 1. Switch inspector tab to Assets
-    const assetsTab = page.getByTestId('tab-assets');
+    const assetsTab = page.getByTestId('rail-tool-media');
     await expect(assetsTab).toBeVisible();
     await assetsTab.click();
 
@@ -59,6 +59,7 @@ test.describe('Assets Panel E2E (§5.6, Task R6-5)', () => {
     // 7. Verify PNG export works with the added asset
     const exportBtn = page.getByTestId('editor-export-btn');
     await exportBtn.click();
+    await page.getByTestId('export-menu-images').click();
 
     const exportDialog = page.getByTestId('export-dialog');
     await expect(exportDialog).toBeVisible();

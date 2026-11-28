@@ -31,6 +31,7 @@ for (const id of IDS) {
     await page.waitForTimeout(800);
     if (shots) await canvas.screenshot({ path: `${shots}/${id}-explain.png` });
     await page.getByTestId('editor-export-btn').click();
+    await page.getByTestId('export-menu-images').click();
     await page.getByTestId('export-format-png').click();
     const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-start-btn').click()]);
     const bytes = await fs.promises.readFile((await download.path())!);

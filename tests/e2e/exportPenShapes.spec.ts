@@ -3,6 +3,7 @@ import * as fs from 'fs';
 
 async function exportPng(page: Page) {
   await page.getByTestId('editor-export-btn').click();
+  await page.getByTestId('export-menu-images').click();
   await page.getByTestId('export-format-png').click();
   const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-start-btn').click()]);
   const p = await download.path();
@@ -27,6 +28,7 @@ async function drawSquare(page: Page) {
   await page.goto('/');
   await page.getByTestId('demo-en-btn').click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible();
+  await page.getByTestId('rail-tool-draw').click();
   await page.getByTestId('rail-tool-bezier').click();
   const b = (await page.getByTestId('bezier-pen-surface').boundingBox())!;
   for (const [x, y] of [[0.3, 0.3], [0.7, 0.3], [0.7, 0.7], [0.3, 0.7], [0.3, 0.3]] as Array<[number, number]>) await page.mouse.click(b.x + b.width * x, b.y + b.height * y);

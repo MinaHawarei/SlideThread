@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-signal-red",
+  "priority": 1,
   "name": {
     "en": "Signal Red",
     "ar": "الأحمر الإشاري"

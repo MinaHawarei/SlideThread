@@ -73,6 +73,7 @@ test('add a path, edit nodes, persist, export', async ({ page }) => {
 
   // Export a PNG and check it downloads.
   await page.getByTestId('editor-export-btn').click();
+  await page.getByTestId('export-menu-images').click();
   await page.getByTestId('export-format-png').click();
   const [download] = await Promise.all([
     page.waitForEvent('download', { timeout: 30000 }),

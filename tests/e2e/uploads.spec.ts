@@ -16,7 +16,7 @@ test.describe('Uploads & Image Masking E2E (§5.6, Task R6-6)', () => {
     await expect(canvas).toBeVisible();
 
     // 1. Go to Assets tab
-    const assetsTab = page.getByTestId('tab-assets');
+    const assetsTab = page.getByTestId('rail-tool-media');
     await expect(assetsTab).toBeVisible();
     await assetsTab.click();
 
@@ -54,6 +54,7 @@ test.describe('Uploads & Image Masking E2E (§5.6, Task R6-6)', () => {
     // 6. Test export to PNG with masked image
     const exportBtn = page.getByTestId('editor-export-btn');
     await exportBtn.click();
+    await page.getByTestId('export-menu-images').click();
 
     const exportDialog = page.getByTestId('export-dialog');
     await expect(exportDialog).toBeVisible();

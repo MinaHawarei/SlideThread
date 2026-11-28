@@ -66,8 +66,9 @@ describe('i18n Module & Typed Dictionaries (Spec §5.5, §14, Task P3-1)', () =>
     // Switch to Arabic
     hookResult?.setLocale('ar');
     expect(document.documentElement.lang).toBe('ar');
-    expect(document.documentElement.dir).toBe('rtl');
-    expect(document.documentElement.classList.contains('rtl')).toBe(true);
+    // Layout never mirrors: the document stays LTR; only text follows the language.
+    expect(document.documentElement.dir).toBe('ltr');
+    expect(document.documentElement.classList.contains('rtl')).toBe(false);
   });
 
   it('LanguageSwitcher component toggles locale and updates document attributes', () => {
@@ -83,7 +84,7 @@ describe('i18n Module & Typed Dictionaries (Spec §5.5, §14, Task P3-1)', () =>
     fireEvent.click(btn);
     expect(useI18nStore.getState().locale).toBe('ar');
     expect(document.documentElement.lang).toBe('ar');
-    expect(document.documentElement.dir).toBe('rtl');
+    expect(document.documentElement.dir).toBe('ltr');
     expect(btn.querySelector('b')?.textContent).toBe('عربي');
 
     // Click again to switch back to English

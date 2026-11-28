@@ -69,7 +69,7 @@ export const SlideInspector: React.FC = () => {
           htmlFor="slide-type-select"
           className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
         >
-          Slide Type
+          {t('editor.slideTypeLabel')}
         </label>
         <select
           id="slide-type-select"

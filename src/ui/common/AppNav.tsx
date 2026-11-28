@@ -26,7 +26,7 @@ const MoonIcon: React.FC = () => (
 );
 
 export const AppNav: React.FC<AppNavProps> = ({ current, onNavigate }) => {
-  const { t, dir } = useT();
+  const { t } = useT();
   const appTheme = useSettingsStore((state) => state.settings.appTheme) === 'dark' ? 'dark' : 'light';
   const setAppTheme = useSettingsStore((state) => state.setAppTheme);
   const isDark = appTheme === 'dark';
@@ -52,7 +52,7 @@ export const AppNav: React.FC<AppNavProps> = ({ current, onNavigate }) => {
         </a>
       </div>
       <div className="ed-nav-right">
-        <nav aria-label={t('nav.primary')} dir={dir} className="ed-nav-links">
+        <nav aria-label={t('nav.primary')} className="ed-nav-links">
           {links.map((link) => (
             <a
               key={link.path}

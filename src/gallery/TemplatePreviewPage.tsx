@@ -42,7 +42,7 @@ export interface TemplatePreviewPageProps {
 }
 
 export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavigate }) => {
-  const { t, dir, locale } = useT();
+  const { t, locale } = useT();
   const brandSettings = useSettingsStore((state) => state.settings);
   const { templates: importedTemplates } = useUserTemplateLibrary();
 
@@ -117,7 +117,6 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
   if (!isKnownTemplate) {
     return (
       <div
-        dir={dir}
         data-testid="template-preview-unknown"
         className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col justify-between"
       >
@@ -190,7 +189,6 @@ export const TemplatePreviewPage: React.FC<TemplatePreviewPageProps> = ({ onNavi
 
   return (
     <div
-      dir={dir}
       data-testid="template-preview-page"
       className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col font-sans transition-colors duration-200"
     >

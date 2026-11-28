@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-arabic-gold",
+  "priority": 2,
   "name": {
     "en": "Arabic Gold",
     "ar": "ذهبي عربي"

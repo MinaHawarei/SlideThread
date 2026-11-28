@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { goToGalleryTemplatePage } from './helpers/wizard';
 
 const TEMPLATES = ['tech-mesh', 'clean-minimal', 'bold-marketing', 'golden-hour-viral', 'neon-grid-process'];
 const ASPECTS = ['portrait', 'square', 'landscape', 'tall'];
@@ -8,6 +9,7 @@ test('stat value never overlaps its label (starters and packs, all aspects)', as
   await page.route('**/_vercel/insights/**', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/gallery');
+  await goToGalleryTemplatePage(page, 'tech-mesh');
   await page.getByTestId('preview-template-tech-mesh').click();
   await page.getByTestId('slide-type-filter').selectOption('stat');
   for (const tmpl of TEMPLATES) {
@@ -43,6 +45,7 @@ test('stat screenshots', async ({ page }) => {
   await page.route('**/_vercel/insights/**', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/gallery');
+  await goToGalleryTemplatePage(page, 'tech-mesh');
   await page.getByTestId('preview-template-tech-mesh').click();
   const shots: Array<[string, string, string]> = [['golden-hour-viral', 'portrait', 'golden-full-portrait'], ['neon-grid-process', 'landscape', 'neon-full-landscape'], ['golden-hour-viral', 'landscape', 'golden-full-landscape'], ['neon-grid-process', 'portrait', 'neon-full-portrait']];
   for (const [tmpl, aspect, name] of shots) {

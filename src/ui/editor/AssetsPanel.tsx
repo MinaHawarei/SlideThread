@@ -28,9 +28,11 @@ interface UnifiedAssetItem extends AssetItem {
 
 export interface AssetsPanelProps {
   onAssetAdded?: () => void;
+  /** Preselects the category tab (e.g. 'shapes' for the Elements tool). */
+  initialCategory?: AssetCategory;
 }
 
-export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
+export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded, initialCategory }) => {
   const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
   const activeSlide = useActiveSlide();
@@ -38,7 +40,7 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
   const selectElement = useSelectionStore((state) => state.selectElement);
   const { recents, addRecent, clearRecents } = useRecentAssetsStore();
 
-  const [category, setCategory] = useState<AssetCategory>('all');
+  const [category, setCategory] = useState<AssetCategory>(initialCategory ?? 'all');
   const [searchQuery, setSearchQuery] = useState('');
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -271,7 +273,7 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
           className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-500 hover:bg-amber-600 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap"
         >
           <PencilIcon size={16} />
-          <span>Pencil</span>
+          <span>{t('tool.pencil')}</span>
         </button>
 
         <button
@@ -282,7 +284,7 @@ export const AssetsPanel: React.FC<AssetsPanelProps> = ({ onAssetAdded }) => {
           className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1 shadow-sm transition-colors whitespace-nowrap"
         >
           <PenIcon size={16} />
-          <span>Pen</span>
+          <span>{t('tool.pen')}</span>
         </button>
 
         <button

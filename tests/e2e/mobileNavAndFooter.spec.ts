@@ -65,13 +65,14 @@ test.describe('Mobile Navigation Drawer and Footer follow-up', () => {
     }
   });
 
-  test('Part B: mobile drawer navigation and overlay dismissal in Arabic RTL', async ({ page }) => {
+  test('Part B: mobile drawer navigation and overlay dismissal in Arabic (layout never mirrors)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/settings');
 
     // Switch to Arabic in settings
     await page.getByTestId('settings-lang-ar-btn').click();
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
 
     // Open drawer
     const toggle = page.getByTestId('mobile-nav-toggle');
@@ -79,7 +80,9 @@ test.describe('Mobile Navigation Drawer and Footer follow-up', () => {
 
     const drawer = page.getByTestId('mobile-nav-drawer');
     await expect(drawer).toBeVisible();
-    await expect(drawer).toHaveAttribute('dir', 'rtl');
+    // The layout never mirrors: the drawer keeps its physical left placement.
+    await expect(drawer).not.toHaveAttribute('dir');
+    await expect(drawer).toHaveClass(/left-0/);
 
     // Click Gallery link -> navigates and closes drawer
     await page.getByTestId('mobile-drawer-gallery').click();
@@ -91,7 +94,8 @@ test.describe('Mobile Navigation Drawer and Footer follow-up', () => {
     await expect(page.getByTestId('mobile-nav-drawer')).toBeVisible();
 
     // Click overlay -> closes drawer
-    await page.getByTestId('mobile-nav-overlay').click({ position: { x: 50, y: 300 } });
+    // The drawer is always on the left now; click the overlay outside it (x > drawer width 288).
+    await page.getByTestId('mobile-nav-overlay').click({ position: { x: 340, y: 300 } });
     await expect(page.getByTestId('mobile-nav-drawer')).not.toBeVisible();
 
     // Check no horizontal overflow

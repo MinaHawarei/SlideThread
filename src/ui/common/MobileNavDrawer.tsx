@@ -16,7 +16,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
   onNavigate,
   className = '',
 }) => {
-  const { t, dir } = useT();
+  const { t } = useT();
   const [isOpen, setIsOpen] = useState(false);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -144,11 +144,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
               role="dialog"
               aria-modal="true"
               aria-label={t('nav.primary')}
-              dir={dir}
               onClick={(e) => e.stopPropagation()}
               style={{ maxWidth: '85vw' }}
               className={`fixed top-0 bottom-0 inset-y-0 z-50 w-72 h-screen h-[100dvh] max-h-screen max-h-[100dvh] bg-white dark:bg-stone-900 shadow-2xl flex flex-col justify-between overflow-y-auto p-5 transition-transform duration-300 motion-reduce:transition-none ${
-                dir === 'rtl' ? 'right-0 border-l border-stone-200 dark:border-stone-800' : 'left-0 border-r border-stone-200 dark:border-stone-800'
+                'left-0 border-r border-stone-200 dark:border-stone-800'
               }`}
             >
               {/* Drawer Header */}

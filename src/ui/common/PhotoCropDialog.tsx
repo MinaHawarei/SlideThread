@@ -14,7 +14,7 @@ export interface PhotoCropDialogProps {
 
 export const PhotoCropDialog: React.FC<PhotoCropDialogProps> = (props) => {
   const store = useCropStore();
-  const { t, dir } = useT();
+  const { t } = useT();
 
   const isControlled = props.isOpen !== undefined;
   const isOpen = isControlled ? props.isOpen : store.isOpen;
@@ -163,7 +163,6 @@ export const PhotoCropDialog: React.FC<PhotoCropDialogProps> = (props) => {
       aria-modal="true"
       aria-labelledby="photo-crop-title"
       data-testid="photo-crop-dialog"
-      dir={dir}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs select-none"
     >
       <div className="w-full max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 flex flex-col items-center gap-5">

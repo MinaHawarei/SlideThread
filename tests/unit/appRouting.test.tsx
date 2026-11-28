@@ -23,6 +23,8 @@ describe('application routes', () => {
     window.history.replaceState({}, '', '/settings');
     render(<App />);
     expect(await screen.findByRole('heading', { name: 'اجعله يعبر عنك' }, { timeout: 6000 })).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: 'التنقل الرئيسي' })).toHaveAttribute('dir', 'rtl');
+    // Layout never mirrors on language switch.
+    expect(screen.getByRole('navigation', { name: 'التنقل الرئيسي' })).not.toHaveAttribute('dir', 'rtl');
+    expect(document.documentElement.dir).toBe('ltr');
   });
 });

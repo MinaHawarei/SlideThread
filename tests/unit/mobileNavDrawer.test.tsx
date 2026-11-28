@@ -68,7 +68,7 @@ describe('MobileNavDrawer component (R6)', () => {
     expect(document.body.style.overflow).toBe('');
   });
 
-  it('supports Arabic RTL layout and labels', () => {
+  it('keeps physical layout and shows Arabic labels', () => {
     act(() => {
       useI18nStore.getState().setLocale('ar');
     });
@@ -79,8 +79,9 @@ describe('MobileNavDrawer component (R6)', () => {
 
     fireEvent.click(toggle);
     const drawer = screen.getByTestId('mobile-nav-drawer');
-    expect(drawer).toHaveAttribute('dir', 'rtl');
-    expect(drawer).toHaveClass('right-0');
+    // Layout never mirrors: the drawer keeps its physical left placement in Arabic.
+    expect(drawer).not.toHaveAttribute('dir');
+    expect(drawer).toHaveClass('left-0');
   });
 
   it('closes automatically on viewport resize to desktop (>= 768px)', () => {

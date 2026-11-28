@@ -39,7 +39,7 @@ export const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
   return (
     <div
       data-testid="mobile-bottom-sheet-backdrop"
-      className="fixed inset-0 z-50 flex flex-col justify-end bg-stone-900/60 backdrop-blur-xs transition-opacity"
+      className="fixed inset-x-0 top-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-50 flex flex-col justify-end bg-stone-900/60 backdrop-blur-xs transition-opacity"
       onClick={onClose}
     >
       {/* Bottom Sheet Modal Panel */}

@@ -31,7 +31,8 @@ test.describe('R0-6 UX direction preview', () => {
     await page.locator('.ux-theme-toggle').click();
     await expect(preview).toHaveClass(/theme-dark/);
     await page.getByTestId('language-switcher').click();
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr'); // layout never mirrors; text direction follows content
     await expect(page.getByRole('heading', { name: 'اجعل فكرتك القادمة تستحق التوقف عندها.' })).toBeVisible();
   });
 });

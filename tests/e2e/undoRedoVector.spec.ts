@@ -7,6 +7,7 @@ test('undo/redo covers Bezier pen paths, convert to path and fill changes', asyn
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/editor');
   await expect(page.getByTestId('main-canvas')).toBeVisible();
+  await page.getByTestId('rail-tool-draw').click();
   await page.getByTestId('rail-tool-bezier').click();
   const b = (await page.getByTestId('bezier-pen-surface').boundingBox())!;
   for (const [x, y] of [[0.3, 0.3], [0.7, 0.3], [0.5, 0.7], [0.3, 0.3]] as Array<[number, number]>) await page.mouse.click(b.x + b.width * x, b.y + b.height * y);
@@ -24,6 +25,8 @@ test('undo/redo covers Bezier pen paths, convert to path and fill changes', asyn
   await expect(paths(page)).toHaveCount(1);
 
   // Convert a library shape, then undo returns it to a library asset.
+  // (Drawing selected the path, which flipped the dock to Properties; back to Slide tab.)
+  await page.getByTestId('tab-slide').click();
   await page.getByTestId('add-shape-hexagon').click();
   await page.getByTestId('convert-to-path').click();
   await expect(paths(page)).toHaveCount(2);
@@ -38,7 +41,6 @@ test('undo/redo restores layer order after a reorder', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('demo-en-btn').click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible();
-  await page.getByTestId('tab-layers').click();
   const order = () => page.locator('[data-testid="layers-panel"] li').evaluateAll((items) => items.map((i) => (i as HTMLElement).dataset.testid));
   const before = await order();
   await page.getByRole('button', { name: 'Move title backward' }).click();

@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-collage-pink",
+  "priority": 2,
   "name": {
     "en": "Collage Pink",
     "ar": "كولاج وردي"

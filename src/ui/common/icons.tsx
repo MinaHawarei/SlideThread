@@ -47,6 +47,23 @@ export const ArrowDownIcon = I(<path d="M12 5v14M6 13l6 6 6-6" />);
 export const ChevronUpIcon = I(<path d="m6 14 6-6 6 6" />);
 export const ChevronDownIcon = I(<path d="m6 10 6 6 6-6" />);
 export const ChevronRightIcon = I(<path d="m10 6 6 6-6 6" />);
+export const ChevronLeftIcon = I(<path d="m14 6-6 6 6 6" />);
+
+/** The single collapse/expand chevron for every panel (dock cards, slides strip,
+ * whole-dock, mobile sheet cards): one glyph, rotated to point where the panel
+ * goes when collapsing, or where it opens when expanding. */
+export type CollapseDirection = 'up' | 'down' | 'left' | 'right';
+const COLLAPSE_ROTATION: Record<CollapseDirection, string> = {
+  down: '',
+  right: '-rotate-90',
+  up: 'rotate-180',
+  left: 'rotate-90',
+};
+export const CollapseChevron = ({ direction, size = 14, className = '' }: { direction: CollapseDirection; size?: number; className?: string }) => (
+  <ChevronDownIcon size={size} className={`transition-transform ${COLLAPSE_ROTATION[direction]} ${className}`.trim()} />
+);
+export const SlidersIcon = I(<><path d="M4 8h16M4 16h16" /><circle cx="9" cy="8" r="2.2" /><circle cx="15" cy="16" r="2.2" /></>);
+export const DuplicateIcon = I(<><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></>);
 export const SunIcon = I(<><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.7 4.7l1.4 1.4M17.9 17.9l1.4 1.4M2.5 12h2M19.5 12h2M4.7 19.3l1.4-1.4M17.9 6.1l1.4-1.4" /></>);
 export const MoonIcon = I(<path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a7 7 0 0 0 10 10z" />);
 export const ShieldIcon = I(<path d="M12 3.5 5 6v5.5c0 4.2 2.8 7.4 7 9 4.2-1.6 7-4.8 7-9V6z" />);

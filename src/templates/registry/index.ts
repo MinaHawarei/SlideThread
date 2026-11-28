@@ -14,6 +14,9 @@ export const templateRegistry = {
     .map(([file, manifest]) => ({
       id: manifest.id as string,
       className: (manifest.className ?? manifest.id) as string,
+      // Gallery ordering knob, edited per template in starters/<id>/template.json:
+      // higher priority shows first; ids break ties for a stable order.
+      priority: (manifest.priority ?? 1) as number,
       name: manifest.name as { en: string; ar: string },
       description: (manifest.description ?? {}) as { en?: string; ar?: string },
       categories: manifest.categories as string[],

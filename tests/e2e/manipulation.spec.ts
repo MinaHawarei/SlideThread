@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { openTemplateDialog } from './helpers/wizard';
+import { setDirection } from './helpers/direction';
 
 test('canvas selects, moves, and resets a layout slot through normalized overrides', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
@@ -41,7 +42,7 @@ test('manipulation overlay review matrix', async ({ page }) => {
   for (const [width, height] of sizes) {
     await page.setViewportSize({ width, height });
     for (const theme of ['light', 'dark']) {
-      if (width < 640) await page.getByTestId('mobile-tab-design').click();
+      if (width < 640) await page.getByTestId('mobile-tab-templates').click();
       else await page.getByTestId('tab-design').click();
       await page.getByTestId(`design-theme-${theme}`).click();
       if (width < 640) {
@@ -49,8 +50,8 @@ test('manipulation overlay review matrix', async ({ page }) => {
         await page.getByTestId('mobile-tab-slides').click();
       }
       for (const direction of ['ltr', 'rtl']) {
-        await page.evaluate((dir) => { document.documentElement.dir = dir; }, direction);
-        await expect(page.locator('html')).toHaveAttribute('dir', direction);
+        await setDirection(page, direction as 'ltr' | 'rtl');
+        await expect(page.locator('html')).toHaveAttribute('lang', direction === 'rtl' ? 'ar' : 'en');
         await page.evaluate(({ theme: currentTheme }) => {
           document.documentElement.dataset.theme = currentTheme;
         }, { theme });

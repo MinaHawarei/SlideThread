@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-mint-swipe",
+  "priority": 1,
   "name": {
     "en": "Mint Swipe",
     "ar": "سحب النعناع"

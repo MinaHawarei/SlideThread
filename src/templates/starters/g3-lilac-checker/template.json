@@ -1,0 +1,2036 @@
+{
+  "schema": 1,
+  "id": "g3-lilac-checker",
+  "priority": 3,
+  "author": {
+    "name": "Instinct for Mina"
+  },
+  "license": "MIT",
+  "colorFlexible": false,
+  "layouts": {
+    "cover": "cover-editorial",
+    "explain": "explain-editorial",
+    "rule": "rule-editorial",
+    "compare": "compare-editorial",
+    "code": "code-editorial",
+    "stat": "stat-editorial",
+    "quote": "quote-editorial",
+    "image": "image-editorial",
+    "cta": "cta-editorial"
+  },
+  "formats": [
+    "post",
+    "carousel"
+  ],
+  "assets": {
+    "bg-portrait": "assets/bg-portrait.webp",
+    "bg-square": "assets/bg-square.webp",
+    "bg-landscape": "assets/bg-landscape.webp",
+    "bg-tall": "assets/bg-tall.webp"
+  },
+  "name": {
+    "en": "Lilac Checker",
+    "ar": "شطرنج ليلكي"
+  },
+  "description": {
+    "en": "Lilac Checker: playful lilac carousel with a checkerboard band. All 9 slide types and 4 aspects; the 4:5 cover and CTA are hand-built.",
+    "ar": "شطرنج ليلكي: كاروسيل ليلكي مرح بشريط شطرنج. كل أنواع الشرائح والمقاسات. غلاف وCTA مقاس 4:5 مصممين يدويا."
+  },
+  "categories": [
+    "marketing",
+    "personal-brand"
+  ],
+  "tags": [
+    "carousel",
+    "checkerboard",
+    "light",
+    "lilac",
+    "playful"
+  ],
+  "theme": {
+    "modes": {
+      "dark": {
+        "bg": "#d6c4ff",
+        "bg2": "#cbb6fb",
+        "ink": "#1a1033",
+        "mute": "#4a3b78",
+        "acc": "#5b2be0",
+        "acc2": "#ff5fa2",
+        "line": "#b39cf0",
+        "card": "#eadfff",
+        "ok": "#2f8f4e",
+        "bad": "#b3261e",
+        "onAcc": "#ffffff"
+      },
+      "light": {
+        "bg": "#d6c4ff",
+        "bg2": "#cbb6fb",
+        "ink": "#1a1033",
+        "mute": "#4a3b78",
+        "acc": "#5b2be0",
+        "acc2": "#ff5fa2",
+        "line": "#b39cf0",
+        "card": "#eadfff",
+        "ok": "#2f8f4e",
+        "bad": "#b3261e",
+        "onAcc": "#ffffff"
+      }
+    },
+    "fonts": {
+      "display": "anton",
+      "body": "ibm-plex-sans",
+      "mono": "jetbrains-mono"
+    }
+  },
+  "composition": {
+    "cover": {
+      "portrait": {
+        "hiddenSlots": [
+          "tag",
+          "title",
+          "sub",
+          "rule"
+        ],
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "kicker",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.1,
+            "w": 0.84,
+            "h": 0.04,
+            "rotation": 0,
+            "z": 2,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "PLAYBOOK"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "jetbrains-mono",
+              "size": 38,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 2,
+              "lineHeight": 1.1
+            }
+          },
+          {
+            "id": "title0",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.16,
+            "w": 0.84,
+            "h": 0.1178,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "PLAY"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "anton",
+              "size": 150,
+              "weight": 400,
+              "color": "ink",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title1",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.2798,
+            "w": 0.84,
+            "h": 0.1178,
+            "rotation": 0,
+            "z": 4,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "BY YOUR"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "anton",
+              "size": 150,
+              "weight": 400,
+              "color": "ink",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title2",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.3996,
+            "w": 0.84,
+            "h": 0.1178,
+            "rotation": 0,
+            "z": 5,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "OWN RULES"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "anton",
+              "size": 150,
+              "weight": 400,
+              "color": "acc",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "sub",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.5313,
+            "w": 0.84,
+            "h": 0.05,
+            "rotation": 0,
+            "z": 6,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "creative habits that stick"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans",
+              "size": 44,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 0,
+              "lineHeight": 1.2
+            }
+          },
+          {
+            "id": "pill",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.6513,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 7,
+            "locked": false,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 60
+          },
+          {
+            "id": "pilltext",
+            "kind": "text",
+            "x": 0.11,
+            "y": 0.6593,
+            "w": 0.4,
+            "h": 0.046,
+            "rotation": 0,
+            "z": 8,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "LET'S GO"
+                    }
+                  ],
+                  "align": "center"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "jetbrains-mono",
+              "size": 40,
+              "weight": 700,
+              "color": "#ffffff",
+              "letterSpacing": 1,
+              "lineHeight": 1.1
+            }
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "explain": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.01,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "rule": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.01,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "code": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.01,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "compare": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.01,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "stat": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.01,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "quote": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.01,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "image": {
+      "portrait": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.01,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    },
+    "cta": {
+      "portrait": {
+        "hiddenSlots": [
+          "tag",
+          "title",
+          "sub",
+          "rule"
+        ],
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-portrait"
+          },
+          {
+            "id": "kicker",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.2,
+            "w": 0.84,
+            "h": 0.04,
+            "rotation": 0,
+            "z": 2,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "YOUR MOVE"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "jetbrains-mono",
+              "size": 38,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 2,
+              "lineHeight": 1.1
+            }
+          },
+          {
+            "id": "title0",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.26,
+            "w": 0.84,
+            "h": 0.1178,
+            "rotation": 0,
+            "z": 3,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "PICK A"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "anton",
+              "size": 150,
+              "weight": 400,
+              "color": "ink",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "title1",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.3798,
+            "w": 0.84,
+            "h": 0.1178,
+            "rotation": 0,
+            "z": 4,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "SQUARE"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "anton",
+              "size": 150,
+              "weight": 400,
+              "color": "acc",
+              "letterSpacing": -2,
+              "lineHeight": 1.0
+            }
+          },
+          {
+            "id": "sub",
+            "kind": "text",
+            "x": 0.08,
+            "y": 0.5116,
+            "w": 0.84,
+            "h": 0.05,
+            "rotation": 0,
+            "z": 5,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "then post it this week"
+                    }
+                  ],
+                  "align": "left"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "ibm-plex-sans",
+              "size": 44,
+              "weight": 400,
+              "color": "mute",
+              "letterSpacing": 0,
+              "lineHeight": 1.2
+            }
+          },
+          {
+            "id": "pill",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.6316,
+            "w": 0.46,
+            "h": 0.07,
+            "rotation": 0,
+            "z": 6,
+            "locked": false,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 60
+          },
+          {
+            "id": "pilltext",
+            "kind": "text",
+            "x": 0.11,
+            "y": 0.6396,
+            "w": 0.4,
+            "h": 0.046,
+            "rotation": 0,
+            "z": 7,
+            "locked": false,
+            "text": {
+              "type": "doc",
+              "blocks": [
+                {
+                  "type": "p",
+                  "runs": [
+                    {
+                      "text": "GO"
+                    }
+                  ],
+                  "align": "center"
+                }
+              ]
+            },
+            "textStyle": {
+              "font": "jetbrains-mono",
+              "size": 40,
+              "weight": 700,
+              "color": "#ffffff",
+              "letterSpacing": 1,
+              "lineHeight": 1.1
+            }
+          }
+        ]
+      },
+      "square": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-square"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "landscape": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-landscape"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.008,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      },
+      "tall": {
+        "elements": [
+          {
+            "id": "backdrop",
+            "kind": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "rotation": 0,
+            "z": 0,
+            "locked": true,
+            "assetId": "bg-tall"
+          },
+          {
+            "id": "dc-bar",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.045,
+            "w": 0.14,
+            "h": 0.014222222222222221,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "acc",
+            "cornerRadius": 4
+          },
+          {
+            "id": "dc-foot",
+            "kind": "shape",
+            "x": 0.08,
+            "y": 0.955,
+            "w": 0.84,
+            "h": 0.002,
+            "rotation": 0,
+            "z": 1,
+            "locked": true,
+            "shape": "rectangle",
+            "fill": "line",
+            "cornerRadius": 0
+          }
+        ]
+      }
+    }
+  }
+}

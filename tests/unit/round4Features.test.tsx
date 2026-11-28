@@ -180,34 +180,31 @@ describe('Round 4 Features: Properties Panel & Layers Migration', () => {
   });
 
   describe('P5: Layers in Side Panel before Brand', () => {
-    it('renders Layers tab before Brand in desktop Inspector', () => {
+    it('renders the Layers card alongside the Design/Brand card in the desktop dock', () => {
       render(<EditorDesktop />);
 
-      const tabLayers = screen.getByTestId('tab-layers');
-      const tabBrand = screen.getByTestId('tab-brand');
-      expect(tabLayers).toBeInTheDocument();
-      expect(tabBrand).toBeInTheDocument();
-
-      // Click layers tab -> renders LayersPanel
-      fireEvent.click(tabLayers);
+      // Layers is its own always-visible dock card now (no tab click needed)
+      expect(screen.getByTestId('dock-card-layers')).toBeInTheDocument();
       expect(screen.getByTestId('layers-panel')).toBeInTheDocument();
       expect(screen.getByTestId('layer-row-title')).toBeInTheDocument();
       expect(screen.getByTestId('layer-row-body')).toBeInTheDocument();
+
+      // Brand is a tab inside the Design/Brand card
+      fireEvent.click(screen.getByTestId('tab-brand'));
+      expect(screen.getByTestId('brand-inspector')).toBeInTheDocument();
 
       // Old floating canvas layers button is removed
       expect(screen.queryByTestId('layers-toggle')).not.toBeInTheDocument();
       expect(screen.queryByTestId('canvas-layers-panel')).not.toBeInTheDocument();
     });
 
-    it('provides Layers bottom tab on mobile opening half-height sheet', () => {
+    it('provides Layers inside the mobile Edit sheet', () => {
       render(<EditorMobile />);
 
-      const mobileLayersTab = screen.getByTestId('mobile-tab-layers');
-      expect(mobileLayersTab).toBeInTheDocument();
-
-      fireEvent.click(mobileLayersTab);
+      fireEvent.click(screen.getByTestId('mobile-tab-edit'));
+      expect(screen.getByTestId('mobile-card-layers')).toBeInTheDocument();
       expect(screen.getByTestId('layers-panel')).toBeInTheDocument();
-      expect(screen.getByTestId('mobile-bottom-sheet')).toHaveAttribute('data-half-height', 'true');
+      expect(screen.getByTestId('mobile-bottom-sheet')).toBeInTheDocument();
     });
   });
 });

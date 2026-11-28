@@ -41,7 +41,7 @@ const SOCIAL_LABELS: Record<SocialPlatform, string> = {
 type SectionId = 'appearance' | 'profile' | 'socials' | 'language' | 'data';
 
 export const SettingsPage: React.FC = () => {
-  const { t, dir, locale, setLocale } = useT();
+  const { t, locale, setLocale } = useT();
   const settings = useSettingsStore((state) => state.settings);
   const setDisplayName = useSettingsStore((state) => state.setDisplayName);
   const setHandle = useSettingsStore((state) => state.setHandle);
@@ -136,7 +136,7 @@ export const SettingsPage: React.FC = () => {
   const isDark = settings.appTheme === 'dark';
 
   return (
-    <div className="ed-page" dir={dir}>
+    <div className="ed-page">
       <AppNav current="/settings" />
 
       <div className="ed-head">

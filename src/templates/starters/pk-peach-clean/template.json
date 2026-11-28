@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-peach-clean",
+  "priority": 2,
   "name": {
     "en": "Peach Clean",
     "ar": "خوخي نظيف"

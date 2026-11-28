@@ -47,6 +47,7 @@ test.describe('Shapes, Lines & Arrows Pack E2E (Spec §5.6, Task R6-2)', () => {
     // 7. Open Export Dialog, select PNG, trigger export and verify successful download containing the shape
     const exportBtn = page.getByTestId('editor-export-btn');
     await exportBtn.click();
+    await page.getByTestId('export-menu-images').click();
 
     const exportDialog = page.getByTestId('export-dialog');
     await expect(exportDialog).toBeVisible();

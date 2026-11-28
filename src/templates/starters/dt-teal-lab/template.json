@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-teal-lab",
+  "priority": 1,
   "name": {
     "en": "Teal Lab",
     "ar": "مختبر التيل"

@@ -17,7 +17,10 @@ describe('font registry and local font loader', () => {
     expect(getFontsForText('hello مرحبا').map((font) => font.id)).toEqual(['ibm-plex-sans-arabic']);
     expect(getFontRequirementsForText('hello مرحبا').every((font) => font.id === 'ibm-plex-sans-arabic')).toBe(true);
     const picker = listFontsForText('مرحبا');
-    expect(picker.map((entry) => entry.font.id)).toEqual(['ibm-plex-sans-arabic']);
+    const pickerIds = picker.map((entry) => entry.font.id);
+    expect(pickerIds).toContain('ibm-plex-sans-arabic');
+    for (const id of ['marhey', 'noto-naskh-arabic', 'amiri', 'markazi-text', 'el-messiri', 'scheherazade-new', 'harmattan', 'aref-ruqaa', 'rakkas', 'lalezar', 'lemonada', 'changa', 'reem-kufi', 'vazirmatn']) expect(pickerIds).toContain(id);
+    expect(pickerIds).not.toContain('anton');
     expect(picker.every((entry) => entry.arabicCapable)).toBe(true);
     expect(listFontsForText('Hello').map((entry) => entry.font.id)).not.toContain('noto-sans-coptic');
     expect(listFontsForText('Hello').find((entry) => entry.font.id === 'ibm-plex-sans-arabic')?.arabicCapable).toBe(true);
@@ -30,5 +33,19 @@ describe('font registry and local font loader', () => {
     expect(getFontRequirementsForText(`Latin ${copticText}`).map((font) => font.id)).toContain('ibm-plex-sans');
     await expect(loadFont('noto-sans-coptic', 400)).resolves.toBeUndefined();
     await expect(loadFont('noto-sans-coptic', 700)).rejects.toThrow('does not include weight 700');
+  });
+});
+
+describe('bundled Arabic font additions', () => {
+  it('every added family is OFL-1.1, covers Arabic and Latin, and has a loader for each declared weight', async () => {
+    const { FONT_REGISTRY } = await import('../../src/fonts/registry');
+    const added = ['marhey', 'noto-naskh-arabic', 'amiri', 'markazi-text', 'el-messiri', 'scheherazade-new', 'harmattan', 'aref-ruqaa', 'rakkas', 'lalezar', 'lemonada', 'changa', 'reem-kufi', 'vazirmatn'] as const;
+    for (const id of added) {
+      const font = FONT_REGISTRY[id];
+      expect(font.license).toBe('OFL-1.1');
+      expect(font.scripts).toEqual(['arabic', 'latin']);
+      expect(font.attribution).toMatch(/Copyright/);
+      expect(font.weights.length).toBeGreaterThan(0);
+    }
   });
 });

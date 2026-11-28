@@ -8,6 +8,8 @@ test.describe('Gate G4 Verification (End of Phase 4)', () => {
 
   test('executes complete persistence, paste-to-slides, JSON I/O, and multi-format export pipeline', async ({ page }) => {
     const consoleErrors: string[] = [];
+    // Vercel Analytics requests /_vercel/insights/script.js, which only exists on Vercel; stub it locally (same as gateG3/gallery).
+    await page.route('**/_vercel/insights/**', (route) => route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
         const text = msg.text();
@@ -32,7 +34,8 @@ test.describe('Gate G4 Verification (End of Phase 4)', () => {
     // ==========================================
     // 4. Project JSON Export
     // ==========================================
-    const exportJsonBtn = page.locator('[data-testid="editor-export-json-btn"]');
+    await page.locator('[data-testid="editor-export-btn"]').click();
+    const exportJsonBtn = page.locator('[data-testid="export-menu-json"]');
     await expect(exportJsonBtn).toBeVisible();
 
     const [jsonDownload] = await Promise.all([
@@ -48,6 +51,7 @@ test.describe('Gate G4 Verification (End of Phase 4)', () => {
     const parsedBundle = JSON.parse(jsonText);
     expect(parsedBundle.project).toBeDefined();
     expect(parsedBundle.project.slides.length).toBeGreaterThanOrEqual(1);
+    await page.keyboard.press('Escape');
 
     // ==========================================
     // 5. Project JSON Import from Start Screen
@@ -98,6 +102,9 @@ Scalable event bus architecture
     // ==========================================
     const exportModalBtn = page.locator('[data-testid="editor-export-btn"]');
     await exportModalBtn.click();
+    const imagesItem = page.locator('[data-testid="export-menu-images"]');
+    await expect(imagesItem).toBeVisible();
+    await imagesItem.click();
 
     const exportDialog = page.locator('[data-testid="export-dialog"]');
     await expect(exportDialog).toBeVisible();
@@ -117,6 +124,7 @@ Scalable event bus architecture
 
     // 7B. Multi-slide ZIP
     await exportModalBtn.click();
+    await page.locator('[data-testid="export-menu-images"]').click();
     await expect(exportDialog).toBeVisible();
     await page.locator('[data-testid="export-format-zip"]').click();
 
@@ -135,6 +143,7 @@ Scalable event bus architecture
 
     // 7C. Multi-page PDF
     await exportModalBtn.click();
+    await page.locator('[data-testid="export-menu-pdf"]').click();
     await expect(exportDialog).toBeVisible();
     await page.locator('[data-testid="export-format-pdf"]').click();
 

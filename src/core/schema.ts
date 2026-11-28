@@ -62,7 +62,7 @@ export const ExtraFiltersSchema = z.object({
 }).strict();
 
 export const TextStyleOverrideSchema = z.object({
-  font: z.enum(['ibm-plex-sans', 'ibm-plex-sans-arabic', 'jetbrains-mono', 'noto-sans-coptic', 'ibm-plex-serif', 'anton']).optional(),
+  font: z.enum(['ibm-plex-sans', 'ibm-plex-sans-arabic', 'jetbrains-mono', 'noto-sans-coptic', 'ibm-plex-serif', 'anton', 'marhey', 'noto-naskh-arabic', 'amiri', 'markazi-text', 'el-messiri', 'scheherazade-new', 'harmattan', 'aref-ruqaa', 'rakkas', 'lalezar', 'lemonada', 'changa', 'reem-kufi', 'vazirmatn']).optional(),
   size: z.number().finite().min(8).max(240).optional(),
   weight: z.union([z.literal(400), z.literal(500), z.literal(600), z.literal(700)]).optional(),
   italic: z.boolean().optional(),
@@ -74,6 +74,20 @@ export const TextStyleOverrideSchema = z.object({
     'ibm-plex-sans': [400, 500, 700], 'ibm-plex-sans-arabic': [400, 500, 700],
     'jetbrains-mono': [400, 700], 'noto-sans-coptic': [400],
     'ibm-plex-serif': [400, 500, 600, 700], anton: [400],
+    'marhey': [400, 500, 600, 700],
+    'noto-naskh-arabic': [400, 500, 600, 700],
+    'amiri': [400, 700],
+    'markazi-text': [400, 500, 600, 700],
+    'el-messiri': [400, 500, 600, 700],
+    'scheherazade-new': [400, 500, 600, 700],
+    'harmattan': [400, 500, 600, 700],
+    'aref-ruqaa': [400, 700],
+    'rakkas': [400],
+    'lalezar': [400],
+    'lemonada': [400, 500, 600, 700],
+    'changa': [400, 500, 600, 700],
+    'reem-kufi': [400, 500, 600, 700],
+    'vazirmatn': [400, 500, 600, 700],
   };
   const supportsItalic = style.font === 'ibm-plex-sans' || style.font === 'jetbrains-mono' || style.font === 'ibm-plex-serif';
   if (style.font && style.weight !== undefined && !supportedWeights[style.font].includes(style.weight)) {

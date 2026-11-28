@@ -36,7 +36,8 @@ test.describe('R8-2 Gallery UI UX Screenshots', () => {
 
           // Language lives in Settings (v5): switch there, then return to the page under test.
           const wantRtl = locale === 'ar';
-          const isRtl = await page.evaluate(() => document.documentElement.dir === 'rtl');
+          // The layout never mirrors (html dir stays ltr); the language is read from the persisted locale.
+          const isRtl = (await page.evaluate(() => (JSON.parse(localStorage.getItem('slidethread:locale') ?? '{}').state?.locale ?? 'en'))) === 'ar';
           if (isRtl !== wantRtl) {
             const back = new URL(page.url()).pathname + new URL(page.url()).search;
             await page.goto('/settings');
@@ -46,7 +47,8 @@ test.describe('R8-2 Gallery UI UX Screenshots', () => {
               document.documentElement.classList.toggle('dark', th === 'dark');
             }, theme);
           }
-          expect(await page.evaluate(() => document.documentElement.dir)).toBe(wantRtl ? 'rtl' : 'ltr');
+          expect(await page.evaluate(() => document.documentElement.dir)).toBe('ltr');
+          expect((await page.evaluate(() => (JSON.parse(localStorage.getItem('slidethread:locale') ?? '{}').state?.locale ?? 'en')))).toBe(wantRtl ? 'ar' : 'en');
 
           // Wait for gallery cards to be rendered
           await page.waitForSelector('[data-testid="gallery-template-choices"]');

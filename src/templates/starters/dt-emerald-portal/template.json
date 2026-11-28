@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-emerald-portal",
+  "priority": 1,
   "name": {
     "en": "Emerald Portal",
     "ar": "بوابة الزمرد"

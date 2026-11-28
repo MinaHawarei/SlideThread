@@ -21,11 +21,14 @@ import { CheckIcon, CloseIcon, DownloadIcon, ImageIcon, LinkIcon, PackageIcon, P
 export interface ExportDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  /** Preselects the file format when the dialog opens (e.g. from the Export menu). */
+  initialFormat?: ExportFormat;
 }
 
 export const ExportDialog: React.FC<ExportDialogProps> = ({
   isOpen,
   onClose,
+  initialFormat,
 }) => {
   const { t, locale } = useT();
   const project = useProjectStore((state) => state.project);
@@ -59,15 +62,18 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
     }
   };
 
-  // Reset dialog state when opened
+  // Reset dialog state when opened; honor the caller's preselected format
   useEffect(() => {
     if (isOpen) {
       setError(null);
       setSuccess(false);
       setProgress(null);
       setIsExporting(false);
+      if (initialFormat) {
+        handleFormatChange(initialFormat);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, initialFormat]);
 
   // Close on Escape key when not exporting
   useEffect(() => {

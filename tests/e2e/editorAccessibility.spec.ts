@@ -1,9 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
+import { selectGalleryTemplate } from './helpers/wizard';
 
 async function createEditor(page: Page) {
   await page.goto('/');
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId('platform-linkedin').click();
   await page.getByTestId('type-carousel').click();
   await page.getByTestId('format-r_4_5').click();
@@ -13,7 +13,8 @@ async function createEditor(page: Page) {
 
 /** Language lives on the Settings page (there is no switcher in the editor), so go there and come back to the saved project. */
 async function setDirection(page: Page, direction: 'ltr' | 'rtl', width: number) {
-  if ((await page.locator('html').getAttribute('dir')) === direction) return;
+  const locale = direction === 'rtl' ? 'ar' : 'en';
+  if ((await page.locator('html').getAttribute('lang')) === locale) return;
   await page.goto('/settings');
   await page.getByTestId(direction === 'rtl' ? 'settings-lang-ar-btn' : 'settings-lang-en-btn').click();
   await page.goto('/editor');
@@ -40,7 +41,7 @@ test('keyboard accessibility review matrix', async ({ page }) => {
   for (const [width, height] of sizes) {
     await page.setViewportSize({ width, height });
     for (const theme of ['light', 'dark']) {
-      if (width < 640) await page.getByTestId('mobile-tab-design').click();
+      if (width < 640) await page.getByTestId('mobile-tab-templates').click();
       else await page.getByTestId('tab-design').click();
       await page.getByTestId(`design-theme-${theme}`).click();
       if (width < 640) {
@@ -52,7 +53,7 @@ test('keyboard accessibility review matrix', async ({ page }) => {
       }
       for (const direction of ['ltr', 'rtl'] as const) {
         await setDirection(page, direction, width);
-        await expect(page.locator('html')).toHaveAttribute('dir', direction);
+        await expect(page.locator('html')).toHaveAttribute('lang', direction === 'rtl' ? 'ar' : 'en');
         await page.screenshot({ path: `docs/ux-review/R3-3/editor-${width}x${height}-${theme}-${direction}.png` });
       }
     }

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { selectGalleryTemplate } from './helpers/wizard';
 
 test('Start creating opens a blank project, not Weave, and the editor is in view', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -21,8 +22,7 @@ test('Start creating opens a blank project, not Weave, and the editor is in view
 
 test('a template card still opens that template with its own look', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/gallery');
-  await page.getByTestId('use-template-tech-mesh').click({ force: true });
+  await selectGalleryTemplate(page, 'tech-mesh');
   await page.getByTestId('orientation-portrait').click();
   await page.getByTestId('create-submit').click();
   await expect(page.getByTestId('editor-desktop')).toBeVisible({ timeout: 20000 });

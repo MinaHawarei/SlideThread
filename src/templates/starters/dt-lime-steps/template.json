@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "dt-lime-steps",
+  "priority": 1,
   "name": {
     "en": "Lime Steps",
     "ar": "خطوات الليمون"

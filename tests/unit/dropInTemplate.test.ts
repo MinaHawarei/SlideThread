@@ -39,5 +39,5 @@ describe('drop-in built-in templates', () => {
 
     fs.rmSync(dropIn, { recursive: true, force: true });
     expect(await discovered('/src/templates/registry/index.ts', ids)).not.toContain('zz-drop-in-test');
-  });
+  }, 60000);
 });

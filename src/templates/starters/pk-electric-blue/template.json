@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "id": "pk-electric-blue",
+  "priority": 2,
   "name": {
     "en": "Electric Blue",
     "ar": "أزرق كهربائي"

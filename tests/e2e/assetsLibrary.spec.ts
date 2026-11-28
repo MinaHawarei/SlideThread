@@ -5,7 +5,7 @@ test('assets library is grouped, labelled and stays open after adding an asset',
   await page.addInitScript(() => { if (!sessionStorage.getItem('seeded')) { localStorage.clear(); sessionStorage.setItem('seeded', '1'); } });
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/editor');
-  await page.getByTestId('tab-assets').click();
+  await page.getByTestId('rail-tool-media').click();
   for (const group of ['shapes', 'icons', 'emoji', 'stickers']) {
     await expect(page.getByTestId(`assets-group-${group}`)).toBeVisible();
   }

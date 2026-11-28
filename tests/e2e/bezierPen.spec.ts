@@ -15,6 +15,7 @@ async function surfaceBox(page: Page) {
 test('bezier pen: click anchors, drag a handle, Backspace removes the last point, Enter finishes an open path', async ({ page }) => {
   test.setTimeout(90000);
   await open(page);
+  await page.getByTestId('rail-tool-draw').click();
   await page.getByTestId('rail-tool-bezier').click();
   const b = await surfaceBox(page);
   await page.mouse.click(b.x + b.width * 0.2, b.y + b.height * 0.7);
@@ -41,6 +42,7 @@ test('bezier pen: click anchors, drag a handle, Backspace removes the last point
 test('bezier pen: clicking the first point closes the path with a fill option; Esc cancels', async ({ page }) => {
   test.setTimeout(90000);
   await open(page);
+  await page.getByTestId('rail-tool-draw').click();
   await page.getByTestId('rail-tool-bezier').click();
   const b = await surfaceBox(page);
   const pts: Array<[number, number]> = [[0.3, 0.3], [0.7, 0.3], [0.7, 0.7], [0.3, 0.7]];
@@ -54,6 +56,7 @@ test('bezier pen: clicking the first point closes the path with a fill option; E
   await page.getByTestId('path-fill-none').click();
   await expect(canvasPaths(page).locator('path')).toHaveAttribute('fill', 'none');
 
+  await page.getByTestId('rail-tool-draw').click();
   await page.getByTestId('rail-tool-bezier').click();
   const b2 = await surfaceBox(page);
   await page.mouse.click(b2.x + b2.width * 0.2, b2.y + b2.height * 0.2);
@@ -66,8 +69,8 @@ test('bezier pen: clicking the first point closes the path with a fill option; E
 test('bezier pen on a phone: tap points then Done', async ({ page }) => {
   test.setTimeout(90000);
   await open(page, 390, 844);
-  await page.getByTestId('mobile-tab-assets').click();
-  await page.getByTestId('assets-bezier-btn').click();
+  await page.getByTestId('mobile-tab-draw').click();
+  await page.getByTestId('mobile-draw-pen').click();
   await expect(page.getByTestId('bezier-pen-surface')).toBeVisible();
   const b = await surfaceBox(page);
   for (const [x, y] of [[0.2, 0.3], [0.6, 0.4], [0.5, 0.7]] as Array<[number, number]>) await page.mouse.click(b.x + b.width * x, b.y + b.height * y);

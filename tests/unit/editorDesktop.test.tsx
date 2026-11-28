@@ -57,8 +57,12 @@ describe('EditorDesktop component (Task P3-5)', () => {
 
     expect(screen.getByTestId('editor-desktop')).toBeInTheDocument();
     expect(screen.getByTestId('left-tool-rail')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-tool-template')).toBeInTheDocument();
     expect(screen.getByTestId('rail-tool-elements')).toBeInTheDocument();
-    expect(screen.getByTestId('rail-tool-brand')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-tool-draw')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-tool-text')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-tool-media')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-tool-layout')).toBeInTheDocument();
     expect(screen.getByTestId('editor-home-btn')).toBeInTheDocument();
     expect(screen.getByTestId('editor-project-title')).toHaveValue('Architectural Decisions');
     expect(screen.getByTestId('editor-undo-btn')).toBeInTheDocument();
@@ -74,20 +78,21 @@ describe('EditorDesktop component (Task P3-5)', () => {
   it('switches inspector tabs and toggles slide rail using left tool rail', () => {
     render(<EditorDesktop />);
 
-    // Click Brand in left rail
-    fireEvent.click(screen.getByTestId('rail-tool-brand'));
-    expect(screen.getByTestId('tab-brand')).toHaveAttribute('aria-selected', 'true');
+    // Click Templates in left rail: dock opens Design/Brand card on the Design tab
+    fireEvent.click(screen.getByTestId('rail-tool-template'));
+    expect(screen.getByTestId('tab-design')).toHaveAttribute('aria-selected', 'true');
 
-    // Click Elements in left rail
+    // Click Elements in left rail: the assets flyout opens
     fireEvent.click(screen.getByTestId('rail-tool-elements'));
-    expect(screen.getByTestId('tab-assets')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByTestId('rail-flyout')).toBeInTheDocument();
 
-    // Toggle slide rail
+    // Toggle slide rail: collapses to a thin strip with an expand button
     expect(screen.getByTestId('slide-rail')).toBeInTheDocument();
+    expect(screen.queryByTestId('rail-expand-btn')).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('rail-tool-slides'));
-    expect(screen.queryByTestId('slide-rail')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('rail-tool-slides'));
-    expect(screen.getByTestId('slide-rail')).toBeInTheDocument();
+    expect(screen.getByTestId('rail-expand-btn')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('rail-expand-btn'));
+    expect(screen.queryByTestId('rail-expand-btn')).not.toBeInTheDocument();
   });
 
   it('handles canvas zoom fit and 100% controls', () => {
@@ -108,7 +113,7 @@ describe('EditorDesktop component (Task P3-5)', () => {
 
   it('hides, locks, and reorders layout slots from the layer panel', async () => {
     render(<EditorDesktop />);
-    fireEvent.click(screen.getByTestId('tab-layers'));
+    // Layers live in the always-visible Layers dock card now (no tab click needed)
     expect(screen.getByTestId('layers-panel')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Hide Title' }));
     expect(useProjectStore.getState().project.slides[0]?.overrides?.portrait?.title?.hidden).toBe(true);
@@ -135,7 +140,6 @@ describe('EditorDesktop component (Task P3-5)', () => {
       ] }],
     });
     render(<EditorDesktop />);
-    fireEvent.click(screen.getByTestId('tab-layers'));
     fireEvent.click(screen.getByRole('button', { name: 'Lock Shape (ellipse)' }));
     fireEvent.click(screen.getByRole('button', { name: 'Hide Shape (rectangle)' }));
     expect(useProjectStore.getState().project.slides[0]?.extras?.[0]?.locked).toBe(true);
@@ -270,10 +274,10 @@ describe('EditorDesktop component (Task P3-5)', () => {
     // Default tab is Slide
     expect(screen.getByTestId('slide-inspector')).toBeInTheDocument();
 
-    // Switch to Design tab
+    // Switch to Design tab (Slide card stays mounted: the dock cards are independent)
     fireEvent.click(screen.getByTestId('tab-design'));
     expect(screen.getByTestId('design-inspector')).toBeInTheDocument();
-    expect(screen.queryByTestId('slide-inspector')).not.toBeInTheDocument();
+    expect(screen.getByTestId('slide-inspector')).toBeInTheDocument();
 
     // Switch to Brand tab
     fireEvent.click(screen.getByTestId('tab-brand'));

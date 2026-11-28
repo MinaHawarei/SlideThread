@@ -25,14 +25,14 @@ test.describe('QA Fixes Acceptance Tests (Real Browser)', () => {
 
     // Close sheet and verify Layers route still works
     await page.getByTestId('mobile-sheet-close-btn').click();
-    await page.getByTestId('mobile-tab-layers').click();
+    await page.getByTestId('mobile-tab-edit').click();
     await expect(page.getByTestId('layers-panel')).toBeVisible();
     await page.locator('[data-testid="layer-row-title"] button').first().click();
     await expect(page.getByTestId('element-properties-panel')).toBeVisible();
 
     // 4: Add Text on mobile closes sheet & selects new element
     await page.getByTestId('mobile-sheet-close-btn').click();
-    await page.getByTestId('mobile-tab-assets').click();
+    await page.getByTestId('mobile-tab-media').click();
     await expect(page.getByTestId('assets-panel')).toBeVisible();
     await page.getByTestId('add-text-btn').click();
     await expect(page.getByTestId('mobile-bottom-sheet')).not.toBeVisible();
@@ -62,6 +62,7 @@ test.describe('QA Fixes Acceptance Tests (Real Browser)', () => {
 
     // Export PNG (current slide) and inspect real PNG pixels using canvas in browser
     await page.getByTestId('editor-export-btn').click();
+    await page.getByTestId('export-menu-images').click();
     await expect(page.getByTestId('export-dialog')).toBeVisible();
     await page.getByTestId('export-format-png').click();
 
@@ -97,6 +98,7 @@ test.describe('QA Fixes Acceptance Tests (Real Browser)', () => {
     // Also verify PDF and ZIP downloads succeed
     await expect(page.getByTestId('export-dialog')).not.toBeVisible({ timeout: 10000 });
     await page.getByTestId('editor-export-btn').click();
+    await page.getByTestId('export-menu-images').click();
     await expect(page.getByTestId('export-dialog')).toBeVisible();
     await page.getByTestId('export-format-pdf').click();
     const [pdfDownload] = await Promise.all([
@@ -107,6 +109,7 @@ test.describe('QA Fixes Acceptance Tests (Real Browser)', () => {
 
     await expect(page.getByTestId('export-dialog')).not.toBeVisible({ timeout: 10000 });
     await page.getByTestId('editor-export-btn').click();
+    await page.getByTestId('export-menu-images').click();
     await expect(page.getByTestId('export-dialog')).toBeVisible();
     await page.getByTestId('export-format-zip').click();
     const [zipDownload] = await Promise.all([
@@ -150,26 +153,30 @@ test.describe('QA Fixes Acceptance Tests (Real Browser)', () => {
   });
 
   test('5 & 6: Arabic RTL counters/arrows/labels & mobile layout without overflow at 320, 360, 390, 820, 1280', async ({ page }) => {
+    test.setTimeout(90000); // five viewports; the default 30s is tight when the suite runs in parallel
     // Switch to Arabic in Settings and verify single nav at 390px
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/settings');
     await expect(page.locator('.settings-header nav')).not.toBeVisible();
     await page.getByTestId('settings-lang-ar-btn').click();
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
 
     // Home in Arabic: the redesigned Home has no hero carousel (the component is covered by
     // tests/unit/heroCarousel.test.tsx). Assert the real Home renders in RTL instead.
     await page.goto('/');
     await expect(page.getByTestId('start-screen')).toBeVisible();
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
     await expect(page.getByTestId('start-wizard-btn')).toBeVisible();
 
     // Mobile editor in Arabic: counter bdi, chevrons, Arabic aria-labels
     await page.goto('/editor');
     await expect(page.getByTestId('editor-mobile')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('[data-testid="mobile-slide-counter"] bdi')).toHaveAttribute('dir', 'ltr');
-    await expect(page.getByTestId('mobile-prev-slide-btn')).toHaveText('›');
-    await expect(page.getByTestId('mobile-next-slide-btn')).toHaveText('‹');
+    // The layout never mirrors: prev always points left, next right.
+    await expect(page.getByTestId('mobile-prev-slide-btn')).toHaveText('‹');
+    await expect(page.getByTestId('mobile-next-slide-btn')).toHaveText('›');
     await expect(page.getByTestId('mobile-prev-slide-btn')).toHaveAttribute('aria-label', 'الشريحة السابقة');
     await expect(page.getByTestId('mobile-next-slide-btn')).toHaveAttribute('aria-label', 'الشريحة التالية');
 

@@ -37,7 +37,8 @@ for (const viewport of viewports) {
         if (direction === 'rtl') {
           await page.getByTestId('language-switcher').click();
           await expect(page.getByRole('heading', { level: 1 })).toHaveText(/اجعله\s*يعبر عنك/);
-          await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+          await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+          await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
         }
         // Theme: the top bar toggle exists from md up; below that the Appearance section carries the same switch.
         const wantDark = theme === 'dark';

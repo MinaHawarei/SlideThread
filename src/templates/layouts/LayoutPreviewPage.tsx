@@ -6,9 +6,9 @@ import './layouts.css';
 const ASPECT_LABELS = ['landscape', 'square', 'portrait', 'tall'] as const;
 
 export const LayoutPreviewPage: React.FC = () => {
-  const { t, dir } = useT();
+  const { t } = useT();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [direction, setDirection] = useState<'ltr' | 'rtl'>(dir);
+  const [direction, setDirection] = useState<'ltr' | 'rtl'>('ltr');
 
   return (
     <main className={`layout-gallery theme-${theme}`} dir={direction} data-theme={theme} data-testid="layout-gallery">

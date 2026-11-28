@@ -36,7 +36,8 @@ test.describe('R8-3 Desktop Editor Chrome UX Screenshots', () => {
 
           // Language lives in Settings (v5), not in the editor: switch there, then return.
           const wantRtl = locale === 'ar';
-          const isRtl = await page.evaluate(() => document.documentElement.dir === 'rtl');
+          // The layout never mirrors (html dir stays ltr); the language is read from the persisted locale.
+          const isRtl = (await page.evaluate(() => (JSON.parse(localStorage.getItem('slidethread:locale') ?? '{}').state?.locale ?? 'en'))) === 'ar';
           if (isRtl !== wantRtl) {
             await page.goto('/settings');
             await page.getByTestId(wantRtl ? 'settings-lang-ar-btn' : 'settings-lang-en-btn').click();
@@ -45,7 +46,8 @@ test.describe('R8-3 Desktop Editor Chrome UX Screenshots', () => {
               document.documentElement.classList.toggle('dark', th === 'dark');
             }, theme);
           }
-          expect(await page.evaluate(() => document.documentElement.dir)).toBe(wantRtl ? 'rtl' : 'ltr');
+          expect(await page.evaluate(() => document.documentElement.dir)).toBe('ltr');
+          expect((await page.evaluate(() => (JSON.parse(localStorage.getItem('slidethread:locale') ?? '{}').state?.locale ?? 'en')))).toBe(wantRtl ? 'ar' : 'en');
 
           // Wait for editor container to be visible
           await page.waitForSelector('[data-testid="main-canvas"], [data-testid="mobile-stage-viewport"], [data-testid="editor-mobile"]');

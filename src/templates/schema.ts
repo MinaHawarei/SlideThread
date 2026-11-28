@@ -29,6 +29,8 @@ export const TemplateSchema = z.object({
   id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   className: z.string().optional(),
   testFixture: z.boolean().optional(),
+  // Gallery ordering: higher number shows first; templates without it count as 1.
+  priority: z.number().optional(),
   name: BilingualNameSchema,
   description: z.object({ en: z.string().optional(), ar: z.string().optional() }).strict().optional(),
   author: z.object({ name: z.string().trim().min(1), url: z.string().url().optional() }).strict(),
