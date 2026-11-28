@@ -17,6 +17,19 @@
         color: #1c1917;
         line-height: 1.55;
       }
+      /* Never shown while the app boots: kept in the HTML for crawlers and assistive tech, visually hidden for everyone else.
+         Visitors with JavaScript turned off get it back through the <noscript> rule below. */
+      .seo-static {
+        position: absolute !important;
+        width: 1px; height: 1px; margin: -1px !important; padding: 0 !important;
+        overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+      }
+      /* Boot splash: logo and a thin spinning ring, centered, fixed so nothing shifts. It lives inside #root, so React removes it when the app mounts. */
+      .boot-splash { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; z-index: 1; }
+      .boot-ring { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(68, 64, 60, 0.15); border-top-color: #F2993A; animation: bootSpin 0.9s linear infinite; }
+      @keyframes bootSpin { to { transform: rotate(360deg); } }
+      @media (prefers-color-scheme: dark) { .boot-ring { border-color: rgba(245, 240, 232, 0.16); border-top-color: #F2993A; } }
+      @media (prefers-reduced-motion: reduce) { .boot-ring { animation: none; border-top-color: #F2993A; border-right-color: #F2993A; } }
       .seo-header { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
       .seo-wordmark { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
       .seo-loading { margin-left: auto; font-size: 13px; color: #78716c; }
@@ -74,6 +87,12 @@
         .splash-stone { fill: #F5F0E8 !important; }
       }
     </style>
+    <noscript>
+      <style>
+        .boot-splash { display: none !important; }
+        .seo-static { position: static !important; width: auto; height: auto; margin: 0 auto !important; padding: 56px 24px 40px !important; overflow: visible; clip: auto; clip-path: none; white-space: normal; }
+      </style>
+    </noscript>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="SlideThread — Privacy-first, local-first carousel & post creator for LinkedIn, Instagram, and social feeds." />
     <link rel="canonical" href="https://slide-thread.vercel.app/" />
@@ -99,6 +118,23 @@
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased">
     <div id="root">
+      <div class="boot-splash" role="status" aria-label="Loading SlideThread">
+        <svg class="splash-anim" width="72" height="72" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g transform="translate(143.36 326.9199175257732) scale(0.7600824742268041)">
+            <defs>
+              <clipPath id="k-boot">
+                <path clip-rule="evenodd" d="M-10 -10H980V497H-10Z M202.0 198.5H768.0A45.0 45.0 0 0 1 768.0 288.5H202.0A45.0 45.0 0 0 1 202.0 198.5Z"/>
+              </clipPath>
+            </defs>
+            <g clip-path="url(#k-boot)">
+              <rect class="splash-stone" width="447" height="487" rx="78" fill="#44403C"/>
+              <rect x="523" width="447" height="487" rx="78" fill="#F2993A"/>
+            </g>
+            <rect class="splash-stone" x="181" y="222.5" width="608" height="42" rx="21" fill="#44403C"/>
+          </g>
+        </svg>
+        <div class="boot-ring" aria-hidden="true"></div>
+      </div>
       <main class="seo-static" aria-label="About SlideThread">
         <header class="seo-header">
           <svg class="splash-anim" width="40" height="40" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
